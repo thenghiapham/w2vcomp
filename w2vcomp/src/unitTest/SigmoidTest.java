@@ -3,8 +3,10 @@ package unitTest;
 import static org.junit.Assert.*;
 
 import java.util.Random;
+
 import org.junit.Test;
 
+import common.MathUtils;
 import common.SigmoidTable;
 
 public class SigmoidTest {
@@ -17,7 +19,7 @@ public class SigmoidTest {
         float delta = (float) Math.exp(-12);
         for (int i = 0; i < 10000; i++) {
             float x = rand.nextFloat() * 2 * maxX - maxX;
-            float realSigmoid = (float) SigmoidTable.sigmoid(x);
+            float realSigmoid = (float) MathUtils.sigmoid(x);
             float precomputedSigmoid = sigmoidComputer.getSigmoid(x);
             assertEquals(precomputedSigmoid, realSigmoid, delta);
         }

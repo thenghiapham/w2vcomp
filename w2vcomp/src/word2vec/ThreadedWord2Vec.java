@@ -483,7 +483,7 @@ public class ThreadedWord2Vec {
                             // MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2))]) *
                             // alpha);
                             gradient = (float) ((label - MathUtils
-                                    .exp_sigmoid(f)) * alpha);
+                                    .sigmoid(f)) * alpha);
                         }
 
                         for (int i = 0; i < layer1Size; i++) {

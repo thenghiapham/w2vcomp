@@ -98,14 +98,14 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         // System.out.println("in sentence:\n");
         // IOUtils.printInts(sentence);
         for (int i = 0; i < phrase.startPosition; i++) {
-            if (DataStructureUtils.searchSmallArray(phrase.componentPositions,
+            if (DataStructureUtils.searchSmallIntArray(phrase.componentPositions,
                     i) == -1) {
                 newSentenceBuffer.add(sentence[i]);
             }
         }
         newSentenceBuffer.add(phrase.phraseIndex);
         for (int i = phrase.endPosition; i < sentence.length; i++) {
-            if (DataStructureUtils.searchSmallArray(phrase.componentPositions,
+            if (DataStructureUtils.searchSmallIntArray(phrase.componentPositions,
                     i) == -1) {
                 newSentenceBuffer.add(sentence[i]);
             }
