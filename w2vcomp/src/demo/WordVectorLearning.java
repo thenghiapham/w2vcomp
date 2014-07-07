@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import vocab.Vocab;
-import word2vec.CBowWord2Vec;
+//import word2vec.CBowWord2Vec;
 import word2vec.SkipNGramWord2Vec;
 
 import demo.TestConstants;
@@ -29,7 +29,7 @@ public class WordVectorLearning {
         System.out.println("Starting training using file " + trainFile);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
-        Vocab vocab = new Vocab(0);
+        Vocab vocab = new Vocab(5);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {

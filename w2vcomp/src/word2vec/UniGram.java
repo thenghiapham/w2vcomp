@@ -30,6 +30,7 @@ public class UniGram {
         float power = (float) 0.75;
         int vocabSize = vocab.getVocabSize();
         randomTable = new int[randomTablesize];
+        // trainWordsPow = sum (frequency ^ 3/4)
         for (int i = 0; i < vocabSize; i++) {
             trainWordsPow += Math.pow(vocab.getEntry(i).frequency, power);
         }
