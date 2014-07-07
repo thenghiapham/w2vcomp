@@ -2,7 +2,7 @@ package tree;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * @author Lorenzo Dell'Arciprete
@@ -154,7 +154,7 @@ public class Tree {
         }
     }
 
-    public void setChildren(Vector<Tree> children) {
+    public void setChildren(ArrayList<Tree> children) {
         this.children = children;
     }
 
@@ -167,12 +167,12 @@ public class Tree {
     }
     
 
-    public Vector<Tree> allNodes() {
+    public ArrayList<Tree> allNodes() {
         return allNodes(this);
     }
     
-    private Vector<Tree> allNodes(Tree node) {
-        Vector<Tree> all = new Vector<Tree>();
+    private ArrayList<Tree> allNodes(Tree node) {
+        ArrayList<Tree> all = new ArrayList<Tree>();
         all.add(node);
         for (Tree child : node.getChildren())
             all.addAll(allNodes(child));

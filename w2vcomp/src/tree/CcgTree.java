@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +16,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class CcgTree extends Tree{
+    public static final int LEFT_HEAD = 0;
+    public static final int RIGHT_HEAD = 1;
+    int headInfo = LEFT_HEAD;
     String cat = "";
     String modifiedCat = "";
     String pos = "";
@@ -54,9 +56,75 @@ public class CcgTree extends Tree{
         return tree;
     }
     
+    
+    public static String normalizeTag(String tag) {
+        tag = tag.replaceAll("\\(", "<");
+        tag = tag.replaceAll("\\)", ">");
+        tag = tag.replaceAll("\\[.*?\\]", "");
+        tag = tag.replaceAll(":", ".");
+        tag = tag.replaceAll("_", "-");
+        return tag;
+    }
+    
+    public static String normalizeWord(String word) {
+        if ("(".equals(word)) {
+            word = "LRB";
+        } else if (")".equals(word)) {
+            word = "RRB";
+        }
+        word = word.replaceAll(":", ".");
+        word = word.replaceAll("_", "-");
+        word = word.replaceAll(" ", "-");
+        return word;
+    }
+    
+    protected static CcgTree createTreeFromXmlLexicalNode(Node node) {
+        NamedNodeMap attributes = node.getAttributes();
+        String superTag = attributes.getNamedItem("cat").getNodeValue();
+        String modifiedTag = normalizeTag(superTag);
+        String rootLabel = modifiedTag;
+        CcgTree result = new CcgTree(rootLabel);
+        ArrayList<Tree> children = new ArrayList<Tree>();
+        
+        String word = attributes.getNamedItem("word").getNodeValue();
+        word = normalizeWord(word);
+        
+        CcgTree child = new CcgTree(word);
+        
+        String lemma = attributes.getNamedItem("lemma").getNodeValue().toLowerCase();
+        lemma = normalizeWord(lemma);
+        child.lemma = lemma;
+        
+        child.cat = superTag;
+        child.modifiedCat = modifiedTag;
+        
+        String pos = attributes.getNamedItem("pos").getNodeValue();
+        pos = pos.replaceAll(":", ".");
+        child.pos = pos;
+        children.add(child);
+        result.setChildren(children);
+        return result;
+    }
+    
+    protected static CcgTree createTreeFromXmlRuleNode(Node node) {
+        String rootLabel = node.getAttributes().getNamedItem("cat").getNodeValue();
+        rootLabel = normalizeTag(rootLabel);
+        
+        CcgTree result = new CcgTree(rootLabel);
+        ArrayList<Tree> children = new ArrayList<Tree>();
+        NodeList childNodes = node.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node childNode = childNodes.item(i);
+            if (!childNode.getNodeName().equals("#text")) {
+                children.add(parseTreeFromNode(childNode));
+            }
+        }
+        result.setChildren(children);
+        return result;
+    }
+    
     public static CcgTree parseTreeFromNode(Node node) {
         if (node.getNodeName().equals("ccg")) {
-            //System.out.println("First child:" + node.getFirstChild());
             if (node.getFirstChild() != null) {
                 NodeList childNodes = node.getChildNodes();
                 for (int i = 0; i < childNodes.getLength(); i++) {
@@ -69,64 +137,9 @@ public class CcgTree extends Tree{
             return createEmptyTree();
             
         } else if (node.getNodeName().equals("rule")) {
-            String rootLabel = node.getAttributes().getNamedItem("cat").getNodeValue();
-            rootLabel = rootLabel.replaceAll("\\(", "<");
-            rootLabel = rootLabel.replaceAll("\\)", ">");
-            rootLabel = rootLabel.replaceAll("\\[.*?\\]", "");
-            CcgTree result = new CcgTree(rootLabel);
-            Vector<Tree> children = new Vector<Tree>();
-            NodeList childNodes = node.getChildNodes();
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                Node childNode = childNodes.item(i);
-                if (!childNode.getNodeName().equals("#text")) {
-                    children.add(parseTreeFromNode(childNode));
-                }
-            }
-            result.setChildren(children);
-            return result;
+            return createTreeFromXmlRuleNode(node);
         } else if (node.getNodeName().equals("lf")) {
-            NamedNodeMap attributes = node.getAttributes();
-            String superTag = attributes.getNamedItem("cat").getNodeValue();
-            String modifiedTag = superTag.replaceAll("\\(", "<");
-            modifiedTag = modifiedTag.replaceAll("\\)", ">");
-            modifiedTag = modifiedTag.replaceAll(":", ".");
-            modifiedTag = modifiedTag.replaceAll("_", "-");
-            modifiedTag = modifiedTag.replaceAll("\\[.*?\\]", "");
-            String rootLabel = modifiedTag;
-            CcgTree result = new CcgTree(rootLabel);
-            Vector<Tree> children = new Vector<Tree>();
-            
-            String word = attributes.getNamedItem("word").getNodeValue();
-            if ("(".equals(word)) {
-                word = "LRB";
-            } else if (")".equals(word)) {
-                word = "RRB";
-            }
-            word = word.replaceAll(":", ".");
-            word = word.replaceAll("_", "-");
-            
-            CcgTree child = new CcgTree(word);
-            
-            String lemma = attributes.getNamedItem("lemma").getNodeValue().toLowerCase();
-            if ("(".equals(lemma)) {
-                lemma = "LRB";
-            } else if (")".equals(lemma)) {
-                lemma = "RRB";
-            }
-            lemma = lemma.replaceAll(":", ".");
-            lemma = lemma.replaceAll("_", "-");
-            child.lemma = lemma;
-            child.cat = superTag;
-            
-            
-            child.modifiedCat = modifiedTag;
-            
-            String pos = attributes.getNamedItem("pos").getNodeValue();
-            pos = pos.replaceAll(":", ".");
-            child.pos = pos;
-            children.add(child);
-            result.setChildren(children);
-            return result;
+            return createTreeFromXmlLexicalNode(node);
         } else {
             System.out.println(node.getNodeName());
             System.out.println(node.getParentNode().getNodeName());
@@ -135,54 +148,28 @@ public class CcgTree extends Tree{
         
     }
     
-    public String toPennTree() {
-        if (this.getChildren().size() == 1) {
-            String treeString = "("+ this.getRootLabel();
-            treeString += " ";
-            if (getChildren().get(0).getChildren().size() != 0) {
-                treeString += getChildren().get(0).toPennTree();
-            } else {
-                CcgTree terminalChild = (CcgTree) getChildren().get(0); 
-                treeString += terminalChild.getRootLabel() + "__" + terminalChild.lemma + "__" + terminalChild.pos + "__" + terminalChild.modifiedCat;          
-            }
-            treeString += ")";
-            return treeString;
-        } else if (this.getChildren().size() > 1) {
-            String treeString = "("+ getRootLabel();
-            treeString += " ";
-            for (Tree child : getChildren())
-                treeString += child.toPennTree();
-            treeString += ")";
-            return treeString;
-        } else {
-            if (this.isTerminal()) {
-                String treeString = "("+ this.getRootLabel()+"__0";
-                treeString += " ";
-                treeString += getRootLabel() + "__" + lemma + "__" + pos + "__" + modifiedCat;
-                treeString += ")";
-                return treeString;
-            } else 
-                return super.toPennTree();
-        }
-    }
-    
-    
+    /**
+     * Print all information to a string
+     * - non-terminal node contains: head position (option for supertag?)
+     * - pre-terminal node contains: pos
+     * - terminal node contains: word (lemma or not) 
+     */
     public String toSimplePennTree() {
-        if (this.getChildren().size() == 1) {
+        if (this.children.size() == 1) {
             String treeString = "("+ this.getRootLabel();
             treeString += " ";
-            if (getChildren().get(0).getChildren().size() != 0) {
-                treeString += ((CcgTree) getChildren().get(0)).toSimplePennTree();
+            if (children.get(0).children.size() != 0) {
+                treeString += ((CcgTree) children.get(0)).toSimplePennTree();
             } else {
-                CcgTree terminalChild = (CcgTree) getChildren().get(0); 
+                CcgTree terminalChild = (CcgTree) children.get(0); 
                 treeString += terminalChild.getRootLabel();         
             }
             treeString += ")";
             return treeString;
-        } else if (this.getChildren().size() > 1) {
+        } else if (this.children.size() > 1) {
             String treeString = "("+ getRootLabel();
             treeString += " ";
-            for (Tree child : getChildren())
+            for (Tree child : children)
                 treeString += ((CcgTree) child).toSimplePennTree();
             treeString += ")";
             return treeString;
@@ -200,12 +187,11 @@ public class CcgTree extends Tree{
     
   
     public String shortPennTree() {
-        List<Tree> children = this.getChildren();
         String treeString = "";
         
         if (children.size() == 1) {
-            CcgTree child = (CcgTree) getChildren().get(0); 
-            if (children.get(0).getChildren().size() != 0){
+            CcgTree child = (CcgTree) children.get(0); 
+            if (children.get(0).children.size() != 0){
                 treeString += child.shortPennTree();
             } else {
                 treeString += child.pos;
@@ -228,7 +214,7 @@ public class CcgTree extends Tree{
         return treeString;
     }
     
-    public List<CcgTree> getAllSubTree(int height) {
+    public List<CcgTree> getAllSubTreeAtHeight(int height) {
         List<CcgTree> list = new ArrayList<CcgTree>(10);
         getHeightAndAdd(list, height);
         return list;
@@ -236,7 +222,6 @@ public class CcgTree extends Tree{
     
     private int getHeightAndAdd(List<CcgTree> list, int targetHeight) {
         int height = 0;
-        List<Tree> children = getChildren();
         if (children.size() == 0) {
             height = 1;
             if (this.pos.length() == 1) height = 10;
