@@ -76,9 +76,6 @@ public abstract class AbstractWord2Vec {
 
         this.rand = new Random();
         sigmoidTable = new SigmoidTable();
-        if (negativeSamples > 0) {
-            unigram = new UniGram(vocab);
-        }
         // TODO: setting alpha
         starting_alpha = DEFAULT_STARTING_ALPHA;
     }
@@ -133,6 +130,9 @@ public abstract class AbstractWord2Vec {
 
     public void initNetwork() {
         int vocabSize = vocab.getVocabSize();
+        if (negativeSamples > 0) {
+            unigram = new UniGram(vocab);
+        }
         weights0 = new float[vocabSize][projectionLayerSize];
         if (hierarchicalSoftmax) {
             weights1 = new float[vocabSize - 1][projectionLayerSize];
@@ -146,6 +146,9 @@ public abstract class AbstractWord2Vec {
 
     public void initNetwork(String initFile) {
         int vocabSize = vocab.getVocabSize();
+        if (negativeSamples > 0) {
+            unigram = new UniGram(vocab);
+        }
         weights0 = new float[vocabSize][projectionLayerSize];
         if (hierarchicalSoftmax) {
             weights1 = new float[vocabSize - 1][projectionLayerSize];
