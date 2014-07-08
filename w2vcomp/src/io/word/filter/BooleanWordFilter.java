@@ -1,6 +1,7 @@
-package io.word;
+package io.word.filter;
 
 import java.util.ArrayList;
+import io.word.WordFilter;
 
 public class BooleanWordFilter implements WordFilter {
     public static final int AND_FILTER = 0;

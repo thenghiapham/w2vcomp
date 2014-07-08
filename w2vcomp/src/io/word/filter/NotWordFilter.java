@@ -1,4 +1,6 @@
-package io.word;
+package io.word.filter;
+
+import io.word.WordFilter;
 
 public class NotWordFilter implements WordFilter {
     WordFilter filter;
