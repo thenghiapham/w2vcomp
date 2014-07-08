@@ -21,6 +21,8 @@ public class CcgTree extends Tree{
     public static final int LEFT_HEAD = 0;
     public static final int RIGHT_HEAD = 1;
     int headInfo = LEFT_HEAD;
+    int leftPos = -1;
+    int rightPos = 0;
     String cat = "";
     String modifiedCat = "";
     String pos = "";
@@ -266,6 +268,32 @@ public class CcgTree extends Tree{
         return height;
     }
     
+    public int updateSubTreePositio(int leftPos) {
+        this.leftPos = leftPos;
+        if (children.size() == 0) {
+            rightPos = leftPos;
+        } else {
+            int curChildLeft = leftPos;
+            for (Tree child: this.children) {
+                CcgTree ccgChild = (CcgTree) child;
+                rightPos = ccgChild.updateSubTreePositio(curChildLeft);
+                curChildLeft += 1;
+            }
+        }
+        return rightPos;
+    }
+    
+    public String getSurfaceString() {
+        if (children.size() == 0) {
+            return this.rootLabel;
+        } else {
+            String result = ((CcgTree) children.get(0)).getSurfaceString();
+            for (int i = 1; i < children.size(); i++) {
+                result += " " + ((CcgTree) children.get(i)).getSurfaceString();
+            }
+            return result;
+        }
+    }
     
     public String getLemma() {
         return lemma;
