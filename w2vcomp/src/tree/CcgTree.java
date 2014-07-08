@@ -218,6 +218,25 @@ public class CcgTree extends Tree{
         }
     }
     
+    public static CcgTree fromSimplePennTree(String treeString) {
+        try {
+            return fromTree(fromPennTree(treeString));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+                
+    }
+    
+    public static CcgTree fromTree(Tree tree) {
+        CcgTree ccgTree = new CcgTree(tree.rootLabel);
+        ccgTree.headInfo = Integer.parseInt(ccgTree.rootLabel);
+        for (Tree child: tree.children) {
+            ccgTree.children.add(fromTree(child));
+        }
+        return ccgTree;
+    }
+    
     public List<CcgTree> getAllSubTreeAtHeight(int height) {
         List<CcgTree> list = new ArrayList<CcgTree>(10);
         getHeightAndAdd(list, height);
