@@ -15,6 +15,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import common.WordForm;
+
 public class CcgTree extends Tree{
     public static final int LEFT_HEAD = 0;
     public static final int RIGHT_HEAD = 1;
@@ -169,16 +171,31 @@ public class CcgTree extends Tree{
      * - pre-terminal node contains: pos
      * - terminal node contains: word (lemma or not) 
      */
-    public String toSimplePennTree() {
+    public String toSimplePennTree(int wordForm) {
         if (this.children.size() == 1) {
             String treeString = "";
             
             if (children.get(0).children.size() != 0) {
-                treeString += ((CcgTree) children.get(0)).toSimplePennTree();
+                treeString += ((CcgTree) children.get(0)).toSimplePennTree(wordForm);
             } else {
                 treeString += "(" + this.headInfo + " ";
-                CcgTree terminalChild = (CcgTree) children.get(0); 
-                treeString += terminalChild.getRootLabel();   
+                CcgTree terminalChild = (CcgTree) children.get(0);
+                switch (wordForm) {
+                case WordForm.WORD:
+                    treeString += terminalChild.getRootLabel();
+                    break;
+                case WordForm.LEMMA:
+                    treeString += terminalChild.lemma;
+                    break;
+                case WordForm.WORD_POS:
+                    treeString += terminalChild.getRootLabel() 
+                        + "-" + terminalChild.pos.toLowerCase().charAt(0);
+                    break;
+                case WordForm.LEMMA_POS:
+                    treeString += terminalChild.lemma  
+                        + "-" + terminalChild.pos.toLowerCase().charAt(0);
+                    break;
+                }
                 treeString += ")";
             }
             return treeString;
@@ -186,7 +203,7 @@ public class CcgTree extends Tree{
             String treeString = "("+ headInfo;
             treeString += " ";
             for (Tree child : children)
-                treeString += ((CcgTree) child).toSimplePennTree();
+                treeString += ((CcgTree) child).toSimplePennTree(wordForm);
             treeString += ")";
             return treeString;
         } else {
@@ -200,33 +217,6 @@ public class CcgTree extends Tree{
                 return null;
         }
     }
-    
-  
-//    public String shortPennTree() {
-//        String treeString = "";
-//        
-//        if (children.size() == 1) {
-//            CcgTree child = (CcgTree) children.get(0); 
-//            if (children.get(0).children.size() != 0){
-//                treeString += child.shortPennTree();
-//            } else {
-//                treeString += child.pos;
-//            }
-//        } else {
-//            treeString = "(";
-//            if (this.isTerminal()) {
-//                treeString += pos;
-//            } else {
-//                for (Tree child : children) {
-//                    treeString += " ";
-//                    treeString += ((CcgTree) child).shortPennTree();
-//                }
-//            }
-//            treeString += ")";
-//        }
-//        
-//        return treeString;
-//    }
     
     public List<CcgTree> getAllSubTreeAtHeight(int height) {
         List<CcgTree> list = new ArrayList<CcgTree>(10);

@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 
 import org.xml.sax.SAXException;
 
+import common.WordForm;
+
 import tree.CcgTree;
 
 public class Ccg2SimpleTree {
@@ -52,7 +54,7 @@ public class Ccg2SimpleTree {
     public static String getSimpleTreeString(String xmlString) {
         try {
             CcgTree ccgTree = CcgTree.parseTreeFromCcgXml(xmlString);
-            return ccgTree.toSimplePennTree();
+            return ccgTree.toSimplePennTree(WordForm.LEMMA_POS);
         } catch (SAXException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
