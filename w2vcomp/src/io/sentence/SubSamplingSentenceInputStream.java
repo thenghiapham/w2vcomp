@@ -41,7 +41,6 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
         ArrayList<Integer> filteredIndices = new ArrayList<Integer>();
         long totalCount = vocab.getTrainWords();
         int[] newPositions = new int[unFilteredSentence.length];
-        boolean[] chosen = new boolean[unFilteredSentence.length];
         int newPosition = 0;
         for (int i = 0; i < unFilteredSentence.length; i++) {
             int vocabEntryIndex = unFilteredSentence[i];
@@ -52,37 +51,23 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
                 filteredIndices.add(vocabEntryIndex);
                 newPositions[i] = newPosition;
                 newPosition++;
-                chosen[i] = true;
             }
             // set those words'positions that are not in vocab to -1
             else {
-                newPositions[i] = newPosition;
-                chosen[i] = false;
+                newPositions[i] = Integer.MIN_VALUE;
             }
         }
         sentence = DataStructureUtils.intListToArray(filteredIndices);
 
         ArrayList<Phrase> fileterPhraseList = new ArrayList<Phrase>();
         for (Phrase unFilteredPhrase : unFilteredPhrases) {
-            int phraseIndex = unFilteredPhrase.phraseIndex;
-            VocabEntry entry = vocab.getEntry(phraseIndex);
-            long count = entry.frequency;
-            if (isSampled(count, totalCount)) {
-                int startPosition = newPositions[unFilteredPhrase.startPosition];
-                int endPosition = newPositions[unFilteredPhrase.endPosition];
-                int[] oldComponentPosition = unFilteredPhrase.componentPositions;
-                int[] componentPositions = new int[oldComponentPosition.length];
-                for (int i = 0; i < componentPositions.length; i++) {
-                    if (oldComponentPosition[i] == -1) {
-                        componentPositions[i] = -1;
-                    } else if (chosen[oldComponentPosition[i]]) {
-                        componentPositions[i] = newPositions[componentPositions[i]];
-                    } else {
-                        componentPositions[i] = -1;
-                    }
-                }
-                Phrase phrase = new Phrase(phraseIndex, startPosition,
-                        endPosition, componentPositions);
+            int phraseType = unFilteredPhrase.phraseType;
+            int startPosition = newPositions[unFilteredPhrase.startPosition];
+            int endPosition = newPositions[unFilteredPhrase.endPosition];
+            // TODO: check if this condition is correct
+            if (endPosition - startPosition == unFilteredPhrase.endPosition - unFilteredPhrase.startPosition) {
+                Phrase phrase = new Phrase(phraseType, startPosition,
+                        endPosition, unFilteredPhrase.tree);
                 fileterPhraseList.add(phrase);
             }
         }

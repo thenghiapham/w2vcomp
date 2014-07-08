@@ -8,8 +8,9 @@ import vocab.VocabEntry;
  * @author thenghiapham
  *
  */
-public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
-    public SkipNGramWord2Vec(int projectionLayerSize, int windowSize,
+public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
+    
+    public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, float subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample);
@@ -131,7 +132,7 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
     }
 
     @Override
-    public void trainSinglePhrase(Phrase phrase, int[] pseudoSentence) {
+    public void trainSinglePhrase(Phrase phrase, int[] sentence) {
         // TODO Auto-generated method stub
 
     }

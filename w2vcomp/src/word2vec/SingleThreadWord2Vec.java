@@ -89,40 +89,12 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
 
     public void trainPhrases(Phrase[] phrases, int[] sentence) {
         for (Phrase phrase : phrases) {
-            int[] pseudoSentence = insertPhrase(phrase, sentence);
-            trainSinglePhrase(phrase.startPosition, pseudoSentence);
+            trainSinglePhrase(phrase, sentence);
         }
     }
 
-    protected int[] insertPhrase(Phrase phrase, int[] sentence) {
-        // TODO: check phrase Position
-        // TODO: write a unittest
-        // TODO:
-        LinkedList<Integer> newSentenceBuffer = new LinkedList<Integer>();
-
-        // System.out.println("phrase: " + phrase.toString());
-        // System.out.println("in sentence:\n");
-        // IOUtils.printInts(sentence);
-        for (int i = 0; i < phrase.startPosition; i++) {
-            if (DataStructureUtils.searchSmallIntArray(phrase.componentPositions,
-                    i) == -1) {
-                newSentenceBuffer.add(sentence[i]);
-            }
-        }
-        newSentenceBuffer.add(phrase.phraseIndex);
-        for (int i = phrase.endPosition; i < sentence.length; i++) {
-            if (DataStructureUtils.searchSmallIntArray(phrase.componentPositions,
-                    i) == -1) {
-                newSentenceBuffer.add(sentence[i]);
-            }
-        }
-        // System.out.println("out sentence:\n");
-        // IOUtils.printInts(DataStructureUtils.intListToArray(newSentenceBuffer));
-        return DataStructureUtils.intListToArray(newSentenceBuffer);
-    }
-
-    public abstract void trainSinglePhrase(int phrasePosition,
-            int[] pseudoSentence);
+    public abstract void trainSinglePhrase(Phrase phrase,
+            int[] sentence);
 
     public abstract void trainSentence(int[] sentence);
 

@@ -1,28 +1,27 @@
 package io.word;
 
+import tree.CcgTree;
+
 public class Phrase {
-    public int   phraseIndex;
+    public int   phraseType;
     public int   startPosition;
     public int   endPosition;
-    public int[] componentPositions;
+    public CcgTree tree;
 
-    public Phrase(int phraseIndex, int startPosition, int endPosition,
-            int[] componentPositions) {
-        this.phraseIndex = phraseIndex;
+    public Phrase(int phraseType, int startPosition, int endPosition,
+            CcgTree tree) {
+        this.phraseType = phraseType;
         this.startPosition = startPosition;
         this.endPosition = endPosition;
-        this.componentPositions = componentPositions;
+        this.tree = tree;
     }
 
     public String toString() {
         StringBuffer sbResult = new StringBuffer();
-        sbResult.append("phrase index:" + phraseIndex + "\n");
+        sbResult.append("phrase type:" + phraseType + "\n");
         sbResult.append("start:" + startPosition + "\n");
         sbResult.append("end:" + endPosition + "\n");
-        sbResult.append("components:");
-        for (int i = 0; i < componentPositions.length; i++) {
-            sbResult.append(" " + componentPositions[i]);
-        }
+        sbResult.append("surface: \'" + tree.getSurfaceString() + "\'\n");
         return sbResult.toString();
     }
 }

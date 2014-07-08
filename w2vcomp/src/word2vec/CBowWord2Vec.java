@@ -1,5 +1,6 @@
 package word2vec;
 
+import io.word.Phrase;
 import vocab.VocabEntry;
 
 /**
@@ -143,21 +144,8 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
     }
 
     @Override
-    public void trainSinglePhrase(int phrasePosition, int[] pseudoSentence) {
+    public void trainSinglePhrase(Phrase phrase, int[] pseudoSentence) {
         // TODO Auto-generated method stub
-        int start = Math.max(0, phrasePosition - windowSize);
-        int end = Math.min(pseudoSentence.length - 1, phrasePosition
-                + windowSize);
-
-        for (int wordPosition = start; wordPosition <= end; wordPosition++) {
-            // random a number to decrease the window size
-            // int leeway = rand.nextInt(windowSize);
-            int leeway = 0;
-            // if the phrase is not used for training the current word, then not
-            // train
-            if (windowSize - leeway < Math.abs(phrasePosition - wordPosition))
-                continue;
-            trainWordAt(wordPosition, pseudoSentence, leeway);
-        }
+        
     }
 }

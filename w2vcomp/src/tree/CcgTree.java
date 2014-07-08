@@ -27,6 +27,7 @@ public class CcgTree extends Tree{
     String modifiedCat = "";
     String pos = "";
     String lemma = "";
+    int type;
 
     public CcgTree(String rootLabel) {
         // TODO Auto-generated constructor stub
@@ -297,5 +298,17 @@ public class CcgTree extends Tree{
     
     public String getLemma() {
         return lemma;
+    }
+    
+    public int getLeftPos() {
+        return leftPos;
+    }
+    
+    public int getRightPos() {
+        return rightPos;
+    }
+    
+    public int getType() {
+        return type;
     }
 }
