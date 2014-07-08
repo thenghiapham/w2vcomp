@@ -2,6 +2,11 @@ package word2vec;
 
 import vocab.VocabEntry;
 
+/**
+ * Concrete class for single threaded Skip gram
+ * @author thenghiapham
+ *
+ */
 public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
     public SkipNGramWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, float subSample) {

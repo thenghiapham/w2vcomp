@@ -18,6 +18,13 @@ import vocab.Vocab;
 import vocab.VocabEntry;
 import common.SigmoidTable;
 
+/**
+ * Abstract class of word2vec
+ * Define common attributes and methods for learning word vectors
+ * @author thenghiapham
+ *
+ */
+
 public abstract class AbstractWord2Vec {
     public static final double DEFAULT_STARTING_ALPHA      = 0.025;
     public static final int    DEFAULT_MAX_SENTENCE_LENGTH = 1000;

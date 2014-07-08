@@ -20,6 +20,12 @@ import vocab.VocabEntry;
 
 import demo.TestConstants;
 
+/**
+ * 
+ * @author thenghiapham
+ * Old version of the translated code from Mikolov's word2vec C program
+ *
+ */
 public class SimpleWord2Vec {
     public static final double STARTING_ALPHA      = 0.025;
     public static final int    MAX_SENTENCE_LENGTH = 1000;

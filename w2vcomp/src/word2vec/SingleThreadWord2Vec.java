@@ -9,6 +9,12 @@ import java.util.LinkedList;
 
 import common.DataStructureUtils;
 
+/**
+ * Still abstract class for learning words' vectors
+ * Implement some common methods
+ * @author thenghiapham
+ *
+ */
 public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
 
     protected long oldWordCount;

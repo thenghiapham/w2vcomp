@@ -2,6 +2,11 @@ package word2vec;
 
 import vocab.VocabEntry;
 
+/**
+ * Concrete class for single threaded CBow
+ * @author thenghiapham
+ *
+ */
 public class CBowWord2Vec extends SingleThreadWord2Vec {
     public CBowWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, float subSample) {
