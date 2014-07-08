@@ -16,7 +16,7 @@ public class Ccg2SimpleTree {
     public static void main(String args[]) {
         String outputFile = args[0];
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in,"iso-8859-1"));
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
             preprocessCorpus(reader, writer);
             reader.close();
@@ -31,7 +31,12 @@ public class Ccg2SimpleTree {
         String line = reader.readLine();
         String treeString = "";
         boolean inTree = false;
-        while (line != null && !line.equals("")) {
+        int lineNum = 0;
+        while (line != null) {
+            lineNum++;
+            if (lineNum % 1000000 == 0) {
+                System.out.println("progress: " + lineNum);
+            }
             if ("<ccg>".equals(line)) {
                 inTree = true;
             }
