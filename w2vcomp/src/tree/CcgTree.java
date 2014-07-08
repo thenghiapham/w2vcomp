@@ -56,6 +56,21 @@ public class CcgTree extends Tree{
         return tree;
     }
     
+    public static int getHeadFromRule(String rule) {
+        if (rule.equals("ba")) {
+            return RIGHT_HEAD;
+        } else if (rule.equals("fa")) {
+            return LEFT_HEAD;
+        } else if (rule.equals("lex")) {
+            return LEFT_HEAD;
+        } else if (rule.equals("rp")) {
+            return LEFT_HEAD;
+        } else {
+            //System.out.println("Strange rule: " + rule);
+            return LEFT_HEAD;
+        }
+    }
+    
     
     public static String normalizeTag(String tag) {
         tag = tag.replaceAll("\\(", "<");
@@ -109,8 +124,8 @@ public class CcgTree extends Tree{
     protected static CcgTree createTreeFromXmlRuleNode(Node node) {
         String rootLabel = node.getAttributes().getNamedItem("cat").getNodeValue();
         rootLabel = normalizeTag(rootLabel);
-        
         CcgTree result = new CcgTree(rootLabel);
+        result.headInfo = getHeadFromRule(node.getAttributes().getNamedItem("type").getNodeValue());
         ArrayList<Tree> children = new ArrayList<Tree>();
         NodeList childNodes = node.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -156,18 +171,19 @@ public class CcgTree extends Tree{
      */
     public String toSimplePennTree() {
         if (this.children.size() == 1) {
-            String treeString = "("+ this.getRootLabel();
-            treeString += " ";
+            String treeString = "";
+            
             if (children.get(0).children.size() != 0) {
                 treeString += ((CcgTree) children.get(0)).toSimplePennTree();
             } else {
+                treeString += "(" + this.headInfo + " ";
                 CcgTree terminalChild = (CcgTree) children.get(0); 
-                treeString += terminalChild.getRootLabel();         
+                treeString += terminalChild.getRootLabel();   
+                treeString += ")";
             }
-            treeString += ")";
             return treeString;
         } else if (this.children.size() > 1) {
-            String treeString = "("+ getRootLabel();
+            String treeString = "("+ headInfo;
             treeString += " ";
             for (Tree child : children)
                 treeString += ((CcgTree) child).toSimplePennTree();
@@ -186,33 +202,31 @@ public class CcgTree extends Tree{
     }
     
   
-    public String shortPennTree() {
-        String treeString = "";
-        
-        if (children.size() == 1) {
-            CcgTree child = (CcgTree) children.get(0); 
-            if (children.get(0).children.size() != 0){
-                treeString += child.shortPennTree();
-            } else {
-                treeString += child.pos;
-            }
-        } else {
-            treeString = "(";
-            if (this.isTerminal()) {
-                treeString += pos;
-            } else {
-                //treeString += "X";
-                
-                for (Tree child : children) {
-                    treeString += " ";
-                    treeString += ((CcgTree) child).shortPennTree();
-                }
-            }
-            treeString += ")";
-        }
-        
-        return treeString;
-    }
+//    public String shortPennTree() {
+//        String treeString = "";
+//        
+//        if (children.size() == 1) {
+//            CcgTree child = (CcgTree) children.get(0); 
+//            if (children.get(0).children.size() != 0){
+//                treeString += child.shortPennTree();
+//            } else {
+//                treeString += child.pos;
+//            }
+//        } else {
+//            treeString = "(";
+//            if (this.isTerminal()) {
+//                treeString += pos;
+//            } else {
+//                for (Tree child : children) {
+//                    treeString += " ";
+//                    treeString += ((CcgTree) child).shortPennTree();
+//                }
+//            }
+//            treeString += ")";
+//        }
+//        
+//        return treeString;
+//    }
     
     public List<CcgTree> getAllSubTreeAtHeight(int height) {
         List<CcgTree> list = new ArrayList<CcgTree>(10);
