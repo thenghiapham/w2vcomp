@@ -1,5 +1,7 @@
 package word2vec;
 
+import org.ejml.simple.SimpleMatrix;
+
 import io.word.Phrase;
 import vocab.VocabEntry;
 
@@ -8,6 +10,7 @@ import vocab.VocabEntry;
  * @author thenghiapham
  *
  */
+
 public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
