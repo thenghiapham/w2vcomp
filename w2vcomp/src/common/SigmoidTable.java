@@ -2,20 +2,20 @@ package common;
 
 public class SigmoidTable {
     
-    public static final float DEFAULT_MAX_X              = 6;
+    public static final double DEFAULT_MAX_X              = 6;
     public static final int   DEFAULT_SIGMOID_TABLE_SIZE = 100000;
 
-    private float[]           sigmoidTable;
+    private double[]           sigmoidTable;
     // TODO: does maxX has any importance other than this: e.g. cut off the
     // gradient, (maybe in the update not here)
-    private float             maxX;
+    private double             maxX;
     private int               tableSize;
 
 
     /**
      * Constructor
      */
-    public SigmoidTable(int tableSize, float maxX) {
+    public SigmoidTable(int tableSize, double maxX) {
         this.tableSize = tableSize;
         this.maxX = maxX;
         initTable();
@@ -36,24 +36,25 @@ public class SigmoidTable {
      * consecutive input value would be: 2 * maxX / (tableSize - 1)
      */
     public void initTable() {
-        sigmoidTable = new float[tableSize];
-        float step = (2 * maxX) / (tableSize - 1);
+        sigmoidTable = new double[tableSize];
+        double step = (2 * maxX) / (tableSize - 1);
         for (int i = 0; i < tableSize - 1; i++) {
-            float x = -maxX + i * step;
-            sigmoidTable[i] = (float) MathUtils.sigmoid(x);
+            double x = -maxX + i * step;
+            sigmoidTable[i] = (double) MathUtils.sigmoid(x);
         }
     }
 
     /**
      * Get the sigmoid function for x from the precomputed table
      */
-    public float getSigmoid(float x) {
+    public double getSigmoid(double x) {
         if (x > maxX)
             return 1;
         else if (x < -maxX)
             return 0;
         else {
-            int index = Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
+            // hopefully it wouldn't be long
+            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
             return sigmoidTable[index];
         }
 

@@ -55,8 +55,8 @@ public class DataStructureUtils {
      * the elements. Therefore, one cannot generalize with a template method
      */
     
-    public static float[][] arrayListTo2dArray(List<float[]> list) {
-        float[][] array = new float[list.size()][list.get(0).length];
+    public static double[][] arrayListTo2dArray(List<double[]> list) {
+        double[][] array = new double[list.size()][list.get(0).length];
         list.toArray(array);
         return array;
     }

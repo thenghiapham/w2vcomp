@@ -15,6 +15,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import vocab.Vocab;
+
 import common.WordForm;
 
 public class CcgTree extends Tree{
@@ -27,6 +29,7 @@ public class CcgTree extends Tree{
     String modifiedCat = "";
     String pos = "";
     String lemma = "";
+    int wordVocabIndex = -1;
     int type;
 
     public CcgTree(String rootLabel) {
@@ -232,6 +235,10 @@ public class CcgTree extends Tree{
     }
     
     public static CcgTree fromTree(Tree tree) {
+        if (tree.children.size() == 0) {
+            return new CcgTree(tree.rootLabel);
+        }
+        
         CcgTree ccgTree = new CcgTree(tree.rootLabel);
         ccgTree.headInfo = Integer.parseInt(ccgTree.rootLabel);
         for (Tree child: tree.children) {
@@ -278,7 +285,7 @@ public class CcgTree extends Tree{
             for (Tree child: this.children) {
                 CcgTree ccgChild = (CcgTree) child;
                 rightPos = ccgChild.updateSubTreePositio(curChildLeft);
-                curChildLeft += 1;
+                curChildLeft = rightPos + 1;
             }
         }
         return rightPos;
@@ -296,6 +303,28 @@ public class CcgTree extends Tree{
         }
     }
     
+    public String getFakeString() {
+        if (children.size() == 0) {
+            return "" + this.leftPos;
+        } else {
+            String result = ((CcgTree) children.get(0)).getFakeString();
+            for (int i = 1; i < children.size(); i++) {
+                result += " " + ((CcgTree) children.get(i)).getFakeString();
+            }
+            return result;
+        }
+    }
+    
+    public void updateWordIndices(Vocab vocab) {
+        if (children.size() == 0) {
+            this.wordVocabIndex = vocab.getWordIndex(this.rootLabel);
+        } else {
+            for (Tree child: children) {
+                ((CcgTree) child).updateWordIndices(vocab);
+            }
+        }
+    }
+    
     public String getLemma() {
         return lemma;
     }
@@ -310,5 +339,9 @@ public class CcgTree extends Tree{
     
     public int getType() {
         return type;
+    }
+    
+    public int getWordIndex() {
+        return wordVocabIndex;
     }
 }

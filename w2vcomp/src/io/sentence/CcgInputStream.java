@@ -20,7 +20,7 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
     int[] sentence;
     Phrase[] phrases;
     CcgTree ccgTree;
-    int wordCount;
+    long wordCount;
     int wordIndex = 0;
     
     public CcgInputStream(BufferedReader reader) {
@@ -35,10 +35,10 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
             if (line == null) {
                 endOfFile = true;
                 words = null;
-                sentence = null;
+                sentence = new int[0];
                 phrases = null;
                 ccgTree = null;
-                wordCount = 0;
+//                wordCount = 0;
                 return;
             }
             ccgTree = CcgTree.fromSimplePennTree(line);
@@ -65,7 +65,7 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
             ArrayList<Integer> wordIndices = new ArrayList<Integer>();
             int[] newIndices = new int[words.length];
             int newIndex = 0;
-            wordCount = 0;
+//            wordCount = 0;
             for (int i = 0; i < words.length; i++) {
                 String word = words[i];
                 
@@ -82,10 +82,15 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
                 }
             }
             // endOfSentence
-            wordCount++;
+//            wordCount++;
             sentence = DataStructureUtils.intListToArray(wordIndices);
-            
-            
+//            System.out.println("new indices:");
+//            for (int i: newIndices) System.out.print(" " + i);
+//            System.out.println();
+//            System.out.println(ccgTree.getSurfaceString());
+//            System.out.println(ccgTree.getFakeString());
+//            for (int i: sentence) System.out.print(" " + i);
+//            System.out.println();
             // phrases
             ArrayList<Phrase> phraseList = new ArrayList<Phrase>(); 
             for (int i = 0; i < subTrees.size(); i++) {
@@ -93,10 +98,20 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
                 int startPosition = newIndices[subTree.getLeftPos()];
                 int endPosition = newIndices[subTree.getRightPos()];
                 if (endPosition - startPosition == subTree.getRightPos() - subTree.getLeftPos()) {
-                    phrases[i] = new Phrase(subTree.getType(), startPosition, endPosition, subTree);
+//                    System.out.println(endPosition);
+//                    System.out.println(startPosition);
+//                    System.out.println(subTree.getRightPos());
+//                    System.out.println(subTree.getLeftPos());
+//                    System.out.println(subTree.getRightPos() - subTree.getLeftPos());
+//                    
+//                    System.out.println(subTree.toPennTree());
+                    // update word index in the vocabulary information
+                    subTree.updateWordIndices(vocab);
+                    phraseList.add(new Phrase(subTree.getType(), startPosition, endPosition, subTree));
                 }
             }
             phrases = DataStructureUtils.phraseListToArray(phraseList);
+            
         }
         return true;
     }

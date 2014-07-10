@@ -13,7 +13,8 @@ import demo.TestConstants;
 public class WordAnology {
     public static void main(String[] args) {
         //String vectorFile = TestConstants.GZIP_VECTOR_FILE;
-        String vectorFile = TestConstants.VECTOR_FILE;
+//        String vectorFile = TestConstants.VECTOR_FILE;
+        String vectorFile = TestConstants.CCG_VECTOR_FILE;
         SemanticSpace space = SemanticSpace.readSpace(vectorFile);
         System.out.println("Enter 3 words or EXIT to exit");
         try {
@@ -46,10 +47,10 @@ public class WordAnology {
             System.out.println("at least one word is not in the space");
             return "";
         }
-        float[] v2 = RealVector.norm(space.getVector(word2));
-        float[] v1 = RealVector.norm(space.getVector(word1));
-        float[] v3 = RealVector.norm(space.getVector(word3));
-        float[] v4 = RealVector.add(RealVector.subtract(v2, v1), v3);
+        double[] v2 = RealVector.norm(space.getVector(word2));
+        double[] v1 = RealVector.norm(space.getVector(word1));
+        double[] v3 = RealVector.norm(space.getVector(word3));
+        double[] v4 = RealVector.add(RealVector.subtract(v2, v1), v3);
 
         Neighbor[] neighbors;
         neighbors = space.getNeighbors(v4, 20, new String[] { word1, word2,
@@ -70,10 +71,10 @@ public class WordAnology {
             System.out.println("at least one word is not in the space");
             return;
         }
-        float[] v2 = RealVector.norm(space.getVector(word2));
-        float[] v1 = RealVector.norm(space.getVector(word1));
-        float[] v3 = RealVector.norm(space.getVector(word3));
-        float[] v4 = RealVector.add(RealVector.subtract(v2, v1), v3);
+        double[] v2 = RealVector.norm(space.getVector(word2));
+        double[] v1 = RealVector.norm(space.getVector(word1));
+        double[] v3 = RealVector.norm(space.getVector(word3));
+        double[] v4 = RealVector.add(RealVector.subtract(v2, v1), v3);
 
         Neighbor[] neighbors;
         neighbors = space.getNeighbors(v4, 20, new String[] { word1, word2,

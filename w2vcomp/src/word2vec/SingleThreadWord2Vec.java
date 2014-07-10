@@ -5,9 +5,6 @@ import io.word.Phrase;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-
-import common.DataStructureUtils;
 
 /**
  * Still abstract class for learning words' vectors
@@ -20,7 +17,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     protected long oldWordCount;
 
     public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, float subSample) {
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample);
     }
@@ -65,13 +62,15 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 // check word count
                 // update alpha
                 wordCount = oldWordCount + inputStream.getWordCount();
+//                System.out.println(wordCount);
+//                System.out.println(inputStream.getWordCount());
                 if (wordCount - lastWordCount > 10000) {
                     // if (wordCount - lastWordCount > 50) {
                     System.out.println("Trained: " + wordCount + " words");
                     // update alpha
                     // what about thread safe???
                     alpha = starting_alpha
-                            * (1 - (float) wordCount / (trainWords + 1));
+                            * (1 - (double) wordCount / (trainWords + 1));
                     if (alpha < starting_alpha * 0.0001) {
                         alpha = starting_alpha * 0.0001;
                     }

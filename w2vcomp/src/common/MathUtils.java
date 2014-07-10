@@ -14,7 +14,7 @@ public class MathUtils {
      * @param v2: 2nd vector
      * @return cosine value
      */
-    public static double cosine(float[] v1, float[] v2) {
+    public static double cosine(double[] v1, double[] v2) {
         double length1 = length(v1);
         double length2 = length(v2);
         if (length1 == 0 || length2 == 0) return 0.0;
@@ -26,7 +26,7 @@ public class MathUtils {
      * @param v: input vector
      * @return length
      */
-    public static double length(float[] v) {
+    public static double length(double[] v) {
         double norm = dot(v, v);
         return Math.sqrt(norm);
     }
@@ -37,7 +37,7 @@ public class MathUtils {
      * @param v2 second vector
      * @return dot product
      */
-    public static double dot(float[] v1, float[] v2) {
+    public static double dot(double[] v1, double[] v2) {
         double result = 0;
         for (int i = 0; i < v1.length; i++) {
             result += v1[i] * v2[i];
@@ -50,9 +50,9 @@ public class MathUtils {
      * @param f input value
      * @return sigmoid(f)
      */
-    public static float sigmoid(float f) {
+    public static double sigmoid(double f) {
         // TODO: understand why they turn the formula like this (e^x faster
         // than e^-x ?)
-        return 1 - (float) (1.0 / (1.0 + Math.exp(f)));
+        return 1 - (double) (1.0 / (1.0 + Math.exp(f)));
     }
 }

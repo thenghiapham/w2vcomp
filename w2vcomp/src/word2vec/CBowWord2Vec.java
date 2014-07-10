@@ -10,7 +10,7 @@ import vocab.VocabEntry;
  */
 public class CBowWord2Vec extends SingleThreadWord2Vec {
     public CBowWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, float subSample) {
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample);
     }
@@ -34,8 +34,8 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
             return;
 
         int sentenceLength = sentence.length;
-        float[] a1 = new float[projectionLayerSize];
-        float[] a1error = new float[projectionLayerSize];
+        double[] a1 = new double[projectionLayerSize];
+        double[] a1error = new double[projectionLayerSize];
         int iWordIndex = 0;
 
         for (int i = 0; i < projectionLayerSize; i++) {
@@ -66,18 +66,18 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
             VocabEntry word = vocab.getEntry(wordIndex);
             for (int bit = 0; bit < word.code.length(); bit++) {
 
-                float z2 = 0;
+                double z2 = 0;
                 int iParentIndex = word.ancestors[bit];
                 // Propagate hidden -> output
                 for (int i = 0; i < projectionLayerSize; i++) {
                     z2 += a1[i] * weights1[iParentIndex][i];
                 }
-                float a2 = sigmoidTable.getSigmoid(z2);
+                double a2 = sigmoidTable.getSigmoid(z2);
                 if (a2 == 0 || a2 == 1)
                     continue;
 
                 // 'g' is the gradient multiplied by the learning rate
-                float gradient = (float) ((1 - (word.code.charAt(bit) - 48) - a2) * alpha);
+                double gradient = (double) ((1 - (word.code.charAt(bit) - 48) - a2) * alpha);
 
                 // Propagate errors output -> hidden
                 for (int i = 0; i < projectionLayerSize; i++) {
@@ -110,13 +110,13 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
                     label = 0;
                 }
 
-                float z2 = 0;
+                double z2 = 0;
                 for (int i = 0; i < projectionLayerSize; i++) {
                     z2 += a1[i] * negativeWeights1[target][i];
                 }
-                float gradient;
-                float a2 = sigmoidTable.getSigmoid(z2);
-                gradient = (float) ((label - a2) * alpha);
+                double gradient;
+                double a2 = sigmoidTable.getSigmoid(z2);
+                gradient = (double) ((label - a2) * alpha);
 
                 for (int i = 0; i < projectionLayerSize; i++) {
                     a1error[i] += gradient * negativeWeights1[target][i];

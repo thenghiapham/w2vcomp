@@ -24,17 +24,17 @@ import common.DataStructureUtils;
 public class SemanticSpace {
     String[]                 words;
     HashMap<String, Integer> word2Index;
-    float[][]                vectors;
+    double[][]                vectors;
     int                      vectorSize;
 
     public SemanticSpace(int wordNumber, int vectorSize) {
-        vectors = new float[wordNumber][vectorSize];
+        vectors = new double[wordNumber][vectorSize];
         words = new String[wordNumber];
         word2Index = new HashMap<String, Integer>();
         this.vectorSize = vectorSize;
     }
 
-    public SemanticSpace(List<String> wordList, List<float[]> vectorList) {
+    public SemanticSpace(List<String> wordList, List<double[]> vectorList) {
         words = DataStructureUtils.stringListToArray(wordList);
         word2Index = DataStructureUtils.arrayToMap(words);
         vectors = DataStructureUtils.arrayListTo2dArray(vectorList);
@@ -64,7 +64,7 @@ public class SemanticSpace {
             BufferedWriter writer = new BufferedWriter(new FileWriter(textFile));
             for (int i = 0; i < words.length; i++) {
                 writer.write(words[i] + "\t");
-                float[] vector = vectors[i];
+                double[] vector = vectors[i];
                 for (int j = 0; j < vectorSize; j++) {
                     writer.write("" + vector[j]);
                     if (j < vectorSize - 1) {
@@ -80,8 +80,8 @@ public class SemanticSpace {
         }
     }
 
-    public static float[] parseVector(String[] elements, int startIndex) {
-        float[] result = new float[elements.length - startIndex];
+    public static double[] parseVector(String[] elements, int startIndex) {
+        double[] result = new double[elements.length - startIndex];
         for (int i = startIndex; i < elements.length; i++) {
             result[i - startIndex] = Float.parseFloat(elements[i]);
         }
@@ -90,7 +90,7 @@ public class SemanticSpace {
 
     public static SemanticSpace importSpace(String textFile) {
         ArrayList<String> words = new ArrayList<String>();
-        ArrayList<float[]> vectors = new ArrayList<float[]>();
+        ArrayList<double[]> vectors = new ArrayList<double[]>();
         // int vectorSize = 0;
         try {
 
@@ -99,7 +99,7 @@ public class SemanticSpace {
             if (line != null && !line.equals("")) {
                 String[] elements = line.split("( |\\t)");
                 // vectorSize = elements.length - 1;
-                float[] vector = parseVector(elements, 1);
+                double[] vector = parseVector(elements, 1);
                 words.add(elements[0]);
                 vectors.add(vector);
 
@@ -158,7 +158,7 @@ public class SemanticSpace {
         }
     }
 
-    public float[] getVector(String word) {
+    public double[] getVector(String word) {
         Integer index = word2Index.get(word);
         if (word == null) {
             return null;
@@ -167,7 +167,7 @@ public class SemanticSpace {
         }
     }
 
-    public Neighbor[] getNeighbors(float[] vector, int noNeighbor) {
+    public Neighbor[] getNeighbors(double[] vector, int noNeighbor) {
         Neighbor[] neighbors = new Neighbor[words.length];
         for (int i = 0; i < words.length; i++) {
             neighbors[i] = new Neighbor(words[i], Similarity.cosine(vector,
@@ -181,7 +181,7 @@ public class SemanticSpace {
         }
     }
 
-    public Neighbor[] getNeighbors(float[] vector, int noNeighbor,
+    public Neighbor[] getNeighbors(double[] vector, int noNeighbor,
             String[] excludedWords) {
         Neighbor[] neighbors = new Neighbor[words.length - excludedWords.length];
         HashSet<String> excludedDict = DataStructureUtils
@@ -203,7 +203,7 @@ public class SemanticSpace {
     }
 
     public Neighbor[] getNeighbors(String word, int noNeighbor) {
-        float[] vector = getVector(word);
+        double[] vector = getVector(word);
         if (vector == null) {
             return null;
         } else {
@@ -211,7 +211,7 @@ public class SemanticSpace {
         }
     }
 
-    public static void printVector(float[] vector) {
+    public static void printVector(double[] vector) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < vector.length; i++) {
             buffer.append(vector[i]);
@@ -226,7 +226,7 @@ public class SemanticSpace {
 
     public SemanticSpace getSubSpace(WordFilter filter) {
         ArrayList<String> newWordList = new ArrayList<String>();
-        ArrayList<float[]> newVectors = new ArrayList<float[]>();
+        ArrayList<double[]> newVectors = new ArrayList<double[]>();
         for (int i = 0; i < words.length; i++) {
             if (!filter.isFiltered(words[i])) {
                 newWordList.add(words[i]);
@@ -238,7 +238,7 @@ public class SemanticSpace {
 
     public SemanticSpace getSubSpace(Collection<String> wordList) {
         ArrayList<String> newWordList = new ArrayList<String>();
-        ArrayList<float[]> newVectors = new ArrayList<float[]>();
+        ArrayList<double[]> newVectors = new ArrayList<double[]>();
         for (String word : wordList) {
             if (this.contains(word)) {
                 newWordList.add(word);

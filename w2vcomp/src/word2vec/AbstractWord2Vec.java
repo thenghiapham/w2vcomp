@@ -39,7 +39,7 @@ public abstract class AbstractWord2Vec {
     protected boolean          hierarchicalSoftmax;
     protected int              negativeSamples;
 
-    protected float            subSample;
+    protected double            subSample;
 
     // projection/hidden layer size
     protected int              projectionLayerSize;
@@ -66,7 +66,7 @@ public abstract class AbstractWord2Vec {
      * negative Sampling size = H * V, only (k + 1) * V are estimated, where k =
      * negativeSamples
      */
-    float[][]                  weights0, weights1, negativeWeights1;
+    double[][]                  weights0, weights1, negativeWeights1;
 
     // Random instance
     // for randomize window size, initial weights, subsampling probability
@@ -74,7 +74,7 @@ public abstract class AbstractWord2Vec {
     Random                     rand;
 
     public AbstractWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, float subSample) {
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
         this.projectionLayerSize = projectionLayerSize;
         this.hierarchicalSoftmax = hierarchicalSoftmax;
         this.windowSize = windowSize;
@@ -100,7 +100,7 @@ public abstract class AbstractWord2Vec {
                 buffer = ByteBuffer.allocate(4 * projectionLayerSize);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 for (int j = 0; j < projectionLayerSize; j++) {
-                    buffer.putFloat(weights0[i][j]);
+                    buffer.putFloat((float) weights0[i][j]);
                 }
                 outStream.write(buffer.array());
             }
@@ -134,35 +134,30 @@ public abstract class AbstractWord2Vec {
             e.printStackTrace();
         }
     }
-
-    public void initNetwork() {
+    
+    protected void initBare() {
         int vocabSize = vocab.getVocabSize();
         if (negativeSamples > 0) {
             unigram = new UniGram(vocab);
         }
-        weights0 = new float[vocabSize][projectionLayerSize];
+        weights0 = new double[vocabSize][projectionLayerSize];
         if (hierarchicalSoftmax) {
-            weights1 = new float[vocabSize - 1][projectionLayerSize];
+            weights1 = new double[vocabSize - 1][projectionLayerSize];
         }
         if (negativeSamples > 0) {
-            negativeWeights1 = new float[vocabSize][projectionLayerSize];
+            negativeWeights1 = new double[vocabSize][projectionLayerSize];
         }
-        randomInitProjectionMatrices();
         vocab.assignCode();
     }
 
+    public void initNetwork() {
+        initBare();
+        randomInitProjectionMatrices();
+        
+    }
+
     public void initNetwork(String initFile) {
-        int vocabSize = vocab.getVocabSize();
-        if (negativeSamples > 0) {
-            unigram = new UniGram(vocab);
-        }
-        weights0 = new float[vocabSize][projectionLayerSize];
-        if (hierarchicalSoftmax) {
-            weights1 = new float[vocabSize - 1][projectionLayerSize];
-        }
-        if (negativeSamples > 0) {
-            negativeWeights1 = new float[vocabSize][projectionLayerSize];
-        }
+        initBare();
         boolean readInit = (new File(initFile)).exists();
         if (!readInit) {
             randomInitProjectionMatrices();
@@ -170,7 +165,6 @@ public abstract class AbstractWord2Vec {
         } else {
             loadProjectionMatrices(initFile);
         }
-        vocab.assignCode();
     }
 
     /**
@@ -180,7 +174,7 @@ public abstract class AbstractWord2Vec {
     protected void randomInitProjectionMatrices() {
         for (int i = 0; i < vocab.getVocabSize(); i++) {
             for (int j = 0; j < projectionLayerSize; j++) {
-                weights0[i][j] = (float) (rand.nextFloat() - 0.5)
+                weights0[i][j] = (double) (rand.nextFloat() - 0.5)
                         / projectionLayerSize;
             }
         }
@@ -206,7 +200,7 @@ public abstract class AbstractWord2Vec {
                             .allocate(4 * projectionLayerSize);
                     buffer.order(ByteOrder.LITTLE_ENDIAN);
                     for (int j = 0; j < projectionLayerSize; j++) {
-                        buffer.putFloat(weights0[i][j]);
+                        buffer.putFloat((float) weights0[i][j]);
                     }
                     os.write(buffer.array());
                 } else {
@@ -224,6 +218,7 @@ public abstract class AbstractWord2Vec {
             e.printStackTrace();
         }
     }
+    
 
     public void setVocab(Vocab vocab) {
         this.vocab = vocab;
