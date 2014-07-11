@@ -29,5 +29,10 @@
   		<artifactId>ejml</artifactId>
   		<version>0.25</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.apache.commons</groupId>
+  		<artifactId>commons-math3</artifactId>
+  		<version>3.3</version>
+  	</dependency>
   </dependencies>
 </project>
