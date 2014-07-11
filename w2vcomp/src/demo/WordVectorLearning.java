@@ -9,17 +9,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import vocab.Vocab;
-import word2vec.CBowWord2Vec;
-//import word2vec.SkipNGramWord2Vec;
+//import word2vec.CBowWord2Vec;
+import word2vec.SkipNGramWord2Vec;
 
 import demo.TestConstants;
 
 public class WordVectorLearning {
     public static void main(String[] args) {
-        CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, true, 0, (float) 0);
+//        CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, true, 0, (float) 0);
         //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
-//        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, false, 10, (float) 1e-3);
+        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, false, 10, (float) 1e-3);
         // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
         // 0);
         String trainFile = TestConstants.TRAIN_FILE;
