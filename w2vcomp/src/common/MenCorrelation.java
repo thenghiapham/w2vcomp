@@ -26,7 +26,7 @@ public class MenCorrelation {
 			String elements[] = dataPiece.split(" ");
 			wordPairs[i][0] = elements[0];
 			wordPairs[i][1] = elements[1];
-			golds[i] = Integer.parseInt(elements[2]);
+			golds[i] = Double.parseDouble(elements[2]);
 		}
 	}
 	
@@ -45,6 +45,7 @@ public class MenCorrelation {
 	    }
 	    return pearson.correlation(golds, predicts);
 	}
+	
 	public double evaluateSpaceSpearman(SemanticSpace space) {
         double[] predicts = new double[golds.length];
         for (int i = 0; i < golds.length; i++) {
@@ -52,4 +53,8 @@ public class MenCorrelation {
         }
         return spearman.correlation(golds, predicts);
     }
+	
+	public double[] getGolds() {
+	    return golds;
+	}
 }
