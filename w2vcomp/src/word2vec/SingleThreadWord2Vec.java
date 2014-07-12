@@ -6,6 +6,11 @@ import io.word.Phrase;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import space.SemanticSpace;
+
+import common.MenCorrelation;
+import common.exception.ValueException;
+
 /**
  * Still abstract class for learning words' vectors
  * Implement some common methods
@@ -15,11 +20,20 @@ import java.util.ArrayList;
 public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
 
     protected long oldWordCount;
+    protected MenCorrelation men;
+    protected SemanticSpace outputSpace;
 
     public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample);
+    }
+    
+    public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile) {
+        super(projectionLayerSize, windowSize, hierarchicalSoftmax,
+                negativeSamples, subSample);
+        men = new MenCorrelation(menFile);
     }
 
     @Override
@@ -34,6 +48,15 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         System.out.println("first word:" + vocab.getEntry(0).word);
         System.out.println("last word:"
                 + vocab.getEntry(vocab.getVocabSize() - 1).word);
+        
+        if (men != null) {
+            try {
+                outputSpace = new SemanticSpace(vocab, weights0, false);
+            } catch (ValueException e) {
+                e.printStackTrace();
+            }
+        }
+        
         for (SentenceInputStream inputStream : inputStreams) {
             trainModelThread(inputStream);
         }
@@ -44,6 +67,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         oldWordCount = wordCount;
         long lastWordCount = wordCount;
         try {
+            int iteration = 0;
             while (true) {
 
                 // read the whole sentence sentence,
@@ -64,9 +88,11 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 wordCount = oldWordCount + inputStream.getWordCount();
 //                System.out.println(wordCount);
 //                System.out.println(inputStream.getWordCount());
+                
                 if (wordCount - lastWordCount > 10000) {
+                    iteration++;
                     // if (wordCount - lastWordCount > 50) {
-                    System.out.println("Trained: " + wordCount + " words");
+                    
                     // update alpha
                     // what about thread safe???
                     alpha = starting_alpha
@@ -74,7 +100,13 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                     if (alpha < starting_alpha * 0.0001) {
                         alpha = starting_alpha * 0.0001;
                     }
-                    System.out.println("Training rate: " + alpha);
+                    if (men != null && outputSpace != null && iteration %10 == 0) {
+                        System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
+                    }
+                    if (iteration % 10 == 0) {
+                        System.out.println("Trained: " + wordCount + " words");
+                        System.out.println("Training rate: " + alpha);
+                    }
                     lastWordCount = wordCount;
                 }
                 trainSentence(sentence);

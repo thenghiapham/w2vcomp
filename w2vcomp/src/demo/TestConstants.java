@@ -20,6 +20,7 @@ public class TestConstants {
     // public static final String GZIP_INITIALIZATION_FILE =
     // "/home/pham/svn/word2vec/malt.ini";
 
+    
     public static final String TRAIN_FILE               = "/home/thenghiapham/svn/word2vec/text8";
     public static final String VECTOR_FILE              = "/home/thenghiapham/svn/word2vec/out.bin";
     public static final String VOCABULARY_FILE          = "/home/thenghiapham/svn/word2vec/out.voc";
@@ -69,8 +70,9 @@ public class TestConstants {
                                                                 + "testVector.ini";
     
     
-    public static final String CCG_TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/ccg_text/wikiA_sample.txt";
-    public static final String CCG_VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/output/phrase.bin";
-    public static final String CCG_VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/output/phrase.voc";
-    public static final String CCG_INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/output/phrase.ini";
+    public static final String CCG_MEN_FILE                 = "/home/thenghiapham/work/project/mikolov/men/subMen.txt";
+    public static final String CCG_TRAIN_FILE           = "/home/thenghiapham/work/project/mikolov/ccg_text/wikiA_sample.txt";
+    public static final String CCG_VECTOR_FILE          = "/home/thenghiapham/work/project/mikolov/output/phrase.bin";
+    public static final String CCG_VOCABULARY_FILE      = "/home/thenghiapham/work/project/mikolov/output/phrase.voc";
+    public static final String CCG_INITIALIZATION_FILE  = "/home/thenghiapham/work/project/mikolov/output/phrase.ini";
 }

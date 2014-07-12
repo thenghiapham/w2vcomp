@@ -33,6 +33,12 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
                 negativeSamples, subSample);
     }
     
+    public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile) {
+        super(projectionLayerSize, windowSize, hierarchicalSoftmax,
+                negativeSamples, subSample, menFile);
+    }
+    
     protected void initBare() {
         super.initBare();
         randomInitializeComposeMatrices();

@@ -14,6 +14,12 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample);
     }
+    
+    public SkipNGramWord2Vec(int projectionLayerSize, int windowSize,
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile) {
+        super(projectionLayerSize, windowSize, hierarchicalSoftmax,
+                negativeSamples, subSample, menFile);
+    }
 
     public void trainSentence(int[] sentence) {
         // train with the sentence
