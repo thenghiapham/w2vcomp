@@ -100,8 +100,9 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                     if (alpha < starting_alpha * 0.0001) {
                         alpha = starting_alpha * 0.0001;
                     }
-                    if (men != null && outputSpace != null && iteration %10 == 0) {
+                    if (men != null && outputSpace != null/* && iteration %2 == 0*/) {
                         System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
+                        printStatistics();
                     }
                     if (iteration % 10 == 0) {
                         System.out.println("Trained: " + wordCount + " words");
@@ -122,6 +123,9 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         for (Phrase phrase : phrases) {
             trainSinglePhrase(phrase, sentence);
         }
+    }
+    
+    public void printStatistics() {
     }
 
     public abstract void trainSinglePhrase(Phrase phrase,

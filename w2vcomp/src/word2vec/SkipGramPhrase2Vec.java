@@ -68,7 +68,6 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
             int wordIndex = sentence[wordPosition];
 
             // no way it will go here
-            // I will kill you! What are you doing with his code? 
             if (wordIndex == -1)
                 continue;
 
@@ -186,7 +185,6 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         int word2Index = ((CcgTree) phrase.tree.getChildren().get(1).getChildren().get(0)).getWordIndex();
 //        System.out.println(word1Index);
 //        System.out.println(word2Index);
-//        int phraseType = phrase.phraseType;
         
         double[] a0 = new double[2 * projectionLayerSize];
         for (int i = 0; i < projectionLayerSize; i++) {
@@ -293,6 +291,11 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
                 weights0[iWordIndex][j] += a0error[j];
             }
         }
+    }
+    
+    @Override
+    public void printStatistics() {
+        System.out.println("L2: " + typeMatrix.normF());
     }
     
     public void saveMatrix(String matrixFile, double[][] matrix, boolean binary) {
