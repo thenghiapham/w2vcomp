@@ -2,11 +2,14 @@ package common;
 
 import java.util.ArrayList;
 
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+
 public class MenCorrelation {
 	String[][] wordPairs;
 	double[] golds;
-	PearsonCorrelation
+	PearsonsCorrelation pearson;
 	public MenCorrelation(String dataset) {
+	    pearson = new PearsonsCorrelation();
 		readDataset(dataset);
 	}
 	public void readDataset(String dataset) {
@@ -22,7 +25,9 @@ public class MenCorrelation {
 		}
 	}
 	
-	public void pearsonCorrelation(double[] predicts) {
-	    
+	public double pearsonCorrelation(double[] predicts) {
+	    return pearson.correlation(golds, predicts);
 	}
+	
+	
 }

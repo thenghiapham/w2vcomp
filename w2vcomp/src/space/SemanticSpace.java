@@ -19,7 +19,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import vocab.Vocab;
+
 import common.DataStructureUtils;
+import common.exception.ValueException;
 
 public class SemanticSpace {
     String[]                 words;
@@ -39,6 +42,29 @@ public class SemanticSpace {
         word2Index = DataStructureUtils.arrayToMap(words);
         vectors = DataStructureUtils.arrayListTo2dArray(vectorList);
         vectorSize = vectors[0].length;
+    }
+    
+    public SemanticSpace(Vocab vocab, double[][] vectors, boolean copy) throws ValueException{
+        if (vocab.getVocabSize() != vectors.length) {
+            throw new ValueException("vocab and vectors must have the same size");
+        } else {
+            
+            vectorSize = vectors[0].length;
+            
+            if (!copy) {
+                this.vectors = vectors;
+            } else {
+                this.vectors = vectors.clone();
+            }
+            
+            int vocabSize = vocab.getVocabSize();
+            words = new String[vocabSize];
+            for (int i = 0; i < vocabSize; i++) {
+                words[i] = vocab.getEntry(i).word;
+            }
+            
+            word2Index = DataStructureUtils.arrayToMap(words);
+        }
     }
 
     public static SemanticSpace readSpace(String vectorFile) {
@@ -164,6 +190,16 @@ public class SemanticSpace {
             return null;
         } else {
             return vectors[index];
+        }
+    }
+    
+    public double getSim(String word1, String word2) {
+        if (word2Index.containsKey(word1) && word2Index.containsKey(word2)) {
+            int index1 = word2Index.get(word1);
+            int index2 = word2Index.get(word2);
+            return Similarity.cosine(vectors[index1], vectors[index2]);
+        } else {
+            return 0;
         }
     }
 
