@@ -25,7 +25,9 @@ import vocab.VocabEntry;
 public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     
 //    protected HashMap<Integer, SimpleMatrix> composeMatrices;
+    // TODO: adding tanh
     SimpleMatrix typeMatrix;
+    double weightDecay = 1e-2;
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
@@ -283,13 +285,14 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
             SimpleMatrix mA1Error = new SimpleMatrix(new DenseMatrix64F(projectionLayerSize, 1, true, a1error));
             SimpleMatrix composedMatrixGradient = mA1Error.mult(mA0.transpose());
 //            composeMatrices.put(phraseType,typeMatrix.plus(composedMatrixGradient));
-            typeMatrix = typeMatrix.plus(composedMatrixGradient);
+            typeMatrix =  typeMatrix.plus(composedMatrixGradient).minus(typeMatrix.scale(weightDecay * alpha));
             // TODO: right formula here
             // Update the input vector
             double[] a0error = typeMatrix.transpose().mult(mA1Error).getMatrix().data; 
             for (int j = 0; j < projectionLayerSize; j++) {
                 weights0[iWordIndex][j] += a0error[j];
             }
+            
         }
     }
     
