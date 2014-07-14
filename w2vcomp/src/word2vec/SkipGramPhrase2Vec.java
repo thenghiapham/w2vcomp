@@ -8,9 +8,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
-import org.ejml.data.DenseMatrix64F;
 import org.ejml.simple.SimpleMatrix;
+
+import common.SimpleMatrixUtils;
+import common.ValueGradient;
 
 import edu.stanford.nlp.neural.NeuralUtils;
 
@@ -28,8 +31,9 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     
 //    protected HashMap<Integer, SimpleMatrix> composeMatrices;
     // TODO: adding tanh
-    SimpleMatrix typeMatrix;
+    SimpleMatrix compositionMatrix;
     double weightDecay = 0;//1e-2;
+    boolean useTanh = false;
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
@@ -56,10 +60,168 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
                         / projectionLayerSize;
             }
         }
-        typeMatrix = new SimpleMatrix(randomMatrix);
+        compositionMatrix = new SimpleMatrix(randomMatrix);
     }
     
-//    public 
+    public ValueGradient computeGradientSoftmax(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
+                SimpleMatrix softmaxWeight, SimpleMatrix softmaxValue) {
+        
+        /*
+         * Forward pass
+         */
+        SimpleMatrix a0 = inputPhrase;
+        SimpleMatrix z1 = compositionMatrix.mult(a0);
+        SimpleMatrix a1;
+        if (useTanh) {
+            a1 = NeuralUtils.elementwiseApplyTanh(z1);
+        } else {
+            a1 = z1;
+        }
+        SimpleMatrix z2 = a1.mult(a1.mult(softmaxWeight));
+        SimpleMatrix a2 = SimpleMatrixUtils.elementwiseApplySigmoid(z2);
+        
+      //TODO: compute value function here
+        double value = 0.0;
+        for (int i = 0; i < softmaxValue.numRows(); i++) {
+            double a2ithElement = a2.get(i, 0);
+            /* 
+             * if sigmoid (probability) ~ 1, gradient = 0;
+             * if sigmoid (probability) ~ 0, gradient too big,
+             * -> cut down to 0; still I don't know why we don't cut
+             * it down to value f'(x) ~ f'(-6) (in that case make f(x) = f(-6) 
+             * instead of removing it
+             * anyway, look at Mikolov's code again
+             */
+            if (a2ithElement == 0 || a2ithElement == 1) continue;
+            else value += Math.log(a2ithElement);
+        }
+        if (weightDecay != 0.0) {
+            double normF = compositionMatrix.normF(); 
+            value += (weightDecay / 2) * normF * normF;
+        }
+        
+        ArrayList<SimpleMatrix> gradients = new ArrayList<>();
+        SimpleMatrix softmaxWeightGradient = null;
+        SimpleMatrix compositionMatrixGradient = null;
+        SimpleMatrix inputPhraseGradient = null;
+        
+        /*
+         * Backward pass
+         */
+        double[] rawd2 = new double[softmaxValue.numRows()];
+        double[] rawSoftmaxValue = softmaxValue.getMatrix().getData();
+        for (int i = 0; i < softmaxValue.numRows(); i++) {
+            double a2ithElement = a2.get(i, 0);
+            if (a2ithElement == 0 || a2ithElement == 1) {
+                rawd2[i] = 0;
+            } else {
+                rawd2[i] = a2ithElement * (1 - rawSoftmaxValue[i] - a2ithElement);
+            }
+        }
+        SimpleMatrix d2 = new SimpleMatrix(rawd2.length, 1, true, rawd2);
+        // W2's gradient
+        softmaxWeightGradient = d2.mult(a1.transpose());
+        
+        SimpleMatrix d1 = softmaxWeight.transpose().mult(d2);
+        if (useTanh) {
+            d1 = d1.elementMult(NeuralUtils.elementwiseApplyTanh(z1));
+        }
+        // W1's gradient
+        compositionMatrixGradient = d1.mult(a0.transpose());
+        
+        // input's gradient
+        // it's d0
+        inputPhraseGradient = compositionMatrix.transpose().mult(d1);
+        
+        if (weightDecay != 0.0) {
+            compositionMatrixGradient = compositionMatrixGradient.plus(compositionMatrix.scale(weightDecay));
+        }
+        
+        gradients.add(softmaxWeightGradient);
+        gradients.add(compositionMatrixGradient);
+        gradients.add(inputPhraseGradient);
+        return new ValueGradient(value, gradients);
+    }
+    
+    
+    public ValueGradient computeGradientNegSampling(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
+                SimpleMatrix negativeWeight, SimpleMatrix target) {
+        /*
+         * Forward pass
+         */
+        SimpleMatrix a0 = inputPhrase;
+        SimpleMatrix z1 = compositionMatrix.mult(a0);
+        SimpleMatrix a1;
+        if (useTanh) {
+            a1 = NeuralUtils.elementwiseApplyTanh(z1);
+        } else {
+            a1 = z1;
+        }
+        SimpleMatrix z2 = a1.mult(a1.mult(negativeWeight));
+        SimpleMatrix a2 = SimpleMatrixUtils.elementwiseApplySigmoid(z2);
+        
+      //TODO: compute value function here
+        double value = 0.0;
+        for (int i = 0; i < target.numRows(); i++) {
+            double a2ithElement = a2.get(i, 0);
+            /* 
+             * if sigmoid (probability) ~ 1, gradient = 0;
+             * if sigmoid (probability) ~ 0, gradient too big,
+             * -> cut down to 0; still I don't know why we don't cut
+             * it down to value f'(x) ~ f'(-6) (in that case make f(x) = f(-6) 
+             * instead of removing it
+             * anyway, look at Mikolov's code again
+             */
+            if (a2ithElement == 0 || a2ithElement == 1) continue;
+            else value += Math.log(a2ithElement);
+        }
+        if (weightDecay != 0.0) {
+            double normF = compositionMatrix.normF(); 
+            value += (weightDecay / 2) * normF * normF;
+        }
+        
+        ArrayList<SimpleMatrix> gradients = new ArrayList<>();
+        SimpleMatrix softmaxWeightGradient = null;
+        SimpleMatrix compositionMatrixGradient = null;
+        SimpleMatrix inputPhraseGradient = null;
+        
+        /*
+         * Backward pass
+         */
+        double[] rawd2 = new double[target.numRows()];
+        double[] rawSoftmaxValue = target.getMatrix().getData();
+        for (int i = 0; i < target.numRows(); i++) {
+            double a2ithElement = a2.get(i, 0);
+            if (a2ithElement == 0 || a2ithElement == 1) {
+                rawd2[i] = 0;
+            } else {
+                rawd2[i] = a2ithElement * (1 - rawSoftmaxValue[i] - a2ithElement);
+            }
+        }
+        SimpleMatrix d2 = new SimpleMatrix(rawd2.length, 1, true, rawd2);
+        // W2's gradient
+        softmaxWeightGradient = d2.mult(a1.transpose());
+        
+        SimpleMatrix d1 = negativeWeight.transpose().mult(d2);
+        if (useTanh) {
+            d1 = d1.elementMult(NeuralUtils.elementwiseApplyTanh(z1));
+        }
+        // W1's gradient
+        compositionMatrixGradient = d1.mult(a0.transpose());
+        
+        // input's gradient
+        // it's d0
+        inputPhraseGradient = compositionMatrix.transpose().mult(d1);
+        
+        if (weightDecay != 0.0) {
+            compositionMatrixGradient = compositionMatrixGradient.plus(compositionMatrix.scale(weightDecay));
+        }
+        
+        gradients.add(softmaxWeightGradient);
+        gradients.add(compositionMatrixGradient);
+        gradients.add(inputPhraseGradient);
+        return new ValueGradient(value, gradients);
+    }
 
     public void trainSentence(int[] sentence) {
         // train with the sentence
@@ -179,138 +341,91 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     public void trainSinglePhrase(Phrase phrase, int[] sentence) {
      // train with the sentence
         
-        
-        
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
 
         // TODO: change this
         int word1Index = ((CcgTree) phrase.tree.getChildren().get(0).getChildren().get(0)).getWordIndex();
         int word2Index = ((CcgTree) phrase.tree.getChildren().get(1).getChildren().get(0)).getWordIndex();
-//        System.out.println(word1Index);
-//        System.out.println(word2Index);
-        
-        double[] a0 = new double[2 * projectionLayerSize];
-        for (int i = 0; i < projectionLayerSize; i++) {
-            a0[i] = weights0[word1Index][i];
-            a0[i+projectionLayerSize] = weights0[word2Index][i];
-        }
-        
-
-        SimpleMatrix mA0 = new SimpleMatrix(new DenseMatrix64F(projectionLayerSize * 2, 1, false, a0));
-//        SimpleMatrix typeMatrix = composeMatrices.get(phraseType);
-        SimpleMatrix z1 = typeMatrix.mult(mA0);
-        
-
-        // double[] a1 = z1.getMatrix().data; // for now no activation function 
-        //
-        System.out.println("normF z: " + z1.normF());
-        SimpleMatrix mA1 = NeuralUtils.elementwiseApplyTanh(z1);
-        System.out.println("normF a: " + mA1.normF());
-        double[] a1 = mA1.getMatrix().data; // tanh function
-        
-        double[] a1error = new double[projectionLayerSize]; // all zeros
         
         // random actual window size
         int start = rand.nextInt(windowSize);
 
-        
         for (int iPos = phrase.startPosition - start - 1; iPos <= phrase.endPosition + start + 1; iPos++) {
             if (iPos < 0 || iPos >= sentenceLength || (iPos >= phrase.startPosition && iPos <= phrase.endPosition))
                 continue;
             iWordIndex = sentence[iPos];
             if (iWordIndex == -1)
                 continue;
-
+            
+            double[] a0 = new double[2 * projectionLayerSize];
+            System.arraycopy(weights0[word1Index], 0, a0, 0, projectionLayerSize);
+            System.arraycopy(weights0[word2Index], 0, a0, projectionLayerSize, projectionLayerSize);
+            SimpleMatrix inputPhrase = new SimpleMatrix(2 * projectionLayerSize, 1, true, a0);
+            
             VocabEntry contextWord = vocab.getEntry(iWordIndex);
             // HIERARCHICAL SOFTMAX
             if (hierarchicalSoftmax) {
-                for (int bit = 0; bit < contextWord.code.length(); bit++) {
-                    double z2 = 0;
+                int codeLength = contextWord.code.length();
+                double[][] rawSoftmaxWeight = new double[codeLength][projectionLayerSize];
+                double[] rawSoftmaxValue = new double[codeLength];
+                for (int bit = 0; bit < codeLength; bit++) {
                     int iParentIndex = contextWord.ancestors[bit];
-                    // Propagate hidden -> output
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        z2 += a1[j] * weights1[iParentIndex][j];
-                    }
-
-                    double a2 = sigmoidTable.getSigmoid(z2);
-                    if (a2 == 0 || a2 == 1)
-                        continue;
-                    // 'g' is the gradient multiplied by the learning
-                    // rate
-                    double gradient = (double) ((1 - (contextWord.code
-                            .charAt(bit) - 48) - a2) * alpha);
-                    // Propagate errors output -> hidden
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        a1error[j] += gradient
-                                * weights1[iParentIndex][j];
-                    }
-                    // Learn weights hidden -> output
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        weights1[iParentIndex][j] += gradient
-                                * a1[j];
-                    }
+                    System.arraycopy(weights1[iParentIndex], 0, rawSoftmaxWeight[bit], 0, projectionLayerSize);
+                    rawSoftmaxValue[bit] = contextWord.code.charAt(bit) - 48;
                 }
-            }
-
-            // NEGATIVE SAMPLING
-            if (negativeSamples > 0) {
-                for (int l = 0; l < negativeSamples + 1; l++) {
-                    int target;
-                    int label;
-
-                    if (l == 0) {
-                        target = iWordIndex;
-                        label = 1;
-                    } else {
-                        target = unigram.randomWordIndex();
-                        if (target == 0) {
-                            target = rand
-                                    .nextInt(vocab.getVocabSize() - 1) + 1;
-                        }
-                        if (target == iWordIndex)
-                            continue;
-                        label = 0;
-                    }
-                    double z2 = 0;
-                    double gradient;
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        z2 += a1[j] * negativeWeights1[target][j];
-                    }
-                    double a2 = sigmoidTable.getSigmoid(z2);
-                    gradient = (double) ((label - a2) * alpha);
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        a1error[j] += gradient
-                                * negativeWeights1[target][j];
-                    }
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        negativeWeights1[target][j] += gradient
-                                * a1[j];
-                    }
-                }
+                SimpleMatrix softmaxWeight = new SimpleMatrix(rawSoftmaxWeight);
+                SimpleMatrix softmaxValue = new SimpleMatrix(codeLength, 1, true, rawSoftmaxValue);
+                
+                computeGradientSoftmax(inputPhrase, compositionMatrix, softmaxWeight, softmaxValue);
             }
             
-            
-        }
-     // update the composition matrix
-        SimpleMatrix mA1Error = new SimpleMatrix(new DenseMatrix64F(projectionLayerSize, 1, true, a1error));
-        SimpleMatrix mA1Prime = NeuralUtils.elementwiseApplyTanhDerivative(z1);
-        System.out.println("normF a1\':" + mA1Prime.normF());
-        mA1Error = mA1Error.elementMult(mA1Prime);
-        SimpleMatrix composedMatrixGradient = mA1Error.mult(mA0.transpose());
-//        composeMatrices.put(phraseType,typeMatrix.plus(composedMatrixGradient));
-        typeMatrix =  typeMatrix.plus(composedMatrixGradient).minus(typeMatrix.scale(weightDecay * alpha));
-        // TODO: right formula here
-        // Update the input vector
-        double[] a0error = typeMatrix.transpose().mult(mA1Error).getMatrix().data; 
-        for (int j = 0; j < projectionLayerSize; j++) {
-            weights0[iWordIndex][j] += a0error[j];
         }
     }
+            
+// NEGATIVE SAMPLING
+//            if (negativeSamples > 0) {
+//                for (int l = 0; l < negativeSamples + 1; l++) {
+//                    int target;
+//                    int label;
+//
+//                    if (l == 0) {
+//                        target = iWordIndex;
+//                        label = 1;
+//                    } else {
+//                        target = unigram.randomWordIndex();
+//                        if (target == 0) {
+//                            target = rand
+//                                    .nextInt(vocab.getVocabSize() - 1) + 1;
+//                        }
+//                        if (target == iWordIndex)
+//                            continue;
+//                        label = 0;
+//                    }
+//                    double z2 = 0;
+//                    double gradient;
+//                    for (int j = 0; j < projectionLayerSize; j++) {
+//                        z2 += a1[j] * negativeWeights1[target][j];
+//                    }
+//                    double a2 = sigmoidTable.getSigmoid(z2);
+//                    gradient = (double) ((label - a2) * alpha);
+//                    for (int j = 0; j < projectionLayerSize; j++) {
+//                        a1error[j] += gradient
+//                                * negativeWeights1[target][j];
+//                    }
+//                    for (int j = 0; j < projectionLayerSize; j++) {
+//                        negativeWeights1[target][j] += gradient
+//                                * a1[j];
+//                    }
+//                }
+//            }
+            
+            
+    
     
     @Override
     public void printStatistics() {
-        System.out.println("L2: " + typeMatrix.normF());
+        System.out.println("L2: " + compositionMatrix.normF());
     }
     
     public void saveMatrix(String matrixFile, double[][] matrix, boolean binary) {
