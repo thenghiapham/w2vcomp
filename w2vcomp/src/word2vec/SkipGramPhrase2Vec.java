@@ -59,7 +59,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         typeMatrix = new SimpleMatrix(randomMatrix);
     }
     
-//    public ini
+//    public 
 
     public void trainSentence(int[] sentence) {
         // train with the sentence
