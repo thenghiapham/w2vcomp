@@ -174,7 +174,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         }
 
     }
-
+    
     @Override
     public void trainSinglePhrase(Phrase phrase, int[] sentence) {
      // train with the sentence
