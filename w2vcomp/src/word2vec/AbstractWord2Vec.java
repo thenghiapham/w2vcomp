@@ -178,6 +178,12 @@ public abstract class AbstractWord2Vec {
                         / projectionLayerSize;
             }
         }
+        for (int i = 0; i < vocab.getVocabSize() -1 ; i++) {
+            for (int j = 0; j < projectionLayerSize; j++) {
+                weights1[i][j] = (double) (rand.nextFloat() - 0.5)
+                        / projectionLayerSize;
+            }
+        }
     }
 
     public void saveVector(String outputFile, boolean binary) {
