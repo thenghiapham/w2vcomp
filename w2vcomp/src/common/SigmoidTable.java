@@ -40,7 +40,7 @@ public class SigmoidTable {
         double step = (2 * maxX) / (tableSize - 1);
         for (int i = 0; i < tableSize - 1; i++) {
             double x = -maxX + i * step;
-            sigmoidTable[i] = (double) MathUtils.sigmoid(x);
+            sigmoidTable[i] = MathUtils.sigmoid(x);
         }
     }
 
@@ -54,8 +54,10 @@ public class SigmoidTable {
             return 0;
         else {
             // hopefully it wouldn't be long
-            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
-            return sigmoidTable[index];
+            // TODO: remove this after debugging
+            return MathUtils.sigmoid(x);
+//            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
+//            return sigmoidTable[index];
         }
 
     }
