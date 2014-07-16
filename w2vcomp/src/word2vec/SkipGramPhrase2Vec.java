@@ -12,9 +12,11 @@ import java.util.ArrayList;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.AdjNounCorrelation;
 import common.GradientUtils;
 import common.SimpleMatrixUtils;
 import common.ValueGradient;
+import composition.FullAdditive;
 
 import edu.stanford.nlp.neural.NeuralUtils;
 
@@ -32,9 +34,12 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     
 //    protected HashMap<Integer, SimpleMatrix> composeMatrices;
     // TODO: adding tanh
+    // TODO: check gradient negative sampling
+    // TODO: adding adj-noun composition
     SimpleMatrix compositionMatrix;
-    double weightDecay = 0;//1e-4;
+    double weightDecay = 1e-4;
     boolean useTanh = false;
+    AdjNounCorrelation anCorrelation;
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
@@ -52,6 +57,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile, String anFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample, menFile);
+        anCorrelation = new AdjNounCorrelation(anFile);
         
     }
     
@@ -295,116 +301,116 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     }
 
     public void trainSentence(int[] sentence) {
-//        // train with the sentence
-//        // different from cbow, no need for a1
-//        double[] a1error = new double[projectionLayerSize];
-//        int sentenceLength = sentence.length;
-//        int iWordIndex = 0;
-//        for (int wordPosition = 0; wordPosition < sentence.length; wordPosition++) {
-//
-//            int wordIndex = sentence[wordPosition];
-//
-//            // no way it will go here
-//            if (wordIndex == -1)
-//                continue;
-//
-//            for (int i = 0; i < projectionLayerSize; i++) {
-//                a1error[i] = 0;
-//            }
-//
-//            // random actual window size
-//            int start = rand.nextInt(windowSize);
-//
-//            VocabEntry word = vocab.getEntry(wordIndex);
-//            for (int i = start; i < windowSize * 2 + 1 - start; i++) {
-//                if (i != windowSize) {
-//                    int iPos = wordPosition - windowSize + i;
-//                    if (iPos < 0 || iPos >= sentenceLength)
-//                        continue;
-//                    iWordIndex = sentence[iPos];
-//                    if (iWordIndex == -1)
-//                        continue;
-//
-//                    for (int j = 0; j < projectionLayerSize; j++)
-//                        a1error[j] = 0;
-//
-//                    // HIERARCHICAL SOFTMAX
-//                    if (hierarchicalSoftmax) {
-//                        for (int bit = 0; bit < word.code.length(); bit++) {
-//                            double z2 = 0;
-//                            int iParentIndex = word.ancestors[bit];
-//                            // Propagate hidden -> output
-//                            for (int j = 0; j < projectionLayerSize; j++) {
-//                                z2 += weights0[iWordIndex][j]
-//                                        * weights1[iParentIndex][j];
-//                            }
-//
-//                            double a2 = sigmoidTable.getSigmoid(z2);
-//                            if (a2 == 0 || a2 == 1)
-//                                continue;
-//                            // 'g' is the gradient multiplied by the learning
-//                            // rate
-//                            double gradient = (double) ((1 - (word.code
-//                                    .charAt(bit) - 48) - a2) * alpha);
-//                            // Propagate errors output -> hidden
-//                            for (int j = 0; j < projectionLayerSize; j++) {
-//                                a1error[j] += gradient
-//                                        * weights1[iParentIndex][j];
-//                            }
-//                            // Learn weights hidden -> output
-//                            for (int j = 0; j < projectionLayerSize; j++) {
-//                                weights1[iParentIndex][j] += gradient
-//                                        * weights0[iWordIndex][j];
-//                            }
-//                        }
-//                    }
-//
-//                    // NEGATIVE SAMPLING
-//                    if (negativeSamples > 0) {
-//                        for (int l = 0; l < negativeSamples + 1; l++) {
-//                            int target;
-//                            int label;
-//
-//                            if (l == 0) {
-//                                target = wordIndex;
-//                                label = 1;
-//                            } else {
-//                                target = unigram.randomWordIndex();
-//                                if (target == 0) {
-//                                    target = rand
-//                                            .nextInt(vocab.getVocabSize() - 1) + 1;
-//                                }
-//                                if (target == wordIndex)
-//                                    continue;
-//                                label = 0;
-//                            }
-//                            double z2 = 0;
-//                            double gradient;
-//                            for (int j = 0; j < projectionLayerSize; j++) {
-//                                z2 += weights0[iWordIndex][j]
-//                                        * negativeWeights1[target][j];
-//                            }
-//                            double a2 = sigmoidTable.getSigmoid(z2);
-//                            gradient = (double) ((label - a2) * alpha);
-//                            for (int j = 0; j < projectionLayerSize; j++) {
-//                                a1error[j] += gradient
-//                                        * negativeWeights1[target][j];
-//                            }
-//                            for (int j = 0; j < projectionLayerSize; j++) {
-//                                negativeWeights1[target][j] += gradient
-//                                        * weights0[iWordIndex][j];
-//                            }
-//                        }
-//                    }
-//                    // Learn weights input -> hidden
-//                    for (int j = 0; j < projectionLayerSize; j++) {
-//                        weights0[iWordIndex][j] += a1error[j];
-//                    }
-//                }
-//
-//            }
-//
-//        }
+        // train with the sentence
+        // different from cbow, no need for a1
+        double[] a1error = new double[projectionLayerSize];
+        int sentenceLength = sentence.length;
+        int iWordIndex = 0;
+        for (int wordPosition = 0; wordPosition < sentence.length; wordPosition++) {
+
+            int wordIndex = sentence[wordPosition];
+
+            // no way it will go here
+            if (wordIndex == -1)
+                continue;
+
+            for (int i = 0; i < projectionLayerSize; i++) {
+                a1error[i] = 0;
+            }
+
+            // random actual window size
+            int start = rand.nextInt(windowSize);
+
+            VocabEntry word = vocab.getEntry(wordIndex);
+            for (int i = start; i < windowSize * 2 + 1 - start; i++) {
+                if (i != windowSize) {
+                    int iPos = wordPosition - windowSize + i;
+                    if (iPos < 0 || iPos >= sentenceLength)
+                        continue;
+                    iWordIndex = sentence[iPos];
+                    if (iWordIndex == -1)
+                        continue;
+
+                    for (int j = 0; j < projectionLayerSize; j++)
+                        a1error[j] = 0;
+
+                    // HIERARCHICAL SOFTMAX
+                    if (hierarchicalSoftmax) {
+                        for (int bit = 0; bit < word.code.length(); bit++) {
+                            double z2 = 0;
+                            int iParentIndex = word.ancestors[bit];
+                            // Propagate hidden -> output
+                            for (int j = 0; j < projectionLayerSize; j++) {
+                                z2 += weights0[iWordIndex][j]
+                                        * weights1[iParentIndex][j];
+                            }
+
+                            double a2 = sigmoidTable.getSigmoid(z2);
+                            if (a2 == 0 || a2 == 1)
+                                continue;
+                            // 'g' is the gradient multiplied by the learning
+                            // rate
+                            double gradient = (double) ((1 - (word.code
+                                    .charAt(bit) - 48) - a2) * alpha);
+                            // Propagate errors output -> hidden
+                            for (int j = 0; j < projectionLayerSize; j++) {
+                                a1error[j] += gradient
+                                        * weights1[iParentIndex][j];
+                            }
+                            // Learn weights hidden -> output
+                            for (int j = 0; j < projectionLayerSize; j++) {
+                                weights1[iParentIndex][j] += gradient
+                                        * weights0[iWordIndex][j];
+                            }
+                        }
+                    }
+
+                    // NEGATIVE SAMPLING
+                    if (negativeSamples > 0) {
+                        for (int l = 0; l < negativeSamples + 1; l++) {
+                            int target;
+                            int label;
+
+                            if (l == 0) {
+                                target = wordIndex;
+                                label = 1;
+                            } else {
+                                target = unigram.randomWordIndex();
+                                if (target == 0) {
+                                    target = rand
+                                            .nextInt(vocab.getVocabSize() - 1) + 1;
+                                }
+                                if (target == wordIndex)
+                                    continue;
+                                label = 0;
+                            }
+                            double z2 = 0;
+                            double gradient;
+                            for (int j = 0; j < projectionLayerSize; j++) {
+                                z2 += weights0[iWordIndex][j]
+                                        * negativeWeights1[target][j];
+                            }
+                            double a2 = sigmoidTable.getSigmoid(z2);
+                            gradient = (double) ((label - a2) * alpha);
+                            for (int j = 0; j < projectionLayerSize; j++) {
+                                a1error[j] += gradient
+                                        * negativeWeights1[target][j];
+                            }
+                            for (int j = 0; j < projectionLayerSize; j++) {
+                                negativeWeights1[target][j] += gradient
+                                        * weights0[iWordIndex][j];
+                            }
+                        }
+                    }
+                    // Learn weights input -> hidden
+                    for (int j = 0; j < projectionLayerSize; j++) {
+                        weights0[iWordIndex][j] += a1error[j];
+                    }
+                }
+
+            }
+
+        }
 
     }
     
@@ -509,9 +515,17 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     
     @Override
     public void printStatistics() {
+        if (anCorrelation != null) {
+            FullAdditive anComposition = new FullAdditive(compositionMatrix);
+            if (outputSpace != null)
+                System.out.println("an : " + anCorrelation.evaluateSpacePearson(outputSpace, anComposition));
+        }
+
         System.out.println("L2: " + compositionMatrix.normF());
         System.out.println("L2 soft: " + new SimpleMatrix(weights1).normF());
-        System.out.println("L2 vectors: " + new SimpleMatrix(weights1).normF());
+        System.out.println("L2 vectors: " + new SimpleMatrix(weights0).normF());
+        System.out.println("*********");
+        
     }
     
     public void saveMatrix(String matrixFile, double[][] matrix, boolean binary) {

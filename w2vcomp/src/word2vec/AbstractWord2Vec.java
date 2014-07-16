@@ -179,12 +179,12 @@ public abstract class AbstractWord2Vec {
             }
         }
         // TODO: remove this since Mikolov doesn't initialize this
-        for (int i = 0; i < vocab.getVocabSize() -1 ; i++) {
-            for (int j = 0; j < projectionLayerSize; j++) {
-                weights1[i][j] = (double) (rand.nextFloat() - 0.5)
-                        / projectionLayerSize;
-            }
-        }
+//        for (int i = 0; i < vocab.getVocabSize() -1 ; i++) {
+//            for (int j = 0; j < projectionLayerSize; j++) {
+//                weights1[i][j] = (double) (rand.nextFloat() - 0.5)
+//                        / projectionLayerSize;
+//            }
+//        }
     }
 
     public void saveVector(String outputFile, boolean binary) {
