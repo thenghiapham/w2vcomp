@@ -20,6 +20,12 @@ import vocab.Vocab;
 import common.WordForm;
 
 public class CcgTree extends Tree{
+    public static final int AN = 1;
+    public static final int DN = 2;
+    public static final int CN = 3;
+    public static final int NN = 4;
+//    public static final int NP = 5;
+//    public static final int DEFAULT = 0;
     public static final int LEFT_HEAD = 0;
     public static final int RIGHT_HEAD = 1;
     int headInfo = LEFT_HEAD;
@@ -276,7 +282,7 @@ public class CcgTree extends Tree{
         return height;
     }
     
-    public int updateSubTreePositio(int leftPos) {
+    public int updateSubTreePosition(int leftPos) {
         this.leftPos = leftPos;
         if (children.size() == 0) {
             rightPos = leftPos;
@@ -284,7 +290,7 @@ public class CcgTree extends Tree{
             int curChildLeft = leftPos;
             for (Tree child: this.children) {
                 CcgTree ccgChild = (CcgTree) child;
-                rightPos = ccgChild.updateSubTreePositio(curChildLeft);
+                rightPos = ccgChild.updateSubTreePosition(curChildLeft);
                 curChildLeft = rightPos + 1;
             }
         }
@@ -312,6 +318,29 @@ public class CcgTree extends Tree{
                 result += " " + ((CcgTree) children.get(i)).getFakeString();
             }
             return result;
+        }
+    }
+    
+    public void updatePhraseType() {
+        if (isTerminal()) return;
+        if (isPreTerminal()) return;
+        if (children.size() == 2) {
+            if (children.get(0).isPreTerminal() && children.get(1).isPreTerminal()) {
+                String firstLabel = children.get(0).getChildren().get(0).getRootLabel();
+                String secondLabel = children.get(1).getChildren().get(0).getRootLabel();
+                char firstPos = firstLabel.charAt(firstLabel.length() - 1);
+                char secondPos = secondLabel.charAt(secondLabel.length() - 1);
+                
+                if (firstPos == 'j' && secondPos == 'n') type = AN;
+                else if (firstPos == 'd' && secondPos == 'n') type = DN;
+                else if (firstPos == 'c' && secondPos == 'n') type = CN;
+                else if (firstPos == 'n' && secondPos == 'n') type = NN;
+                
+                return;
+            }
+        }
+        for (Tree child: children) {
+            ((CcgTree) child).updatePhraseType();
         }
     }
     

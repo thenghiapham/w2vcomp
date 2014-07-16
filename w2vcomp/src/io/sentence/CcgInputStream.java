@@ -57,7 +57,7 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
         else {
             readNextLine();
             if (endOfFile) return false;
-            ccgTree.updateSubTreePositio(0);
+            ccgTree.updateSubTreePosition(0);
             List<CcgTree> subTrees = ccgTree.getAllSubTreeAtHeight(2);
             
             
@@ -106,6 +106,11 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
 //                    
 //                    System.out.println(subTree.toPennTree());
                     // update word index in the vocabulary information
+                    subTree.updatePhraseType();
+                    // TODO: remove here after debugging
+                    // TODO: best to get it from the original tree
+                    // TODO: for bigger phrase, what do we do?
+                    System.out.println(subTree.getSurfaceString() + " " + subTree.getType());
                     subTree.updateWordIndices(vocab);
                     phraseList.add(new Phrase(subTree.getType(), startPosition, endPosition, subTree));
                 }
