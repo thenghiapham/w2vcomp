@@ -48,6 +48,13 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
                 negativeSamples, subSample, menFile);
     }
     
+    public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile, String anFile) {
+        super(projectionLayerSize, windowSize, hierarchicalSoftmax,
+                negativeSamples, subSample, menFile);
+        
+    }
+    
     protected void initBare() {
         super.initBare();
         randomInitializeComposeMatrices();
@@ -504,6 +511,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     public void printStatistics() {
         System.out.println("L2: " + compositionMatrix.normF());
         System.out.println("L2 soft: " + new SimpleMatrix(weights1).normF());
+        System.out.println("L2 vectors: " + new SimpleMatrix(weights1).normF());
     }
     
     public void saveMatrix(String matrixFile, double[][] matrix, boolean binary) {

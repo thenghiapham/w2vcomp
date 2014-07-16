@@ -17,6 +17,14 @@ public class MenCorrelation {
 	    spearman = new SpearmansCorrelation();
 		readDataset(dataset);
 	}
+	
+	public MenCorrelation(String[][] wordPairs, double[] golds) {
+	    pearson = new PearsonsCorrelation();
+        spearman = new SpearmansCorrelation();
+        this.wordPairs = wordPairs;
+        this.golds = golds;
+	}
+	
 	public void readDataset(String dataset) {
 		ArrayList<String> data = IOUtils.readFile(dataset);
 		golds = new double[data.size()];
