@@ -321,25 +321,25 @@ public class CcgTree extends Tree{
             }
             return wordString;
         } else {
-            String result = ((CcgTree) children.get(0)).getSurfaceString();
+            String result = ((CcgTree) children.get(0)).getSurfaceString(wordForm);
             for (int i = 1; i < children.size(); i++) {
-                result += " " + ((CcgTree) children.get(i)).getSurfaceString();
+                result += " " + ((CcgTree) children.get(i)).getSurfaceString(wordForm);
             }
             return result;
         }
     }
     
-    public String getSurfaceString() {
-        if (children.size() == 0) {
-            return this.rootLabel;
-        } else {
-            String result = ((CcgTree) children.get(0)).getSurfaceString();
-            for (int i = 1; i < children.size(); i++) {
-                result += " " + ((CcgTree) children.get(i)).getSurfaceString();
-            }
-            return result;
-        }
-    }
+//    public String getSurfaceString() {
+//        if (children.size() == 0) {
+//            return this.rootLabel;
+//        } else {
+//            String result = ((CcgTree) children.get(0)).getSurfaceString();
+//            for (int i = 1; i < children.size(); i++) {
+//                result += " " + ((CcgTree) children.get(i)).getSurfaceString();
+//            }
+//            return result;
+//        }
+//    }
     
     public String getFakeString() {
         if (children.size() == 0) {

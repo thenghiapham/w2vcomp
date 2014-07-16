@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 
+import demo.TestConstants;
+
 import space.SemanticSpace;
 
 public class MenCorrelation {
@@ -64,5 +66,11 @@ public class MenCorrelation {
 	
 	public double[] getGolds() {
 	    return golds;
+	}
+	
+	public static void main(String[] args) {
+	    SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
+	    MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);
+	    System.out.println("men: " + men.evaluateSpacePearson(space));
 	}
 }

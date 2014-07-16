@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.DataStructureUtils;
+import common.WordForm;
 
 import tree.CcgTree;
 import vocab.Vocab;
@@ -42,7 +43,7 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
                 return;
             }
             ccgTree = CcgTree.fromSimplePennTree(line);
-            String surfaceString = ccgTree.getSurfaceString();
+            String surfaceString = ccgTree.getSurfaceString(WordForm.WORD);
             words = surfaceString.split(" ");
         } catch (IOException e) {
             e.printStackTrace();

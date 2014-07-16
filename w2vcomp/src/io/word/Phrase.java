@@ -1,5 +1,7 @@
 package io.word;
 
+import common.WordForm;
+
 import tree.CcgTree;
 
 public class Phrase {
@@ -21,7 +23,7 @@ public class Phrase {
         sbResult.append("phrase type:" + phraseType + "\n");
         sbResult.append("start:" + startPosition + "\n");
         sbResult.append("end:" + endPosition + "\n");
-        sbResult.append("surface: \'" + tree.getSurfaceString() + "\'\n");
+        sbResult.append("surface: \'" + tree.getSurfaceString(WordForm.WORD) + "\'\n");
         return sbResult.toString();
     }
 }
