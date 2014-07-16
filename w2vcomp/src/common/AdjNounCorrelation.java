@@ -3,7 +3,7 @@ package common;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import composition.FullAdditive;
+import composition.BasicComposition;
 
 import space.SemanticSpace;
 
@@ -56,12 +56,12 @@ public class AdjNounCorrelation{
         return correlation;
     }
     
-    public double evaluateSpacePearson(SemanticSpace space, FullAdditive composition) {
+    public double evaluateSpacePearson(SemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
         return correlation.evaluateSpacePearson(phraseSpace);
     }
     
-    public double evaluateSpaceSpearman(SemanticSpace space, FullAdditive composition) {
+    public double evaluateSpaceSpearman(SemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
         return correlation.evaluateSpaceSpearman(phraseSpace);
     }

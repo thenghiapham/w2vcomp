@@ -17,6 +17,7 @@ import common.GradientUtils;
 import common.SimpleMatrixUtils;
 import common.ValueGradient;
 import composition.FullAdditive;
+import composition.WeightedAdditive;
 
 import edu.stanford.nlp.neural.NeuralUtils;
 
@@ -517,8 +518,11 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     public void printStatistics() {
         if (anCorrelation != null) {
             FullAdditive anComposition = new FullAdditive(compositionMatrix);
-            if (outputSpace != null)
-                System.out.println("an : " + anCorrelation.evaluateSpacePearson(outputSpace, anComposition));
+            WeightedAdditive additive = new WeightedAdditive();
+            if (outputSpace != null) {
+                System.out.println("an:\t" + anCorrelation.evaluateSpacePearson(outputSpace, anComposition));
+                System.out.println("an add:\t" + anCorrelation.evaluateSpacePearson(outputSpace, additive));
+            }
         }
 
         System.out.println("L2: " + compositionMatrix.normF());
