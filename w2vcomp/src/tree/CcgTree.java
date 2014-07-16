@@ -297,6 +297,38 @@ public class CcgTree extends Tree{
         return rightPos;
     }
     
+    public String getSurfaceString(int wordForm) {
+        if (this.isPreTerminal()) {
+            CcgTree terminalChild = (CcgTree) children.get(0);
+            String wordString;
+            switch (wordForm) {
+            case WordForm.WORD:
+                wordString = terminalChild.getRootLabel();
+                break;
+            case WordForm.LEMMA:
+                wordString = terminalChild.lemma;
+                break;
+            case WordForm.WORD_POS:
+                wordString = terminalChild.getRootLabel() 
+                    + "-" + terminalChild.pos.toLowerCase().charAt(0);
+                break;
+            case WordForm.LEMMA_POS:
+                wordString = terminalChild.lemma  
+                    + "-" + terminalChild.pos.toLowerCase().charAt(0);
+                break;
+            default:
+                wordString = terminalChild.getRootLabel();
+            }
+            return wordString;
+        } else {
+            String result = ((CcgTree) children.get(0)).getSurfaceString();
+            for (int i = 1; i < children.size(); i++) {
+                result += " " + ((CcgTree) children.get(i)).getSurfaceString();
+            }
+            return result;
+        }
+    }
+    
     public String getSurfaceString() {
         if (children.size() == 0) {
             return this.rootLabel;

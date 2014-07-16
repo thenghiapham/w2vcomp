@@ -419,6 +419,13 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     public void trainSinglePhrase(Phrase phrase, int[] sentence) {
      // train with the sentence
         
+//        System.out.println(phrase.tree.getSurfaceString());
+        // TODO: adding a HashTable or something here to use more matrices for
+        // different constructions
+        if (phrase.phraseType != CcgTree.AN) return;
+//        System.out.println("AN");
+        
+        
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
 

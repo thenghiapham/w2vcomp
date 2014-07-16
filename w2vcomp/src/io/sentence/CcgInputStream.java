@@ -110,7 +110,7 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
                     // TODO: remove here after debugging
                     // TODO: best to get it from the original tree
                     // TODO: for bigger phrase, what do we do?
-                    System.out.println(subTree.getSurfaceString() + " " + subTree.getType());
+//                    System.out.println(subTree.getSurfaceString() + " " + subTree.getType());
                     subTree.updateWordIndices(vocab);
                     phraseList.add(new Phrase(subTree.getType(), startPosition, endPosition, subTree));
                 }
