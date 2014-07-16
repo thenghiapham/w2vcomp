@@ -2,18 +2,13 @@ package word2vec;
 
 //import java.util.HashMap;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.AdjNounCorrelation;
 import common.GradientUtils;
+import common.IOUtils;
 import common.SimpleMatrixUtils;
 import common.ValueGradient;
 import composition.FullAdditive;
@@ -536,44 +531,10 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         System.out.println("L2 soft: " + new SimpleMatrix(weights1).normF());
         System.out.println("L2 vectors: " + new SimpleMatrix(weights0).normF());
         System.out.println("*********");
-        
     }
     
-    public void saveMatrix(String matrixFile, double[][] matrix, boolean binary) {
-        // Save the word vectors
-        // save number of words, length of each vector
-        int numRow = matrix.length;
-        int numColumn = matrix[0].length;
-        try {
-            BufferedOutputStream os = new BufferedOutputStream(
-                    new FileOutputStream(matrixFile));
-            String firstLine = "" + numRow + " " + numColumn
-                    + "\n";
-            os.write(firstLine.getBytes(Charset.forName("UTF-8")));
-            // save vectors
-            for (int i = 0; i < matrix.length; i++) {
-                if (binary) {
-                    ByteBuffer buffer = ByteBuffer
-                            .allocate(4 * numColumn);
-                    buffer.order(ByteOrder.LITTLE_ENDIAN);
-                    for (int j = 0; j < numColumn; j++) {
-                        buffer.putFloat((float) matrix[i][j]);
-                    }
-                    os.write(buffer.array());
-                } else {
-                    StringBuffer sBuffer = new StringBuffer();
-                    for (int j = 0; j < numColumn; j++) {
-                        sBuffer.append("" + matrix[i][j] + " ");
-                    }
-                    os.write(sBuffer.toString().getBytes());
-                }
-                os.write("\n".getBytes());
-            }
-            os.flush();
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void saveMatrix(String matrixFile, boolean binary) {
+        IOUtils.saveMatrix(matrixFile, SimpleMatrixUtils.to2DArray(compositionMatrix), binary);
     }
     
     public void readMatrixFromBinaryFile(String matrixFile) {

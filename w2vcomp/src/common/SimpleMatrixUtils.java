@@ -39,6 +39,17 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(numRows, numCols1 + numCols2, false, newData);
     }
     
+    public static double[][] to2DArray(SimpleMatrix matrix) {
+        double[] oneDArray = matrix.getMatrix().data;
+        int numRows = matrix.numRows();
+        int numCols = matrix.numCols();
+        double[][] result = new double[numRows][numCols];
+        for (int i = 0; i < result.length; i++) {
+            System.arraycopy(oneDArray, i * numCols, result[i], 0, numCols);
+        }
+        return result;
+    }
+    
     public static void main(String[] args) {
         SimpleMatrix matrix1 = new SimpleMatrix(2,2,true, new double[]{1,2,3,4});
         SimpleMatrix matrix2 = new SimpleMatrix(2,2,false, new double[]{5,6,7,8});
@@ -47,4 +58,6 @@ public class SimpleMatrixUtils {
         System.out.println("vstacked" + vStack(matrix1, matrix2));
         System.out.println("hstacked" + hStack(matrix1, matrix2));
     }
+    
+    
 }

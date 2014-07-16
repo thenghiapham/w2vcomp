@@ -2,6 +2,8 @@ package composition;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.SimpleMatrixUtils;
+
 import space.SemanticSpace;
 
 public abstract class BasicComposition {
@@ -16,14 +18,7 @@ public abstract class BasicComposition {
         SimpleMatrix u = new SimpleMatrix(uMatrix);
         SimpleMatrix v = new SimpleMatrix(vMatrix);
         SimpleMatrix composedMatrix = compose(u, v);
-        double[] composedArray = composedMatrix.getMatrix().data;
-        int numRows = composedMatrix.numRows();
-        int numCols = composedMatrix.numCols();
-        double[][] result = new double[numRows][numCols];
-        for (int i = 0; i < result.length; i++) {
-            System.arraycopy(composedArray, i * numCols, result[i], 0, numCols);
-        }
-        return result;
+        return SimpleMatrixUtils.to2DArray(composedMatrix);
     }
     
     public SemanticSpace composeSpace(SemanticSpace inputSpace, String[][] wordTriples) {

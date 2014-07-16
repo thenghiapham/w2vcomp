@@ -53,6 +53,9 @@ public class PhraseVectorLearning {
             inputStreams.add(sentenceInputStream);
             word2vec.trainModel(inputStreams);
             word2vec.saveVector(outputFile, true);
+            if (word2vec instanceof SkipGramPhrase2Vec) {
+                ((SkipGramPhrase2Vec) word2vec).saveMatrix(TestConstants.CCG_MATRIX_FILE, false);
+            }
         } catch (IOException e) {
             System.exit(1);
         }
