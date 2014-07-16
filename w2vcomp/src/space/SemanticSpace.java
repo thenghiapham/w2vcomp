@@ -44,6 +44,13 @@ public class SemanticSpace {
         vectorSize = vectors[0].length;
     }
     
+    public SemanticSpace(String[] words, double[][] vectors) {
+        this.words = words;
+        this.vectors = vectors;
+        vectorSize = vectors[0].length;
+        word2Index = DataStructureUtils.arrayToMap(words);
+    }
+    
     public SemanticSpace(Vocab vocab, double[][] vectors, boolean copy) throws ValueException{
         if (vocab.getVocabSize() != vectors.length) {
             throw new ValueException("vocab and vectors must have the same size");
@@ -284,4 +291,7 @@ public class SemanticSpace {
         return new SemanticSpace(newWordList, newVectors);
     }
 
+    public int getVectorSize() {
+        return vectorSize;
+    }
 }
