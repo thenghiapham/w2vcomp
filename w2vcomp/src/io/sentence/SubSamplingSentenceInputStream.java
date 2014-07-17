@@ -14,22 +14,22 @@ import vocab.VocabEntry;
 public class SubSamplingSentenceInputStream implements SentenceInputStream {
 
     SentenceInputStream inputStream;
-    float               frequencyThreshold;
+    double               frequencyThreshold;
     int[]               sentence;
     Phrase[]            phrases;
     Random              rand = new Random();
 
     public SubSamplingSentenceInputStream(SentenceInputStream inputStream,
-            float frequencyThreshold) {
+            double frequencyThreshold) {
         this.inputStream = inputStream;
         this.frequencyThreshold = frequencyThreshold;
     }
 
     protected boolean isSampled(long count, long totalCount) {
-        float randomThreshold = (float) (Math.sqrt(count
+        double randomThreshold = (double) (Math.sqrt(count
                 / (frequencyThreshold * totalCount)) + 1)
                 * (frequencyThreshold * totalCount) / count;
-        if (randomThreshold >= rand.nextFloat() * 2) {
+        if (randomThreshold >= rand.nextFloat()) {
             return true;
         } else {
             return false;
@@ -77,9 +77,11 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
     @Override
     public boolean readNextSentence(Vocab vocab) throws IOException {
         boolean hasNextSentence = inputStream.readNextSentence(vocab);
-        int[] unFilteredSentence = inputStream.getCurrentSentence();
-        Phrase[] unFilteredPhrases = inputStream.getCurrentPhrases();
-        filterSentence(unFilteredSentence, unFilteredPhrases, vocab);
+        if (hasNextSentence) {
+            int[] unFilteredSentence = inputStream.getCurrentSentence();
+            Phrase[] unFilteredPhrases = inputStream.getCurrentPhrases();
+            filterSentence(unFilteredSentence, unFilteredPhrases, vocab);
+        }
         return hasNextSentence;
     }
 

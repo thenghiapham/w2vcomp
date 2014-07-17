@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import vocab.Vocab;
 import word2vec.SkipGramPhrase2Vec;
-//import word2vec.SkipNGramWord2Vec;
+import word2vec.SkipNGramWord2Vec;
 //import word2vec.CBowWord2Vec;
 //import word2vec.SkipNGramWord2Vec;
 
@@ -20,9 +20,10 @@ import demo.TestConstants;
 
 public class PhraseVectorLearning {
     public static void main(String[] args) throws IOException{
-        SkipGramPhrase2Vec word2vec = new SkipGramPhrase2Vec(100, 5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
+        SkipGramPhrase2Vec word2vec = new SkipGramPhrase2Vec(100, 5, true, 0, 1e-3, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
 //        CBowWord2Vec word2vec = new CBowWord2Vec(150, 5, false, 10, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-//        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(100, 5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+//        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(100, 5, true, 0, 1e-3, TestConstants.CCG_MEN_FILE);
+//        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(100, 5, true, 0, 0, TestConstants.CCG_MEN_FILE);
         String trainFile = TestConstants.CCG_TRAIN_FILE;
         String outputFile = TestConstants.CCG_VECTOR_FILE;
         String vocabFile = TestConstants.CCG_VOCABULARY_FILE;

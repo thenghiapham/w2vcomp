@@ -300,7 +300,7 @@ public class ThreadedWord2Vec {
                                 / (subSample * trainWords)) + 1)
                         * (subSample * trainWords)
                         / vocab.getEntry(wordIndex).frequency;
-                if (threshold < rand.nextFloat() * 2)
+                if (threshold < rand.nextFloat())
                     continue;
             }
             sentence.add(wordIndex);

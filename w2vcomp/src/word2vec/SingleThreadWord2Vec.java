@@ -1,6 +1,7 @@
 package word2vec;
 
 import io.sentence.SentenceInputStream;
+import io.sentence.SubSamplingSentenceInputStream;
 import io.word.Phrase;
 
 import java.io.IOException;
@@ -58,6 +59,9 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         }
         
         for (SentenceInputStream inputStream : inputStreams) {
+            if (subSample > 0) {
+                inputStream = new SubSamplingSentenceInputStream(inputStream, subSample);
+            }
             trainModelThread(inputStream);
         }
         System.out.println("total word count: " + wordCount);
