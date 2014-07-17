@@ -57,6 +57,17 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
                 newPositions[i] = Integer.MIN_VALUE;
             }
         }
+//        System.out.println("\nOld Sentence:");
+//        for (int i = 0; i < unFilteredSentence.length; i++)
+//        {
+//            System.out.print(" "+unFilteredSentence[i]);
+//        }
+//        System.out.println("\nOld phrase:");
+//        for (int i = 0; i < unFilteredPhrases.length; i++)
+//        {
+//            System.out.print("("+unFilteredPhrases[i].startPosition + " " + +unFilteredPhrases[i].endPosition + ") ");
+//        }
+//        System.out.println();
         sentence = DataStructureUtils.intListToArray(filteredIndices);
 
         ArrayList<Phrase> fileterPhraseList = new ArrayList<Phrase>();
@@ -69,9 +80,32 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
                 Phrase phrase = new Phrase(phraseType, startPosition,
                         endPosition, unFilteredPhrase.tree);
                 fileterPhraseList.add(phrase);
+            } 
+            else if (Math.max(startPosition, endPosition) >= 0) {
+                int maxPosition = Math.max(startPosition, endPosition);
+                Phrase phrase = new Phrase(phraseType, maxPosition,
+                        maxPosition, unFilteredPhrase.tree);
+                fileterPhraseList.add(phrase);
             }
         }
+//        System.out.println("New pos:");
+//        for (int i = 0; i < newPositions.length; i++)
+//        {
+//            System.out.print(""+i+":"+newPositions[i] + " ");
+//        }
+//        System.out.println("\nNew Sentence:");
+//        for (int i = 0; i < sentence.length; i++)
+//        {
+//            System.out.print(" "+sentence[i]);
+//        }
+//        System.out.println("\nNew phrase:");
         phrases = DataStructureUtils.phraseListToArray(fileterPhraseList);
+//        for (int i = 0; i < phrases.length; i++)
+//        {
+//            System.out.print("("+phrases[i].startPosition + " " + +phrases[i].endPosition + ") ");
+//        }
+//        System.out.println();
+        
     }
 
     @Override

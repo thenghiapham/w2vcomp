@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import vocab.Vocab;
 import word2vec.SkipGramPhrase2Vec;
 //import word2vec.SkipNGramWord2Vec;
-import word2vec.CBowWord2Vec;
+//import word2vec.CBowWord2Vec;
 
 import demo.TestConstants;
 
@@ -21,9 +21,9 @@ public class PhraseVectorLearning {
     public static void main(String[] args) throws IOException{
         int hiddenLayerSize = 100;
         int windowSize = 5;
-        boolean hierarchialSoftmax = false;
-        int negativeSampling = 5;
-        double subSampling = 0;//1e-3;
+        boolean hierarchialSoftmax = true;
+        int negativeSampling = 0;
+        double subSampling = 1e-3;
         // TODO: checking subSampling with phrase
         SkipGramPhrase2Vec word2vec = new SkipGramPhrase2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
 //        CBowWord2Vec word2vec = new CBowWord2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE);
