@@ -78,13 +78,14 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 // the output would be the list of the word's indices in the
                 // dictionary
                 boolean hasNextSentence = inputStream.readNextSentence(vocab);
-
+                if (!hasNextSentence) break;
                 int[] sentence = inputStream.getCurrentSentence();
                 Phrase[] phrases = inputStream.getCurrentPhrases();
                 // if end of file, finish
                 if (sentence.length == 0) {
-                    if (!hasNextSentence)
-                        break;
+                    continue;
+//                    if (!hasNextSentence)
+//                        break;
                 }
 
                 // check word count

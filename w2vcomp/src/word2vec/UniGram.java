@@ -26,8 +26,8 @@ public class UniGram {
      */
     protected void initUnigramTable(Vocab vocab) {
         long trainWordsPow = 0;
-        float sumPow;
-        float power = (float) 0.75;
+        double sumPow;
+        double power = (double) 0.75;
         int vocabSize = vocab.getVocabSize();
         randomTable = new int[randomTablesize];
         
@@ -36,7 +36,7 @@ public class UniGram {
             trainWordsPow += Math.pow(vocab.getEntry(i).frequency, power);
         }
         int index = 0;
-        sumPow = (float) Math.pow(vocab.getEntry(index).frequency, power)
+        sumPow = (double) Math.pow(vocab.getEntry(index).frequency, power)
                 / trainWordsPow;
 
         // fill up the uni-gram table with words from the vocabulary
@@ -44,7 +44,7 @@ public class UniGram {
         // frequency^3/4
         for (int i = 0; i < randomTablesize; i++) {
             randomTable[i] = index;
-            if (i / (float) randomTablesize > sumPow) {
+            if (i / (double) randomTablesize > sumPow) {
                 index++;
                 if (index < vocabSize) {
                     sumPow += Math.pow(vocab.getEntry(index).frequency, power)

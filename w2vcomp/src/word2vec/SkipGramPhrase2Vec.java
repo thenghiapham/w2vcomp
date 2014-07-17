@@ -73,11 +73,11 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         compositionMatrix = new SimpleMatrix(randomMatrix);
     }
     
-    public void checkingGradients(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
+    public void checkingGradientsSoftmax(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
                 SimpleMatrix softmaxWeight, SimpleMatrix softmaxValue) {
         ValueGradient valueGrad = computeGradientSoftmax(inputPhrase, compositionMatrix, softmaxWeight, softmaxValue);
         ArrayList<SimpleMatrix> gradients = valueGrad.gradients;
-        ArrayList<SimpleMatrix> numGradients = computeNumericGradients(inputPhrase, compositionMatrix, softmaxWeight, softmaxValue);
+        ArrayList<SimpleMatrix> numGradients = computeNumericGradientsSoftmax(inputPhrase, compositionMatrix, softmaxWeight, softmaxValue);
         for (int i = 0; i < gradients.size(); i++) {
             
             SimpleMatrix component = gradients.get(i);
@@ -93,7 +93,27 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         }
     }
     
-    public ArrayList<SimpleMatrix> computeNumericGradients(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
+    public void checkingGradientsNegativeSampling(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
+            SimpleMatrix negativeWeight, SimpleMatrix target) {
+    ValueGradient valueGrad = computeGradientNegSampling(inputPhrase, compositionMatrix, negativeWeight, target);
+    ArrayList<SimpleMatrix> gradients = valueGrad.gradients;
+    ArrayList<SimpleMatrix> numGradients = computeNumericGradientsNegativeSampling(inputPhrase, compositionMatrix, negativeWeight, target);
+    for (int i = 0; i < gradients.size(); i++) {
+        
+        SimpleMatrix component = gradients.get(i);
+        SimpleMatrix numComponent = numGradients.get(i);
+        
+        double squareError = component.minus(numComponent).normF();
+        squareError = squareError * squareError;
+        if (squareError / (component.numCols() * component.numRows()) > 1e-4) {
+            System.out.println("Big error");
+        } else {
+//            System.out.println("Good error");
+        }
+    }
+}
+    
+    public ArrayList<SimpleMatrix> computeNumericGradientsSoftmax(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
                 SimpleMatrix softmaxWeight, SimpleMatrix softmaxValue) {
         ArrayList<SimpleMatrix> numGradients = new ArrayList<>();
         SimpleMatrix theta[] = new SimpleMatrix[]{inputPhrase, compositionMatrix, softmaxWeight};
@@ -121,6 +141,34 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         return numGradients;
     }
     
+    public ArrayList<SimpleMatrix> computeNumericGradientsNegativeSampling(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
+            SimpleMatrix softmaxWeight, SimpleMatrix softmaxValue) {
+    ArrayList<SimpleMatrix> numGradients = new ArrayList<>();
+    SimpleMatrix theta[] = new SimpleMatrix[]{inputPhrase, compositionMatrix, softmaxWeight};
+    double e = 1e-4;
+    for (int i = 0; i < 3; i++) {
+        SimpleMatrix component = theta[i];
+        int rowNum = component.numRows();
+        int colNum = component.numCols();
+        SimpleMatrix componentDelta = new SimpleMatrix(rowNum, colNum);
+        SimpleMatrix componentGrad = new SimpleMatrix(rowNum, colNum);
+        for (int x = 0; x < rowNum; x++) {
+            for (int y = 0; y < colNum; y++) {
+                componentDelta.set(x, y, e);
+                theta[i] = component.plus(componentDelta);
+                double loss1 = computeGradientNegSampling(theta[0], theta[1], theta[2], softmaxValue).value;
+                theta[i] = component.minus(componentDelta);
+                double loss2 = computeGradientNegSampling(theta[0], theta[1], theta[2], softmaxValue).value;
+                componentGrad.set(x, y, (loss1 - loss2) / (2 * e));
+                componentDelta.set(x, y, 0);
+            }
+        }
+        theta[i] = component;
+        numGradients.add(componentGrad);
+    }
+    return numGradients;
+}
+    
     
     
     public ValueGradient computeGradientSoftmax(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
@@ -139,11 +187,11 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         }
         SimpleMatrix z2 = softmaxWeight.mult(a1);
         SimpleMatrix a2 = SimpleMatrixUtils.elementwiseApplySigmoid(z2, sigmoidTable);
-        
       //TODO: compute value function here
         double value = 0.0;
         for (int i = 0; i < softmaxValue.numRows(); i++) {
             double a2ithElement = a2.get(i, 0);
+            
             double bit = softmaxValue.get(i);
             /* 
              * if sigmoid (probability) ~ 1, gradient = 0;
@@ -233,20 +281,20 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
             double a2ithElement = a2.get(i, 0);
             double bit = target.get(i);
             /* 
-             * if sigmoid (probability) ~ 1, gradient = 0;
-             * if sigmoid (probability) ~ 0, gradient too big,
+             * if sigmoid (probability) ~ 1, log = 0;
+             * if sigmoid (probability) ~ 0, log too big,
              * -> cut down to 0; still I don't know why we don't cut
              * it down to value f'(x) ~ f'(-6) (in that case make f(x) = f(-6) 
              * instead of removing it
              * anyway, look at Mikolov's code again
              */
+            
             if (a2ithElement == 0 || a2ithElement == 1) continue;
-            else {
-                if (bit == 0) {
-                    value += Math.log(a2ithElement);
-                } else {
-                    value += Math.log(1 - a2ithElement);
-                }
+            
+            if (bit == 1) {
+                value += Math.log(a2ithElement);
+            } else {
+                value += Math.log(1 - a2ithElement);
             }
         }
         if (weightDecay != 0.0) {
@@ -255,7 +303,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         }
         
         ArrayList<SimpleMatrix> gradients = new ArrayList<>();
-        SimpleMatrix softmaxWeightGradient = null;
+        SimpleMatrix negWeightGradient = null;
         SimpleMatrix compositionMatrixGradient = null;
         SimpleMatrix inputPhraseGradient = null;
         
@@ -263,18 +311,21 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
          * Backward pass
          */
         double[] rawd2 = new double[target.numRows()];
-        double[] rawSoftmaxValue = target.getMatrix().getData();
+        double[] rawTargetValue = target.getMatrix().getData();
         for (int i = 0; i < target.numRows(); i++) {
             double a2ithElement = a2.get(i, 0);
-            if (a2ithElement == 0 || a2ithElement == 1) {
-                rawd2[i] = 0;
+            double bit = target.get(i);
+            if (a2ithElement == 0) {
+                rawd2[i] = bit - 0; 
+            } else if (a2ithElement == 1) {
+                rawd2[i] = bit - 1;
             } else {
-                rawd2[i] = (1 - rawSoftmaxValue[i] - a2ithElement); //a2ithElement * 
+                rawd2[i] = (rawTargetValue[i] - a2ithElement); //a2ithElement * 
             }
         }
         SimpleMatrix d2 = new SimpleMatrix(rawd2.length, 1, true, rawd2);
         // W2's gradient
-        softmaxWeightGradient = d2.mult(a1.transpose());
+        negWeightGradient = d2.mult(a1.transpose());
         
         SimpleMatrix d1 = negativeWeight.transpose().mult(d2);
         if (useTanh) {
@@ -292,7 +343,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         }
         gradients.add(inputPhraseGradient);
         gradients.add(compositionMatrixGradient);
-        gradients.add(softmaxWeightGradient);
+        gradients.add(negWeightGradient);
         return new ValueGradient(value, gradients);
     }
 
@@ -459,7 +510,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
                 SimpleMatrix softmaxValue = new SimpleMatrix(codeLength, 1, true, rawSoftmaxValue);
                 
                 boolean checked = (rand.nextInt(1000000) == 0);
-                if (checked) checkingGradients(inputPhrase, compositionMatrix, softmaxWeight, softmaxValue);
+                if (checked) checkingGradientsSoftmax(inputPhrase, compositionMatrix, softmaxWeight, softmaxValue);
                 
                 ValueGradient valueGrad = computeGradientSoftmax(inputPhrase, compositionMatrix, softmaxWeight, softmaxValue);
                 
@@ -472,49 +523,49 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
                 GradientUtils.updateWeights(weights1, parentIds, softmaxGrad);
                 
             }
+            // NEGATIVE SAMPLING
+            if (negativeSamples > 0) {
+                double[][] rawNegWeights = new double[negativeSamples + 1][projectionLayerSize]; 
+                double[] targets = new double[negativeSamples + 1];
+                int[] targetWordIds = new int[negativeSamples + 1];
+                targets[0] = 1;
+                targetWordIds[0] = iWordIndex;
+                System.arraycopy(negativeWeights1[iWordIndex], 0, rawNegWeights[0], 0, projectionLayerSize);
+                
+                for (int k = 0; k < negativeSamples; k++) {
+                    targets[k+1] = 0;
+                    int targetWordIndex = unigram.randomWordIndex();
+                    // when targetWordIndex == iWordIndex, mikolov ignores 
+                    // the training sample but blah, we'll see
+                    // TODO: check the sample with freq(</s> = 0)
+                    while (targetWordIndex == 0 || targetWordIndex == iWordIndex) {
+                        targetWordIndex = rand
+                                .nextInt(vocab.getVocabSize() - 1) + 1;
+                    }
+                    targetWordIds[k+1] = targetWordIndex;
+                    System.arraycopy(negativeWeights1[targetWordIndex], 0, rawNegWeights[k + 1], 0, projectionLayerSize);
+                }
+                SimpleMatrix negWeight = new SimpleMatrix(rawNegWeights);
+                SimpleMatrix targetValue = new SimpleMatrix(negativeSamples + 1, 1, true, targets);
+                
+                boolean checked = (rand.nextInt(1000000) == 0);
+                if (checked) checkingGradientsNegativeSampling(inputPhrase, compositionMatrix, negWeight, targetValue);
+                
+                ValueGradient valueGrad = computeGradientNegSampling(inputPhrase, compositionMatrix, negWeight, targetValue);
+                
+                SimpleMatrix inputPhraseGrad = valueGrad.gradients.get(0).scale(alpha / 2);
+                compositionMatrix = compositionMatrix.plus(valueGrad.gradients.get(1).scale(alpha / 2));
+                SimpleMatrix negGrad = valueGrad.gradients.get(2).scale(alpha / 2);
+                
+                inputPhraseGrad.reshape(2, projectionLayerSize);
+                GradientUtils.updateWeights(weights0,new int[]{word1Index, word2Index},inputPhraseGrad);
+                GradientUtils.updateWeights(negativeWeights1, targetWordIds, negGrad);
+                
+            }
             
         }
     }
             
-// NEGATIVE SAMPLING
-//            if (negativeSamples > 0) {
-//                for (int l = 0; l < negativeSamples + 1; l++) {
-//                    int target;
-//                    int label;
-//
-//                    if (l == 0) {
-//                        target = iWordIndex;
-//                        label = 1;
-//                    } else {
-//                        target = unigram.randomWordIndex();
-//                        if (target == 0) {
-//                            target = rand
-//                                    .nextInt(vocab.getVocabSize() - 1) + 1;
-//                        }
-//                        if (target == iWordIndex)
-//                            continue;
-//                        label = 0;
-//                    }
-//                    double z2 = 0;
-//                    double gradient;
-//                    for (int j = 0; j < projectionLayerSize; j++) {
-//                        z2 += a1[j] * negativeWeights1[target][j];
-//                    }
-//                    double a2 = sigmoidTable.getSigmoid(z2);
-//                    gradient = (double) ((label - a2) * alpha);
-//                    for (int j = 0; j < projectionLayerSize; j++) {
-//                        a1error[j] += gradient
-//                                * negativeWeights1[target][j];
-//                    }
-//                    for (int j = 0; j < projectionLayerSize; j++) {
-//                        negativeWeights1[target][j] += gradient
-//                                * a1[j];
-//                    }
-//                }
-//            }
-            
-            
-    
     
     @Override
     public void printStatistics() {
@@ -528,9 +579,18 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         }
 
         System.out.println("L2: " + compositionMatrix.normF());
-        System.out.println("L2 soft: " + new SimpleMatrix(weights1).normF());
+        if (hierarchicalSoftmax) {
+            System.out.println("L2 soft: " + new SimpleMatrix(weights1).normF());
+        }
+        if (negativeSamples > 0) {
+            System.out.println("L2 neg: " + new SimpleMatrix(negativeWeights1).normF());
+        }
         System.out.println("L2 vectors: " + new SimpleMatrix(weights0).normF());
         System.out.println("*********");
+    }
+    
+    public double getWeightDecay() {
+        return weightDecay;
     }
     
     public void saveMatrix(String matrixFile, boolean binary) {

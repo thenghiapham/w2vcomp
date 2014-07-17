@@ -32,15 +32,15 @@ public class ThreadedWord2Vec {
     protected Vocab            vocab;
     boolean                    hierarchicalSoftmax;
     int                        negativeSamples;
-    float                      subSample;
+    double                      subSample;
     int                        layer1Size;
     boolean                    cBow                = true;
     int                        threadNum           = 4;
 
     int[]                      table;
     int                        wordCount;
-    float[][]                  syn0, syn1, syn1neg;
-    float[]                    expTable;
+    double[][]                  syn0, syn1, syn1neg;
+    double[]                    expTable;
     int                        windowSize;
     long                       trainWords;
     Random                     rand;
@@ -49,7 +49,7 @@ public class ThreadedWord2Vec {
     Integer                    wordCountLock       = new Integer(0);
 
     public ThreadedWord2Vec(int layer1Size, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, float subSample,
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample,
             int minFrequency) {
         this.layer1Size = layer1Size;
         this.hierarchicalSoftmax = hierarchicalSoftmax;
@@ -76,7 +76,7 @@ public class ThreadedWord2Vec {
                 buffer = ByteBuffer.allocate(4 * layer1Size);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 for (int j = 0; j < layer1Size; j++) {
-                    buffer.putFloat(syn0[i][j]);
+                    buffer.putFloat((float) syn0[i][j]);
                 }
                 outStream.write(buffer.array());
             }
@@ -113,12 +113,12 @@ public class ThreadedWord2Vec {
 
     public void initNet(String initFile) {
         int vocabSize = vocab.getVocabSize();
-        syn0 = new float[vocabSize][layer1Size];
+        syn0 = new double[vocabSize][layer1Size];
         if (hierarchicalSoftmax) {
-            syn1 = new float[vocabSize][layer1Size];
+            syn1 = new double[vocabSize][layer1Size];
         }
         if (negativeSamples > 0) {
-            syn1neg = new float[vocabSize][layer1Size];
+            syn1neg = new double[vocabSize][layer1Size];
         }
         boolean readInit = (new File(initFile)).exists();
         if (!readInit) {
@@ -134,17 +134,17 @@ public class ThreadedWord2Vec {
     void randomInit() {
         for (int i = 0; i < vocab.getVocabSize(); i++) {
             for (int j = 0; j < layer1Size; j++) {
-                syn0[i][j] = (float) (rand.nextFloat() - 0.5) / layer1Size;
+                syn0[i][j] = (double) (rand.nextFloat() - 0.5) / layer1Size;
             }
         }
     }
 
     public void initExpTable() {
-        expTable = new float[EXP_TABLE_SIZE];
+        expTable = new double[EXP_TABLE_SIZE];
         for (int i = 0; i < EXP_TABLE_SIZE; i++) {
-            expTable[i] = (float) Math.exp((i / (float) EXP_TABLE_SIZE * 2 - 1)
+            expTable[i] = (double) Math.exp((i / (double) EXP_TABLE_SIZE * 2 - 1)
                     * MAX_EXP); // Precompute the exp() table
-            expTable[i] = (float) expTable[i] / (expTable[i] + 1); // Precompute
+            expTable[i] = (double) expTable[i] / (expTable[i] + 1); // Precompute
                                                                    // f(x) = x /
                                                                    // (x + 1)
         }
@@ -156,19 +156,19 @@ public class ThreadedWord2Vec {
      */
     void initUnigramTable() {
         long trainWordsPow = 0;
-        float sumPow;
-        float power = (float) 0.75;
+        double sumPow;
+        double power = (double) 0.75;
         int vocabSize = vocab.getVocabSize();
         table = new int[tableSize];
         for (int i = 0; i < vocabSize; i++) {
             trainWordsPow += Math.pow(vocab.getEntry(i).frequency, power);
         }
         int index = 0;
-        sumPow = (float) Math.pow(vocab.getEntry(index).frequency, power)
+        sumPow = (double) Math.pow(vocab.getEntry(index).frequency, power)
                 / trainWordsPow;
         for (int i = 0; i < tableSize; i++) {
             table[i] = index;
-            if (i / (float) tableSize > sumPow) {
+            if (i / (double) tableSize > sumPow) {
                 index++;
                 if (index < vocabSize) {
                     sumPow += Math.pow(vocab.getEntry(index).frequency, power)
@@ -244,7 +244,7 @@ public class ThreadedWord2Vec {
                     ByteBuffer buffer = ByteBuffer.allocate(4 * layer1Size);
                     buffer.order(ByteOrder.LITTLE_ENDIAN);
                     for (int j = 0; j < layer1Size; j++) {
-                        buffer.putFloat(syn0[i][j]);
+                        buffer.putFloat((float) syn0[i][j]);
                     }
                     os.write(buffer.array());
                 } else {
@@ -295,7 +295,7 @@ public class ThreadedWord2Vec {
             // The subsampling randomly discards frequent words while keeping
             // the ranking same
             if (subSample > 0) {
-                float threshold = (float) (Math
+                double threshold = (double) (Math
                         .sqrt(vocab.getEntry(wordIndex).frequency
                                 / (subSample * trainWords)) + 1)
                         * (subSample * trainWords)
@@ -340,7 +340,7 @@ public class ThreadedWord2Vec {
                         System.out.println("Thread: " + index + " Trained: "
                                 + wordCount + " words");
                         alpha = STARTING_ALPHA
-                                * (1 - (float) wordCount / (trainWords + 1));
+                                * (1 - (double) wordCount / (trainWords + 1));
                         if (alpha < STARTING_ALPHA * 0.0001) {
                             alpha = STARTING_ALPHA * 0.0001;
                         }
@@ -378,8 +378,8 @@ public class ThreadedWord2Vec {
 
     public void trainSentenceCBow(int[] sentence) {
         // train with the sentence
-        float[] neurons1 = new float[layer1Size];
-        float[] neuron1error = new float[layer1Size];
+        double[] neurons1 = new double[layer1Size];
+        double[] neuron1error = new double[layer1Size];
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
         for (int wordPosition = 0; wordPosition < sentence.length; wordPosition++) {
@@ -423,7 +423,7 @@ public class ThreadedWord2Vec {
                     VocabEntry word = vocab.getEntry(wordIndex);
                     for (int bit = 0; bit < word.code.length(); bit++) {
 
-                        float f = 0;
+                        double f = 0;
                         int iParentIndex = word.ancestors[bit];
 
                         // Propagate hidden -> output
@@ -433,11 +433,11 @@ public class ThreadedWord2Vec {
                         if (f <= -MAX_EXP || f >= MAX_EXP) {
                             continue;
                         } else {
-                            f = 1 - (float) (1.0 / (1.0 + Math.exp(f)));
+                            f = 1 - (double) (1.0 / (1.0 + Math.exp(f)));
                         }
 
                         // 'g' is the gradient multiplied by the learning rate
-                        float gradient = (float) ((1 - (word.code.charAt(bit) - 48) - f) * alpha);
+                        double gradient = (double) ((1 - (word.code.charAt(bit) - 48) - f) * alpha);
 
                         // Propagate errors output -> hidden
                         for (int i = 0; i < layer1Size; i++) {
@@ -469,20 +469,20 @@ public class ThreadedWord2Vec {
                             label = 0;
                         }
 
-                        float f = 0;
+                        double f = 0;
                         for (int i = 0; i < layer1Size; i++) {
                             f += neurons1[i] * syn1neg[target][i];
                         }
-                        float gradient;
+                        double gradient;
                         if (f > MAX_EXP) {
-                            gradient = (float) ((label - 1) * alpha);
+                            gradient = (double) ((label - 1) * alpha);
                         } else if (f < -MAX_EXP) {
-                            gradient = (float) ((label - 0) * alpha);
+                            gradient = (double) ((label - 0) * alpha);
                         } else {
-                            // gradient = (float) ((label - expTable[(int)((f +
+                            // gradient = (double) ((label - expTable[(int)((f +
                             // MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2))]) *
                             // alpha);
-                            gradient = (float) ((label - MathUtils
+                            gradient = (double) ((label - MathUtils
                                     .sigmoid(f)) * alpha);
                         }
 
@@ -518,8 +518,8 @@ public class ThreadedWord2Vec {
 
     public void trainSentenceSKipGram(int[] sentence) {
         // train with the sentence
-        float[] neurons1 = new float[layer1Size];
-        float[] neuron1error = new float[layer1Size];
+        double[] neurons1 = new double[layer1Size];
+        double[] neuron1error = new double[layer1Size];
         int sentenceLength = sentence.length;
         for (int wordPosition = 0; wordPosition < sentence.length; wordPosition++) {
 
@@ -553,7 +553,7 @@ public class ThreadedWord2Vec {
                     // HIERARCHICAL SOFTMAX
                     if (hierarchicalSoftmax) {
                         for (int bit = 0; bit < word.code.length(); bit++) {
-                            float f = 0;
+                            double f = 0;
                             int iParentIndex = word.ancestors[bit];
                             // Propagate hidden -> output
                             for (int j = 0; j < layer1Size; j++) {
@@ -564,14 +564,14 @@ public class ThreadedWord2Vec {
                             if (f <= -MAX_EXP || f >= MAX_EXP) {
                                 continue;
                             } else
-                                f = 1 - (float) (1.0 / (1.0 + Math.exp(f)));
+                                f = 1 - (double) (1.0 / (1.0 + Math.exp(f)));
                             // f = expTable[(int)((f + MAX_EXP) *
                             // (EXP_TABLE_SIZE / MAX_EXP / 2))];
                             System.out.println("exp f: " + f);
 
                             // 'g' is the gradient multiplied by the learning
                             // rate
-                            float gradient = (float) ((1 - (word.code
+                            double gradient = (double) ((1 - (word.code
                                     .charAt(bit) - 48) - f) * alpha);
                             // Propagate errors output -> hidden
                             for (int j = 0; j < layer1Size; j++) {
@@ -605,17 +605,17 @@ public class ThreadedWord2Vec {
                                     continue;
                                 label = 0;
                             }
-                            float f = 0;
-                            float gradient;
+                            double f = 0;
+                            double gradient;
                             for (int j = 0; j < layer1Size; j++) {
                                 f += syn0[iWordIndex][j] * syn1neg[target][j];
                             }
                             if (f > MAX_EXP)
-                                gradient = (float) ((label - 1) * alpha);
+                                gradient = (double) ((label - 1) * alpha);
                             else if (f < -MAX_EXP)
-                                gradient = (float) ((label - 0) * alpha);
+                                gradient = (double) ((label - 0) * alpha);
                             else
-                                gradient = (float) ((label - expTable[(int) ((f + MAX_EXP) * (EXP_TABLE_SIZE
+                                gradient = (double) ((label - expTable[(int) ((f + MAX_EXP) * (EXP_TABLE_SIZE
                                         / MAX_EXP / 2))]) * alpha);
                             for (int j = 0; j < layer1Size; j++) {
                                 neuron1error[j] += gradient
@@ -651,9 +651,9 @@ public class ThreadedWord2Vec {
 
     public static void main(String[] args) {
         // ThreadedWord2Vec word2vec = new ThreadedWord2Vec(200, 5, true, 0,
-        // (float) 0, 50);
+        // (double) 0, 50);
         ThreadedWord2Vec word2vec = new ThreadedWord2Vec(200, 5, false, 10,
-                (float) 0, 50);
+                (double) 0, 50);
         String trainFile = TestConstants.TRAIN_FILE;
         String outputFile = TestConstants.VECTOR_FILE;
         String vocabFile = TestConstants.VOCABULARY_FILE;

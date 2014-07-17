@@ -4,7 +4,7 @@ public class SigmoidTable {
     
     public static final double DEFAULT_MAX_X              = 6;
     // TODO: see what's going on here
-    public static final int   DEFAULT_SIGMOID_TABLE_SIZE = 1000;
+    public static final int   DEFAULT_SIGMOID_TABLE_SIZE = 1000000;
 
     private double[]           sigmoidTable;
     // TODO: does maxX has any importance other than this: e.g. cut off the
@@ -56,9 +56,9 @@ public class SigmoidTable {
         else {
             // hopefully it wouldn't be long
             // TODO: remove this after debugging
-//            return MathUtils.sigmoid(x);
-            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
-            return sigmoidTable[index];
+            return MathUtils.sigmoid(x);
+//            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
+//            return sigmoidTable[index];
         }
 
     }

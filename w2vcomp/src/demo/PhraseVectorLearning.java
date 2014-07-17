@@ -12,18 +12,22 @@ import java.util.ArrayList;
 
 import vocab.Vocab;
 import word2vec.SkipGramPhrase2Vec;
-import word2vec.SkipNGramWord2Vec;
-//import word2vec.CBowWord2Vec;
 //import word2vec.SkipNGramWord2Vec;
+import word2vec.CBowWord2Vec;
 
 import demo.TestConstants;
 
 public class PhraseVectorLearning {
     public static void main(String[] args) throws IOException{
-        SkipGramPhrase2Vec word2vec = new SkipGramPhrase2Vec(100, 5, true, 0, 1e-3, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
-//        CBowWord2Vec word2vec = new CBowWord2Vec(150, 5, false, 10, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-//        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(100, 5, true, 0, 1e-3, TestConstants.CCG_MEN_FILE);
-//        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(100, 5, true, 0, 0, TestConstants.CCG_MEN_FILE);
+        int hiddenLayerSize = 100;
+        int windowSize = 5;
+        boolean hierarchialSoftmax = false;
+        int negativeSampling = 5;
+        double subSampling = 0;//1e-3;
+        // TODO: checking subSampling with phrase
+        SkipGramPhrase2Vec word2vec = new SkipGramPhrase2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
+//        CBowWord2Vec word2vec = new CBowWord2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE);
+//        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE);
         String trainFile = TestConstants.CCG_TRAIN_FILE;
         String outputFile = TestConstants.CCG_VECTOR_FILE;
         String vocabFile = TestConstants.CCG_VOCABULARY_FILE;
@@ -54,9 +58,9 @@ public class PhraseVectorLearning {
             inputStreams.add(sentenceInputStream);
             word2vec.trainModel(inputStreams);
             word2vec.saveVector(outputFile, true);
-            if (word2vec instanceof SkipGramPhrase2Vec) {
-                ((SkipGramPhrase2Vec) word2vec).saveMatrix(TestConstants.CCG_MATRIX_FILE, false);
-            }
+//            if (word2vec instanceof SkipGramPhrase2Vec) {
+//                ((SkipGramPhrase2Vec) word2vec).saveMatrix(TestConstants.CCG_MATRIX_FILE, false);
+//            }
         } catch (IOException e) {
             System.exit(1);
         }
