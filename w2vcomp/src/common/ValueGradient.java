@@ -4,6 +4,13 @@ import java.util.ArrayList;
 
 import org.ejml.simple.SimpleMatrix;
 
+/**
+ * Combination class, which contains
+ * value of a function
+ * the gradients of the input values
+ * @author thenghiapham
+ *
+ */
 public class ValueGradient {
     public double value;
     public ArrayList<SimpleMatrix> gradients;

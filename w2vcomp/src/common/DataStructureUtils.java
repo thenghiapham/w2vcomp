@@ -7,6 +7,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * This class provides a set of utility method to turn one data structure to
+ * another
+ * (Which would be much easier if we use Python, since even with template method
+ * we cannot allocate a new array without knowing the type of the element at 
+ * compiling time)
+ * @author thenghiapham
+ *
+ */
 public class DataStructureUtils {
     
     /**
@@ -84,10 +93,10 @@ public class DataStructureUtils {
     }
 
     /**
-     * Search through an small int array 
+     * Search through an small int array for a given value
      * @param array
      * @param key
-     * @return
+     * @return the index of the first element to have a value equal to the key
      */
     public static int searchSmallIntArray(int[] array, int key) {
         for (int i = 0; i < array.length; i++) {

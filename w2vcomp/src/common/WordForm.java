@@ -1,5 +1,10 @@
 package common;
 
+/**
+ * Constant values for word format
+ * @author thenghiapham
+ *
+ */
 public class WordForm {
     public static final int WORD = 1;
     public static final int LEMMA = 2;

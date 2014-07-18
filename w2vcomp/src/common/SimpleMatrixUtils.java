@@ -3,7 +3,21 @@ package common;
 import org.ejml.alg.dense.mult.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 
+/**
+ * This class provides some utility method for the SimpleMatrix class
+ * @author thenghiapham
+ *
+ */
 public class SimpleMatrixUtils {
+    
+    /**
+     * Return a matrix which consist of the values of sigmoid function of every
+     * element of the input matrix
+     * The sigmoid values are taken from an instance of SigmoidTable class
+     * @param inputMatrix
+     * @param sigmoidTable
+     * @return
+     */
     public static SimpleMatrix elementwiseApplySigmoid(SimpleMatrix inputMatrix, SigmoidTable sigmoidTable) {
         double[][] matrix = new double[inputMatrix.numRows()][inputMatrix.numCols()];
         for (int i = 0; i < inputMatrix.numRows(); i++)
@@ -13,6 +27,13 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(matrix);
     }
     
+    /**
+     * Stack two matrices vertically
+     * @param matrix1
+     * @param matrix2
+     * @return
+     * @throws MatrixDimensionException
+     */
     public static SimpleMatrix vStack(SimpleMatrix matrix1, SimpleMatrix matrix2) throws MatrixDimensionException{
         if (matrix1.numCols() != matrix2.numCols()) {
             throw new MatrixDimensionException("Number of columns do not match");
@@ -26,6 +47,13 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(numRows1 + numRows2, numCols, true, newData);
     }
     
+    /**
+     * Stack two matrices horizontally
+     * @param matrix1
+     * @param matrix2
+     * @return
+     * @throws MatrixDimensionException
+     */
     public static SimpleMatrix hStack(SimpleMatrix matrix1, SimpleMatrix matrix2) throws MatrixDimensionException{
         if (matrix1.numRows() != matrix2.numRows()) {
             throw new MatrixDimensionException("Number of rows do not match");
@@ -39,6 +67,12 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(numRows, numCols1 + numCols2, false, newData);
     }
     
+    /**
+     * Return the data of a SimpleMatrix as a 2d array
+     * (Since the internal structure of a SimpleMatrix is a 1d array, not 2d) 
+     * @param matrix
+     * @return
+     */
     public static double[][] to2DArray(SimpleMatrix matrix) {
         double[] oneDArray = matrix.getMatrix().data;
         int numRows = matrix.numRows();
@@ -50,6 +84,7 @@ public class SimpleMatrixUtils {
         return result;
     }
     
+    // TODO: turn this into a UnitTest
     public static void main(String[] args) {
         SimpleMatrix matrix1 = new SimpleMatrix(2,2,true, new double[]{1,2,3,4});
         SimpleMatrix matrix2 = new SimpleMatrix(2,2,false, new double[]{5,6,7,8});

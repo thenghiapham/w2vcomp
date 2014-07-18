@@ -1,21 +1,30 @@
 package common;
 
+/**
+ * An instance of this class pre-computed values for the sigmoid function
+ * Its main purpose to increase the speed of the program (or so people say :P)
+ * since e^-x takes longer time then mult/add
+ * @author thenghiapham
+ *
+ */
 public class SigmoidTable {
     
+    // Default parameters for the table
     public static final double DEFAULT_MAX_X              = 6;
-    // TODO: see what's going on here
     public static final int   DEFAULT_SIGMOID_TABLE_SIZE = 1000000;
 
+    /*
+     * This sigmoidTable holds the precomputed sigmoid values of variables in the range
+     * [-maxX, maxX]
+     * tableSize decides the interval between two consecutive values that we
+     * compute the sigmoid function for, i.e. the precision of the returned
+     * sigmoid values
+     */
     private double[]           sigmoidTable;
-    // TODO: does maxX has any importance other than this: e.g. cut off the
-    // gradient, (maybe in the update not here)
     private double             maxX;
     private int               tableSize;
 
 
-    /**
-     * Constructor
-     */
     public SigmoidTable(int tableSize, double maxX) {
         this.tableSize = tableSize;
         this.maxX = maxX;
@@ -46,7 +55,7 @@ public class SigmoidTable {
     }
 
     /**
-     * Get the sigmoid function for x from the precomputed table
+     * Get the sigmoid function for x from the pre-computed table
      */
     public double getSigmoid(double x) {
         if (x > maxX)
@@ -54,11 +63,8 @@ public class SigmoidTable {
         else if (x < -maxX)
             return 0;
         else {
-            // hopefully it wouldn't be long
-            // TODO: remove this after debugging
-            return MathUtils.sigmoid(x);
-//            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
-//            return sigmoidTable[index];
+            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
+            return sigmoidTable[index];
         }
 
     }

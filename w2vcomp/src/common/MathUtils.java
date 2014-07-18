@@ -2,6 +2,7 @@ package common;
 
 /**
  * This class contains a set of utility method for simple maths
+ * (maybe should be replaced with utility method for SimpleMatrix class
  * @author pham
  *
  */
@@ -52,7 +53,7 @@ public class MathUtils {
      */
     public static double sigmoid(double f) {
         // TODO: understand why they turn the formula like this (e^x faster
-        // than e^-x ?)
+        // than e^-x ? Rounding error?)
         return 1 - (double) (1.0 / (1.0 + Math.exp(f)));
     }
 }

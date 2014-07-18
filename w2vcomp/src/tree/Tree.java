@@ -6,7 +6,10 @@ import java.util.List;
 /**
  * @author Lorenzo Dell'Arciprete
  * This class represents a tree as a root node and references to its children. 
- * As such, this class can also be considered as representing a single tree node (i.e. the root node).
+ * As such, this class can also be considered as representing a single tree node 
+ * (i.e. the root node).
+ * 
+ * Nghia's comment: I use this class mostly for the io part, i.e. 
  */
 public class Tree {
     

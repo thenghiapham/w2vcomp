@@ -43,9 +43,14 @@ public class IOUtils {
         System.out.println(buffer.toString());
     }
     
-    public static ArrayList<String> readFile(String inputString) {
+    /**
+     * Read all the lines of a file
+     * @param inputFile: path to the input file
+     * @return a list of string
+     */
+    public static ArrayList<String> readFile(String inputFile) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(inputString));
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
             ArrayList<String> slResult = new ArrayList<String>();
             String line = reader.readLine();
             while (line != null && !line.equals("")) {
@@ -62,6 +67,11 @@ public class IOUtils {
         
     }
     
+    /**
+     * Print a list of strings to a file
+     * @param outputFile: the path to the output file
+     * @param strings
+     */
     public static void printToFile(String outputFile, List<String> strings) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
@@ -76,6 +86,12 @@ public class IOUtils {
         }
     }
     
+    /**
+     * Save a 2d array to a file in either text format or binary format
+     * @param matrixFile: the path to the output file
+     * @param matrix: a 2d array contains the elements of the matrix
+     * @param binary: the format of the output file (true if binary)
+     */
     public static void saveMatrix(String matrixFile, double[][] matrix, boolean binary) {
         // Save the word vectors
         // save number of words, length of each vector
