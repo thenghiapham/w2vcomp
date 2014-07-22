@@ -21,6 +21,21 @@ public class HuffmanTest {
         assertEquals("10110", huffmanTree.getCode(6)); // code of 7
         assertEquals("101111", huffmanTree.getCode(7)); // code of 5
         assertEquals("101110", huffmanTree.getCode(8)); // code of 3
+        printList(huffmanTree.getParentIndices(0));
+        printList(huffmanTree.getParentIndices(1));
+        printList(huffmanTree.getParentIndices(2));
+        printList(huffmanTree.getParentIndices(3));
+        printList(huffmanTree.getParentIndices(4));
+        printList(huffmanTree.getParentIndices(5));
+        printList(huffmanTree.getParentIndices(6));
+        printList(huffmanTree.getParentIndices(7));
+        printList(huffmanTree.getParentIndices(8));
+    }
+    
+    public void printList(int[] aList) {
+        for (int i = 0; i < aList.length; i++)
+            System.out.print(aList[i] + " ");
+        System.out.println();
     }
 
 }

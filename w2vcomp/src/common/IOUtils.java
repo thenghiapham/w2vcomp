@@ -44,6 +44,18 @@ public class IOUtils {
     }
     
     /**
+     * Print a long array to standard out
+     */
+    public static void printDoubles(double[] array) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < array.length; i++) {
+            buffer.append(array[i]);
+            buffer.append(' ');
+        }
+        System.out.println(buffer.toString());
+    }
+    
+    /**
      * Read all the lines of a file
      * @param inputFile: path to the input file
      * @return a list of string

@@ -85,6 +85,7 @@ public abstract class AbstractWord2Vec {
         sigmoidTable = new SigmoidTable();
         // TODO: setting alpha
         starting_alpha = DEFAULT_STARTING_ALPHA;
+        alpha = starting_alpha;
     }
 
     protected void saveProjectionMatrices(String weightFile) {

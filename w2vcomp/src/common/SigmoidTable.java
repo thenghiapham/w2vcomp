@@ -11,7 +11,7 @@ public class SigmoidTable {
     
     // Default parameters for the table
     public static final double DEFAULT_MAX_X              = 6;
-    public static final int   DEFAULT_SIGMOID_TABLE_SIZE = 1000000;
+    public static final int   DEFAULT_SIGMOID_TABLE_SIZE = 10000000;
 
     /*
      * This sigmoidTable holds the precomputed sigmoid values of variables in the range

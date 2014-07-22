@@ -7,8 +7,20 @@ import composition.BasicComposition;
 
 import space.SemanticSpace;
 
+/**
+ * This class provides utility methods to evaluate composition models.
+ * It uses a composition model to compose the vector representations of phrases
+ * and computes the correlation between cosine similarities of phrases and 
+ * the similarities/relatedness given by gold standard (human)
+ * @author thenghiapham
+ *
+ */
 public class AdjNounCorrelation{
+
     MenCorrelation correlation;
+    
+    // the info of hrases that need to be composed
+    // it contains a list of string tuples (word1, word2, phrases) 
     String[][] composeData;
 
     public AdjNounCorrelation(String dataset) {
@@ -35,6 +47,11 @@ public class AdjNounCorrelation{
         composeData = AdjNounCorrelation.convertComposeData(phraseSet);
     }
     
+    /**
+     * Turn a list of phrases into composing data
+     * @param phraseSet
+     * @return
+     */
     public static String[][] convertComposeData(HashSet<String> phraseSet) {
         String[][] result = new String[phraseSet.size()][3];
         String[] phrases = new String[phraseSet.size()];
@@ -56,11 +73,23 @@ public class AdjNounCorrelation{
         return correlation;
     }
     
+    /**
+     * Evaluate the composition model using Pearson correlation
+     * @param space
+     * @param composition
+     * @return
+     */
     public double evaluateSpacePearson(SemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
         return correlation.evaluateSpacePearson(phraseSpace);
     }
     
+    /**
+     * Evaluate the composition model using Spearman correlation
+     * @param space
+     * @param composition
+     * @return
+     */
     public double evaluateSpaceSpearman(SemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
         return correlation.evaluateSpaceSpearman(phraseSpace);

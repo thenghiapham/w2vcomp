@@ -15,7 +15,4 @@ public class FullAdditive extends BasicComposition{
         return compositionMatrix.mult(SimpleMatrixUtils.vStack(uMatrix.transpose(), vMatrix.transpose())).transpose();
     }
     
-    
-    
-    
 }
