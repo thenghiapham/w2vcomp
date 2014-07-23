@@ -500,7 +500,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
                 int codeLength = contextWord.code.length();
                 double[][] rawSoftmaxWeight = new double[codeLength][projectionLayerSize];
                 double[] rawSoftmaxValue = new double[codeLength];
-                int[] parentIds = new int[codeLength];
+                int[] parentIds = contextWord.ancestors;
                 for (int bit = 0; bit < codeLength; bit++) {
                     int iParentIndex = contextWord.ancestors[bit];
                     System.arraycopy(weights1[iParentIndex], 0, rawSoftmaxWeight[bit], 0, projectionLayerSize);
