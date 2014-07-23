@@ -60,6 +60,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     protected void initBare() {
         super.initBare();
         randomInitializeComposeMatrices();
+//        initalizeComposeMatricesAsIdentity();
     }
     
     protected void randomInitializeComposeMatrices(){
@@ -71,6 +72,11 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
             }
         }
         compositionMatrix = new SimpleMatrix(randomMatrix);
+    }
+    
+    protected void initalizeComposeMatricesAsIdentity() {
+        SimpleMatrix identity = SimpleMatrix.identity(projectionLayerSize);
+        compositionMatrix = SimpleMatrixUtils.hStack(identity, identity);
     }
     
     public void checkingGradientsSoftmax(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
@@ -514,9 +520,9 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
                 
                 ValueGradient valueGrad = computeGradientSoftmax(inputPhrase, compositionMatrix, softmaxWeight, softmaxValue);
                 
-                SimpleMatrix inputPhraseGrad = valueGrad.gradients.get(0).scale(alpha / 2);
-                compositionMatrix = compositionMatrix.plus(valueGrad.gradients.get(1).scale(alpha / 2));
-                SimpleMatrix softmaxGrad = valueGrad.gradients.get(2).scale(alpha / 2);
+                SimpleMatrix inputPhraseGrad = valueGrad.gradients.get(0).scale(alpha / 4);
+                compositionMatrix = compositionMatrix.plus(valueGrad.gradients.get(1).scale(alpha / 4));
+                SimpleMatrix softmaxGrad = valueGrad.gradients.get(2).scale(alpha / 4);
                 
                 inputPhraseGrad.reshape(2, projectionLayerSize);
                 GradientUtils.updateWeights(weights0,new int[]{word1Index, word2Index},inputPhraseGrad);

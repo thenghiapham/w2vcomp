@@ -21,14 +21,14 @@ import demo.TestConstants;
 
 public class PhraseVectorLearning {
     public static void main(String[] args) throws IOException{
-        int hiddenLayerSize = 80;
+        int hiddenLayerSize = 100;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
         // TODO: checking subSampling with phrase
-        AbstractWord2Vec word2vec = new NeuralLanguageModel(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
-//        AbstractWord2Vec word2vec = new SkipGramPhrase2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
+//        AbstractWord2Vec word2vec = new NeuralLanguageModel(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
+        AbstractWord2Vec word2vec = new SkipGramPhrase2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
 //        AbstractWord2Vec word2vec = new CBowWord2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE);
 //        AbstractWord2Vec word2vec = new SkipNGramWord2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE);
         String trainFile = TestConstants.CCG_TRAIN_FILE;
