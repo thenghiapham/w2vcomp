@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import composition.BasicComposition;
 import composition.WeightedAdditive;
+import demo.TestConstants;
 
 import space.SemanticSpace;
 
@@ -97,7 +98,8 @@ public class AdjNounCorrelation{
     }
     
     public static void main(String[] args) {
-        SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
+        //SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
+        SemanticSpace space = SemanticSpace.readSpace(TestConstants.CCG_VECTOR_FILE);
         AdjNounCorrelation anCorrelation = new AdjNounCorrelation("/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemmapos.txt");
         System.out.println("an: " + anCorrelation.evaluateSpacePearson(space, new WeightedAdditive(1.0, 1.0)));
     }

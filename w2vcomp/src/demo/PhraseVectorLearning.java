@@ -14,14 +14,14 @@ import vocab.Vocab;
 import word2vec.AbstractWord2Vec;
 import word2vec.NeuralLanguageModel;
 import word2vec.SkipGramPhrase2Vec;
-//import word2vec.SkipNGramWord2Vec;
+import word2vec.SkipNGramWord2Vec;
 //import word2vec.CBowWord2Vec;
 
 import demo.TestConstants;
 
 public class PhraseVectorLearning {
     public static void main(String[] args) throws IOException{
-        int hiddenLayerSize = 100;
+        int hiddenLayerSize = 40;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
@@ -34,7 +34,7 @@ public class PhraseVectorLearning {
         String trainFile = TestConstants.CCG_TRAIN_FILE;
         String outputFile = TestConstants.CCG_VECTOR_FILE;
         String vocabFile = TestConstants.CCG_VOCABULARY_FILE;
-//        String initFile = TestConstants.CCG_INITIALIZATION_FILE;
+        String initFile = TestConstants.CCG_INITIALIZATION_FILE;
         System.out.println("Starting training using file " + trainFile);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
@@ -51,8 +51,8 @@ public class PhraseVectorLearning {
 
         word2vec.setVocab(vocab);
 
-//        word2vec.initNetwork(initFile);
-        word2vec.initNetwork();
+        word2vec.initNetwork(initFile);
+//        word2vec.initNetwork();
 
         // single threaded instead of multithreading
         System.out.println("Start training");
@@ -68,6 +68,7 @@ public class PhraseVectorLearning {
                 else
                     ((NeuralLanguageModel) word2vec).saveMatrix(TestConstants.CCG_MATRIX_FILE, false);
             }
+//            word2vec.saveNetwork(initFile, true);
         } catch (IOException e) {
             System.exit(1);
         }

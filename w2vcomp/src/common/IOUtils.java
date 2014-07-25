@@ -1,5 +1,6 @@
 package common;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,11 +8,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ejml.simple.SimpleMatrix;
 
 /**
  * This class contains a set of utility IO method 
@@ -99,45 +103,129 @@ public class IOUtils {
     }
     
     /**
+     * Save a 2d array to a BufferedOutputStream in either text format or binary
+     * format
+     * @param outputStream
+     * @param matrix
+     * @param binary
+     */
+    public static void saveMatrix(BufferedOutputStream outputStream, double[][] matrix, boolean binary) {
+        // Save the word vectors
+        // save number of words, length of each vector
+        int numRow = matrix.length;
+        int numColumn = matrix[0].length;
+        try {
+            String firstLine = "" + numRow + " " + numColumn
+                    + "\n";
+            outputStream.write(firstLine.getBytes(Charset.forName("UTF-8")));
+            // save vectors
+            for (int i = 0; i < matrix.length; i++) {
+                if (binary) {
+                    ByteBuffer buffer = ByteBuffer
+                            .allocate(8 * numColumn);
+                    buffer.order(ByteOrder.LITTLE_ENDIAN);
+                    for (int j = 0; j < numColumn; j++) {
+                        buffer.putDouble(matrix[i][j]);
+                    }
+                    outputStream.write(buffer.array());
+                } else {
+                    StringBuffer sBuffer = new StringBuffer();
+                    for (int j = 0; j < numColumn; j++) {
+                        sBuffer.append("" + matrix[i][j] + " ");
+                    }
+                    outputStream.write(sBuffer.toString().getBytes());
+                }
+                outputStream.write("\n".getBytes());
+            }
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static String readWord(BufferedInputStream inputStream) throws IOException{
+        StringBuffer buffer = new StringBuffer();
+        while (true) {
+            int nextByte = inputStream.read();
+            if (nextByte == -1 || nextByte == ' ' || nextByte == '\n') {
+                if (nextByte == -1 && buffer.length() == 0) {
+                    return null;
+                } else {
+                    break;
+                }
+            } else {
+                buffer.append((char) nextByte);
+            }
+        }
+        return buffer.toString();
+    }
+    
+    public static double[][] readMatrix(BufferedInputStream inputStream, boolean binary) {
+        try {
+            if (binary) {
+                int numRows = Integer.parseInt(readWord(inputStream));
+                int numCols = Integer.parseInt(readWord(inputStream));
+                byte[] rowData = new byte[numCols * 8];
+                ByteBuffer buffer = ByteBuffer.wrap(rowData);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                double[][] result = new double[numRows][numCols];
+                for (int i = 0; i < numRows; i++) {
+                    inputStream.read(rowData);
+                    for (int j = 0; j < numCols; j++) {
+                        result[i][j] = buffer.getDouble(j * 8);
+                    }
+                    inputStream.read();
+                }
+                return result;
+            } else {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = reader.readLine();
+                int numRows = Integer.parseInt(line.split(" ")[0]);
+                int numCols = Integer.parseInt(line.split(" ")[1]);
+                double[][] result = new double[numRows][numCols];
+                for (int i = 0; i < numRows; i++) {
+                    line = reader.readLine();
+                    String[] elements = line.split(" ");
+                    for (int j = 0; j < numCols; j++) {
+                        result[i][j] = Double.parseDouble(elements[j]); 
+                    }
+                }
+                return result;
+            }  
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
      * Save a 2d array to a file in either text format or binary format
      * @param matrixFile: the path to the output file
      * @param matrix: a 2d array contains the elements of the matrix
      * @param binary: the format of the output file (true if binary)
      */
     public static void saveMatrix(String matrixFile, double[][] matrix, boolean binary) {
-        // Save the word vectors
-        // save number of words, length of each vector
-        int numRow = matrix.length;
-        int numColumn = matrix[0].length;
         try {
             BufferedOutputStream os = new BufferedOutputStream(
                     new FileOutputStream(matrixFile));
-            String firstLine = "" + numRow + " " + numColumn
-                    + "\n";
-            os.write(firstLine.getBytes(Charset.forName("UTF-8")));
-            // save vectors
-            for (int i = 0; i < matrix.length; i++) {
-                if (binary) {
-                    ByteBuffer buffer = ByteBuffer
-                            .allocate(4 * numColumn);
-                    buffer.order(ByteOrder.LITTLE_ENDIAN);
-                    for (int j = 0; j < numColumn; j++) {
-                        buffer.putFloat((float) matrix[i][j]);
-                    }
-                    os.write(buffer.array());
-                } else {
-                    StringBuffer sBuffer = new StringBuffer();
-                    for (int j = 0; j < numColumn; j++) {
-                        sBuffer.append("" + matrix[i][j] + " ");
-                    }
-                    os.write(sBuffer.toString().getBytes());
-                }
-                os.write("\n".getBytes());
-            }
-            os.flush();
+            saveMatrix(os, matrix, binary);
             os.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Save a SimpleMatrix instance to an BufferedOutputStream
+     * @param outputStream
+     * @param matrix
+     * @param binary
+     */
+    public static void saveMatrix(BufferedOutputStream outputStream, SimpleMatrix matrix, boolean binary) {
+        saveMatrix(outputStream, SimpleMatrixUtils.to2DArray(matrix), binary);
+    }
+    
+    
+    
 }
