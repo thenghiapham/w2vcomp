@@ -51,9 +51,16 @@ public class MathUtils {
      * @param f input value
      * @return sigmoid(f)
      */
-    public static double sigmoid(double f) {
+    public static double sigmoid(double x) {
         // TODO: understand why they turn the formula like this (e^x faster
         // than e^-x ? Rounding error?)
-        return 1 - (double) (1.0 / (1.0 + Math.exp(f)));
+        return 1 - (double) (1.0 / (1.0 + Math.exp(x)));
+    }
+    
+    /**
+     * tanh function
+     */
+    public static double tanh(double x) {
+        return 1 - (double) (2.0 / (1.0 + Math.exp(2 * x)));
     }
 }

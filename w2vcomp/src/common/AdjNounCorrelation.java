@@ -1,9 +1,15 @@
 package common;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.ejml.simple.SimpleMatrix;
+
 import composition.BasicComposition;
+import composition.FullAdditive;
 import composition.WeightedAdditive;
 import demo.TestConstants;
 
@@ -97,10 +103,14 @@ public class AdjNounCorrelation{
         return correlation.evaluateSpaceSpearman(phraseSpace);
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
-        SemanticSpace space = SemanticSpace.readSpace(TestConstants.CCG_VECTOR_FILE);
+//        SemanticSpace space = SemanticSpace.readSpace(TestConstants.CCG_VECTOR_FILE);
+        SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/mikolov_40.bin");
         AdjNounCorrelation anCorrelation = new AdjNounCorrelation("/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemmapos.txt");
-        System.out.println("an: " + anCorrelation.evaluateSpacePearson(space, new WeightedAdditive(1.0, 1.0)));
+        System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space, new WeightedAdditive(1.0, 1.0)));
+        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream("/home/thenghiapham/work/project/mikolov/output/phrase1.comp.mat"));
+        SimpleMatrix compositionMatrix = new SimpleMatrix(IOUtils.readMatrix(inputStream, false));
+        System.out.println("an: " + anCorrelation.evaluateSpacePearson(space, new FullAdditive(compositionMatrix)));
     }
 }
