@@ -1,5 +1,7 @@
 package common;
 
+import neural.ActivationFunction;
+
 import org.ejml.alg.dense.mult.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 
@@ -92,6 +94,17 @@ public class SimpleMatrixUtils {
         System.out.println("mat 2" + matrix2);
         System.out.println("vstacked" + vStack(matrix1, matrix2));
         System.out.println("hstacked" + hStack(matrix1, matrix2));
+    }
+    
+    public static SimpleMatrix applyActivationFunction(SimpleMatrix input, ActivationFunction activation) {
+        double[] data = input.getMatrix().getData();
+        double[] newData = new double[data.length];
+        for (int i = 0; i < data.length; i++) {
+//            newData
+//            TODO:
+            
+        }
+        return null;
     }
     
     
