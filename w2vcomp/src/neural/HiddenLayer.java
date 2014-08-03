@@ -25,13 +25,12 @@ public class HiddenLayer {
     }
     
     public SimpleMatrix[] backward(SimpleMatrix error) {
-        
+        if (activation != null) {
+            error = error.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
+        }
         SimpleMatrix[] errorAndGrad = new SimpleMatrix[2];
         SimpleMatrix gradient = error.mult(tempInput.transpose());
         SimpleMatrix backwardError = inputWeights.transpose().mult(error);
-        if (activation != null) {
-            backwardError = backwardError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
-        }
         errorAndGrad[0] = backwardError;
         errorAndGrad[1] = gradient;
         return errorAndGrad;
