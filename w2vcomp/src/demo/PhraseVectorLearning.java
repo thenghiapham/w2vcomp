@@ -14,7 +14,7 @@ import vocab.Vocab;
 import word2vec.AbstractWord2Vec;
 import word2vec.NeuralLanguageModel;
 import word2vec.SkipGramPhrase2Vec;
-import word2vec.SkipNGramWord2Vec;
+//import word2vec.SkipNGramWord2Vec;
 //import word2vec.CBowWord2Vec;
 
 import demo.TestConstants;

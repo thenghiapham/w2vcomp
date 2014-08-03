@@ -11,7 +11,6 @@ import org.ejml.simple.SimpleMatrix;
 import composition.BasicComposition;
 import composition.FullAdditive;
 import composition.WeightedAdditive;
-import demo.TestConstants;
 
 import space.SemanticSpace;
 

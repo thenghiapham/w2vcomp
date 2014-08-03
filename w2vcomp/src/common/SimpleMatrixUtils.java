@@ -100,12 +100,18 @@ public class SimpleMatrixUtils {
         double[] data = input.getMatrix().getData();
         double[] newData = new double[data.length];
         for (int i = 0; i < data.length; i++) {
-//            newData
-//            TODO:
-            
+            newData[i] = activation.activation(data[i]);
         }
-        return null;
+        return new SimpleMatrix(input.numRows(), input.numCols(), true, newData);
     }
     
+    public static SimpleMatrix applyDerivative(SimpleMatrix input, ActivationFunction activation) {
+        double[] data = input.getMatrix().getData();
+        double[] newData = new double[data.length];
+        for (int i = 0; i < data.length; i++) {
+            newData[i] = activation.derivative(data[i]);
+        }
+        return new SimpleMatrix(input.numRows(), input.numCols(), true, newData);
+    }
     
 }
