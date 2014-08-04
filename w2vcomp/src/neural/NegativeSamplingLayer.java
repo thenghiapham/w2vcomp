@@ -6,15 +6,20 @@ import vocab.Vocab;
 import word2vec.UniGram;
 
 public class NegativeSamplingLayer {
-    public SimpleMatrix outputVectors;
-    public UniGram uniGram;
+    protected SimpleMatrix outputVectors;
+    protected UniGram uniGram;
     protected Vocab vocab;
+    protected int noSamples;
     
-    public NegativeSamplingLayer() {
-       
+    protected NegativeSamplingLayer(Vocab vocab, int noSamples) {
+        this.vocab = vocab;
+        this.noSamples = noSamples;
+        this.uniGram = new UniGram(vocab);
     }
     
+    
     public SimpleMatrix getOutputWeights(String word) {
+        
         return null;
     }
     

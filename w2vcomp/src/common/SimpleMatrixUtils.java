@@ -114,4 +114,16 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(input.numRows(), input.numCols(), true, newData);
     }
     
+    public static SimpleMatrix getRows(SimpleMatrix originalMatrix, int[] indices) {
+        int numCols = originalMatrix.numCols();
+        double[] originalData = originalMatrix.getMatrix().getData();
+        double[] destinationData = new double[indices.length * numCols];
+        for (int i = 0;i < indices.length; i++) {
+            int index = indices[i];
+            System.arraycopy(originalData, numCols * index, destinationData, 
+                    i * numCols, numCols);
+        }
+        return new SimpleMatrix(indices.length, numCols, true, destinationData);
+    }
+    
 }
