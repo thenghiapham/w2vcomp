@@ -1,6 +1,6 @@
 package neural;
 
-public class Identity implements ActivationFunction {
+public class IdentityFunction implements ActivationFunction {
 
     @Override
     public double activation(double x) {
