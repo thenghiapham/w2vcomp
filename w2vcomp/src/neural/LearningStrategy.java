@@ -1,4 +1,4 @@
-package word2vec;
+package neural;
 
 import org.ejml.simple.SimpleMatrix;
 

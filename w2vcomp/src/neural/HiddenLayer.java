@@ -4,36 +4,60 @@ import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
 
-public class HiddenLayer {
+public class HiddenLayer extends BasicLayer implements Layer{
+    
     protected SimpleMatrix inputWeights;
     protected ActivationFunction activation;
+    
     protected SimpleMatrix tempZ;
-    protected SimpleMatrix tempInput; 
+    protected SimpleMatrix input;
+    protected SimpleMatrix output;
+    protected SimpleMatrix error;
+    protected SimpleMatrix gradient;
+    
     
     public HiddenLayer(SimpleMatrix inputWeight, ActivationFunction activation) {
         this.inputWeights = inputWeight;
         this.activation = activation;
     }
     
-    public SimpleMatrix forward(SimpleMatrix input) {
-        tempInput = input;
+    @Override
+    public void forward() {
+        input = getInLayerIntput();
         tempZ = inputWeights.mult(input);
         if (activation != null) 
-            return SimpleMatrixUtils.applyActivationFunction(tempZ,activation);
+            output = SimpleMatrixUtils.applyActivationFunction(tempZ,activation);
         else
-            return tempZ;
+            output = tempZ;
     }
     
-    public SimpleMatrix[] backward(SimpleMatrix error) {
+    @Override
+    public void backward() {
+        SimpleMatrix parentError = getOutLayerError();
         if (activation != null) {
-            error = error.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
+            parentError = parentError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
         }
-        SimpleMatrix[] errorAndGrad = new SimpleMatrix[2];
-        SimpleMatrix gradient = error.mult(tempInput.transpose());
-        SimpleMatrix backwardError = inputWeights.transpose().mult(error);
-        errorAndGrad[0] = backwardError;
-        errorAndGrad[1] = gradient;
-        return errorAndGrad;
-                
+        gradient = error.mult(input.transpose());
+        error = inputWeights.transpose().mult(parentError);
+    }
+    
+
+
+    public SimpleMatrix getInput() {
+        return input;
+    }
+    
+    @Override
+    public SimpleMatrix getError() {
+        return error;
+    }
+    
+    public SimpleMatrix getGradient() {
+        return gradient;
+    }
+
+    @Override
+    public SimpleMatrix getOutput() {
+        return output;
     }
 }

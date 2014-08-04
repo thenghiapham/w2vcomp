@@ -1,5 +1,7 @@
 package common;
 
+import java.util.List;
+
 import neural.ActivationFunction;
 
 import org.ejml.alg.dense.mult.MatrixDimensionException;
@@ -124,6 +126,10 @@ public class SimpleMatrixUtils {
                     i * numCols, numCols);
         }
         return new SimpleMatrix(indices.length, numCols, true, destinationData);
+    }
+    
+    public static SimpleMatrix concatenateVectors(List<SimpleMatrix> vectors, boolean columnVector) {
+        return null;
     }
     
 }

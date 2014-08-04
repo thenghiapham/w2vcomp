@@ -1,5 +1,6 @@
 package neural;
 
+
 import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
