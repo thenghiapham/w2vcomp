@@ -11,6 +11,10 @@ public class ProjectionLayer extends BasicLayer implements Layer{
     protected SimpleMatrix error;
     protected SimpleMatrix gradient;
     
+    public ProjectionLayer(SimpleMatrix vector) {
+        this.vector = vector;
+    }
+    
     @Override
     public void forward() {
     }

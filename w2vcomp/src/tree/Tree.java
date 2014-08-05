@@ -1,7 +1,6 @@
 package tree;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Lorenzo Dell'Arciprete
@@ -14,7 +13,7 @@ import java.util.List;
 public class Tree {
     
     protected String rootLabel;   // The label of the root node
-    protected List<Tree> children = new ArrayList<Tree>();    // The ordered list of children of the root node
+    protected ArrayList<Tree> children = new ArrayList<Tree>();    // The ordered list of children of the root node
     protected Tree parent;
     
     public Tree() {
@@ -25,6 +24,10 @@ public class Tree {
         this.rootLabel = rootLabel;
     }
     
+    public String getConstruction() {
+        // TODO: add this
+        return "";
+    }
     
     /**
      * @param treeString - a tree in string parenthetic format
@@ -137,7 +140,7 @@ public class Tree {
         this.rootLabel = root;
     }
 
-    public List<Tree> getChildren() {
+    public ArrayList<Tree> getChildren() {
         return children;
     }
 

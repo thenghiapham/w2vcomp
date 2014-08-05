@@ -63,6 +63,10 @@ public class ProjectionMatrix {
             return vectors.extractVector(true, wordIndex);
     }
     
+    public int getWordIndex(String word) {
+        return vocab.getWordIndex(word);
+    }
+    
     // synchronize??
     // maybe not as neccessary as synchronizing the composition matrix
     protected void updateVector(int wordIndex, SimpleMatrix gradient, 

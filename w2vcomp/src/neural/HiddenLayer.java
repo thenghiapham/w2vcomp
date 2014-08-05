@@ -16,8 +16,8 @@ public class HiddenLayer extends BasicLayer implements Layer{
     protected SimpleMatrix gradient;
     
     
-    public HiddenLayer(SimpleMatrix inputWeight, ActivationFunction activation) {
-        this.inputWeights = inputWeight;
+    public HiddenLayer(SimpleMatrix weights, ActivationFunction activation) {
+        this.inputWeights = weights;
         this.activation = activation;
     }
     

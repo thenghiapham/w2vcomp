@@ -11,6 +11,11 @@ public abstract class BasicLayer implements Layer {
     protected ArrayList<Layer> inLayers;
     protected ArrayList<Layer> outLayers;
     
+    public BasicLayer() {
+        inLayers = new ArrayList<>();
+        outLayers = new ArrayList<>();
+    }
+    
     @Override
     public void addInLayer(Layer inLayer) {
         inLayers.add(inLayer);
