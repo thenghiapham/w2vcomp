@@ -4,13 +4,10 @@ import java.util.Random;
 
 import org.ejml.simple.SimpleMatrix;
 
-import common.SimpleMatrixUtils;
-
 import vocab.Vocab;
 import word2vec.UniGram;
 
-public class NegativeSamplingLearner {
-    protected SimpleMatrix outputVectors;
+public class NegativeSamplingLearner extends LearningStrategy{
     protected UniGram uniGram;
     protected Vocab vocab;
     protected int noSamples;
@@ -19,11 +16,31 @@ public class NegativeSamplingLearner {
     
     protected Random rand;
     
-    // TODO: initialization
-    public NegativeSamplingLearner(Vocab vocab, int noSamples) {
+    // TODO: random initialization
+    public static NegativeSamplingLearner randomInitialize(Vocab vocab, int noSamples, int outputLayerSize) {
+        Random rand = new Random();
+        double[][] outVectors = new double[vocab.getVocabSize()][outputLayerSize];
+        for (int i = 0; i < vocab.getVocabSize(); i++) {
+            for (int j = 0; j < outputLayerSize; j++) {
+                outVectors[i][j] = (double) (rand.nextFloat() - 0.5)
+                        / outputLayerSize;
+            }
+        }
+        return new NegativeSamplingLearner(vocab, new SimpleMatrix(outVectors), noSamples);
+    }
+    
+    // TODO: initialize with zero
+    public static NegativeSamplingLearner zeroInitialize(Vocab vocab, int noSamples, int outputLayerSize) {
+        return new NegativeSamplingLearner(vocab, new SimpleMatrix(vocab.getVocabSize(), outputLayerSize), noSamples);
+    }
+    
+    protected NegativeSamplingLearner(Vocab vocab, SimpleMatrix outVectors, int noSamples) {
+        super(outVectors);
+        
         this.vocab = vocab;
         this.noSamples = noSamples;
         this.uniGram = new UniGram(vocab);
+        
         initializeOutput();
     }
     
@@ -33,7 +50,7 @@ public class NegativeSamplingLearner {
         goldOutput = new SimpleMatrix(noSamples + 1, 1, false, data);
     }
     
-    public SimpleMatrix getOutputWeights(String word) {
+    public int[] getOutputIndices(String word) {
         int wordIndex = vocab.getWordIndex(word);
         
         int[] sampleIndices = new int[noSamples + 1];
@@ -46,7 +63,7 @@ public class NegativeSamplingLearner {
             }
             sampleIndices[i + 1] = sampleWordIndex;
         }
-        return SimpleMatrixUtils.getRows(outputVectors, sampleIndices);
+        return sampleIndices;
     }
     
     public SimpleMatrix getGoldOutput(String word) {
