@@ -2,13 +2,64 @@ package neural;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import org.ejml.simple.SimpleMatrix;
+
+import common.SimpleMatrixUtils;
 
 public class CompositionMatrices {
     protected SimpleMatrix[] compositionMatrices;
     protected Integer[] keys;
     protected HashMap<String, Integer> constructionMap;
+    
+    protected CompositionMatrices(HashMap<String, Integer> constructionMap, SimpleMatrix[] compositionMatrices) {
+        this.compositionMatrices = compositionMatrices;
+        this.constructionMap = constructionMap;
+        this.keys = new Integer[compositionMatrices.length];
+        for (int i = 0; i < compositionMatrices.length; i++) {
+            keys[i] = i;
+        }
+    }
+    
+    public static CompositionMatrices randomInitialize(List<String> constructions, int hiddenLayerSize) {
+        HashMap<String, Integer> constructionMap= new HashMap<>();
+        SimpleMatrix[] compositionMatrices = new SimpleMatrix[constructions.size() + 1];
+        int index = 0;
+        compositionMatrices[index] = createRandomMatrix(hiddenLayerSize);
+        for (String construction : constructions) {
+            index++;
+            constructionMap.put(construction, index);
+            compositionMatrices[index] = createRandomMatrix(hiddenLayerSize);
+        }
+        return new CompositionMatrices(constructionMap, compositionMatrices);
+    }
+    
+    public static CompositionMatrices identityInitialize(List<String> constructions, int hiddenLayerSize) {
+        HashMap<String, Integer> constructionMap= new HashMap<>();
+        SimpleMatrix[] compositionMatrices = new SimpleMatrix[constructions.size() + 1];
+        int index = 0;
+        compositionMatrices[index] = createIdentityMatrix(hiddenLayerSize);
+        for (String construction : constructions) {
+            index++;
+            constructionMap.put(construction, index);
+            compositionMatrices[index] = createIdentityMatrix(hiddenLayerSize);
+        }
+        return new CompositionMatrices(constructionMap, compositionMatrices);
+    }
+    
+    public static SimpleMatrix createRandomMatrix(int hiddenLayerSize) {
+        Random random = new Random();
+        SimpleMatrix randomMatrix1 = SimpleMatrix.random(hiddenLayerSize, hiddenLayerSize, - 0.5, 0.5, random);
+        SimpleMatrix randomMatrix2 = SimpleMatrix.random(hiddenLayerSize, hiddenLayerSize, - 0.5, 0.5, random);
+        return SimpleMatrixUtils.hStack(randomMatrix1, randomMatrix2).scale(1 / hiddenLayerSize);
+    }
+    
+    public static SimpleMatrix createIdentityMatrix(int hiddenLayerSize) {
+        SimpleMatrix identity = SimpleMatrix.identity(hiddenLayerSize);
+        return SimpleMatrixUtils.hStack(identity, identity);
+    }
     
     public SimpleMatrix getCompositionMatrix(int constructionIndex) {
         return compositionMatrices[constructionIndex];
