@@ -51,7 +51,7 @@ public class SemanticSpace {
         word2Index = DataStructureUtils.arrayToMap(words);
     }
     
-    public SemanticSpace(Vocab vocab, double[][] vectors, boolean copy) throws ValueException{
+    public SemanticSpace(Vocab vocab, double[][] vectors, boolean copy){
         if (vocab.getVocabSize() != vectors.length) {
             throw new ValueException("vocab and vectors must have the same size");
         } else {

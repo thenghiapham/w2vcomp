@@ -16,7 +16,7 @@ public class HierarchicalSoftmaxLearner extends LearningStrategy{
         this.vocab = vocab;
     }
     
- // TODO: random initialization
+    // TODO: random initialization
     public static HierarchicalSoftmaxLearner randomInitialize(Vocab vocab, int outputLayerSize) {
         Random rand = new Random();
         double[][] outVectors = new double[vocab.getVocabSize() -1 ][outputLayerSize];
@@ -33,6 +33,12 @@ public class HierarchicalSoftmaxLearner extends LearningStrategy{
     public static HierarchicalSoftmaxLearner zeroInitialize(Vocab vocab, int outputLayerSize) {
         return new HierarchicalSoftmaxLearner(vocab, new SimpleMatrix(vocab.getVocabSize() - 1, outputLayerSize));
     }
+    
+    // TODO: initialize with saved matrix
+    public static HierarchicalSoftmaxLearner initializeFromMatrix(Vocab vocab, SimpleMatrix saveMatrix) {
+        return new HierarchicalSoftmaxLearner(vocab, saveMatrix);
+    }
+    
     
     // TODO: transpose or not?
     public int[] getOutputIndices(String word) {

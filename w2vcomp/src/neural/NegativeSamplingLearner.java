@@ -34,6 +34,11 @@ public class NegativeSamplingLearner extends LearningStrategy{
         return new NegativeSamplingLearner(vocab, new SimpleMatrix(vocab.getVocabSize(), outputLayerSize), noSamples);
     }
     
+ // TODO: initialize with saved matrix
+    public static NegativeSamplingLearner initializeFromMatrix(Vocab vocab,  int noSamples, SimpleMatrix saveMatrix) {
+        return new NegativeSamplingLearner(vocab, saveMatrix, noSamples);
+    }
+    
     protected NegativeSamplingLearner(Vocab vocab, SimpleMatrix outVectors, int noSamples) {
         super(outVectors);
         

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import space.SemanticSpace;
 
 import common.MenCorrelation;
-import common.exception.ValueException;
 
 /**
  * Still abstract class for learning words' vectors
@@ -51,11 +50,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 + vocab.getEntry(vocab.getVocabSize() - 1).word);
         
         if (men != null) {
-            try {
-                outputSpace = new SemanticSpace(vocab, weights0, false);
-            } catch (ValueException e) {
-                e.printStackTrace();
-            }
+            outputSpace = new SemanticSpace(vocab, weights0, false);
         }
         
         for (SentenceInputStream inputStream : inputStreams) {
