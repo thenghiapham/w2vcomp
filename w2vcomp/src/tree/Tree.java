@@ -15,6 +15,9 @@ public class Tree {
     protected String rootLabel;   // The label of the root node
     protected ArrayList<Tree> children = new ArrayList<Tree>();    // The ordered list of children of the root node
     protected Tree parent;
+    protected int height;
+    protected int leftmostPosition;
+    protected int rightmostPosition;
     
     public Tree() {
         
@@ -22,6 +25,7 @@ public class Tree {
     
     public Tree(String rootLabel) {
         this.rootLabel = rootLabel;
+        this.height = 0;
     }
     
     public String getConstruction() {
@@ -183,6 +187,54 @@ public class Tree {
             all.addAll(allNodes(child));
         return all;
     }
-
     
+    public void updateHeight() {
+        if (this.isTerminal()) {
+            this.height = 0;  
+            return;
+        } else {
+            for (Tree child: children) {
+                child.updateHeight();
+            }
+            int maxHeight = 0;
+            for (Tree child: children) {
+                int childHeight = child.getHeight();
+                if (childHeight > maxHeight) maxHeight = childHeight;
+            }
+            this.height = maxHeight + 1;
+        }
+    }
+
+    /**
+     * call updateHeight before calling this
+     * (it's not very well-designed, if getParent working fine, should be easier
+     * to update, instead of calling manually)
+     * @return
+     */
+    public int getHeight() {
+        return height;
+    }
+    
+    public void updatePosition(int leftPosition) {
+        this.leftmostPosition = leftPosition;
+
+        if (this.isTerminal()) {
+            this.rightmostPosition = this.leftmostPosition;
+        } else {
+            for (Tree child: children) {
+                child.updatePosition(leftPosition);
+                leftPosition = child.getRightmostPosition() + 1;
+            }
+            // since leftPosition now is the rightmostPosition of the last child + 1
+            this.rightmostPosition = leftPosition - 1; 
+        }
+    }
+    
+    public int getLeftmostPosition() {
+        return leftmostPosition;
+    }
+    
+    public int getRightmostPosition() {
+        return rightmostPosition;
+    }
 }
