@@ -11,10 +11,12 @@ public class NegativeSamplingLearner extends LearningStrategy{
     protected UniGram uniGram;
     protected Vocab vocab;
     protected int noSamples;
+    protected CostFunction costFunction;
     
     protected SimpleMatrix goldOutput;
     
     protected Random rand;
+    
     
     // TODO: random initialization
     public static NegativeSamplingLearner randomInitialize(Vocab vocab, int noSamples, int outputLayerSize) {
@@ -45,6 +47,7 @@ public class NegativeSamplingLearner extends LearningStrategy{
         this.vocab = vocab;
         this.noSamples = noSamples;
         this.uniGram = new UniGram(vocab);
+        costFunction = new NegativeSamplingCost();
         
         initializeOutput();
     }
@@ -56,8 +59,9 @@ public class NegativeSamplingLearner extends LearningStrategy{
     }
     
     public int[] getOutputIndices(String word) {
-        int wordIndex = vocab.getWordIndex(word);
         
+        int wordIndex = vocab.getWordIndex(word);
+        if (wordIndex == -1) return null;
         int[] sampleIndices = new int[noSamples + 1];
         sampleIndices[0] = wordIndex;
         
@@ -73,5 +77,11 @@ public class NegativeSamplingLearner extends LearningStrategy{
     
     public SimpleMatrix getGoldOutput(String word) {
         return goldOutput;
+    }
+
+    @Override
+    public CostFunction getCostFunction() {
+        // TODO Auto-generated method stub
+        return costFunction;
     }
 }

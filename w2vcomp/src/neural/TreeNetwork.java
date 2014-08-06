@@ -3,6 +3,7 @@ package neural;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -35,8 +36,11 @@ public class TreeNetwork {
     
     public static TreeNetwork createNetwork(Tree parseTree, ProjectionMatrix projectionBuilder, 
             CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
-            ActivationFunction hiddenLayerActivation) {
+            ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
+            int maxWindowSize, int outputLayerHeight, boolean allLevel) {
         TreeNetwork network = new TreeNetwork(parseTree);
+        parseTree.updateHeight();
+        parseTree.updatePosition(0);
         
         HashMap<Tree, Layer> layerMap = new HashMap<>();
         
@@ -54,20 +58,22 @@ public class TreeNetwork {
             } else if (node.isTerminal()) {
                 
             } else {
-                ArrayList<Tree> children = parseTree.getChildren();
-                if (children.size() == 1) {
-                    layer = layerMap.get(children.get(0));
-                } else {
-                    String construction = parseTree.getConstruction();
-                    SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
-                    int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
-                    layer = new HiddenLayer(weights, hiddenLayerActivation);
-                    for (Tree child: children) {
-                        Layer childLayer = layerMap.get(child);
-                        layer.addInLayer(childLayer);
-                        childLayer.addOutLayer(layer);
+                if (outputLayerHeight == -1 || outputLayerHeight <= node.getHeight()) {
+                    ArrayList<Tree> children = parseTree.getChildren();
+                    if (children.size() == 1) {
+                        layer = layerMap.get(children.get(0));
+                    } else {
+                        String construction = parseTree.getConstruction();
+                        SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
+                        int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
+                        layer = new HiddenLayer(weights, hiddenLayerActivation);
+                        for (Tree child: children) {
+                            Layer childLayer = layerMap.get(child);
+                            layer.addInLayer(childLayer);
+                            childLayer.addOutLayer(layer);
+                        }
+                        network.addHiddenLayer((HiddenLayer) layer, compositionIndex);
                     }
-                    network.addHiddenLayer((HiddenLayer) layer, compositionIndex);
                 }
             }
             if (layer != null)
@@ -75,8 +81,44 @@ public class TreeNetwork {
         }
         // TODO:?
         network.setLayerMap(layerMap);
-        
+        network.addOutputLayers(outputBuilder, outputLayerActivation, maxWindowSize, outputLayerHeight, allLevel);
         return network;
+    }
+    
+    protected void addOutputLayers(LearningStrategy outputBuilder, ActivationFunction outputLayerActivation, int maxWindowSize, 
+            int outputLayerHeight, boolean allLevel) {
+        String[] sentence = parseTree.getSurfaceWords();
+        Random random = new Random();
+        for (Tree node: layerMap.keySet()) {
+            // TODO: changable here to 1 if one to include Mikolov's skipgram
+            int height = node.getHeight();
+            
+            if (height >= 2 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
+                if (!allLevel && (height != outputLayerHeight || (outputLayerHeight == -1 && node != parseTree))) {
+                    continue;
+                } else {
+                    HiddenLayer hiddenLayer = (HiddenLayer) layerMap.get(node);
+                    int windowSize = random.nextInt(maxWindowSize) + 1;
+                    for (int i = node.getLeftmostPosition() - windowSize; i <= node.getRightmostPosition() + windowSize; i++) {
+                        if ((i >= 0 && i < sentence.length && (i < node.getLeftmostPosition() || i > node.getRightmostPosition()))) {
+                            // TODO: do something if word is not in Vocab
+                            int[] indices = outputBuilder.getOutputIndices(sentence[i]);
+                            if (indices == null) continue;
+                            SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
+                            SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
+                            CostFunction costFunction = outputBuilder.getCostFunction();
+                            OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction);
+                            outputLayer.addInLayer(hiddenLayer);
+                            hiddenLayer.addOutLayer(outputLayer);
+                            addOutputLayer(outputLayer, indices);
+                        }
+                    }
+                }
+                
+            } else {
+                continue;
+            }
+        }
     }
     
     public void addHiddenLayer(HiddenLayer layer, int compositionIndex) {

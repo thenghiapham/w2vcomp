@@ -13,6 +13,7 @@ public class CompositionMatrices {
     protected SimpleMatrix[] compositionMatrices;
     protected Integer[] keys;
     protected HashMap<String, Integer> constructionMap;
+    protected double weightDecay;
     
     protected CompositionMatrices(HashMap<String, Integer> constructionMap, SimpleMatrix[] compositionMatrices) {
         this.compositionMatrices = compositionMatrices;
@@ -90,18 +91,29 @@ public class CompositionMatrices {
     
     public void updateConstructions(ArrayList<Integer> constructionIndices, ArrayList<SimpleMatrix> gradients, double learningRate) {
         HashMap<Integer, SimpleMatrix> gradientMap = new HashMap<>();
+        HashMap<Integer, Integer> weightDecayTimes = new HashMap<>();
         int gradientNum = gradients.size();
         for (int i = 0; i < gradientNum; i++) {
             int constructionIndex = constructionIndices.get(i);
             SimpleMatrix gradient = gradients.get(i);
             if (gradientMap.containsKey(constructionIndex)) {
                 gradientMap.put(constructionIndex, gradientMap.get(constructionIndex).plus(gradient));
+                weightDecayTimes.put(constructionIndex, weightDecayTimes.get(constructionIndex) + 1);
             } else {
                 gradientMap.put(constructionIndex, gradient);
+                weightDecayTimes.put(constructionIndex, 1);
             }
         }
         for (Integer key : gradientMap.keySet()) {
-            updateSingleConstruction(key, gradientMap.get(key).scale(learningRate));
+            SimpleMatrix gradient =  gradientMap.get(key);
+            if (learningRate != 0) {
+                gradient = gradient.minus(compositionMatrices[key].scale(weightDecayTimes.get(key) * weightDecay));
+            }
+            updateSingleConstruction(key, gradient.scale(learningRate));
         }
+    }
+    
+    public void setWeightDecay(double weightDecay) {
+        this.weightDecay = weightDecay;
     }
 }

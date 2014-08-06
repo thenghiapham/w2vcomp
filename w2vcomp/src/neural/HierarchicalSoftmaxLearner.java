@@ -10,10 +10,12 @@ import vocab.VocabEntry;
 
 public class HierarchicalSoftmaxLearner extends LearningStrategy{
     protected Vocab vocab;
+    protected CostFunction costFunction;
     
     protected HierarchicalSoftmaxLearner(Vocab vocab, SimpleMatrix outVectors) {
         super(outVectors);
         this.vocab = vocab;
+        costFunction = new HierarchicalSoftmaxCost();
     }
     
     // TODO: random initialization
@@ -42,6 +44,8 @@ public class HierarchicalSoftmaxLearner extends LearningStrategy{
     
     // TODO: transpose or not?
     public int[] getOutputIndices(String word) {
+        // TODO: return null if out of vocabulary
+        if (vocab.getWordIndex(word) == -1) return null;
         VocabEntry wordEntry = vocab.getEntry(word);
         int[] parentIndices = wordEntry.ancestors;
         return parentIndices;
@@ -57,5 +61,11 @@ public class HierarchicalSoftmaxLearner extends LearningStrategy{
             data[i] = code.charAt(i) - 48;
         }
         return new SimpleMatrix(codeLength, 1, false, data);
+    }
+
+    @Override
+    public CostFunction getCostFunction() {
+        // TODO Auto-generated method stub
+        return costFunction;
     }
 }

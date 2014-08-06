@@ -23,6 +23,13 @@ public class OutputLayer extends BasicLayer implements Layer{
     
     protected int[] weightVectorIndices;
     
+    public OutputLayer(SimpleMatrix weights, ActivationFunction activation, SimpleMatrix goldOutput, CostFunction costFunction) {
+        this.inputWeights = weights;
+        this.activation = activation;
+        this.goldOutput = goldOutput;
+        this.costFunction = costFunction;
+    }
+    
     @Override
     public void forward() {
         input = getInLayerIntput();

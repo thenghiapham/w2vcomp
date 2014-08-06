@@ -215,6 +215,7 @@ public class Tree {
         return height;
     }
     
+    
     public void updatePosition(int leftPosition) {
         this.leftmostPosition = leftPosition;
 
@@ -227,6 +228,37 @@ public class Tree {
             }
             // since leftPosition now is the rightmostPosition of the last child + 1
             this.rightmostPosition = leftPosition - 1; 
+        }
+    }
+    
+    public String[] getSurfaceWords() {
+        int width = getWidth();
+        String[] result = new String[width];
+        putSurfaceString(0, result);
+        return result;
+    }
+    
+    protected int putSurfaceString(int pos, String[] words) {
+        if (this.isTerminal()) {
+            words[pos] = this.rootLabel;
+            return pos;
+        } else {
+            for (Tree child: children) {
+                pos = child.putSurfaceString(pos, words) + 1;
+            }
+            return pos - 1;
+        }
+    }
+    
+    public int getWidth() {
+        if (this.isTerminal()) {
+            return 1;
+        } else {
+            int width = 0;
+            for (Tree child: children) {
+                width += child.getHeight();
+            }
+            return width;
         }
     }
     
