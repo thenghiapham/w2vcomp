@@ -29,7 +29,7 @@ public abstract class BasicLayer implements Layer {
     protected SimpleMatrix getInLayerIntput() {
         ArrayList<SimpleMatrix> inputs = new ArrayList<>();
         for (Layer inLayer: inLayers) {
-            inputs.add(inLayer.getError());
+            inputs.add(inLayer.getOutput());
         }
         System.out.println(toTreeString());
         return SimpleMatrixUtils.concatenateVectors(inputs, true);

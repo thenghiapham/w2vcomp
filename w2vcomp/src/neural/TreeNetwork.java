@@ -59,6 +59,7 @@ public class TreeNetwork {
                 String word = terminalChild.getRootLabel();
                 int wordIndex = projectionBuilder.getWordIndex(word);
                 SimpleMatrix vector = projectionBuilder.getVector(word);
+//                System.out.println("vector " + word + " " + vector);
                 layer = new ProjectionLayer(vector);
                 network.addProjectionLayer((ProjectionLayer) layer, wordIndex);
             } else if (node.isTerminal()) {

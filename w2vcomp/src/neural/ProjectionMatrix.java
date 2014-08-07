@@ -45,18 +45,19 @@ public class ProjectionMatrix {
     
     public SimpleMatrix getVector(String word) {
         int wordIndex = vocab.getWordIndex(word);
-        return getVector(wordIndex); 
+        // TODO: transpose all?
+        return getVector(wordIndex).transpose(); 
     }
     
     // TODO: 
-    public SimpleMatrix getVectors(String[] words) {
-        int[] indices = new int[words.length];
-        for (int i = 0; i < words.length; i++) {
-            int wordIndex = vocab.getWordIndex(words[i]);
-            indices[i] = (wordIndex==-1)?vocab.getVocabSize():wordIndex;
-        }
-        return SimpleMatrixUtils.getRows(vectors, indices);
-    }
+//    public SimpleMatrix getVectors(String[] words) {
+//        int[] indices = new int[words.length];
+//        for (int i = 0; i < words.length; i++) {
+//            int wordIndex = vocab.getWordIndex(words[i]);
+//            indices[i] = (wordIndex==-1)?vocab.getVocabSize():wordIndex;
+//        }
+//        return SimpleMatrixUtils.getRows(vectors, indices);
+//    }
     
 
     public SimpleMatrix getVector(int wordIndex) {
