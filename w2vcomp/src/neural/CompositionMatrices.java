@@ -50,7 +50,7 @@ public class CompositionMatrices {
         return new CompositionMatrices(constructionMap, compositionMatrices);
     }
     
-    public static SimpleMatrix createRandomMatrix(int hiddenLayerSize) {
+    protected static SimpleMatrix createRandomMatrix(int hiddenLayerSize) {
         Random random = new Random();
         SimpleMatrix randomMatrix1 = SimpleMatrix.random(hiddenLayerSize, hiddenLayerSize, - 0.5, 0.5, random);
         SimpleMatrix randomMatrix2 = SimpleMatrix.random(hiddenLayerSize, hiddenLayerSize, - 0.5, 0.5, random);
@@ -67,7 +67,10 @@ public class CompositionMatrices {
     }
     
     public int getConstructionIndex(String construction) {
-        return constructionMap.get(construction);
+        if (constructionMap.containsKey(construction))
+            return constructionMap.get(construction);
+        else
+            return 0;
     }
     
     public SimpleMatrix getCompositionMatrix(String construction) {

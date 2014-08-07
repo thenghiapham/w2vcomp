@@ -129,7 +129,17 @@ public class SimpleMatrixUtils {
     }
     
     public static SimpleMatrix concatenateVectors(List<SimpleMatrix> vectors, boolean columnVector) {
-        return null;
+        // TODO: check not concatenating matrices
+        int length = 0;
+        for (SimpleMatrix vector: vectors) length += vector.numRows();
+        double[] newData = new double[length];
+        int pos = 0; 
+        for (SimpleMatrix vector: vectors) {
+            int vectorLength = vector.numRows();
+            System.arraycopy(vector.getMatrix().getData(), 0, newData, pos, vectorLength);
+            pos += vectorLength;
+        }
+        return new SimpleMatrix(length,1,true,newData);
     }
     
 }

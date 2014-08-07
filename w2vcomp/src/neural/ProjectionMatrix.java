@@ -5,6 +5,7 @@ import java.util.Random;
 import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
+import common.exception.ValueException;
 
 import vocab.Vocab;
 
@@ -20,8 +21,8 @@ public class ProjectionMatrix {
     // TODO: random initialization
     public static ProjectionMatrix randomInitialize(Vocab vocab, int hiddenLayerSize) {
         Random rand = new Random();
-        double[][] outVectors = new double[vocab.getVocabSize()][hiddenLayerSize];
-        for (int i = 0; i < vocab.getVocabSize(); i++) {
+        double[][] outVectors = new double[vocab.getVocabSize() + 1][hiddenLayerSize];
+        for (int i = 0; i < vocab.getVocabSize() + 1; i++) {
             for (int j = 0; j < hiddenLayerSize; j++) {
                 outVectors[i][j] = (double) (rand.nextFloat() - 0.5)
                         / hiddenLayerSize;
@@ -32,11 +33,13 @@ public class ProjectionMatrix {
     
     // TODO: initialize with zero
     public static ProjectionMatrix zeroInitialize(Vocab vocab, int hiddenLayerSize) {
-        return new ProjectionMatrix(vocab, new SimpleMatrix(vocab.getVocabSize(), hiddenLayerSize));
+        return new ProjectionMatrix(vocab, new SimpleMatrix(vocab.getVocabSize() + 1, hiddenLayerSize));
     }
     
     // TODO: initialize with saved matrix
     public static ProjectionMatrix initializeFromMatrix(Vocab vocab, SimpleMatrix saveMatrix) {
+        if (vocab.getVocabSize() != saveMatrix.numRows() - 1)
+            throw new ValueException("the matrix should have one column for unknown world");
         return new ProjectionMatrix(vocab, saveMatrix);
     }
     
@@ -49,7 +52,8 @@ public class ProjectionMatrix {
     public SimpleMatrix getVectors(String[] words) {
         int[] indices = new int[words.length];
         for (int i = 0; i < words.length; i++) {
-            indices[i] = vocab.getWordIndex(words[i]);
+            int wordIndex = vocab.getWordIndex(words[i]);
+            indices[i] = (wordIndex==-1)?vocab.getVocabSize():wordIndex;
         }
         return SimpleMatrixUtils.getRows(vectors, indices);
     }
@@ -57,8 +61,10 @@ public class ProjectionMatrix {
 
     public SimpleMatrix getVector(int wordIndex) {
         // TODO: null or zeros?
-        if (wordIndex <= -1 || wordIndex >= vocab.getVocabSize())
+        if (wordIndex <= -2 || wordIndex >= vocab.getVocabSize())
             return null;
+        else if (wordIndex == -1)
+            return vectors.extractVector(true, vocab.getVocabSize());
         else
             return vectors.extractVector(true, wordIndex);
     }
@@ -71,9 +77,29 @@ public class ProjectionMatrix {
     // maybe not as neccessary as synchronizing the composition matrix
     protected void updateVector(int wordIndex, SimpleMatrix gradient, 
             double learningRate) {
+        String word;
+        if (wordIndex == -1) {
+            word = "default";
+            wordIndex = vocab.getVocabSize();
+        } else {
+            word = vocab.getEntry(wordIndex).word;
+        }
+        
         SimpleMatrix originalRow = vectors.extractVector(true, wordIndex);
-        SimpleMatrix newRow = originalRow.plus(gradient.scale(learningRate));
+        if (gradient == null) {
+            System.out.println(word + " null");
+            return;
+        }
+        System.out.println(word + " ! null");
+        System.out.println();
+        gradient = gradient.scale(learningRate);
+        SimpleMatrix newRow = originalRow.plus(gradient);
         vectors.setRow(wordIndex, 0, newRow.getMatrix().getData());
     
+    }
+    
+    //TODO: copy the matrix so that it won't be modified?
+    public SimpleMatrix getMatrix() {
+        return vectors;
     }
 }

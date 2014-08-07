@@ -43,4 +43,8 @@ public class ProjectionLayer extends BasicLayer implements Layer{
     public void addInLayer(Layer inLayer) {
         throw new IllegalOperationException("Cannot add inLayer to a ProjectionLayer");
     }
+    
+    public String toString() {
+        return "P";
+    }
 }

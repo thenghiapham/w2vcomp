@@ -44,6 +44,12 @@ public class Tree {
         }
     }
     
+//    public String getSurfaceString() {
+//        String[] surfaceWords = getSurfaceWords();
+//        StringBuffer sbResult = new StringBuffer();
+//        sbResult.append(surfaceWords[0])
+//    }
+    
     /**
      * @param treeString - a tree in string parenthetic format
      * @return the Tree object representing the input tree
@@ -244,6 +250,8 @@ public class Tree {
     
     public String[] getSurfaceWords() {
         int width = getWidth();
+//        System.out.println(width);
+        System.out.println(this.toPennTree());
         String[] result = new String[width];
         putSurfaceString(0, result);
         return result;
@@ -267,7 +275,7 @@ public class Tree {
         } else {
             int width = 0;
             for (Tree child: children) {
-                width += child.getHeight();
+                width += child.getWidth();
             }
             return width;
         }

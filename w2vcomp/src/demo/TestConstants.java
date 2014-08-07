@@ -2,40 +2,18 @@ package demo;
 
 public class TestConstants {
 
-    // public static final String TRAIN_FILE = "/home/pham/svn/word2vec/text8";
-    // public static final String VECTOR_FILE =
-    // "/home/pham/svn/word2vec/out.bin";
-    // public static final String VOCABULARY_FILE =
-    // "/home/pham/svn/word2vec/out.voc";
-    // public static final String INITIALIZATION_FILE =
-    // "/home/pham/svn/word2vec/out.ini";
-
-    // public static final String GZIP_TRAIN_FILES =
-    // "/home/pham/svn/word2vec/bnc.utf8.xml.gz;"
-    // + "/home/pham/svn/word2vec/wikipedia_sample.xml.gz";
-    // public static final String GZIP_VECTOR_FILE =
-    // "/home/pham/svn/word2vec/malt.bin";
-    // public static final String GZIP_VOCABULARY_FILE =
-    // "/home/pham/svn/word2vec/malt.voc";
-    // public static final String GZIP_INITIALIZATION_FILE =
-    // "/home/pham/svn/word2vec/malt.ini";
 
     
     public static final String TRAIN_FILE               = "/home/thenghiapham/svn/word2vec/text8";
     public static final String VECTOR_FILE              = "/home/thenghiapham/svn/word2vec/out.bin";
     public static final String VOCABULARY_FILE          = "/home/thenghiapham/svn/word2vec/out.voc";
     public static final String INITIALIZATION_FILE      = "/home/thenghiapham/svn/word2vec/out.ini";
+    
+    public static final String S_TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/stanford_parse/bnc_aa.parsed";
+    public static final String S_VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/output/bnc.bin";
+    public static final String S_VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/output/bnc.voc";
+    public static final String S_INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/output/bnc.ini";
 
-    // public static final String GZIP_TRAIN_FILES =
-    // "/home/thenghiapham/svn/word2vec/bnc.utf8.xml.gz";
-    // // public static final String GZIP_TRAIN_FILE =
-    // "/home/thenghiapham/svn/word2vec/wikipedia_sample.xml.gz";
-    // public static final String GZIP_VECTOR_FILE =
-    // "/home/thenghiapham/svn/word2vec/malt.bin";
-    // public static final String GZIP_VOCABULARY_FILE =
-    // "/home/thenghiapham/svn/word2vec/malt.voc";
-    // public static final String GZIP_INITIALIZATION_FILE =
-    // "/home/thenghiapham/svn/word2vec/malt.ini";
 
     // on the cluster
     public static final String PATH                     = "/mnt/cimec-storage-sata/users/marco.baroni/share/ukwac-maltparsing/data/";
@@ -59,8 +37,6 @@ public class TestConstants {
                                                                 + "wikipedia-3.xml.gz;"
                                                                 + PATH
                                                                 + "wikipedia-4.xml.gz";
-    // public static final String OUT_PATH =
-    // "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikolov/output/";
     public static final String OUT_PATH                 = "/home/pham/work/project/mikolov/output/";
     public static final String GZIP_VECTOR_FILE         = OUT_PATH
                                                                 + "testVector.bin";
@@ -72,7 +48,6 @@ public class TestConstants {
     
     public static final String CCG_MEN_FILE             = "/home/thenghiapham/work/project/mikolov/men/subMen.txt";
     public static final String CCG_AN_FILE              = "/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemmapos.txt";
-    
     public static final String CCG_TRAIN_FILE           = "/home/thenghiapham/work/project/mikolov/ccg_text/wikiA.txt";
     public static final String CCG_VECTOR_FILE          = "/home/thenghiapham/work/project/mikolov/output/phrase1.bin";
     public static final String CCG_VOCABULARY_FILE      = "/home/thenghiapham/work/project/mikolov/output/phrase1.voc";

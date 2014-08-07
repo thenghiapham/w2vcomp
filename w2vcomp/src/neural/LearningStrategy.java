@@ -27,4 +27,9 @@ public abstract class LearningStrategy {
         }
     }
     
+    //TODO: copy so that it wouldn't be modified?
+    public SimpleMatrix getMatrix() {
+        return outputVectors;
+    }
+    
 }

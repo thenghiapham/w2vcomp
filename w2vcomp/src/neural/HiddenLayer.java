@@ -60,4 +60,8 @@ public class HiddenLayer extends BasicLayer implements Layer{
     public SimpleMatrix getOutput() {
         return output;
     }
+    
+    public String toString() {
+        return "H";
+    }
 }

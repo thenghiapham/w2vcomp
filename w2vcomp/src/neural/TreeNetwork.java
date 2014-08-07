@@ -38,7 +38,13 @@ public class TreeNetwork {
             CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
             int maxWindowSize, int outputLayerHeight, boolean allLevel) {
+        
         TreeNetwork network = new TreeNetwork(parseTree);
+        network.projectionBuilder = projectionBuilder;
+        network.hiddenBuilder = hiddenBuilder;
+        network.outputBuilder = outputBuilder;
+        
+        
         parseTree.updateHeight();
         parseTree.updatePosition(0);
         
@@ -59,11 +65,12 @@ public class TreeNetwork {
                 
             } else {
                 if (outputLayerHeight == -1 || outputLayerHeight <= node.getHeight()) {
-                    ArrayList<Tree> children = parseTree.getChildren();
+                    ArrayList<Tree> children = node.getChildren();
                     if (children.size() == 1) {
                         layer = layerMap.get(children.get(0));
                     } else {
-                        String construction = parseTree.getConstruction();
+                        String construction = node.getConstruction();
+                        System.out.println(construction);
                         SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
                         int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
                         layer = new HiddenLayer(weights, hiddenLayerActivation);
@@ -97,7 +104,13 @@ public class TreeNetwork {
                 if (!allLevel && (height != outputLayerHeight || (outputLayerHeight == -1 && node != parseTree))) {
                     continue;
                 } else {
-                    HiddenLayer hiddenLayer = (HiddenLayer) layerMap.get(node);
+                    // TODO: put it back when doing preprocessing
+                    // two steps for pre-processing:
+                    // - putting the information to the terminal node
+                    // - removing one branch node
+                    Layer layer = layerMap.get(node);
+                    if (layer instanceof ProjectionLayer) continue;
+                    HiddenLayer hiddenLayer = (HiddenLayer) layer;
                     int windowSize = random.nextInt(maxWindowSize) + 1;
                     for (int i = node.getLeftmostPosition() - windowSize; i <= node.getRightmostPosition() + windowSize; i++) {
                         if ((i >= 0 && i < sentence.length && (i < node.getLeftmostPosition() || i > node.getRightmostPosition()))) {
@@ -138,6 +151,7 @@ public class TreeNetwork {
     
     
     public void learn(double learningRate) {
+//        System.out.println(this);
         forward();
         backward();
         update(learningRate);
@@ -173,8 +187,10 @@ public class TreeNetwork {
     
     public void update(double learningRate) {
         for (int i = 0; i < projectionLayers.size(); i++) {
-            projectionBuilder.updateVector(inputVectorIndices.get(i), 
-                    projectionLayers.get(i).getGradient(), learningRate);
+            int wordIndex = inputVectorIndices.get(i);
+            SimpleMatrix gradient = projectionLayers.get(i).getGradient();
+            projectionBuilder.updateVector(wordIndex, 
+                    gradient, learningRate);
         }
         
         ArrayList<SimpleMatrix> hiddenGradients = new ArrayList<>();
@@ -191,6 +207,10 @@ public class TreeNetwork {
     
     protected void setLayerMap(HashMap<Tree, Layer> layerMap) {
         this.layerMap = layerMap;
+    }
+    
+    public String toString() {
+        return "";//((BasicLayer) layerMap.get(parseTree)).toTreeString();
     }
     
 }
