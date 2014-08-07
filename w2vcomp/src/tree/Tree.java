@@ -2,6 +2,8 @@ package tree;
 
 import java.util.ArrayList;
 
+import common.exception.ValueException;
+
 /**
  * @author Lorenzo Dell'Arciprete
  * This class represents a tree as a root node and references to its children. 
@@ -30,7 +32,16 @@ public class Tree {
     
     public String getConstruction() {
         // TODO: add this
-        return "";
+        if (this.isTerminal() || this.isPreTerminal()) return "";
+        else {
+            StringBuffer sbResult = new StringBuffer();
+            sbResult.append(this.rootLabel);
+            for (Tree child : children) {
+                sbResult.append(" ");
+                sbResult.append(child.rootLabel);
+            }
+            return sbResult.toString();
+        }
     }
     
     /**
@@ -38,9 +49,9 @@ public class Tree {
      * @return the Tree object representing the input tree
      * @throws Exception if the input tree string is malformed
      */
-    public static Tree fromPennTree(String treeString) throws Exception {
+    public static Tree fromPennTree(String treeString){
         if (treeString == null || treeString.length() < 1)
-            throw new Exception("Parse error: empty (sub)tree");
+            throw new ValueException("Parse error: empty (sub)tree");
         Tree tree = null;
         treeString = treeString.trim();
         if (treeString.indexOf('(') == -1) {
@@ -67,12 +78,12 @@ public class Tree {
                 content = content.substring(firstPar).trim();
                 while (content.length() > 0) {
                     if (content.charAt(0) != '(')
-                        throw new Exception("Parse error for (sub)tree 1: "+ "->" + content + "<- ->" +treeString + "<-");
+                        throw new ValueException("Parse error for (sub)tree 1: "+ "->" + content + "<- ->" +treeString + "<-");
                     int openPars = 1;
                     int index = 1;
                     while (openPars > 0) {
                         if (index >= content.length())
-                            throw new Exception("Parse error for (sub)tree 2: "+treeString);
+                            throw new ValueException("Parse error for (sub)tree 2: "+treeString);
                         if (content.charAt(index) == ')')
                             openPars--;
                         else if (content.charAt(index) == '(')
@@ -85,7 +96,7 @@ public class Tree {
             }
         }
         else
-            throw new Exception("Parse error for (sub)tree 3: "+treeString);
+            throw new ValueException("Parse error for (sub)tree 3: "+treeString);
         return tree;
     }
     
