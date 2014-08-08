@@ -29,6 +29,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
                 subSample, phraseHeight, allLevel);
         men = new MenCorrelation(menCorrelationFile);
+        
     }
 
     @Override
@@ -81,8 +82,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
                     System.out.println("Training rate: " + alpha);
                     tmpTrainedLines = trainedLines;
                     if (iteration % 4 == 0) {
-                        if (men != null)
-                            System.out.println("men: " + men.evaluateSpacePearson(new NewSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
+                        printStatistics();
                     }
                 }
                 
@@ -92,6 +92,16 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    protected void printStatistics() {
+        // TODO Auto-generated method stub
+        if (men != null) {
+            System.out.println("men: " + men.evaluateSpacePearson(new NewSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
+        }
+        System.out.println("norm comp: " + compositionMatrices.getCompositionMatrix("blah").normF());
+        System.out.println("norm proj: " + projectionMatrix.getMatrix().normF());
+        System.out.println("norm out: " + learningStrategy.getMatrix().normF());
     }
 
     protected void trainSentence(Tree parseTree) {

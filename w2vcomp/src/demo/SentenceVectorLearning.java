@@ -22,7 +22,7 @@ public class SentenceVectorLearning {
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 2;
+        int phraseLevel = 1;
         boolean allLevel = true;
         Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, phraseLevel, 

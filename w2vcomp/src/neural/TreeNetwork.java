@@ -100,7 +100,7 @@ public class TreeNetwork {
             // TODO: changable here to 1 if one to include Mikolov's skipgram
             int height = node.getHeight();
             
-            if (height >= 2 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
+            if (height >= 1 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
                 if (!allLevel && (height != outputLayerHeight || (outputLayerHeight == -1 && node != parseTree))) {
                     continue;
                 } else {
@@ -109,8 +109,8 @@ public class TreeNetwork {
                     // - putting the information to the terminal node
                     // - removing one branch node
                     Layer layer = layerMap.get(node);
-                    if (layer instanceof ProjectionLayer) continue;
-                    HiddenLayer hiddenLayer = (HiddenLayer) layer;
+//                    if (layer instanceof ProjectionLayer) continue;
+//                    HiddenLayer hiddenLayer = (HiddenLayer) layer;
                     int windowSize = random.nextInt(maxWindowSize) + 1;
                     for (int i = node.getLeftmostPosition() - windowSize; i <= node.getRightmostPosition() + windowSize; i++) {
                         if ((i >= 0 && i < sentence.length && (i < node.getLeftmostPosition() || i > node.getRightmostPosition()))) {
@@ -121,8 +121,8 @@ public class TreeNetwork {
                             SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                             CostFunction costFunction = outputBuilder.getCostFunction();
                             OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction);
-                            outputLayer.addInLayer(hiddenLayer);
-                            hiddenLayer.addOutLayer(outputLayer);
+                            outputLayer.addInLayer(layer);
+                            layer.addOutLayer(outputLayer);
                             addOutputLayer(outputLayer, indices);
                         }
                     }
