@@ -16,7 +16,7 @@ public abstract class LearningStrategy {
     
     public SimpleMatrix getOutputWeights(int[] indices) {
         // TODO: transpose all?
-        return SimpleMatrixUtils.getRows(outputVectors, indices).transpose();
+        return SimpleMatrixUtils.getRows(outputVectors, indices);
     }
     
     public void updateMatrix(int[] indices, SimpleMatrix gradients, double learningRate) {

@@ -17,13 +17,13 @@ import demo.TestConstants;
 
 public class SentenceVectorLearning {
     public static void main(String[] args) throws IOException{
-        int hiddenLayerSize = 40;
+        int hiddenLayerSize = 4;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 2;
-        boolean allLevel = false;
+        int phraseLevel = 4;
+        boolean allLevel = true;
         Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, phraseLevel, allLevel);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE;

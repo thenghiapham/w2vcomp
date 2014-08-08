@@ -31,7 +31,7 @@ public class ProjectionLayer extends BasicLayer implements Layer{
     }
 
     @Override
-    public SimpleMatrix getError() {
+    public SimpleMatrix getError(Layer child) {
         return error;
     }
     

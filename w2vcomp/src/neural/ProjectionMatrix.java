@@ -4,7 +4,6 @@ import java.util.Random;
 
 import org.ejml.simple.SimpleMatrix;
 
-import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 
 import vocab.Vocab;
@@ -46,7 +45,7 @@ public class ProjectionMatrix {
     public SimpleMatrix getVector(String word) {
         int wordIndex = vocab.getWordIndex(word);
         // TODO: transpose all?
-        return getVector(wordIndex).transpose(); 
+        return getVector(wordIndex); 
     }
     
     // TODO: 
@@ -62,12 +61,14 @@ public class ProjectionMatrix {
 
     public SimpleMatrix getVector(int wordIndex) {
         // TODO: null or zeros?
+        SimpleMatrix result = null;
         if (wordIndex <= -2 || wordIndex >= vocab.getVocabSize())
-            return null;
+            return result;
         else if (wordIndex == -1)
-            return vectors.extractVector(true, vocab.getVocabSize());
+            result = vectors.extractVector(true, vocab.getVocabSize());
         else
-            return vectors.extractVector(true, wordIndex);
+            result = vectors.extractVector(true, wordIndex);
+        return result.transpose();
     }
     
     public int getWordIndex(String word) {
@@ -78,6 +79,7 @@ public class ProjectionMatrix {
     // maybe not as neccessary as synchronizing the composition matrix
     protected void updateVector(int wordIndex, SimpleMatrix gradient, 
             double learningRate) {
+
         String word;
         if (wordIndex == -1) {
             word = "default";
@@ -90,9 +92,10 @@ public class ProjectionMatrix {
         if (gradient == null) {
             System.out.println(word + " null");
             return;
+        } else {
+            gradient = gradient.transpose();
         }
-        System.out.println(word + " ! null");
-        System.out.println();
+        System.out.println(word + " not_null");
         gradient = gradient.scale(learningRate);
         SimpleMatrix newRow = originalRow.plus(gradient);
         vectors.setRow(wordIndex, 0, newRow.getMatrix().getData());

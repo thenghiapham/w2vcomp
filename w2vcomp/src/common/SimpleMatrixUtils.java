@@ -128,7 +128,7 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(indices.length, numCols, true, destinationData);
     }
     
-    public static SimpleMatrix concatenateVectors(List<SimpleMatrix> vectors, boolean columnVector) {
+    public static SimpleMatrix concatenateVectors(List<SimpleMatrix> vectors) {
         // TODO: check not concatenating matrices
         int length = 0;
         for (SimpleMatrix vector: vectors) length += vector.numRows();
@@ -140,6 +140,14 @@ public class SimpleMatrixUtils {
             pos += vectorLength;
         }
         return new SimpleMatrix(length,1,true,newData);
+    }
+    
+    public static SimpleMatrix extractPartialVector(SimpleMatrix original, int partNum, int pos) {
+        int length = original.numRows();
+        int partLength = length / partNum;
+        double[] newData = new double[partLength];
+        System.arraycopy(original.getMatrix().getData(), pos * partLength, newData, 0, partLength);
+        return new SimpleMatrix(partLength, 1, true, newData);
     }
     
 }

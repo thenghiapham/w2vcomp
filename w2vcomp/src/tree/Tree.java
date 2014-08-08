@@ -251,7 +251,7 @@ public class Tree {
     public String[] getSurfaceWords() {
         int width = getWidth();
 //        System.out.println(width);
-        System.out.println(this.toPennTree());
+//        System.out.println(this.toPennTree());
         String[] result = new String[width];
         putSurfaceString(0, result);
         return result;

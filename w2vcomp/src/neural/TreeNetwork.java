@@ -59,19 +59,18 @@ public class TreeNetwork {
                 String word = terminalChild.getRootLabel();
                 int wordIndex = projectionBuilder.getWordIndex(word);
                 SimpleMatrix vector = projectionBuilder.getVector(word);
-//                System.out.println("vector " + word + " " + vector);
                 layer = new ProjectionLayer(vector);
                 network.addProjectionLayer((ProjectionLayer) layer, wordIndex);
             } else if (node.isTerminal()) {
                 
             } else {
-                if (outputLayerHeight == -1 || outputLayerHeight <= node.getHeight()) {
+                if (outputLayerHeight == -1 || node.getHeight() <= outputLayerHeight) {
                     ArrayList<Tree> children = node.getChildren();
                     if (children.size() == 1) {
                         layer = layerMap.get(children.get(0));
                     } else {
                         String construction = node.getConstruction();
-                        System.out.println(construction);
+//                        System.out.println(construction);
                         SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
                         int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
                         layer = new HiddenLayer(weights, hiddenLayerActivation);

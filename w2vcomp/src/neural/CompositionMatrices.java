@@ -99,6 +99,7 @@ public class CompositionMatrices {
         for (int i = 0; i < gradientNum; i++) {
             int constructionIndex = constructionIndices.get(i);
             SimpleMatrix gradient = gradients.get(i);
+            if (gradient == null) continue;
             if (gradientMap.containsKey(constructionIndex)) {
                 gradientMap.put(constructionIndex, gradientMap.get(constructionIndex).plus(gradient));
                 weightDecayTimes.put(constructionIndex, weightDecayTimes.get(constructionIndex) + 1);

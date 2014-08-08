@@ -51,7 +51,7 @@ public class OutputLayer extends BasicLayer implements Layer{
         if (activation != null) {
             outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
         }
-        gradient = error.mult(input.transpose());
+        gradient = outError.mult(input.transpose());
         error = inputWeights.transpose().mult(outError);
     }
 
@@ -66,7 +66,7 @@ public class OutputLayer extends BasicLayer implements Layer{
     }
 
     @Override
-    public SimpleMatrix getError() {
+    public SimpleMatrix getError(Layer child) {
         // TODO Auto-generated method stub
         return error;
     }
@@ -79,5 +79,9 @@ public class OutputLayer extends BasicLayer implements Layer{
     
     public int[] getWeightVectorIndices() {
         return weightVectorIndices;
+    }
+    
+    public String toString() {
+        return "O";
     }
 }

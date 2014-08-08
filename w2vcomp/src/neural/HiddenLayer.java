@@ -34,10 +34,11 @@ public class HiddenLayer extends BasicLayer implements Layer{
     @Override
     public void backward() {
         SimpleMatrix parentError = getOutLayerError();
+        if (parentError == null) return;
         if (activation != null) {
             parentError = parentError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
         }
-        gradient = error.mult(input.transpose());
+        gradient = parentError.mult(input.transpose());
         error = inputWeights.transpose().mult(parentError);
     }
     
@@ -48,8 +49,13 @@ public class HiddenLayer extends BasicLayer implements Layer{
     }
     
     @Override
-    public SimpleMatrix getError() {
-        return error;
+    public SimpleMatrix getError(Layer child) {
+        // TODO: not that great
+        if (error == null) return null;
+        if (inLayers.size() == 0) return null;
+        if (child == inLayers.get(0)) return SimpleMatrixUtils.extractPartialVector(error, 2, 0);
+        else if (child == inLayers.get(1)) return SimpleMatrixUtils.extractPartialVector(error, 2, 1);
+        else return null;
     }
     
     public SimpleMatrix getGradient() {

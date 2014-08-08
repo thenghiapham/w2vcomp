@@ -8,6 +8,6 @@ public interface Layer {
     public void addInLayer(Layer inLayer);
     public void addOutLayer(Layer inLayer);
     public SimpleMatrix getOutput();
-    public SimpleMatrix getError();
+    public SimpleMatrix getError(Layer child);
     public SimpleMatrix getGradient();
 }

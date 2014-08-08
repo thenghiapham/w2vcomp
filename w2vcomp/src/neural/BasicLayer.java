@@ -31,22 +31,23 @@ public abstract class BasicLayer implements Layer {
         for (Layer inLayer: inLayers) {
             inputs.add(inLayer.getOutput());
         }
-        System.out.println(toTreeString());
-        return SimpleMatrixUtils.concatenateVectors(inputs, true);
+//        System.out.println(toTreeString());
+        return SimpleMatrixUtils.concatenateVectors(inputs);
     }
     
     protected SimpleMatrix getOutLayerError() {
         if (outLayers.size() == 0) return null;
         ArrayList<SimpleMatrix> errors = new ArrayList<>();
         for (Layer outLayer: outLayers) {
-            SimpleMatrix outError = outLayer.getError();
+            SimpleMatrix outError = outLayer.getError(this);
             if (outError != null)
                 errors.add(outError);
         }
         if (errors.size() == 0) return null;
-        SimpleMatrix result = new SimpleMatrix(errors.get(0).numRows(),errors.get(0).numRows());
-        for (SimpleMatrix error : errors)
-            result = result.plus(error);
+        SimpleMatrix result = errors.get(0);
+        for (int i = 1; i < errors.size(); i++) {
+            result = result.plus(errors.get(i));
+        }
         return result;
     }
     
