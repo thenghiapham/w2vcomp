@@ -13,7 +13,7 @@ public class CompositionMatrices {
     protected SimpleMatrix[] compositionMatrices;
     protected Integer[] keys;
     protected HashMap<String, Integer> constructionMap;
-    protected double weightDecay;
+    protected double weightDecay = 1e-4;
     
     protected CompositionMatrices(HashMap<String, Integer> constructionMap, SimpleMatrix[] compositionMatrices) {
         this.compositionMatrices = compositionMatrices;

@@ -9,10 +9,11 @@ public class TestConstants {
     public static final String VOCABULARY_FILE          = "/home/thenghiapham/svn/word2vec/out.voc";
     public static final String INITIALIZATION_FILE      = "/home/thenghiapham/svn/word2vec/out.ini";
     
-    public static final String S_TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/stanford_parse/bnc_aa.parsed";
+    public static final String S_TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/tmp_parsed/bnc.txt";
     public static final String S_VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/output/bnc.bin";
     public static final String S_VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/output/bnc.voc";
     public static final String S_INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/output/bnc.ini";
+    public static final String S_MEN_FILE                 = "/home/thenghiapham/work/project/mikolov/men/MEN_dataset_lemma.txt";
 
 
     // on the cluster

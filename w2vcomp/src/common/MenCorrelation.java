@@ -7,6 +7,7 @@ import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 
 import demo.TestConstants;
 
+import space.NewSemanticSpace;
 import space.SemanticSpace;
 
 /**
@@ -95,11 +96,37 @@ public class MenCorrelation {
 	}
 	
 	/**
+     * Evaluate the space using the pearson correlation
+     * @param space
+     * @return
+     */
+    public double evaluateSpacePearson(NewSemanticSpace space) {
+        double[] predicts = new double[golds.length];
+        for (int i = 0; i < golds.length; i++) {
+            predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
+        }
+        return pearson.correlation(golds, predicts);
+    }
+	
+	/**
      * Evaluate the space using the spearman correlation
      * @param space
      * @return
      */
 	public double evaluateSpaceSpearman(SemanticSpace space) {
+        double[] predicts = new double[golds.length];
+        for (int i = 0; i < golds.length; i++) {
+            predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
+        }
+        return spearman.correlation(golds, predicts);
+    }
+	
+	/**
+     * Evaluate the space using the spearman correlation
+     * @param space
+     * @return
+     */
+    public double evaluateSpaceSpearman(NewSemanticSpace space) {
         double[] predicts = new double[golds.length];
         for (int i = 0; i < golds.length; i++) {
             predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);

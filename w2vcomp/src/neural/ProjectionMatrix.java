@@ -80,22 +80,22 @@ public class ProjectionMatrix {
     protected void updateVector(int wordIndex, SimpleMatrix gradient, 
             double learningRate) {
 
-        String word;
+//        String word;
         if (wordIndex == -1) {
-            word = "default";
+//            word = "default";
             wordIndex = vocab.getVocabSize();
         } else {
-            word = vocab.getEntry(wordIndex).word;
+//            word = vocab.getEntry(wordIndex).word;
         }
         
         SimpleMatrix originalRow = vectors.extractVector(true, wordIndex);
         if (gradient == null) {
-            System.out.println(word + " null");
+//            System.out.println(word + " null");
             return;
         } else {
             gradient = gradient.transpose();
         }
-        System.out.println(word + " not_null");
+//        System.out.println(word + " not_null");
         gradient = gradient.scale(learningRate);
         SimpleMatrix newRow = originalRow.plus(gradient);
         vectors.setRow(wordIndex, 0, newRow.getMatrix().getData());

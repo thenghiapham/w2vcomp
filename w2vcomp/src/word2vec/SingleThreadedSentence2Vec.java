@@ -5,18 +5,30 @@ import io.sentence.TreeInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import common.MenCorrelation;
+
 import neural.IdentityFunction;
 import neural.Sigmoid;
 import neural.TreeNetwork;
 
+import space.NewSemanticSpace;
 import tree.Tree;
 
 public class SingleThreadedSentence2Vec extends Sentence2Vec{
+    MenCorrelation men;
 
     public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, int phraseHeight, boolean allLevel) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
                 subSample, phraseHeight, allLevel);
+        men = null;
+    }
+    
+    public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample, int phraseHeight, boolean allLevel, String menCorrelationFile) {
+        super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
+                subSample, phraseHeight, allLevel);
+        men = new MenCorrelation(menCorrelationFile);
     }
 
     @Override
@@ -40,6 +52,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         long oldTrainedLines = trainedLines;
         long tmpTrainedLines = trainedLines;
         try {
+            int iteration = 0;
             while (true) {
 
                 // read the whole sentence sentence,
@@ -55,8 +68,8 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
                 // update alpha
                 trainedLines = oldTrainedLines + inputStream.getReadLine();
                 
-                if (trainedLines - tmpTrainedLines > 1000) {
-                    
+                if (trainedLines - tmpTrainedLines >= 1000) {
+                    iteration++;
                     // update alpha
                     // what about thread safe???
                     alpha = starting_alpha
@@ -67,7 +80,12 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
                     System.out.println("Trained: " + trainedLines + " lines");
                     System.out.println("Training rate: " + alpha);
                     tmpTrainedLines = trainedLines;
+                    if (iteration % 4 == 0) {
+                        if (men != null)
+                            System.out.println("men: " + men.evaluateSpacePearson(new NewSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
+                    }
                 }
+                
                 trainSentence(parseTree);
             }
         } catch (IOException e) {

@@ -17,20 +17,21 @@ import demo.TestConstants;
 
 public class SentenceVectorLearning {
     public static void main(String[] args) throws IOException{
-        int hiddenLayerSize = 4;
+        int hiddenLayerSize = 40;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 4;
+        int phraseLevel = 2;
         boolean allLevel = true;
-        Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, phraseLevel, allLevel);
+        Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, phraseLevel, 
+                allLevel, TestConstants.S_MEN_FILE);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
 //        String initFile = TestConstants.S_INITIALIZATION_FILE;
         System.out.println("Starting training using file " + trainFile);
-
         boolean learnVocab = !(new File(vocabFile)).exists();
         Vocab vocab = new Vocab(5);
         if (!learnVocab)

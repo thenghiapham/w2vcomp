@@ -12,6 +12,7 @@ import composition.BasicComposition;
 import composition.FullAdditive;
 import composition.WeightedAdditive;
 
+import space.NewSemanticSpace;
 import space.SemanticSpace;
 
 /**
@@ -91,6 +92,11 @@ public class AdjNounCorrelation{
         return correlation.evaluateSpacePearson(phraseSpace);
     }
     
+    public double evaluateSpacePearson(NewSemanticSpace space, BasicComposition composition) {
+        SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
+        return correlation.evaluateSpacePearson(phraseSpace);
+    }
+    
     /**
      * Evaluate the composition model using Spearman correlation
      * @param space
@@ -98,6 +104,11 @@ public class AdjNounCorrelation{
      * @return
      */
     public double evaluateSpaceSpearman(SemanticSpace space, BasicComposition composition) {
+        SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
+        return correlation.evaluateSpaceSpearman(phraseSpace);
+    }
+    
+    public double evaluateSpaceSpearman(NewSemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
         return correlation.evaluateSpaceSpearman(phraseSpace);
     }

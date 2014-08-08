@@ -150,4 +150,59 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(partLength, 1, true, newData);
     }
     
+    public static double cosine(SimpleMatrix v1, SimpleMatrix v2) {
+        double normF1 = v1.normF();
+        double normF2 = v2.normF();
+        if (normF1 == 0 || normF2 == 0) return 0;
+        return v1.dot(v2) / (normF1 * normF2);
+    }
+    
+    // row vector
+    public static SimpleMatrix massCosine(SimpleMatrix matrix, SimpleMatrix vector) {
+        double normFV = vector.normF();
+        if (normFV == 0) {
+            return new SimpleMatrix(matrix.numRows(),1);
+        }
+        SimpleMatrix vectorLenghts = elementSqrt(sumRow(matrix.elementMult(matrix)));
+        SimpleMatrix result = matrix.mult(vector.transpose());
+        result = result.elementMult(elementInverse(vectorLenghts));
+        result = result.scale(1 / normFV);
+        return result.transpose();
+        
+    }
+    
+    public static SimpleMatrix sumRow(SimpleMatrix input) {
+        double[] data = input.getMatrix().getData();
+        int numRows = input.numRows();
+        int numCols = input.numCols();
+        double[] newData = new double[numRows];
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++)
+                newData[i] += data[i * numCols + j];
+        }
+        return new SimpleMatrix(numRows,1,true, newData);
+    }
+    
+    public static SimpleMatrix elementInverse(SimpleMatrix input) {
+        double[] data = input.getMatrix().getData();
+        int numRows = input.numRows();
+        int numCols = input.numCols();
+        double[] newData = new double[data.length];
+        for (int i = 0; i < newData.length; i++) {
+            newData[i] = 1 / data[i];
+        }
+        return new SimpleMatrix(numRows, numCols, true, newData);
+    }
+    
+    public static SimpleMatrix elementSqrt(SimpleMatrix input) {
+        double[] data = input.getMatrix().getData();
+        int numRows = input.numRows();
+        int numCols = input.numCols();
+        double[] newData = new double[data.length];
+        for (int i = 0; i < newData.length; i++) {
+            newData[i] = Math.sqrt(data[i]);
+        }
+        return new SimpleMatrix(numRows, numCols, true, newData);
+    }
+    
 }
