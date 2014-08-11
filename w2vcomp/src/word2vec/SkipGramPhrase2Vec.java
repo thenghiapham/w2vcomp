@@ -34,7 +34,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     // TODO: adding adj-noun composition
     SimpleMatrix compositionMatrix;
     double weightDecay = 1e-4;
-    boolean useTanh = false;
+    boolean useTanh = true;
     AdjNounCorrelation anCorrelation;
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,

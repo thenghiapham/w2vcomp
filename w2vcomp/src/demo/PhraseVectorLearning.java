@@ -51,8 +51,8 @@ public class PhraseVectorLearning {
 
         word2vec.setVocab(vocab);
 
-        word2vec.initNetwork(initFile);
-//        word2vec.initNetwork();
+//        word2vec.initNetwork(initFile);
+        word2vec.initNetwork();
 
         // single threaded instead of multithreading
         System.out.println("Start training");
