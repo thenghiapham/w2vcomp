@@ -149,30 +149,30 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     
     public ArrayList<SimpleMatrix> computeNumericGradientsNegativeSampling(SimpleMatrix inputPhrase, SimpleMatrix compositionMatrix,
             SimpleMatrix softmaxWeight, SimpleMatrix softmaxValue) {
-    ArrayList<SimpleMatrix> numGradients = new ArrayList<>();
-    SimpleMatrix theta[] = new SimpleMatrix[]{inputPhrase, compositionMatrix, softmaxWeight};
-    double e = 1e-4;
-    for (int i = 0; i < 3; i++) {
-        SimpleMatrix component = theta[i];
-        int rowNum = component.numRows();
-        int colNum = component.numCols();
-        SimpleMatrix componentDelta = new SimpleMatrix(rowNum, colNum);
-        SimpleMatrix componentGrad = new SimpleMatrix(rowNum, colNum);
-        for (int x = 0; x < rowNum; x++) {
-            for (int y = 0; y < colNum; y++) {
-                componentDelta.set(x, y, e);
-                theta[i] = component.plus(componentDelta);
-                double loss1 = computeGradientNegSampling(theta[0], theta[1], theta[2], softmaxValue).value;
-                theta[i] = component.minus(componentDelta);
-                double loss2 = computeGradientNegSampling(theta[0], theta[1], theta[2], softmaxValue).value;
-                componentGrad.set(x, y, (loss1 - loss2) / (2 * e));
-                componentDelta.set(x, y, 0);
+        ArrayList<SimpleMatrix> numGradients = new ArrayList<>();
+        SimpleMatrix theta[] = new SimpleMatrix[]{inputPhrase, compositionMatrix, softmaxWeight};
+        double e = 1e-4;
+        for (int i = 0; i < 3; i++) {
+            SimpleMatrix component = theta[i];
+            int rowNum = component.numRows();
+            int colNum = component.numCols();
+            SimpleMatrix componentDelta = new SimpleMatrix(rowNum, colNum);
+            SimpleMatrix componentGrad = new SimpleMatrix(rowNum, colNum);
+            for (int x = 0; x < rowNum; x++) {
+                for (int y = 0; y < colNum; y++) {
+                    componentDelta.set(x, y, e);
+                    theta[i] = component.plus(componentDelta);
+                    double loss1 = computeGradientNegSampling(theta[0], theta[1], theta[2], softmaxValue).value;
+                    theta[i] = component.minus(componentDelta);
+                    double loss2 = computeGradientNegSampling(theta[0], theta[1], theta[2], softmaxValue).value;
+                    componentGrad.set(x, y, (loss1 - loss2) / (2 * e));
+                    componentDelta.set(x, y, 0);
+                }
             }
+            theta[i] = component;
+            numGradients.add(componentGrad);
         }
-        theta[i] = component;
-        numGradients.add(componentGrad);
-    }
-    return numGradients;
+        return numGradients;
 }
     
     

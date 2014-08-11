@@ -63,8 +63,9 @@ public class SigmoidTable {
         else if (x < -maxX)
             return 0;
         else {
-            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
-            return sigmoidTable[index];
+//            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
+//            return sigmoidTable[index];
+            return MathUtils.sigmoid(x);
         }
 
     }

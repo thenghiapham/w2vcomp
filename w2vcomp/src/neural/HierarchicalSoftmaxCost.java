@@ -38,7 +38,7 @@ public class HierarchicalSoftmaxCost implements CostFunction{
                 if (goldValues[i] == 0) {
                     rawError[i] = 1 / predictedValues[i];
                 } else {
-                    rawError[i] = 1 / (1 - predictedValues[i]);
+                    rawError[i] = - 1 / (1 - predictedValues[i]);
                 }
             }
         }

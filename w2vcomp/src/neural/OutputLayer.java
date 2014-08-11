@@ -56,7 +56,7 @@ public class OutputLayer extends BasicLayer implements Layer{
     }
 
     public double getCost() {
-        return cost;
+        return costFunction.computeCost(output, goldOutput);
     }
     
     @Override
