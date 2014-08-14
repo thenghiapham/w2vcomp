@@ -25,15 +25,15 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     protected SemanticSpace outputSpace;
 
     public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
+            boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample);
+                negativeSamples, negativeSamplesImages, subSample);
     }
     
     public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile) {
+            boolean hierarchicalSoftmax, int negativeSamples,int negativeSamplesImage, double subSample, String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample);
+                negativeSamples, negativeSamplesImage, subSample);
         men = new MenCorrelation(menFile);
     }
 

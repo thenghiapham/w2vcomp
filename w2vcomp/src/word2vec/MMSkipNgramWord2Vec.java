@@ -1,24 +1,19 @@
 package word2vec;
 
-import io.word.Phrase;
 import vocab.VocabEntry;
+import io.word.Phrase;
 
-/**
- * Concrete class for single threaded Skip gram
- * @author thenghiapham
- *
- */
-public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
-    public SkipNGramWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
+public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
+    public MMSkipNgramWord2Vec(int projectionLayerSize, int windowSize,
+            boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, 0, subSample);
+                negativeSamples, negativeSamplesImages, subSample);
     }
     
-    public SkipNGramWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile) {
+    public MMSkipNgramWord2Vec(int projectionLayerSize, int windowSize,
+            boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages , double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, 0, subSample, menFile);
+                negativeSamples, negativeSamplesImages, subSample, menFile);
     }
 
     public void trainSentence(int[] sentence) {
@@ -41,10 +36,10 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
             }
 
             // random actual window size
-            //int start = rand.nextInt(windowSize);
-            int start = 0;
+            int start = rand.nextInt(windowSize);
 
             VocabEntry word = vocab.getEntry(wordIndex);
+            //modality 1
             for (int i = start; i < windowSize * 2 + 1 - start; i++) {
                 if (i != windowSize) {
                     int iPos = wordPosition - windowSize + i;
@@ -87,6 +82,7 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
                             }
                         }
                     }
+                    
 
                     // NEGATIVE SAMPLING
                     if (negativeSamples > 0) {
@@ -98,7 +94,7 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
                                 target = wordIndex;
                                 label = 1;
                             } else {
-                                target = unigram.randomWordIndex();
+                                target = unigram.randomWordIndex();    
                                 if (target == 0) {
                                     target = rand
                                             .nextInt(vocab.getVocabSize() - 1) + 1;
@@ -130,12 +126,64 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
                         weights0[iWordIndex][j] += a1error[j];
                     }
                 }
-
             }
+                /*************    FOR SECOND MODALITY   ****************/
+            for (int i = 0; i < projectionLayerSize; i++) {
+                a1[i] = 0;
+                a1error[i] = 0;
+            }
+            
+            
+            String percept =    word.word;      
+            int jPerceptIndex = images.getIndex(percept);
+           
+            // NEGATIVE SAMPLING  
+            if (negativeSamplesImages > 0 && jPerceptIndex!=-1) {
+                
+                for (int l = 0; l < negativeSamplesImages + 1; l++) {
+                    int target;
+                    int label;
 
+                    if (l == 0) {
+                        target = jPerceptIndex;
+                        label = 1;
+                    } else {
+                        target = images.randomWordIndex();       //random sampling and then based on neighboorhood
+                        if (target == jPerceptIndex)
+                            continue;
+                        label = 0;
+                    }
+                    double z2 = 0;
+                    double gradient;
+                    for (int j = 0; j < projectionLayerSize; j++) {
+                        z2 += weights0[wordIndex][j]
+                                * negativeWeights1Images[target][j];
+                    }
+                    double a2 = sigmoidTable.getSigmoid(z2);
+                    gradient = (double) ((label - a2) * alpha);
+                    for (int j = 0; j < projectionLayerSize; j++) {
+                        a1error[j] += gradient
+                                * negativeWeights1Images[target][j];
+                    }
+                    /***************     This is for updating also image vectors
+                    //  Learn weights hidden -> output
+                    for (int j = 0; j < projectionLayerSize; j++) {
+                        negativeWeights1[target][j] += gradient
+                                * weights0[jPerceptIndex][j];
+                    }
+                    ****************/
+                }
+            }
+            // Learn weights input -> hidden
+            for (int j = 0; j < projectionLayerSize; j++) {
+                weights0[wordIndex][j] += a1error[j];
+            }
+            
         }
 
     }
+
+    
 
     @Override
     public void trainSinglePhrase(Phrase phrase, int[] pseudoSentence) {
@@ -143,3 +191,4 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
 
     }
 }
+

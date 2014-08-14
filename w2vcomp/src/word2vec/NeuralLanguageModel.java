@@ -30,7 +30,7 @@ public class NeuralLanguageModel extends SingleThreadWord2Vec{
     
     public NeuralLanguageModel(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
-        super(projectionLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
+        super(projectionLayerSize, windowSize, hierarchicalSoftmax, negativeSamples, 0, 
                 subSample);
         // TODO Auto-generated constructor stub
     }
@@ -38,7 +38,7 @@ public class NeuralLanguageModel extends SingleThreadWord2Vec{
     public NeuralLanguageModel(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample,
             String menFile) {
-        super(projectionLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
+        super(projectionLayerSize, windowSize, hierarchicalSoftmax, negativeSamples, 0, 
                 subSample, menFile);
         // TODO Auto-generated constructor stub
     }
@@ -47,7 +47,7 @@ public class NeuralLanguageModel extends SingleThreadWord2Vec{
             boolean hierarchialSoftmax, int negativeSamples,
             double subSample, String menFile, String anFile) {
         // TODO Auto-generated constructor stub
-        super(projectionLayerSize, windowSize, hierarchialSoftmax, negativeSamples,
+        super(projectionLayerSize, windowSize, hierarchialSoftmax, negativeSamples, 0, 
                 subSample, menFile);
         anCorrelation = new AdjNounCorrelation(anFile);
     }

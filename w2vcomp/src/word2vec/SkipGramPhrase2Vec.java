@@ -40,19 +40,19 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample);
+                negativeSamples, 0, subSample);
     }
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample, menFile);
+                negativeSamples, 0, subSample, menFile);
     }
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile, String anFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample, menFile);
+                negativeSamples, 0, subSample, menFile);
         anCorrelation = new AdjNounCorrelation(anFile);
         
     }

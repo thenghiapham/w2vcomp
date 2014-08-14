@@ -12,13 +12,13 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
     public CBowWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample);
+                negativeSamples, 0, subSample);
     }
     
     public CBowWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample, menFile);
+                negativeSamples, 0, subSample,  menFile);
     }
 
     public void trainSentence(int[] sentence) {

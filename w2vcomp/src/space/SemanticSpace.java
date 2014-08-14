@@ -29,6 +29,8 @@ public class SemanticSpace {
     HashMap<String, Integer> word2Index;
     double[][]                vectors;
     int                      vectorSize;
+    
+    
 
     public SemanticSpace(int wordNumber, int vectorSize) {
         vectors = new double[wordNumber][vectorSize];
@@ -200,7 +202,14 @@ public class SemanticSpace {
         }
     }
     
+    
+    public double[][] getVectors() {
+            return vectors;
+    }
+    
+    
     public double getSim(String word1, String word2) {
+        
         if (word2Index.containsKey(word1) && word2Index.containsKey(word2)) {
             int index1 = word2Index.get(word1);
             int index2 = word2Index.get(word2);
@@ -294,4 +303,12 @@ public class SemanticSpace {
     public int getVectorSize() {
         return vectorSize;
     }
+    
+    public HashMap<String, Integer> getWord2Index(){
+        return this.word2Index;
+    }
+
+    
+   
 }
+

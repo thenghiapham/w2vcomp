@@ -115,7 +115,8 @@ public class MenCorrelation {
 	}
 	
 	public static void main(String[] args) {
-	    SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
+	    //SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
+	    SemanticSpace space = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
 	    MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);
 	    System.out.println("men: " + men.evaluateSpacePearson(space));
 	}

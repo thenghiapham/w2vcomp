@@ -9,21 +9,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import vocab.Vocab;
-import word2vec.MMSkipNgramWord2Vec;
 //import word2vec.CBowWord2Vec;
 import word2vec.SkipNGramWord2Vec;
 
 import demo.TestConstants;
 
-public class WordVectorLearning {
+public class MultiModalWordVectorLearning {
     public static void main(String[] args) {
-//        CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, true, 0, (float) 0);
-        //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
-        //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
-        //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(300,5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 20, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
-        // 0);
+        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200,5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        //MMSkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
         
         //TODO: Assume that we extend vocabulary with new items
         //TODO: Assume that for every word we have its extended context
@@ -35,7 +29,6 @@ public class WordVectorLearning {
         System.out.println("Starting training using file " + trainFile);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
-        
         Vocab vocab = new Vocab(5);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
@@ -46,12 +39,8 @@ public class WordVectorLearning {
         }
 
         word2vec.setVocab(vocab);
-        
+
         word2vec.initNetwork(initFile);
-        
-        word2vec.initImages(TestConstants.VISION_FILE);
-        
-       
 
         // single threaded instead of multithreading
         System.out.println("Start training");

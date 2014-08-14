@@ -38,6 +38,10 @@ public abstract class AbstractWord2Vec {
      */
     protected boolean          hierarchicalSoftmax;
     protected int              negativeSamples;
+    /* for the 2 modalities*/
+    protected int              negativeSamplesImages;
+    protected Images           images;
+    
 
     protected double            subSample;
 
@@ -54,6 +58,9 @@ public abstract class AbstractWord2Vec {
 
     // uniGram language model, used in negativeSampling method
     protected UniGram          unigram;
+    
+    
+ 
     // pre-computed sigmoid Table for fast computing sigmoid
     // while losing a bit of precision
     protected SigmoidTable     sigmoidTable;
@@ -66,7 +73,7 @@ public abstract class AbstractWord2Vec {
      * negative Sampling size = H * V, only (k + 1) * V are estimated, where k =
      * negativeSamples
      */
-    double[][]                  weights0, weights1, negativeWeights1;
+    double[][]                  weights0, weights1, negativeWeights1, negativeWeights1Images;
 
     // Random instance
     // for randomize window size, initial weights, subsampling probability
@@ -74,12 +81,13 @@ public abstract class AbstractWord2Vec {
     Random                     rand;
 
     public AbstractWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
+            boolean hierarchicalSoftmax, int negativeSamples,int negativeSamplesImages, double subSample) {
         this.projectionLayerSize = projectionLayerSize;
         this.hierarchicalSoftmax = hierarchicalSoftmax;
         this.windowSize = windowSize;
         this.subSample = subSample;
         this.negativeSamples = negativeSamples;
+        this.negativeSamplesImages = negativeSamplesImages;
 
         this.rand = new Random();
         sigmoidTable = new SigmoidTable();
@@ -234,4 +242,12 @@ public abstract class AbstractWord2Vec {
 
     public abstract void trainModel(ArrayList<SentenceInputStream> inputStreams);
 
+    public void setImageWeights(){
+        this.negativeWeights1Images = images.getVectors();
+    }
+    
+    public void initImages(String textFile){
+        images = new Images(textFile);
+        setImageWeights();
+    }
 }
