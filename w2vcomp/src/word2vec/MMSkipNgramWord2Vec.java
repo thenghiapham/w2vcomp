@@ -1,5 +1,9 @@
 package word2vec;
 
+import common.exception.ValueException;
+
+import space.SemanticSpace;
+import vocab.Vocab;
 import vocab.VocabEntry;
 import io.word.Phrase;
 
@@ -183,12 +187,16 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
 
     }
 
-    
+    public double[] getCors() throws ValueException{
+        return images.pairwise_cor(new SemanticSpace(vocab, weights0,false));
+    }
 
     @Override
     public void trainSinglePhrase(Phrase phrase, int[] pseudoSentence) {
         // TODO Auto-generated method stub
 
     }
+    
+    
 }
 

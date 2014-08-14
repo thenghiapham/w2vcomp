@@ -21,11 +21,11 @@ public class TestConstants {
     // "/home/pham/svn/word2vec/malt.ini";
 
     
-    public static final String TRAIN_FILE               = "/home/angeliki/Documents/mikolov_composition/corpora_simple/CHILDES.all";
-    public static final String VISION_FILE              = "//home/angeliki/masterclic4/home/angeliki.lazaridou/visLang/caption_generation/spaces/train_dataset.Nouns/matrix.simple.txt.aggr";
-    public static final String VECTOR_FILE              = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_CHILDES.all.bin";
-    public static final String VOCABULARY_FILE          = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_CHILDES.all.voc";
-    public static final String INITIALIZATION_FILE      = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_CHILDES.all.ini";
+    public static final String TRAIN_FILE               = "/home/angeliki/Documents/mikolov_composition/corpora_simple/enwik8";
+    public static final String VISION_FILE              = "//home/angeliki/masterclic4/visLang/caption_generation/spaces/train_dataset.Nouns/matrix.simple.txt.aggr";
+    public static final String VECTOR_FILE              = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik8.bin";
+    public static final String VOCABULARY_FILE          = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik8.voc";
+    public static final String INITIALIZATION_FILE      = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik8.ini";
 
     // public static final String GZIP_TRAIN_FILES =
     // "/home/thenghiapham/svn/word2vec/bnc.utf8.xml.gz";

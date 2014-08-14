@@ -2,9 +2,14 @@ package word2vec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Collections;
+import java.util.Set;
+
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 
 import space.SemanticSpace;
 import vocab.Vocab;
@@ -22,7 +27,7 @@ public class Images {
     public Images(String textFile) {
         this.space = SemanticSpace.importSpace(textFile);
         this.word2Index = space.getWord2Index();
-        shuffling_vecs();
+        //shuffling_vecs();
 
         this.randomTablesize = this.word2Index.size();
         initImageTable();
@@ -30,6 +35,7 @@ public class Images {
         
     }
     
+     
    
     
     
@@ -74,6 +80,39 @@ public class Images {
        else{
            return -1;
        }
+       
+   }
+   
+   public double[] pairwise_cor(SemanticSpace space2){
+    Set<String> common_elements = new HashSet<String>(word2Index.keySet());
+    common_elements.retainAll(word2Index.keySet());
+    ArrayList<String> list_of_els = new ArrayList<String>(common_elements);
+    
+    double[] cors = new double[2];
+    PearsonsCorrelation pearson = new PearsonsCorrelation();
+    SpearmansCorrelation spearman = new SpearmansCorrelation();
+    
+    int len = common_elements.size();
+    System.out.println(len);
+    double[] sims_1 = new double[len*(len-1)/2];
+    double[] sims_2 = new double[len*(len-1)/2];
+    int k=0;
+    for (int i=0;i<len;i++){
+        for (int j=i+1;j<len;j++){
+            String word1 = list_of_els.get(i);
+            String word2 = list_of_els.get(j);
+            
+            sims_1[k]  = space.getSim(word1, word2);
+            sims_2[k]  = space2.getSim(word1, word2);
+            k+=1;
+            
+        }
+    }
+    cors[0] = spearman.correlation(sims_1, sims_2);   
+    cors[1] = pearson.correlation(sims_1, sims_2); 
+    
+    
+    return cors;
        
    }
 
