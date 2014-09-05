@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import common.MenCorrelation;
 
-import neural.IdentityFunction;
+//import neural.IdentityFunction;
 import neural.Sigmoid;
 import neural.Tanh;
 import neural.TreeNetwork;

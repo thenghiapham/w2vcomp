@@ -34,7 +34,7 @@ public class PhraseVectorLearning {
         String trainFile = TestConstants.CCG_TRAIN_FILE;
         String outputFile = TestConstants.CCG_VECTOR_FILE;
         String vocabFile = TestConstants.CCG_VOCABULARY_FILE;
-        String initFile = TestConstants.CCG_INITIALIZATION_FILE;
+//        String initFile = TestConstants.CCG_INITIALIZATION_FILE;
         System.out.println("Starting training using file " + trainFile);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
