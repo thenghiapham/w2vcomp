@@ -58,6 +58,15 @@ public class TanhTable {
      * Get the tanh function for x from the pre-computed table
      */
     public double getTanh(double x) {
+//        if (x > 1000) {
+//            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+//            System.out.println("x: " + x);
+//            return 1;
+//        } else if (x < -1000) {
+//            System.out.println("-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+//            return -1;
+//        }
+//        return MathUtils.tanh(x);
         if (x > maxX)
             return 1;
         else if (x < -maxX)

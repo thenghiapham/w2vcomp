@@ -10,11 +10,12 @@ import common.AdjNounCorrelation;
 import common.GradientUtils;
 import common.IOUtils;
 import common.SimpleMatrixUtils;
+import common.TanhTable;
 import common.ValueGradient;
 import composition.FullAdditive;
 import composition.WeightedAdditive;
 
-import edu.stanford.nlp.neural.NeuralUtils;
+//import edu.stanford.nlp.neural.NeuralUtils;
 
 import io.word.Phrase;
 import tree.CcgTree;
@@ -36,6 +37,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     double weightDecay = 1e-4;
     boolean useTanh = true;
     AdjNounCorrelation anCorrelation;
+    TanhTable tanhTable = new TanhTable();
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
@@ -187,7 +189,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         SimpleMatrix z1 = compositionMatrix.mult(a0);
         SimpleMatrix a1;
         if (useTanh) {
-            a1 = NeuralUtils.elementwiseApplyTanh(z1);
+            a1 = SimpleMatrixUtils.elementwiseApplyTanh(z1,tanhTable);
         } else {
             a1 = z1;
         }
@@ -245,7 +247,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         
         SimpleMatrix d1 = softmaxWeight.transpose().mult(d2);
         if (useTanh) {
-            d1 = d1.elementMult(NeuralUtils.elementwiseApplyTanhDerivative(z1));
+            d1 = d1.elementMult(SimpleMatrixUtils.elementwiseApplyTanhDerivative(z1, tanhTable));
         }
         // W1's gradient
         compositionMatrixGradient = d1.mult(a0.transpose());
@@ -274,7 +276,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         SimpleMatrix z1 = compositionMatrix.mult(a0);
         SimpleMatrix a1;
         if (useTanh) {
-            a1 = NeuralUtils.elementwiseApplyTanh(z1);
+            a1 = SimpleMatrixUtils.elementwiseApplyTanh(z1, tanhTable);
         } else {
             a1 = z1;
         }
@@ -335,7 +337,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
         
         SimpleMatrix d1 = negativeWeight.transpose().mult(d2);
         if (useTanh) {
-            d1 = d1.elementMult(NeuralUtils.elementwiseApplyTanhDerivative(z1));
+            d1 = d1.elementMult(SimpleMatrixUtils.elementwiseApplyTanhDerivative(z1, tanhTable));
         }
         // W1's gradient
         compositionMatrixGradient = d1.mult(a0.transpose());

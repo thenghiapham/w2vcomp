@@ -100,7 +100,7 @@ public class TreeNetwork {
             // TODO: changable here to 1 if one to include Mikolov's skipgram
             int height = node.getHeight();
             
-            if (height >= 1 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
+            if (height >= 2 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
                 if (!allLevel && (height != outputLayerHeight || (outputLayerHeight == -1 && node != parseTree))) {
                     continue;
                 } else {

@@ -9,6 +9,7 @@ import common.MenCorrelation;
 
 import neural.IdentityFunction;
 import neural.Sigmoid;
+import neural.Tanh;
 import neural.TreeNetwork;
 
 import space.NewSemanticSpace;
@@ -106,7 +107,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
 
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new IdentityFunction(), new Sigmoid(), windowSize, phraseHeight, allLevel);
+        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new Tanh(), new Sigmoid(), windowSize, phraseHeight, allLevel);
         network.learn(alpha);
     }
     

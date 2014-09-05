@@ -31,6 +31,25 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(matrix);
     }
     
+    public static SimpleMatrix elementwiseApplyTanh(SimpleMatrix inputMatrix, TanhTable tanhTable) {
+        double[][] matrix = new double[inputMatrix.numRows()][inputMatrix.numCols()];
+        for (int i = 0; i < inputMatrix.numRows(); i++)
+            for (int j = 0; j < inputMatrix.numCols(); j++) {
+                matrix[i][j] = tanhTable.getTanh(inputMatrix.get(i,j));
+            }
+        return new SimpleMatrix(matrix);
+    }
+    
+    public static SimpleMatrix elementwiseApplyTanhDerivative(SimpleMatrix inputMatrix, TanhTable tanhTable) {
+        double[][] matrix = new double[inputMatrix.numRows()][inputMatrix.numCols()];
+        for (int i = 0; i < inputMatrix.numRows(); i++)
+            for (int j = 0; j < inputMatrix.numCols(); j++) {
+                double tanh = tanhTable.getTanh(inputMatrix.get(i,j));
+                matrix[i][j] = 1 - (tanh * tanh); 
+            }
+        return new SimpleMatrix(matrix);
+    }
+    
     /**
      * Stack two matrices vertically
      * @param matrix1

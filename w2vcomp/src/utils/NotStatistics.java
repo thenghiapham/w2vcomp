@@ -14,8 +14,8 @@ import common.exception.ValueException;
 
 import tree.Tree;
 
-public class PhraseStatistics {
-    public static HashMap<String, Integer> getConstructionStatistics(File parseFile) {
+public class NotStatistics {
+    public static HashMap<String, Integer> getNotConstructionStatistics(File parseFile) {
         HashMap<String, Integer> constructionMap = new HashMap<>();
         try {
             String fileName = parseFile.getName();
@@ -35,6 +35,7 @@ public class PhraseStatistics {
                         for (Tree node: nodes) {
                             if (!node.isPreTerminal() && !node.isTerminal()) {
                                 String construction = node.getConstruction();
+                                if (!containsNot(node)) continue;
     //                            System.out.println(construction);
                                 if (!constructionMap.containsKey(construction)) {
                                     constructionMap.put(construction, 1);
@@ -56,6 +57,18 @@ public class PhraseStatistics {
         }
     }
     
+    public static boolean containsNot(Tree node) {
+        if (!node.isPreTerminal() && !node.isTerminal() && node.getChildren().size() == 2) {
+            for (Tree child: node.getChildren()) {
+                if (child.isPreTerminal() && child.getSurfaceWords()[0].equals("not")) {
+                    return true;
+                }
+            }
+        } 
+        return false;
+        
+    }
+    
     // map1 is modified, map2 is not modified
     public static <K> void mergeHashMap(HashMap<K, Integer> map1, HashMap<K, Integer> map2) {
         Set<K> keys2 = map2.keySet();
@@ -66,11 +79,13 @@ public class PhraseStatistics {
         }
     }
     
-    public static void printPhraseStatistics(HashMap<String, Integer> data, String outputFile) {
+    public static void printNotStatistics(HashMap<String, Integer> notData, HashMap<String, Integer> phraseData, String outputFile) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-            for (String key: data.keySet()) {
-                writer.write(key + "\t" + data.get(key) + "\n");
+            for (String key: notData.keySet()) {
+                int notNum = notData.get(key);
+                int totalNum = phraseData.get(key);
+                writer.write(key + "\t" + notNum + "\t" + totalNum + "\t" + (((double) notNum)/ totalNum) + "\n");
             }
             writer.close();
         } catch (IOException e) {
@@ -83,7 +98,7 @@ public class PhraseStatistics {
     protected ArrayList<File> files;
     protected int numThread;
     
-    public PhraseStatistics(int numThread) {
+    public NotStatistics(int numThread) {
         this.files = new ArrayList<>();
         this.numThread = numThread;
     }
@@ -93,7 +108,7 @@ public class PhraseStatistics {
             files.add(file);
         }
         statistics = new HashMap<>();
-        CountThread[] countThreads = new CountThread[numThread];
+        CountThread[] countThreads = new CountThread[numThread]; 
         for (int i = 0; i < numThread; i++) {
             countThreads[i] = new CountThread();
             countThreads[i].start();
@@ -120,7 +135,7 @@ public class PhraseStatistics {
                         file = files.remove(files.size() - 1);
                     }
                 }
-                HashMap<String, Integer> tmpPhraseStatistics = PhraseStatistics.getConstructionStatistics(file);
+                HashMap<String, Integer> tmpPhraseStatistics = NotStatistics.getNotConstructionStatistics(file);
                 synchronized (statistics) {
                     mergeHashMap(statistics, tmpPhraseStatistics);
                 }
@@ -134,8 +149,9 @@ public class PhraseStatistics {
         int numThread = new Integer(args[2]);
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
-        HashMap<String,Integer> result = new PhraseStatistics(numThread).computeStatistics(files);
-        PhraseStatistics.printPhraseStatistics(result, outputFile);
+        HashMap<String,Integer> notResult = new NotStatistics(numThread).computeStatistics(files);
+        HashMap<String,Integer> phraseResult = new PhraseStatistics(numThread).computeStatistics(files);
+        NotStatistics.printNotStatistics(notResult, phraseResult, outputFile);
         
     }
     
