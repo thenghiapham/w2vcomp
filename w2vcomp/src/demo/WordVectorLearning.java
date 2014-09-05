@@ -24,7 +24,7 @@ public class WordVectorLearning {
         //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(300,5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 5, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
         // 0);
         
