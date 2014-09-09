@@ -94,5 +94,20 @@ public class SimpleMatrixUtils {
         System.out.println("hstacked" + hStack(matrix1, matrix2));
     }
     
+    public static double cosine(SimpleMatrix u, SimpleMatrix v) {
+        double lengthU = u.normF();
+        double lengthV = v.normF();
+        if (lengthU == 0 || lengthV == 0) return 0;
+        double dot = u.dot(v);
+        return dot / (lengthU * lengthV);
+    }
     
+    public SimpleMatrix cosineDerivative(SimpleMatrix x, SimpleMatrix a) {
+        double lengthX = x.normF();
+        double lengthA = a.normF();
+        double dot = x.dot(a);
+        SimpleMatrix scaledA = a.scale(1 / (lengthX * lengthA));
+        SimpleMatrix scaledX = x.scale(dot / (lengthA * lengthX * lengthX * lengthX));
+        return scaledA.minus(scaledX);
+    }
 }

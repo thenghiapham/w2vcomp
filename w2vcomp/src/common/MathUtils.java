@@ -1,5 +1,7 @@
 package common;
 
+import org.ejml.simple.SimpleMatrix;
+
 /**
  * This class contains a set of utility method for simple maths
  * (maybe should be replaced with utility method for SimpleMatrix class
@@ -55,5 +57,18 @@ public class MathUtils {
         // TODO: understand why they turn the formula like this (e^x faster
         // than e^-x ? Rounding error?)
         return 1 - (double) (1.0 / (1.0 + Math.exp(f)));
+    }
+    
+    public static double[] cosineDerivative(double[] x, double[] a) {
+        double lengthX = length(x);
+        double lengthA = length(a);
+        double dotP = dot(x, a);
+        double rToScaleA = 1 / (lengthX * lengthA);
+        double rToScaleX = dotP / (lengthA * lengthX * lengthX * lengthX);
+        double[] result = new double[x.length];
+        for (int i = 0; i < x.length; i++) {
+            result[i] = (a[i] * rToScaleA) - (x[i] * rToScaleX);
+        }
+        return result;
     }
 }
