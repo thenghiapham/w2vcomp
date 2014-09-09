@@ -34,6 +34,10 @@ public class PhraseStatistics {
                         ArrayList<Tree> nodes = tree.allNodes();
                         for (Tree node: nodes) {
                             if (!node.isPreTerminal() && !node.isTerminal()) {
+                                if (node.getChildren().size() > 2) {
+                                    System.out.println(node.toPennTree());
+                                    System.exit(0);
+                                }
                                 String construction = node.getConstruction();
     //                            System.out.println(construction);
                                 if (!constructionMap.containsKey(construction)) {
