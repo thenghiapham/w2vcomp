@@ -23,7 +23,8 @@ public class MassSentenceVectorLearning {
         String levelString = args[0];
         String allLevelString = args[1];
         String lexicalString = args[2];
-        String outSuffix = args[3];
+        String constructionString = args[3];
+        String outSuffix = args[4];
         
         int hiddenLayerSize = 40;
         int windowSize = 5;
@@ -34,14 +35,18 @@ public class MassSentenceVectorLearning {
         int phraseLevel = new Integer(levelString);
         boolean allLevel = new Boolean(allLevelString);
         boolean lexical = new Boolean(lexicalString);
-        
+        boolean useConstruction = new Boolean(constructionString);
         
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
-        HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-        IOUtils.printConstructions(constructionGroups);
+        HashMap<String, String> constructionGroups = new HashMap<String, String>();
+        
+        if (useConstruction) {
+            constructionGroups = IOUtils.readConstructionGroup(constructionFile);
+        }
+        // IOUtils.printConstructions(constructionGroups);
         Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
                 //hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel, 
-                hierarchialSoftmax, negativeSampling, subSampling, null, phraseLevel,
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel,
                 allLevel, lexical, TestConstants.S_MEN_FILE);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE + outSuffix;
