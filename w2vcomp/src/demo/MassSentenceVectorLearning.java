@@ -18,25 +18,34 @@ import word2vec.SingleThreadedSentence2Vec;
 
 import demo.TestConstants;
 
-public class SentenceVectorLearning {
+public class MassSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
+        String levelString = args[0];
+        String allLevelString = args[1];
+        String lexicalString = args[2];
+        String outSuffix = args[3];
+        
         int hiddenLayerSize = 40;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 3;
-        boolean allLevel = true;
+        
+        int phraseLevel = new Integer(levelString);
+        boolean allLevel = new Boolean(allLevelString);
+        boolean lexical = new Boolean(lexicalString);
+        
+        
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
         IOUtils.printConstructions(constructionGroups);
         Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
                 //hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel, 
                 hierarchialSoftmax, negativeSampling, subSampling, null, phraseLevel,
-                allLevel, false, TestConstants.S_MEN_FILE);
+                allLevel, lexical, TestConstants.S_MEN_FILE);
         String trainFile = TestConstants.S_TRAIN_FILE;
-        String outputFile = TestConstants.S_VECTOR_FILE;
-        String vocabFile = TestConstants.S_VOCABULARY_FILE;
+        String outputFile = TestConstants.S_VECTOR_FILE + outSuffix;
+        String vocabFile = TestConstants.S_VOCABULARY_FILE + outSuffix;
 //        String initFile = TestConstants.S_INITIALIZATION_FILE;
         System.out.println("Starting training using file " + trainFile);
         boolean learnVocab = !(new File(vocabFile)).exists();

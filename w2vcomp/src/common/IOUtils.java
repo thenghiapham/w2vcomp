@@ -13,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.ejml.simple.SimpleMatrix;
@@ -226,6 +227,37 @@ public class IOUtils {
         saveMatrix(outputStream, SimpleMatrixUtils.to2DArray(matrix), binary);
     }
     
+    public static HashMap<String, String> readConstructionGroup(String filePath) {
+        HashMap<String, String> result = new HashMap<String, String>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            
+            while (line != null && !"".equals(line)) {
+                if (line.startsWith("#")) {
+                    line = reader.readLine();
+                    continue;
+                }
+                System.out.println(line);
+                String[] elements = line.split("( |\\t)");
+                String construction = elements[1] + " " + elements[2] + " " 
+                                    + elements[3];
+                String group = elements[0];
+                result.put(construction, group);
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     
+    public static void printConstructions(HashMap<String, String> constructionGroups) {
+        for (String key: constructionGroups.keySet()) {
+            System.out.println(key + " " + constructionGroups.get(key));
+        }
+        System.out.println("******************");
+    }
     
 }

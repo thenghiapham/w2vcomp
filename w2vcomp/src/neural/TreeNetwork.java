@@ -37,7 +37,7 @@ public class TreeNetwork {
     public static TreeNetwork createNetwork(Tree parseTree, ProjectionMatrix projectionBuilder, 
             CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
-            int maxWindowSize, int outputLayerHeight, boolean allLevel) {
+            int maxWindowSize, int outputLayerHeight, boolean allLevel, boolean lexical) {
         
         TreeNetwork network = new TreeNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
@@ -88,20 +88,22 @@ public class TreeNetwork {
         }
         // TODO:?
         network.setLayerMap(layerMap);
-        network.addOutputLayers(outputBuilder, outputLayerActivation, maxWindowSize, outputLayerHeight, allLevel);
+        network.addOutputLayers(outputBuilder, outputLayerActivation, maxWindowSize, outputLayerHeight, allLevel, lexical);
         return network;
     }
     
     protected void addOutputLayers(LearningStrategy outputBuilder, ActivationFunction outputLayerActivation, int maxWindowSize, 
-            int outputLayerHeight, boolean allLevel) {
+            int outputLayerHeight, boolean allLevel, boolean lexical) {
         String[] sentence = parseTree.getSurfaceWords();
         Random random = new Random();
         for (Tree node: layerMap.keySet()) {
             // TODO: changable here to 1 if one to include Mikolov's skipgram
             int height = node.getHeight();
             
-            if (height >= 2 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
+            if (height >= 1 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
                 if (!allLevel && (height != outputLayerHeight || (outputLayerHeight == -1 && node != parseTree))) {
+                    continue;
+                } else if (height == 1 && !lexical) {
                     continue;
                 } else {
                     // TODO: put it back when doing preprocessing

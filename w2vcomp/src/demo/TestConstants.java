@@ -9,6 +9,7 @@ public class TestConstants {
     public static final String VOCABULARY_FILE          = "/home/thenghiapham/svn/word2vec/out.voc";
     public static final String INITIALIZATION_FILE      = "/home/thenghiapham/svn/word2vec/out.ini";
     
+    public static final String S_CONSTRUCTION_FILE        = "/home/thenghiapham/work/project/mikolov/selected-constructions.txt";
     public static final String S_TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/tmp_parsed/bnc.txt";
     public static final String S_VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/output/bnc.bin";
     public static final String S_VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/output/bnc.voc";

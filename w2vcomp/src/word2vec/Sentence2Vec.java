@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -57,16 +58,21 @@ public abstract class Sentence2Vec {
     protected long             totalLines;
     protected long             trainedLines;
     
+    protected HashMap<String, String> constructionGroups;
+    
     protected ProjectionMatrix      projectionMatrix;
     protected CompositionMatrices   compositionMatrices;
     protected LearningStrategy      learningStrategy;
     
     protected int phraseHeight;
     boolean allLevel;
+    boolean lexical;
 
 
     public Sentence2Vec(int hiddenLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, int phraseHeight, boolean allLevel) {
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
+            HashMap<String, String> constructionGroups, int phraseHeight, 
+            boolean allLevel, boolean lexical) {
         this.hiddenLayerSize = hiddenLayerSize;
         this.hierarchicalSoftmax = hierarchicalSoftmax;
         this.windowSize = windowSize;
@@ -74,6 +80,8 @@ public abstract class Sentence2Vec {
         this.negativeSamples = negativeSamples;
         this.phraseHeight = phraseHeight;
         this.allLevel = allLevel;
+        this.lexical = lexical;
+        this.constructionGroups = constructionGroups;
 
         // TODO: setting alpha
         starting_alpha = DEFAULT_STARTING_ALPHA;
@@ -92,7 +100,7 @@ public abstract class Sentence2Vec {
         } else {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
-        compositionMatrices = CompositionMatrices.identityInitialize(new ArrayList<String>(), hiddenLayerSize);
+        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
         vocab.assignCode();
         
         // number of lines = frequency of end of line character?

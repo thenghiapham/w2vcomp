@@ -4,6 +4,7 @@ import io.sentence.TreeInputStream;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import common.MenCorrelation;
 
@@ -19,16 +20,19 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     MenCorrelation men;
 
     public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, int phraseHeight, boolean allLevel) {
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
+            HashMap<String, String> constructionGroups, int phraseHeight, boolean allLevel, boolean lexical) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, phraseHeight, allLevel);
+                subSample, constructionGroups, phraseHeight, allLevel, lexical);
         men = null;
     }
     
     public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, int phraseHeight, boolean allLevel, String menCorrelationFile) {
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
+            HashMap<String, String> constructionGroups, int phraseHeight, 
+            boolean allLevel, boolean lexical, String menCorrelationFile) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, phraseHeight, allLevel);
+                subSample, constructionGroups, phraseHeight, allLevel, lexical);
         men = new MenCorrelation(menCorrelationFile);
         
     }
@@ -107,7 +111,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
 
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new Tanh(), new Sigmoid(), windowSize, phraseHeight, allLevel);
+        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new Tanh(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
         network.learn(alpha);
     }
     
