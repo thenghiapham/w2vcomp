@@ -33,6 +33,7 @@ import common.IOUtils;
  */
 
 public abstract class Sentence2Vec {
+    
     public static final double DEFAULT_STARTING_ALPHA      = 0.025;
     public static final int    DEFAULT_MAX_SENTENCE_LENGTH = 100;
 

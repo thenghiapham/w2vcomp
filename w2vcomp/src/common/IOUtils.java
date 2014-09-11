@@ -238,7 +238,6 @@ public class IOUtils {
                     line = reader.readLine();
                     continue;
                 }
-                System.out.println(line);
                 String[] elements = line.split("( |\\t)");
                 String construction = elements[1] + " " + elements[2] + " " 
                                     + elements[3];
@@ -258,6 +257,29 @@ public class IOUtils {
             System.out.println(key + " " + constructionGroups.get(key));
         }
         System.out.println("******************");
+    }
+    
+    public static ArrayList<Double> readLog(String logfile, String variableName) {
+        ArrayList<Double> result = new ArrayList<Double>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(logfile));
+            String line = reader.readLine();
+            
+            while (line != null && !"".equals(line)) {
+                String[] elements = line.split(" ");
+                if (elements.length >= 2) {
+                    int lenght = elements.length;
+                    if (elements[lenght - 2].startsWith(variableName)) {
+                        result.add(new Double(elements[lenght - 1]));
+                    }
+                }
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
     
 }

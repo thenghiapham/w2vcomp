@@ -5,6 +5,8 @@ import io.sentence.TreeInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import common.MenCorrelation;
 
@@ -17,6 +19,8 @@ import space.NewSemanticSpace;
 import tree.Tree;
 
 public class SingleThreadedSentence2Vec extends Sentence2Vec{
+    private static final Logger LOGGER = Logger.getLogger(SingleThreadedSentence2Vec.class.getName());
+    
     MenCorrelation men;
 
     public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
@@ -83,8 +87,8 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
                     if (alpha < starting_alpha * 0.0001) {
                         alpha = starting_alpha * 0.0001;
                     }
-                    System.out.println("Trained: " + trainedLines + " lines");
-                    System.out.println("Training rate: " + alpha);
+                    LOGGER.log(Level.INFO, "Trained: " + trainedLines + " lines");
+                    LOGGER.log(Level.INFO, "Training rate: " + alpha);
                     tmpTrainedLines = trainedLines;
                     if (iteration % 4 == 0) {
                         printStatistics();
@@ -102,11 +106,11 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     protected void printStatistics() {
         // TODO Auto-generated method stub
         if (men != null) {
-            System.out.println("men: " + men.evaluateSpacePearson(new NewSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
+            LOGGER.log(Level.INFO, "men: " + men.evaluateSpacePearson(new NewSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
         }
-        System.out.println("norm comp: " + compositionMatrices.getCompositionMatrix("blah").normF());
-        System.out.println("norm proj: " + projectionMatrix.getMatrix().normF());
-        System.out.println("norm out: " + learningStrategy.getMatrix().normF());
+        LOGGER.log(Level.INFO, "norm comp: " + compositionMatrices.getCompositionMatrix("blah").normF());
+        LOGGER.log(Level.INFO, "norm proj: " + projectionMatrix.getMatrix().normF());
+        LOGGER.log(Level.INFO, "norm out: " + learningStrategy.getMatrix().normF());
     }
 
     protected void trainSentence(Tree parseTree) {

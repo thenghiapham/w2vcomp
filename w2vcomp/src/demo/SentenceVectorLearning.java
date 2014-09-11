@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import common.IOUtils;
+import common.LogUtils;
 
 import vocab.Vocab;
 import word2vec.Sentence2Vec;
@@ -38,6 +39,9 @@ public class SentenceVectorLearning {
         String outputFile = TestConstants.S_VECTOR_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
 //        String initFile = TestConstants.S_INITIALIZATION_FILE;
+        String logFile = TestConstants.S_LOG_FILE;
+        LogUtils.setup(logFile);
+        
         System.out.println("Starting training using file " + trainFile);
         boolean learnVocab = !(new File(vocabFile)).exists();
         Vocab vocab = new Vocab(5);

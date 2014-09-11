@@ -15,6 +15,7 @@ public class TestConstants {
     public static final String S_VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/output/bnc.voc";
     public static final String S_INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/output/bnc.ini";
     public static final String S_MEN_FILE                 = "/home/thenghiapham/work/project/mikolov/men/MEN_dataset_lemma.txt";
+    public static final String S_LOG_FILE                 = "/home/thenghiapham/work/project/mikolov/sentence.log";
 
 
     // on the cluster

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import common.IOUtils;
+import common.LogUtils;
 
 import vocab.Vocab;
 import word2vec.Sentence2Vec;
@@ -25,6 +26,9 @@ public class MassSentenceVectorLearning {
         String lexicalString = args[2];
         String constructionString = args[3];
         String outSuffix = args[4];
+        String logFile = args[5];
+        
+        LogUtils.setup(logFile);
         
         int hiddenLayerSize = 40;
         int windowSize = 5;
