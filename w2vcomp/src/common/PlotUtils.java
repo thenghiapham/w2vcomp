@@ -26,25 +26,26 @@ public class PlotUtils {
             plot.getLineRenderer(series).setColor(color);
         }
         plot.setLegendVisible(true);
+        double maxY = plot.getAxis("y").getMax().doubleValue(); 
+        plot.getAxis("y").setMin(-maxY/10);
+        
+        double maxX = plot.getAxis("x").getMax().doubleValue(); 
+        plot.getAxis("x").setMin(-maxX/10);
         return plot;
     }
     
     public static DataSeries[] createDataTable(ArrayList<ArrayList<Double>> data, ArrayList<String> label) {
         int size = data.size();
-        int seriesSize = -1;
-        for (ArrayList<Double> series : data) {
-            if (seriesSize == -1) seriesSize = series.size();
-            if (seriesSize != series.size()) return null;
-        }
         DataSeries[] result = new DataSeries[size];
         for (int i = 0; i < size; i++) {
             ArrayList<Double> series = data.get(i);
             @SuppressWarnings("unchecked")
             DataTable table = new DataTable(Double.class);
+            int seriesSize = series.size();
             for (int j = 0; j < seriesSize; j++) {
                 table.add(series.get(j));
             }
-            DataSeries dataSeries = new DataSeries(label.get(i), new EnumeratedData(table), 0,1);
+            DataSeries dataSeries = new DataSeries(label.get(i), new EnumeratedData(table, 0, 1.0 / seriesSize), 0,1);
             result[i] = dataSeries;
         }
         return result;

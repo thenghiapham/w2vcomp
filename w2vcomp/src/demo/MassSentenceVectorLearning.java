@@ -25,10 +25,10 @@ public class MassSentenceVectorLearning {
         String allLevelString = args[1];
         String lexicalString = args[2];
         String constructionString = args[3];
-        String outSuffix = args[4];
-        String logFile = args[5];
+        String outSuffix = args[0] + args[1].charAt(0) + args[2].charAt(0)  
+                + args[3].charAt(0);
         
-        LogUtils.setup(logFile);
+        LogUtils.setup(TestConstants.S_LOG_FILE + outSuffix);
         
         int hiddenLayerSize = 40;
         int windowSize = 5;
@@ -55,7 +55,6 @@ public class MassSentenceVectorLearning {
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE + outSuffix;
         String vocabFile = TestConstants.S_VOCABULARY_FILE + outSuffix;
-//        String initFile = TestConstants.S_INITIALIZATION_FILE;
         System.out.println("Starting training using file " + trainFile);
         boolean learnVocab = !(new File(vocabFile)).exists();
         Vocab vocab = new Vocab(5);
