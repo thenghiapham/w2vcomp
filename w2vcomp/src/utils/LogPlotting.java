@@ -2,6 +2,7 @@ package utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 
@@ -24,9 +25,14 @@ public class LogPlotting extends JFrame {
         ArrayList<String> labels = new ArrayList<>();
         File logDir = new File(logDirPath);
         String[] fileNames = logDir.list();
+        Arrays.sort(fileNames);
         for (String fileName : fileNames) {
+            
+            System.out.println(fileName);
+            if (fileName.endsWith("lck") || !fileName.contains("log")) continue;
+            
             String filePath = logDirPath + "/" + fileName;
-            String suffix = fileName.split(".")[fileName.split(".").length - 1];
+            String suffix = fileName.split("log")[fileName.split("log").length - 1];
             ArrayList<Double> men = IOUtils.readLog(filePath, "men");
             data.add(men);
             labels.add(suffix);
