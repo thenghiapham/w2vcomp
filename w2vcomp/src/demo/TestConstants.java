@@ -22,7 +22,8 @@ public class TestConstants {
 
     
     public static final String TRAIN_FILE               = "/home/angeliki/Documents/mikolov_composition/corpora_simple/enwik9";
-    public static final String VISION_FILE              = "//home/angeliki/masterclic4/visLang/caption_generation/spaces/train_dataset.Nouns/matrix.simple.txt.aggr";
+    //public static final String VISION_FILE              = "//home/angeliki/masterclic4/visLang/caption_generation/spaces/train_dataset.Nouns/matrix.simple.txt.aggr";
+    public static final String VISION_FILE              = "/home/angeliki/masterclic4/visLang/fast-mapping/feature_extraction/pmisvd/pmisvd.aggr.dm";
     public static final String VECTOR_FILE              = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.bin";
     public static final String VOCABULARY_FILE          = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.voc";
     public static final String INITIALIZATION_FILE      = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.ini";
