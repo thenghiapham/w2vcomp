@@ -27,6 +27,7 @@ public class TestConstants {
     public static final String VECTOR_FILE              = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.bin";
     public static final String VOCABULARY_FILE          = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.voc";
     public static final String INITIALIZATION_FILE      = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.ini";
+    public static final String LOG_FILE               = "/home/angeliki/workspace/w2vcomp/w2vcomp/logs/multi_enwiki9_0.txt";
 
     // public static final String GZIP_TRAIN_FILES =
     // "/home/thenghiapham/svn/word2vec/bnc.utf8.xml.gz";

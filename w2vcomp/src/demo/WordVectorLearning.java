@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import common.LogUtils;
 import common.exception.ValueException;
 
 import space.SemanticSpace;
@@ -19,12 +20,12 @@ import word2vec.SkipNGramWord2Vec;
 import demo.TestConstants;
 
 public class WordVectorLearning {
-    public static void main(String[] args) throws ValueException {
+    public static void main(String[] args) throws ValueException, IOException {
 //        CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, true, 0, (float) 0);
         //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(300,5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 5, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
         // 0);
         
@@ -34,7 +35,8 @@ public class WordVectorLearning {
         String outputFile = TestConstants.VECTOR_FILE;
         String vocabFile = TestConstants.VOCABULARY_FILE;
         String initFile = TestConstants.INITIALIZATION_FILE;
-        
+        String logGile = TestConstants.LOG_FILE;
+        LogUtils.setup(logGile);
         
         System.out.println("Starting training using file " + trainFile);
 

@@ -115,7 +115,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                         alpha = starting_alpha * 0.0001;
                     }
                     if (men != null && outputSpace != null/* && iteration %2 == 0*/) {
-                        System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
+                        System.out.println("correlation: " + men.evaluateSpacePearson(outputSpace));
                         printStatistics();
                     }
                     if (iteration % 10 == 0) {
