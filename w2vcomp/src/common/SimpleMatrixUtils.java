@@ -1,9 +1,12 @@
 package common;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import neural.ActivationFunction;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.ejml.alg.dense.mult.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 
@@ -222,6 +225,20 @@ public class SimpleMatrixUtils {
             newData[i] = Math.sqrt(data[i]);
         }
         return new SimpleMatrix(numRows, numCols, true, newData);
+    }
+    
+    
+    // TODO: can be rewrite so that it doesn't require extra library
+    public static double elementMax(SimpleMatrix input) {
+        double[] matData = input.getMatrix().data;
+        List<Double> dataAsList = Arrays.asList(ArrayUtils.toObject(matData));
+        return Collections.max(dataAsList);
+    }
+    
+    public static double elementMin(SimpleMatrix input) {
+        double[] matData = input.getMatrix().data;
+        List<Double> dataAsList = Arrays.asList(ArrayUtils.toObject(matData));
+        return Collections.min(dataAsList);
     }
     
 }
