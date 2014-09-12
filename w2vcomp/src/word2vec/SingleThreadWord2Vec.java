@@ -6,6 +6,8 @@ import io.word.Phrase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import space.SemanticSpace;
 
@@ -23,6 +25,8 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     protected long oldWordCount;
     protected MenCorrelation men;
     protected SemanticSpace outputSpace;
+    private static final Logger LOGGER = Logger.getLogger(SingleThreadWord2Vec.class.getName());
+    
 
     public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
@@ -36,6 +40,10 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 negativeSamples, negativeSamplesImage, subSample);
         men = new MenCorrelation(menFile);
     }
+    
+    
+ 
+    
 
     @Override
     public void trainModel(ArrayList<SentenceInputStream> inputStreams) {
@@ -49,6 +57,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         System.out.println("first word:" + vocab.getEntry(0).word);
         System.out.println("last word:"
                 + vocab.getEntry(vocab.getVocabSize() - 1).word);
+        
         
         if (men != null) {
             try {
@@ -131,6 +140,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     }
     
     public void printStatistics() {
+        LOGGER.log(Level.INFO, "correlation: " + men.evaluateSpacePearson(outputSpace));
     }
 
     public abstract void trainSinglePhrase(Phrase phrase,
