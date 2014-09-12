@@ -35,6 +35,7 @@ public class WordVectorLearning {
         String vocabFile = TestConstants.VOCABULARY_FILE;
         String initFile = TestConstants.INITIALIZATION_FILE;
         
+        
         System.out.println("Starting training using file " + trainFile);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
