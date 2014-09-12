@@ -4,14 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.QuadCurve2D;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -39,7 +35,7 @@ public class HeatMapPanel extends JPanel
         this.matHeight = data.numRows();
         this.matWidth = data.numCols();
         
-        colorMap = new HeatMap();
+        colorMap = new SimpleHeatMap();
         double max = SimpleMatrixUtils.elementMax(data);
         double min = SimpleMatrixUtils.elementMin(data);
         colorMap.setRange(min, max);
@@ -63,36 +59,59 @@ public class HeatMapPanel extends JPanel
                 int y = (int) Math.round(j * cellHeight);
                 int deltaX = (int) Math.round((i + 1) * cellWidth);
                 int deltaY = (int) Math.round((j + 1) * cellHeight);
-                double value = data.get(i, j);
+                double value = data.get(j, i);
                 Paint paint = colorMap.get(value);
-                
+                g2.setPaint(paint);
+                g2.fillRect(x, y, deltaX - x, deltaY - y);
             }
         }
-        x1 = w/3;
-        y1 = h;
-        double ctrlx1 = w/4;
-        double ctrly1 = h/2;
-        double ctrlx2 = w/2;
-        double ctrly2 = h*2/3;
-        x2 = w;
-        y2 = h*3/4;
-        CubicCurve2D zone4 = new CubicCurve2D.Double(x1, y1, ctrlx1, ctrly1,
-                                                     ctrlx2, ctrly2, x2, y2);
-        g2.setPaint(new Color(180,150,100));
-        g2.fill(zone4);
-        xps = new int[] { (int)x1, (int)x2, w };
-        yps = new int[] { (int)y1, (int)y2, h };
-        p = new Polygon(xps, yps, 3);
-        g2.fill(p);
     }
  
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.getContentPane().add(new HeatMapPanel(null));
-        f.setSize(400,400);
+        String dataFile = "/home/thenghiapham/work/project/mikolov/output/phrase1.comp.csv";
+        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(dataFile));
+        SimpleMatrix data = new SimpleMatrix(IOUtils.readMatrix(inputStream, false));
+        inputStream.close();
+        f.getContentPane().add(new HeatMapPanel(data));
+        f.setSize(data.numCols() * 10, data.numRows() * 10);
         f.setLocation(200,200);
         f.setVisible(true);
+    }
+    
+    private class SimpleHeatMap extends HeatMap {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        public Paint get(double value) 
+        {
+            value = scale(value);
+            int NUM_COLORS = 4;
+            float[][] color = {{0,0,1}, {0,1,0}, {1,1,0}, {1,0,0} };
+            // A static array of 4 colors:  (blue,   green,  yellow,  red) using {r,g,b} for each.
+         
+            int idx1;        // |-- Our desired color will be between these two indexes in "color".
+            int idx2;        // |
+            float fractBetween = 0;  // Fraction between "idx1" and "idx2" where our value is.
+         
+            if (value <= 0)      {  idx1 = idx2 = 0;            }    // accounts for an input <=0
+            else if(value >= 1)  {  idx1 = idx2 = NUM_COLORS-1; }    // accounts for an input >=0
+            else
+            {
+                value = value * (NUM_COLORS-1);        // Will multiply value by 3.
+                idx1  = (int) Math.floor(value);                  // Our desired color will be after this index.
+                idx2  = idx1+1;                        // ... and before this index (inclusive).
+                fractBetween = (float) value - idx1;    // Distance between the two indexes (0-1).
+            }
+         
+            float red   = (color[idx2][0] - color[idx1][0])*fractBetween + color[idx1][0];
+            float green = (color[idx2][1] - color[idx1][1])*fractBetween + color[idx1][1];
+            float blue  = (color[idx2][2] - color[idx1][2])*fractBetween + color[idx1][2];
+            return new Color(red, green, blue);
+        }
     }
 }
