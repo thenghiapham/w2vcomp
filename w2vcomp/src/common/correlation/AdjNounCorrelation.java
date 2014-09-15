@@ -1,4 +1,4 @@
-package common;
+package common.correlation;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -8,6 +8,7 @@ import java.util.HashSet;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.IOUtils;
 import composition.BasicComposition;
 import composition.FullAdditive;
 import composition.WeightedAdditive;

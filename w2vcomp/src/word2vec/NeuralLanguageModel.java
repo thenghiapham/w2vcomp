@@ -7,7 +7,7 @@ import org.ejml.simple.SimpleMatrix;
 import tree.CcgTree;
 import vocab.VocabEntry;
 
-import common.AdjNounCorrelation;
+import common.correlation.AdjNounCorrelation;
 import common.GradientUtils;
 import common.IOUtils;
 import common.SimpleMatrixUtils;

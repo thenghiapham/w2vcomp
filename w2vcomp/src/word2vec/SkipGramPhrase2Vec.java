@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.ejml.simple.SimpleMatrix;
 
-import common.AdjNounCorrelation;
+import common.correlation.AdjNounCorrelation;
 import common.GradientUtils;
 import common.IOUtils;
 import common.SimpleMatrixUtils;

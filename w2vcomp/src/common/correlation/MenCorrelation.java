@@ -1,9 +1,11 @@
-package common;
+package common.correlation;
 
 import java.util.ArrayList;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+
+import common.IOUtils;
 
 import demo.TestConstants;
 

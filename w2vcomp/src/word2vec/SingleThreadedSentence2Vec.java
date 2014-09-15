@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import common.MenCorrelation;
+import common.correlation.MenCorrelation;
+
 
 //import neural.IdentityFunction;
 import neural.Sigmoid;

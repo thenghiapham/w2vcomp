@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import space.SemanticSpace;
 
-import common.MenCorrelation;
+import common.correlation.MenCorrelation;
 
 /**
  * Still abstract class for learning words' vectors
