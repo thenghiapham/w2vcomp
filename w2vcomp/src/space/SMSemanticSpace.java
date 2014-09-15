@@ -27,48 +27,48 @@ import common.DataStructureUtils;
 import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 
-public class NewSemanticSpace {
+public class SMSemanticSpace {
     String[]                 words;
     HashMap<String, Integer> word2Index;
     SimpleMatrix               vectors;
     int                      vectorSize;
 
-    public NewSemanticSpace(int wordNumber, int vectorSize) {
+    public SMSemanticSpace(int wordNumber, int vectorSize) {
         vectors = new SimpleMatrix(wordNumber,vectorSize);
         words = new String[wordNumber];
         word2Index = new HashMap<String, Integer>();
         this.vectorSize = vectorSize;
     }
 
-    public NewSemanticSpace(List<String> wordList, List<double[]> vectorList) {
+    public SMSemanticSpace(List<String> wordList, List<double[]> vectorList) {
         words = DataStructureUtils.stringListToArray(wordList);
         word2Index = DataStructureUtils.arrayToMap(words);
         vectors = new SimpleMatrix(DataStructureUtils.arrayListTo2dArray(vectorList));
         vectorSize = vectors.numCols();
     }
     
-    public NewSemanticSpace(List<String> wordList, SimpleMatrix vectors) {
+    public SMSemanticSpace(List<String> wordList, SimpleMatrix vectors) {
         words = DataStructureUtils.stringListToArray(wordList);
         word2Index = DataStructureUtils.arrayToMap(words);
         this.vectors = vectors;
         vectorSize = vectors.numCols();
     }
     
-    public NewSemanticSpace(String[] words, double[][] vectors) {
+    public SMSemanticSpace(String[] words, double[][] vectors) {
         this.words = words;
         this.vectors = new SimpleMatrix(vectors);
         vectorSize = vectors[0].length;
         word2Index = DataStructureUtils.arrayToMap(words);
     }
     
-    public NewSemanticSpace(String[] words, SimpleMatrix vectors) {
+    public SMSemanticSpace(String[] words, SimpleMatrix vectors) {
         this.words = words;
         this.vectors = vectors;
         vectorSize = vectors.numCols();
         word2Index = DataStructureUtils.arrayToMap(words);
     }
     
-    public NewSemanticSpace(Vocab vocab, SimpleMatrix vectors, boolean copy){
+    public SMSemanticSpace(Vocab vocab, SimpleMatrix vectors, boolean copy){
         if (vocab.getVocabSize() != vectors.numRows() && vocab.getVocabSize() != vectors.numRows() - 1) {
             throw new ValueException("vocab and vectors must have the same size");
         } else {
@@ -91,7 +91,7 @@ public class NewSemanticSpace {
         }
     }
 
-    public static NewSemanticSpace readSpace(String vectorFile) {
+    public static SMSemanticSpace readSpace(String vectorFile) {
         try {
             BufferedInputStream inputStream = new BufferedInputStream(
                     new BufferedInputStream(new FileInputStream(vectorFile)));
@@ -99,7 +99,7 @@ public class NewSemanticSpace {
             String secondWord = readWord(inputStream);
             int wordNumber = Integer.parseInt(firstWord);
             int vectorSize = Integer.parseInt(secondWord);
-            NewSemanticSpace result = new NewSemanticSpace(wordNumber, vectorSize);
+            SMSemanticSpace result = new SMSemanticSpace(wordNumber, vectorSize);
             result.readSpace(inputStream);
             inputStream.close();
             return result;
@@ -138,7 +138,7 @@ public class NewSemanticSpace {
         return result;
     }
 
-    public static NewSemanticSpace importSpace(String textFile) {
+    public static SMSemanticSpace importSpace(String textFile) {
         ArrayList<String> words = new ArrayList<String>();
         ArrayList<double[]> vectors = new ArrayList<double[]>();
         // int vectorSize = 0;
@@ -170,7 +170,7 @@ public class NewSemanticSpace {
         if (words.size() == 0) {
             return null;
         } else {
-            NewSemanticSpace result = new NewSemanticSpace(words, vectors);
+            SMSemanticSpace result = new SMSemanticSpace(words, vectors);
             return result;
         }
     }
@@ -286,7 +286,7 @@ public class NewSemanticSpace {
         return word2Index.containsKey(word);
     }
 
-    public NewSemanticSpace getSubSpace(WordFilter filter) {
+    public SMSemanticSpace getSubSpace(WordFilter filter) {
         ArrayList<String> newWordList = new ArrayList<String>();
         ArrayList<Integer> newRows = new ArrayList<Integer>();
         
@@ -296,10 +296,10 @@ public class NewSemanticSpace {
                 newRows.add(i);
             }
         }
-        return new NewSemanticSpace(newWordList, SimpleMatrixUtils.getRows(vectors, DataStructureUtils.intListToArray(newRows)));
+        return new SMSemanticSpace(newWordList, SimpleMatrixUtils.getRows(vectors, DataStructureUtils.intListToArray(newRows)));
     }
 
-    public NewSemanticSpace getSubSpace(Collection<String> wordList) {
+    public SMSemanticSpace getSubSpace(Collection<String> wordList) {
         ArrayList<String> newWordList = new ArrayList<String>();
         ArrayList<Integer> newRows = new ArrayList<Integer>();
         for (String word : wordList) {
@@ -308,7 +308,7 @@ public class NewSemanticSpace {
                 newRows.add(word2Index.get(word));
             }
         }
-        return new NewSemanticSpace(newWordList, SimpleMatrixUtils.getRows(vectors, DataStructureUtils.intListToArray(newRows)));
+        return new SMSemanticSpace(newWordList, SimpleMatrixUtils.getRows(vectors, DataStructureUtils.intListToArray(newRows)));
     
     }
 

@@ -4,7 +4,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
 
-import space.NewSemanticSpace;
+import space.SMSemanticSpace;
 import space.SemanticSpace;
 
 public abstract class BasicComposition {
@@ -36,7 +36,7 @@ public abstract class BasicComposition {
         return new SemanticSpace(phrases, compose(uMatrix, vMatrix));
     }
     
-    public SemanticSpace composeSpace(NewSemanticSpace inputSpace, String[][] wordTriples) {
+    public SemanticSpace composeSpace(SMSemanticSpace inputSpace, String[][] wordTriples) {
         int phraseNum = wordTriples.length;
         int vectorSize = inputSpace.getVectorSize();
         String[] phrases = new String[phraseNum];

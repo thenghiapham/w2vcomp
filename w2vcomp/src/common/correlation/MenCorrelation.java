@@ -9,7 +9,7 @@ import common.IOUtils;
 
 import demo.TestConstants;
 
-import space.NewSemanticSpace;
+import space.SMSemanticSpace;
 import space.SemanticSpace;
 
 /**
@@ -102,7 +102,7 @@ public class MenCorrelation {
      * @param space
      * @return
      */
-    public double evaluateSpacePearson(NewSemanticSpace space) {
+    public double evaluateSpacePearson(SMSemanticSpace space) {
         double[] predicts = new double[golds.length];
         for (int i = 0; i < golds.length; i++) {
             predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
@@ -128,7 +128,7 @@ public class MenCorrelation {
      * @param space
      * @return
      */
-    public double evaluateSpaceSpearman(NewSemanticSpace space) {
+    public double evaluateSpaceSpearman(SMSemanticSpace space) {
         double[] predicts = new double[golds.length];
         for (int i = 0; i < golds.length; i++) {
             predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);

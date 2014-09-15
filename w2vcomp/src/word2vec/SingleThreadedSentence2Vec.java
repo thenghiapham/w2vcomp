@@ -16,7 +16,7 @@ import neural.Sigmoid;
 import neural.Tanh;
 import neural.TreeNetwork;
 
-import space.NewSemanticSpace;
+import space.SMSemanticSpace;
 import tree.Tree;
 
 public class SingleThreadedSentence2Vec extends Sentence2Vec{
@@ -107,7 +107,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     protected void printStatistics() {
         // TODO Auto-generated method stub
         if (men != null) {
-            LOGGER.log(Level.INFO, "men: " + men.evaluateSpacePearson(new NewSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
+            LOGGER.log(Level.INFO, "men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
         }
         LOGGER.log(Level.INFO, "norm comp: " + compositionMatrices.getCompositionMatrix("blah").normF());
         LOGGER.log(Level.INFO, "norm proj: " + projectionMatrix.getMatrix().normF());

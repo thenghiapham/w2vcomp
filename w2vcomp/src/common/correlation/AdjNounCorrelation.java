@@ -13,7 +13,7 @@ import composition.BasicComposition;
 import composition.FullAdditive;
 import composition.WeightedAdditive;
 
-import space.NewSemanticSpace;
+import space.SMSemanticSpace;
 import space.SemanticSpace;
 
 /**
@@ -93,7 +93,7 @@ public class AdjNounCorrelation{
         return correlation.evaluateSpacePearson(phraseSpace);
     }
     
-    public double evaluateSpacePearson(NewSemanticSpace space, BasicComposition composition) {
+    public double evaluateSpacePearson(SMSemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
         return correlation.evaluateSpacePearson(phraseSpace);
     }
@@ -109,7 +109,7 @@ public class AdjNounCorrelation{
         return correlation.evaluateSpaceSpearman(phraseSpace);
     }
     
-    public double evaluateSpaceSpearman(NewSemanticSpace space, BasicComposition composition) {
+    public double evaluateSpaceSpearman(SMSemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
         return correlation.evaluateSpaceSpearman(phraseSpace);
     }
