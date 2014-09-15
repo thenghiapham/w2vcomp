@@ -34,6 +34,7 @@ public class TreeNetwork {
         
     }
     
+    
     public static TreeNetwork createNetwork(Tree parseTree, ProjectionMatrix projectionBuilder, 
             CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
