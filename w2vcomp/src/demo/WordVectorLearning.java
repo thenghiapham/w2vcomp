@@ -8,7 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import baselines.SVDFusion;
+
 import common.LogUtils;
+import common.MenCorrelation;
 import common.exception.ValueException;
 
 import space.SemanticSpace;
@@ -25,7 +28,7 @@ public class WordVectorLearning {
         //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(300,5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 10, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
         // 0);
         
@@ -58,6 +61,7 @@ public class WordVectorLearning {
         word2vec.initImages(TestConstants.VISION_FILE);
         
        
+      
 
         // single threaded instead of multithreading
         System.out.println("Start training");
@@ -68,13 +72,15 @@ public class WordVectorLearning {
             inputStreams.add(sentenceInputStream);
             word2vec.trainModel(inputStreams);
             word2vec.saveVector(outputFile, true);
-        } catch (IOException e) {
+           } catch (IOException e) {
             System.exit(1);
         }
         
         double [] cors = word2vec.getCors();
         System.out.println("Printing pearson "+cors[0]);
         System.out.println("Printing spearman "+cors[1]);
-
+     
+        
+       
     }
 }

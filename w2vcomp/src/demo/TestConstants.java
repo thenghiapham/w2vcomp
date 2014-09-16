@@ -21,13 +21,17 @@ public class TestConstants {
     // "/home/pham/svn/word2vec/malt.ini";
 
     
-    public static final String TRAIN_FILE               = "/home/angeliki/Documents/mikolov_composition/corpora_simple/enwik9";
+    public static final String TRAIN_FILE               = "/home/angeliki/Documents/mikolov_composition/corpora_simple/enwik8";
     //public static final String VISION_FILE              = "//home/angeliki/masterclic4/visLang/caption_generation/spaces/train_dataset.Nouns/matrix.simple.txt.aggr";
-    public static final String VISION_FILE              = "/home/angeliki/masterclic4/visLang/fast-mapping/feature_extraction/pmisvd/pmisvd.aggr.dm";
-    public static final String VECTOR_FILE              = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.bin";
-    public static final String VOCABULARY_FILE          = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.voc";
-    public static final String INITIALIZATION_FILE      = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9.ini";
-    public static final String LOG_FILE               = "/home/angeliki/workspace/w2vcomp/w2vcomp/logs/multi_enwiki9_0.txt";
+    public static final String VISION_FILE              = "/home/angeliki/masterclic4/visLang/fast-mapping/feature_extraction/hists/pmisvd/pmisvd.aggr.dm";
+    //public static final String VISION_FILE              = "/home/angeliki/masterclic4/visLang/fast-mapping/feature_extraction/cnn/dim_300_pmi/pmisvd.aggr.dm";
+    public static final String VECTOR_FILE              = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik8.bin";
+    public static final String VOCABULARY_FILE          = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik8.voc";
+    public static final String INITIALIZATION_FILE      = "/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik8.ini";
+    //public static final String LOG_FILE               = "/home/angeliki/workspace/w2vcomp/w2vcomp/logs/multi_enwiki8_5_rand2.log";
+    public static final String LOG_FILE               = "/home/angeliki/workspace/w2vcomp/w2vcomp/logs/men-en-wiki8_5rand.log";
+
+    public static final String LOG_DIR               = "/home/angeliki/workspace/w2vcomp/w2vcomp/logs";
 
     // public static final String GZIP_TRAIN_FILES =
     // "/home/thenghiapham/svn/word2vec/bnc.utf8.xml.gz";
@@ -73,7 +77,7 @@ public class TestConstants {
                                                                 + "testVector.ini";
     
     
-    public static final String CCG_MEN_FILE             = "/home/angeliki/Documents/mikolov_composition/misc/simlex-999";
+    public static final String CCG_MEN_FILE             = "/home/angeliki/Documents/mikolov_composition/misc/MEN_dataset_lemma_nopos_form_full";
     public static final String CCG_AN_FILE              = "/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemmapos.txt";
     
     public static final String CCG_TRAIN_FILE           = "/home/thenghiapham/work/project/mikolov/ccg_text/wikiA.txt";

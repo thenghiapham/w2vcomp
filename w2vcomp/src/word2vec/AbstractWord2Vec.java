@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Random;
 
+import space.SemanticSpace;
 import vocab.Vocab;
 import vocab.VocabEntry;
 import common.SigmoidTable;
@@ -249,5 +250,9 @@ public abstract class AbstractWord2Vec {
     public void initImages(String textFile){
         images = new Images(textFile);
         setImageWeights();
+    }
+    
+    public Images getImages(){
+        return images;
     }
 }

@@ -207,6 +207,9 @@ public class SemanticSpace {
             return vectors;
     }
     
+    public String[] getWords() {
+        return words;
+}
     
     public double getSim(String word1, String word2) {
         

@@ -140,4 +140,28 @@ public class IOUtils {
             e.printStackTrace();
         }
     }
+    
+    
+    public static ArrayList<Double> readLog(String logfile, String variableName) {
+        ArrayList<Double> result = new ArrayList<Double>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(logfile));
+            String line = reader.readLine();
+            
+            while (line != null && !"".equals(line)) {
+                String[] elements = line.split(" ");
+                if (elements.length >= 2) {
+                    int lenght = elements.length;
+                    if (elements[lenght - 2].startsWith(variableName)) {
+                        result.add(new Double(elements[lenght - 1]));
+                    }
+                }
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

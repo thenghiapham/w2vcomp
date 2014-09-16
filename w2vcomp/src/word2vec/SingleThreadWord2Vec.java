@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import baselines.SVDFusion;
+
 import space.SemanticSpace;
 
 import common.MenCorrelation;
@@ -124,6 +126,8 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                     }
                     lastWordCount = wordCount;
                 }
+                
+                        
                 trainSentence(sentence);
                 trainPhrases(phrases, sentence);
             }
@@ -141,6 +145,10 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     
     public void printStatistics() {
         LOGGER.log(Level.INFO, "correlation: " + men.evaluateSpacePearson(outputSpace));
+    }
+    
+    public SemanticSpace getSpace(){
+        return this.outputSpace;
     }
 
     public abstract void trainSinglePhrase(Phrase phrase,

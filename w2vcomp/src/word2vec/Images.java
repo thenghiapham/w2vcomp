@@ -25,13 +25,15 @@ public class Images {
     
     
     public Images(String textFile) {
+        random = new Random();
+
         this.space = SemanticSpace.importSpace(textFile);
         this.word2Index = space.getWord2Index();
+        random_vecs();
         //shuffling_vecs();
 
         this.randomTablesize = this.word2Index.size();
         initImageTable();
-        random = new Random();
         
     }
     
@@ -49,6 +51,16 @@ public class Images {
        }
     }
    
+   protected void  random_vecs(){
+       double [][] rand_vec = new double[this.word2Index.size()][this.space.getVectorSize()];
+       System.out.println(this.word2Index.size()+" "+this.space.getVectorSize());
+       for (int i=0;i<this.word2Index.size();i++){
+           for (int j=0;j<this.space.getVectorSize();j++){
+               rand_vec[i][j] = random.nextDouble();
+           }
+           this.space = new SemanticSpace(this.space.getWords(),rand_vec);
+       }
+   }
    
    public void shuffling_vecs(){
        int[] pos = new int[word2Index.size()];  
@@ -114,6 +126,10 @@ public class Images {
     
     return cors;
        
+   }
+   
+   public SemanticSpace getVisionSpace(){
+       return this.space;
    }
 
 }
