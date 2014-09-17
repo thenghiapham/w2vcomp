@@ -30,7 +30,7 @@ public class SimpleTreeNetwork {
             CompositionMatrices hiddenBuilder, ActivationFunction hiddenLayerActivation) {
         // TODO Auto-generated method stub
         SimpleTreeNetwork network = new SimpleTreeNetwork(parseTree);
-parseTree.updatePosition(0);
+        parseTree.updatePosition(0);
         
         HashMap<Tree, Layer> layerMap = new HashMap<>();
         
@@ -39,6 +39,7 @@ parseTree.updatePosition(0);
         for (Tree node: reverseNodeList) {
             Layer layer = null;
             if (node.isPreTerminal()) {
+                // create projection layer with lexical vector as input
                 Tree terminalChild = node.getChildren().get(0);
                 String word = terminalChild.getRootLabel();
                 int wordIndex = projectionBuilder.getWordIndex(word);
@@ -46,28 +47,34 @@ parseTree.updatePosition(0);
                 layer = new ProjectionLayer(vector);
                 network.addProjectionLayer((ProjectionLayer) layer, wordIndex);
             } else if (node.isTerminal()) {
-                
+                // do nothing
             } else {
+                ArrayList<Tree> children = node.getChildren();
                 
-                    ArrayList<Tree> children = node.getChildren();
-                    if (children.size() == 1) {
-                        layer = layerMap.get(children.get(0));
-                    } else {
-                        String construction = node.getConstruction();
-                        SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
-                        int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
-                        layer = new HiddenLayer(weights, hiddenLayerActivation);
-                        for (Tree child: children) {
-                            Layer childLayer = layerMap.get(child);
-                            layer.addInLayer(childLayer);
-                            childLayer.addOutLayer(layer);
-                        }
-                        network.addHiddenLayer((HiddenLayer) layer, compositionIndex);
+                if (children.size() == 1) {
+                    // if node has one child, the vector at this node points
+                    // to the vector at the child node
+                    layer = layerMap.get(children.get(0));
+                } else {
+                    // if node has more than one child, create a hidden layer
+                    // with the layers at the child nodes as input
+                    String construction = node.getConstruction();
+                    SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
+                    int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
+                    layer = new HiddenLayer(weights, hiddenLayerActivation);
+                    for (Tree child: children) {
+                        Layer childLayer = layerMap.get(child);
+                        layer.addInLayer(childLayer);
+                        childLayer.addOutLayer(layer);
                     }
-                
+                    network.addHiddenLayer((HiddenLayer) layer, compositionIndex);
+                }
             }
-            if (layer != null)
+            
+            // layerMap keeps track of the layers at the nodes
+            if (layer != null) {
                 layerMap.put(node, layer);
+            }
         }
         return network;
     }

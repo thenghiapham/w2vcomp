@@ -192,7 +192,8 @@ public class Tree {
         this.parent = parent;
     }
     
-
+    // return the list of the list of nodes of the tree
+    // starting from the root
     public ArrayList<Tree> allNodes() {
         return allNodes(this);
     }
@@ -250,8 +251,6 @@ public class Tree {
     
     public String[] getSurfaceWords() {
         int width = getWidth();
-//        System.out.println(width);
-//        System.out.println(this.toPennTree());
         String[] result = new String[width];
         putSurfaceString(0, result);
         return result;
