@@ -207,13 +207,12 @@ public abstract class Sentence2Vec {
         try {
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
             saveVector(outputStream, binary);
+            compositionMatrices.saveConstructionMatrices(outputStream, binary);
+            outputStream.flush();
+            outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    
-    public void saveCompositionMatrices(BufferedOutputStream outputStream, boolean binary) {
-        
     }
     
     public abstract void trainModel(ArrayList<TreeInputStream> inputStreams);
