@@ -146,4 +146,8 @@ public class ProjectionMatrix {
         }
         return new ProjectionMatrix(vocab, vectors);
     }
+    
+    public int getVectorSize() {
+        return vectors.numCols();
+    }
 }

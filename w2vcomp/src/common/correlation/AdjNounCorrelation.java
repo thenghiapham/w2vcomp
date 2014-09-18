@@ -1,18 +1,14 @@
 package common.correlation;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.ejml.simple.SimpleMatrix;
 
 import common.IOUtils;
 import composition.BasicComposition;
-import composition.FullAdditive;
-import composition.WeightedAdditive;
 
+import space.CompositionSemanticSpace;
 import space.SMSemanticSpace;
 import space.SemanticSpace;
 
@@ -98,6 +94,16 @@ public class AdjNounCorrelation{
         return correlation.evaluateSpacePearson(phraseSpace);
     }
     
+    public double evaluateSpacePearson(CompositionSemanticSpace space) {
+        String[] parseComposeData = toParseComposeData(composeData);
+        String[] newRows = new String[composeData.length];
+        for (int i = 0; i < newRows.length; i++) {
+            newRows[i] = composeData[i][2];
+        }
+        SMSemanticSpace phraseSpace = new SMSemanticSpace(newRows, space.getComposedMatrix(parseComposeData));
+        return correlation.evaluateSpacePearson(phraseSpace);
+   }
+    
     /**
      * Evaluate the composition model using Spearman correlation
      * @param space
@@ -114,12 +120,35 @@ public class AdjNounCorrelation{
         return correlation.evaluateSpaceSpearman(phraseSpace);
     }
     
+    public double evaluateSpaceSpearman(CompositionSemanticSpace space) {
+         String[] parseComposeData = toParseComposeData(composeData);
+         String[] newRows = new String[composeData.length];
+         for (int i = 0; i < newRows.length; i++) {
+             newRows[i] = composeData[i][2];
+         }
+         SMSemanticSpace phraseSpace = new SMSemanticSpace(newRows, space.getComposedMatrix(parseComposeData));
+         return correlation.evaluateSpaceSpearman(phraseSpace);
+    }
+    
+    
+    
     public static void main(String[] args) throws IOException {
-        SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/mikolov_40.bin");
-        AdjNounCorrelation anCorrelation = new AdjNounCorrelation("/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemmapos.txt");
-        System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space, new WeightedAdditive(1.0, 1.0)));
-        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream("/home/thenghiapham/work/project/mikolov/output/phrase1.comp.mat"));
-        SimpleMatrix compositionMatrix = new SimpleMatrix(IOUtils.readMatrix(inputStream, false));
-        System.out.println("an: " + anCorrelation.evaluateSpacePearson(space, new FullAdditive(compositionMatrix)));
+//        SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/mikolov_40.bin");
+        
+        CompositionSemanticSpace space = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp3tff", true);
+        AdjNounCorrelation anCorrelation = new AdjNounCorrelation("/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemma.txt");
+        System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space));
+//        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream("/home/thenghiapham/work/project/mikolov/output/phrase1.comp.mat"));
+//        SimpleMatrix compositionMatrix = new SimpleMatrix(IOUtils.readMatrix(inputStream, false));
+//        System.out.println("an: " + anCorrelation.evaluateSpacePearson(space, new FullAdditive(compositionMatrix)));
+    }
+    
+    public static String[] toParseComposeData(String[][] composeData) {
+        String[] result = new String[composeData.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = "(NP (JJ " + composeData[i][0] + ") (NN " + composeData[i][1] + "))";
+            System.out.println(result[i]);
+        }
+        return result;
     }
 }

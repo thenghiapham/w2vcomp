@@ -49,6 +49,15 @@ public class CompositionSemanticSpace {
         return topVector;
     }
     
+    public SimpleMatrix getComposedMatrix(String[] parseStrings) {
+        SimpleMatrix result = new SimpleMatrix(parseStrings.length, projectionMatrix.getVectorSize());
+        for (int i = 0; i < parseStrings.length; i++) {
+            SimpleMatrix composedVector = getComposedVector(parseStrings[i]);
+            result.setRow(i, 0, composedVector.getMatrix().getData());
+        }
+        return result;
+    }
+    
     public double getSim(String parseTreeString1, String parseTreeString2) {
         SimpleMatrix phraseVector1 = getComposedVector(parseTreeString1);
         SimpleMatrix phraseVector2 = getComposedVector(parseTreeString2);
@@ -58,5 +67,13 @@ public class CompositionSemanticSpace {
     public SimpleMatrix getVector(String word) {
         return projectionMatrix.getVector(word);
     }
+    
+    public SimpleMatrix getConstructionMatrix(String construction) {
+        return compositionMatrices.getCompositionMatrix(construction);
+    }
+    
+//    public SimpleMatrix getGroupMatrix(String group) {
+//        return compositionMatrices.g
+//    }
     
 }

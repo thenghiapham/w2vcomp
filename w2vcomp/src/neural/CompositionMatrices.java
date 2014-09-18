@@ -184,7 +184,7 @@ public class CompositionMatrices {
         outputStream.write(("" + groupMap.keySet().size() + "\n").getBytes());
         for (String group : groupMap.keySet()) {
             outputStream.write((group + "\n").getBytes());
-            IOUtils.saveMatrix(outputStream, compositionMatrices[0], binary);
+            IOUtils.saveMatrix(outputStream, compositionMatrices[groupMap.get(group)], binary);
         }
     }
     
