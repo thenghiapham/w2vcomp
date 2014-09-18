@@ -1,6 +1,5 @@
 package common.correlation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -20,7 +19,7 @@ import space.SemanticSpace;
  * @author thenghiapham
  *
  */
-public class AdjNounCorrelation{
+public abstract class TwoWordPhraseCorrelation{
 
     MenCorrelation correlation;
     
@@ -28,7 +27,7 @@ public class AdjNounCorrelation{
     // it contains a list of string tuples (word1, word2, phrases) 
     String[][] composeData;
 
-    public AdjNounCorrelation(String dataset) {
+    public TwoWordPhraseCorrelation(String dataset) {
         readDataset(dataset);
     }
     
@@ -49,7 +48,7 @@ public class AdjNounCorrelation{
             golds[i] = Double.parseDouble(elements[4]);
         }
         correlation = new MenCorrelation(phrasePairs, golds);
-        composeData = AdjNounCorrelation.convertComposeData(phraseSet);
+        composeData = TwoWordPhraseCorrelation.convertComposeData(phraseSet);
     }
     
     /**
@@ -91,7 +90,7 @@ public class AdjNounCorrelation{
     
     
     public double evaluateSpacePearson(CompositionSemanticSpace space) {
-        String[] parseComposeData = toParseComposeData(composeData);
+        String[] parseComposeData = getParseComposeData();
         String[] newRows = new String[composeData.length];
         for (int i = 0; i < newRows.length; i++) {
             newRows[i] = composeData[i][2];
@@ -113,7 +112,7 @@ public class AdjNounCorrelation{
     }
     
     public double evaluateSpaceSpearman(CompositionSemanticSpace space) {
-         String[] parseComposeData = toParseComposeData(composeData);
+         String[] parseComposeData = getParseComposeData();
          String[] newRows = new String[composeData.length];
          for (int i = 0; i < newRows.length; i++) {
              newRows[i] = composeData[i][2];
@@ -122,25 +121,5 @@ public class AdjNounCorrelation{
          return correlation.evaluateSpaceSpearman(phraseSpace);
     }
     
-    
-    
-    public static void main(String[] args) throws IOException {
-//        SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/mikolov_40.bin");
-        
-        CompositionSemanticSpace space = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp3tft", true);
-        AdjNounCorrelation anCorrelation = new AdjNounCorrelation("/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemma.txt");
-        System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space));
-//        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream("/home/thenghiapham/work/project/mikolov/output/phrase1.comp.mat"));
-//        SimpleMatrix compositionMatrix = new SimpleMatrix(IOUtils.readMatrix(inputStream, false));
-//        System.out.println("an: " + anCorrelation.evaluateSpacePearson(space, new FullAdditive(compositionMatrix)));
-    }
-    
-    public static String[] toParseComposeData(String[][] composeData) {
-        String[] result = new String[composeData.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = "(NP (JJ " + composeData[i][0] + ") (NN " + composeData[i][1] + "))";
-            System.out.println(result[i]);
-        }
-        return result;
-    }
+    abstract protected String[] getParseComposeData();
 }

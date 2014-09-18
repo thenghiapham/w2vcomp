@@ -6,15 +6,13 @@ import org.ejml.simple.SimpleMatrix;
 
 import tree.CcgTree;
 import vocab.VocabEntry;
-
-import common.correlation.AdjNounCorrelation;
+import common.correlation.ANCorrelation;
 import common.GradientUtils;
 import common.IOUtils;
 import common.SimpleMatrixUtils;
 import common.ValueGradient;
 import composition.FullAdditive;
 import composition.WeightedAdditive;
-
 import edu.stanford.nlp.neural.NeuralUtils;
 import io.word.Phrase;
 
@@ -26,7 +24,7 @@ public class NeuralLanguageModel extends SingleThreadWord2Vec{
     SimpleMatrix compositionMatrix;
     double weightDecay = 1e-4;
     boolean useTanh = false;
-    AdjNounCorrelation anCorrelation;
+    ANCorrelation anCorrelation;
     
     public NeuralLanguageModel(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
@@ -49,7 +47,7 @@ public class NeuralLanguageModel extends SingleThreadWord2Vec{
         // TODO Auto-generated constructor stub
         super(projectionLayerSize, windowSize, hierarchialSoftmax, negativeSamples,
                 subSample, menFile);
-        anCorrelation = new AdjNounCorrelation(anFile);
+        anCorrelation = new ANCorrelation(anFile);
     }
 
     protected void initBare() {

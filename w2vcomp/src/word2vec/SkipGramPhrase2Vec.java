@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.ejml.simple.SimpleMatrix;
 
-import common.correlation.AdjNounCorrelation;
+import common.correlation.ANCorrelation;
 import common.GradientUtils;
 import common.IOUtils;
 import common.SimpleMatrixUtils;
@@ -36,7 +36,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
     SimpleMatrix compositionMatrix;
     double weightDecay = 1e-4;
     boolean useTanh = true;
-    AdjNounCorrelation anCorrelation;
+    ANCorrelation anCorrelation;
     TanhTable tanhTable = new TanhTable();
     
     public SkipGramPhrase2Vec(int projectionLayerSize, int windowSize,
@@ -55,7 +55,7 @@ public class SkipGramPhrase2Vec extends SingleThreadWord2Vec {
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile, String anFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample, menFile);
-        anCorrelation = new AdjNounCorrelation(anFile);
+        anCorrelation = new ANCorrelation(anFile);
         
     }
     
