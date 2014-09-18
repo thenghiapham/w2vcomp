@@ -1,6 +1,7 @@
 package space;
 
 import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.ejml.simple.SimpleMatrix;
@@ -18,7 +19,13 @@ public class CompositionSemanticSpace {
     protected CompositionMatrices   compositionMatrices;
     
     public static CompositionSemanticSpace loadCompositionSpace(String inputFilePath, boolean binary) {
-        return null;
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFilePath));
+            return loadCompositionSpace(inputStream, binary);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     public static CompositionSemanticSpace loadCompositionSpace(BufferedInputStream inputStream, 
