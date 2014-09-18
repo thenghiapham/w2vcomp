@@ -55,6 +55,7 @@ public class MassSentenceVectorLearning {
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE + outSuffix;
         String vocabFile = TestConstants.S_VOCABULARY_FILE + outSuffix;
+        String compFile = TestConstants.S_COMPOSITION_FILE + outSuffix;
         System.out.println("Starting training using file " + trainFile);
         boolean learnVocab = !(new File(vocabFile)).exists();
         Vocab vocab = new Vocab(5);
@@ -80,6 +81,7 @@ public class MassSentenceVectorLearning {
             inputStreams.add(treeInputStream);
             sentence2vec.trainModel(inputStreams);
             sentence2vec.saveVector(outputFile, true);
+            sentence2vec.saveCompositionNetwork(compFile, true);
         } catch (IOException e) {
             System.exit(1);
         }

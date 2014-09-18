@@ -12,6 +12,7 @@ public class TestConstants {
     public static final String S_CONSTRUCTION_FILE        = "/home/thenghiapham/work/project/mikolov/selected-constructions.txt";
     public static final String S_TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/tmp_parsed/bnc.txt";
     public static final String S_VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/output/bnc.bin";
+    public static final String S_COMPOSITION_FILE         = "/home/thenghiapham/work/project/mikolov/output/bnc.cmp";
     public static final String S_VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/output/bnc.voc";
     public static final String S_INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/output/bnc.ini";
     public static final String S_MEN_FILE                 = "/home/thenghiapham/work/project/mikolov/men/MEN_dataset_lemma.txt";
