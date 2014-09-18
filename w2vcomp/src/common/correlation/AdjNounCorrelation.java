@@ -127,7 +127,7 @@ public class AdjNounCorrelation{
     public static void main(String[] args) throws IOException {
 //        SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/mikolov_40.bin");
         
-        CompositionSemanticSpace space = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp3tff", true);
+        CompositionSemanticSpace space = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp3tft", true);
         AdjNounCorrelation anCorrelation = new AdjNounCorrelation("/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemma.txt");
         System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space));
 //        BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream("/home/thenghiapham/work/project/mikolov/output/phrase1.comp.mat"));
