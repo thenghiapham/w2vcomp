@@ -5,14 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import space.Neighbor;
-import space.SemanticSpace;
+import space.RawSemanticSpace;
 
 import demo.TestConstants;
 
 public class WordSimilarity {
     public static void main(String[] args) {
         String vectorFile = TestConstants.GZIP_VECTOR_FILE;
-        SemanticSpace space = SemanticSpace.readSpace(vectorFile);
+        RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
         System.out.println("Enter a word or EXIT to exit");
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -31,7 +31,7 @@ public class WordSimilarity {
         }
     }
 
-    public static void printNeighbors(SemanticSpace space, String word) {
+    public static void printNeighbors(RawSemanticSpace space, String word) {
         if (!space.contains(word)) {
             System.out.println(word + " is not in the space");
             return;

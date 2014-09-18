@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.ejml.simple.SimpleMatrix;
+
 import space.Neighbor;
 import space.RealVector;
-import space.SemanticSpace;
+import space.RawSemanticSpace;
 
 import demo.TestConstants;
 
@@ -15,7 +17,7 @@ public class WordAnology {
         //String vectorFile = TestConstants.GZIP_VECTOR_FILE;
 //        String vectorFile = TestConstants.VECTOR_FILE;
         String vectorFile = TestConstants.CCG_VECTOR_FILE;
-        SemanticSpace space = SemanticSpace.readSpace(vectorFile);
+        RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
         System.out.println("Enter 3 words or EXIT to exit");
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -40,17 +42,18 @@ public class WordAnology {
         }
     }
 
-    public static String predictWordAnology(SemanticSpace space, String word1,
+    public static String predictWordAnology(RawSemanticSpace space, String word1,
             String word2, String word3) {
         if (!(space.contains(word1) && space.contains(word2) && space
                 .contains(word3))) {
             System.out.println("at least one word is not in the space");
             return "";
         }
-        double[] v2 = RealVector.norm(space.getVector(word2));
-        double[] v1 = RealVector.norm(space.getVector(word1));
-        double[] v3 = RealVector.norm(space.getVector(word3));
-        double[] v4 = RealVector.add(RealVector.subtract(v2, v1), v3);
+        double[] v2 = RealVector.norm(space.getVector(word2).getMatrix().getData());
+        double[] v1 = RealVector.norm(space.getVector(word1).getMatrix().getData());
+        double[] v3 = RealVector.norm(space.getVector(word3).getMatrix().getData());
+        SimpleMatrix v4 = new SimpleMatrix(1, v1.length, true, 
+                RealVector.add(RealVector.subtract(v2, v1), v3));
 
         Neighbor[] neighbors;
         neighbors = space.getNeighbors(v4, 20, new String[] { word1, word2,
@@ -64,17 +67,18 @@ public class WordAnology {
         return "";
     }
 
-    public static void getWordAnology(SemanticSpace space, String word1,
+    public static void getWordAnology(RawSemanticSpace space, String word1,
             String word2, String word3) {
         if (!(space.contains(word1) && space.contains(word2) && space
                 .contains(word3))) {
             System.out.println("at least one word is not in the space");
             return;
         }
-        double[] v2 = RealVector.norm(space.getVector(word2));
-        double[] v1 = RealVector.norm(space.getVector(word1));
-        double[] v3 = RealVector.norm(space.getVector(word3));
-        double[] v4 = RealVector.add(RealVector.subtract(v2, v1), v3);
+        double[] v2 = RealVector.norm(space.getVector(word2).getMatrix().getData());
+        double[] v1 = RealVector.norm(space.getVector(word1).getMatrix().getData());
+        double[] v3 = RealVector.norm(space.getVector(word3).getMatrix().getData());
+        SimpleMatrix v4 = new SimpleMatrix(1, v1.length, true, 
+                RealVector.add(RealVector.subtract(v2, v1), v3));
 
         Neighbor[] neighbors;
         neighbors = space.getNeighbors(v4, 20, new String[] { word1, word2,

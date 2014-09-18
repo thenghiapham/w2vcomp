@@ -7,7 +7,7 @@ import io.word.Phrase;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import space.SemanticSpace;
+import space.RawSemanticSpace;
 
 import common.correlation.MenCorrelation;
 
@@ -21,7 +21,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
 
     protected long oldWordCount;
     protected MenCorrelation men;
-    protected SemanticSpace outputSpace;
+    protected RawSemanticSpace outputSpace;
 
     public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
@@ -50,7 +50,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 + vocab.getEntry(vocab.getVocabSize() - 1).word);
         
         if (men != null) {
-            outputSpace = new SemanticSpace(vocab, weights0, false);
+            outputSpace = new RawSemanticSpace(vocab, weights0, false);
         }
         
         for (SentenceInputStream inputStream : inputStreams) {

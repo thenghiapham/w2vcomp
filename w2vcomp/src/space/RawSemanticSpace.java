@@ -24,66 +24,46 @@ import org.ejml.simple.SimpleMatrix;
 import vocab.Vocab;
 
 import common.DataStructureUtils;
-import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 
-/**
- * short for SimpleMatrix Semantic Space
- * @author thenghiapham
- *
- */
-public class SMSemanticSpace implements SemanticSpace {
+public class RawSemanticSpace implements SemanticSpace{
     String[]                 words;
     HashMap<String, Integer> word2Index;
-    SimpleMatrix               vectors;
+    double[][]                vectors;
     int                      vectorSize;
 
-    protected SMSemanticSpace(int wordNumber, int vectorSize) {
-        vectors = new SimpleMatrix(wordNumber,vectorSize);
+    public RawSemanticSpace(int wordNumber, int vectorSize) {
+        vectors = new double[wordNumber][vectorSize];
         words = new String[wordNumber];
         word2Index = new HashMap<String, Integer>();
         this.vectorSize = vectorSize;
     }
 
-    public SMSemanticSpace(List<String> wordList, List<double[]> vectorList) {
+    public RawSemanticSpace(List<String> wordList, List<double[]> vectorList) {
         words = DataStructureUtils.stringListToArray(wordList);
         word2Index = DataStructureUtils.arrayToMap(words);
-        vectors = new SimpleMatrix(DataStructureUtils.arrayListTo2dArray(vectorList));
-        vectorSize = vectors.numCols();
+        vectors = DataStructureUtils.arrayListTo2dArray(vectorList);
+        vectorSize = vectors[0].length;
     }
     
-    public SMSemanticSpace(List<String> wordList, SimpleMatrix vectors) {
-        words = DataStructureUtils.stringListToArray(wordList);
-        word2Index = DataStructureUtils.arrayToMap(words);
-        this.vectors = vectors;
-        vectorSize = vectors.numCols();
-    }
-    
-    public SMSemanticSpace(String[] words, double[][] vectors) {
+    public RawSemanticSpace(String[] words, double[][] vectors) {
         this.words = words;
-        this.vectors = new SimpleMatrix(vectors);
+        this.vectors = vectors;
         vectorSize = vectors[0].length;
         word2Index = DataStructureUtils.arrayToMap(words);
     }
     
-    public SMSemanticSpace(String[] words, SimpleMatrix vectors) {
-        this.words = words;
-        this.vectors = vectors;
-        vectorSize = vectors.numCols();
-        word2Index = DataStructureUtils.arrayToMap(words);
-    }
-    
-    public SMSemanticSpace(Vocab vocab, SimpleMatrix vectors, boolean copy){
-        if (vocab.getVocabSize() != vectors.numRows() && vocab.getVocabSize() != vectors.numRows() - 1) {
+    public RawSemanticSpace(Vocab vocab, double[][] vectors, boolean copy){
+        if (vocab.getVocabSize() != vectors.length) {
             throw new ValueException("vocab and vectors must have the same size");
         } else {
             
-            vectorSize = vectors.numCols();
+            vectorSize = vectors[0].length;
             
             if (!copy) {
                 this.vectors = vectors;
             } else {
-                this.vectors = new SimpleMatrix(vectors);
+                this.vectors = vectors.clone();
             }
             
             int vocabSize = vocab.getVocabSize();
@@ -96,7 +76,7 @@ public class SMSemanticSpace implements SemanticSpace {
         }
     }
 
-    public static SMSemanticSpace readSpace(String vectorFile) {
+    public static RawSemanticSpace readSpace(String vectorFile) {
         try {
             BufferedInputStream inputStream = new BufferedInputStream(
                     new BufferedInputStream(new FileInputStream(vectorFile)));
@@ -104,7 +84,7 @@ public class SMSemanticSpace implements SemanticSpace {
             String secondWord = readWord(inputStream);
             int wordNumber = Integer.parseInt(firstWord);
             int vectorSize = Integer.parseInt(secondWord);
-            SMSemanticSpace result = new SMSemanticSpace(wordNumber, vectorSize);
+            RawSemanticSpace result = new RawSemanticSpace(wordNumber, vectorSize);
             result.readSpace(inputStream);
             inputStream.close();
             return result;
@@ -119,7 +99,7 @@ public class SMSemanticSpace implements SemanticSpace {
             BufferedWriter writer = new BufferedWriter(new FileWriter(textFile));
             for (int i = 0; i < words.length; i++) {
                 writer.write(words[i] + "\t");
-                double[] vector = vectors.extractVector(true, i).getMatrix().getData();
+                double[] vector = vectors[i];
                 for (int j = 0; j < vectorSize; j++) {
                     writer.write("" + vector[j]);
                     if (j < vectorSize - 1) {
@@ -143,7 +123,7 @@ public class SMSemanticSpace implements SemanticSpace {
         return result;
     }
 
-    public static SMSemanticSpace importSpace(String textFile) {
+    public static RawSemanticSpace importSpace(String textFile) {
         ArrayList<String> words = new ArrayList<String>();
         ArrayList<double[]> vectors = new ArrayList<double[]>();
         // int vectorSize = 0;
@@ -175,7 +155,7 @@ public class SMSemanticSpace implements SemanticSpace {
         if (words.size() == 0) {
             return null;
         } else {
-            SMSemanticSpace result = new SMSemanticSpace(words, vectors);
+            RawSemanticSpace result = new RawSemanticSpace(words, vectors);
             return result;
         }
     }
@@ -206,20 +186,19 @@ public class SMSemanticSpace implements SemanticSpace {
             words[i] = word;
             inputStream.read(rowData);
             for (int j = 0; j < vectorSize; j++) {
-                vectors.set(i, j, buffer.getFloat(j * 4));
+                vectors[i][j] = buffer.getFloat(j * 4);
             }
             word2Index.put(word, i);
             inputStream.read();
         }
     }
 
-    // row vector
     public SimpleMatrix getVector(String word) {
         Integer index = word2Index.get(word);
         if (word == null) {
             return null;
         } else {
-            return vectors.extractVector(true, index);
+            return new SimpleMatrix(1, vectorSize, true, vectors[index]);
         }
     }
     
@@ -227,7 +206,7 @@ public class SMSemanticSpace implements SemanticSpace {
         if (word2Index.containsKey(word1) && word2Index.containsKey(word2)) {
             int index1 = word2Index.get(word1);
             int index2 = word2Index.get(word2);
-            return Similarity.cosine(vectors.extractVector(true, index1),vectors.extractVector(true, index2));
+            return Similarity.cosine(vectors[index1], vectors[index2]);
         } else {
             return 0;
         }
@@ -235,10 +214,10 @@ public class SMSemanticSpace implements SemanticSpace {
 
     public Neighbor[] getNeighbors(SimpleMatrix vector, int noNeighbor) {
         Neighbor[] neighbors = new Neighbor[words.length];
-        double[] sims = Similarity.massCosine(vectors, vector).getMatrix().getData();
-        
+        double[] rawVector = vector.getMatrix().getData();
         for (int i = 0; i < words.length; i++) {
-            neighbors[i] = new Neighbor(words[i], sims[i]);
+            neighbors[i] = new Neighbor(words[i], Similarity.cosine(rawVector,
+                    vectors[i]));
         }
         Arrays.sort(neighbors, Neighbor.NeighborComparator);
         if (noNeighbor < words.length) {
@@ -250,14 +229,15 @@ public class SMSemanticSpace implements SemanticSpace {
 
     public Neighbor[] getNeighbors(SimpleMatrix vector, int noNeighbor,
             String[] excludedWords) {
+        double[] rawVector = vector.getMatrix().getData();
         Neighbor[] neighbors = new Neighbor[words.length - excludedWords.length];
         HashSet<String> excludedDict = DataStructureUtils
                 .arrayToSet(excludedWords);
         int neighborIndex = 0;
-        double[] sims = Similarity.massCosine(vectors, vector).getMatrix().getData();
         for (int i = 0; i < words.length; i++) {
             if (!excludedDict.contains(words[i])) {
-                neighbors[neighborIndex] = new Neighbor(words[i],sims[i]);
+                neighbors[neighborIndex] = new Neighbor(words[i],
+                        Similarity.cosine(rawVector, vectors[i]));
                 neighborIndex++;
             }
         }
@@ -270,7 +250,7 @@ public class SMSemanticSpace implements SemanticSpace {
     }
 
     public Neighbor[] getNeighbors(String word, int noNeighbor) {
-        SimpleMatrix vector = getVector(word);
+        SimpleMatrix  vector = getVector(word);
         if (vector == null) {
             return null;
         } else {
@@ -291,30 +271,28 @@ public class SMSemanticSpace implements SemanticSpace {
         return word2Index.containsKey(word);
     }
 
-    public SMSemanticSpace getSubSpace(WordFilter filter) {
+    public RawSemanticSpace getSubSpace(WordFilter filter) {
         ArrayList<String> newWordList = new ArrayList<String>();
-        ArrayList<Integer> newRows = new ArrayList<Integer>();
-        
+        ArrayList<double[]> newVectors = new ArrayList<double[]>();
         for (int i = 0; i < words.length; i++) {
             if (!filter.isFiltered(words[i])) {
                 newWordList.add(words[i]);
-                newRows.add(i);
+                newVectors.add(vectors[i]);
             }
         }
-        return new SMSemanticSpace(newWordList, SimpleMatrixUtils.getRows(vectors, DataStructureUtils.intListToArray(newRows)));
+        return new RawSemanticSpace(newWordList, newVectors);
     }
 
-    public SMSemanticSpace getSubSpace(Collection<String> wordList) {
+    public RawSemanticSpace getSubSpace(Collection<String> wordList) {
         ArrayList<String> newWordList = new ArrayList<String>();
-        ArrayList<Integer> newRows = new ArrayList<Integer>();
+        ArrayList<double[]> newVectors = new ArrayList<double[]>();
         for (String word : wordList) {
             if (this.contains(word)) {
                 newWordList.add(word);
-                newRows.add(word2Index.get(word));
+                newVectors.add(this.getVector(word).getMatrix().getData());
             }
         }
-        return new SMSemanticSpace(newWordList, SimpleMatrixUtils.getRows(vectors, DataStructureUtils.intListToArray(newRows)));
-    
+        return new RawSemanticSpace(newWordList, newVectors);
     }
 
     public int getVectorSize() {

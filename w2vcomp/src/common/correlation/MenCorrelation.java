@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 
+import space.RawSemanticSpace;
+import space.SemanticSpace;
+
 import common.IOUtils;
 
 import demo.TestConstants;
 
-import space.SMSemanticSpace;
-import space.SemanticSpace;
 
 /**
  * This class can be used to evaluate a word vector space by computing the
@@ -97,18 +98,6 @@ public class MenCorrelation {
 	    return pearson.correlation(golds, predicts);
 	}
 	
-	/**
-     * Evaluate the space using the pearson correlation
-     * @param space
-     * @return
-     */
-    public double evaluateSpacePearson(SMSemanticSpace space) {
-        double[] predicts = new double[golds.length];
-        for (int i = 0; i < golds.length; i++) {
-            predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
-        }
-        return pearson.correlation(golds, predicts);
-    }
 	
 	/**
      * Evaluate the space using the spearman correlation
@@ -123,18 +112,6 @@ public class MenCorrelation {
         return spearman.correlation(golds, predicts);
     }
 	
-	/**
-     * Evaluate the space using the spearman correlation
-     * @param space
-     * @return
-     */
-    public double evaluateSpaceSpearman(SMSemanticSpace space) {
-        double[] predicts = new double[golds.length];
-        for (int i = 0; i < golds.length; i++) {
-            predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
-        }
-        return spearman.correlation(golds, predicts);
-    }
 	
 	/**
 	 * @return the gold standard (human's judgment on the similarities)
@@ -145,7 +122,7 @@ public class MenCorrelation {
 	
 	public static void main(String[] args) {
 //	    SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
-	    SemanticSpace space = SemanticSpace.readSpace(TestConstants.CCG_VECTOR_FILE);
+	    RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.CCG_VECTOR_FILE);
 	    MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);
 	    System.out.println("men: " + men.evaluateSpacePearson(space));
 	}

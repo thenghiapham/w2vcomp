@@ -89,10 +89,6 @@ public class AdjNounCorrelation{
         return correlation.evaluateSpacePearson(phraseSpace);
     }
     
-    public double evaluateSpacePearson(SMSemanticSpace space, BasicComposition composition) {
-        SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
-        return correlation.evaluateSpacePearson(phraseSpace);
-    }
     
     public double evaluateSpacePearson(CompositionSemanticSpace space) {
         String[] parseComposeData = toParseComposeData(composeData);
@@ -110,10 +106,6 @@ public class AdjNounCorrelation{
      * @param composition
      * @return
      */
-    public double evaluateSpaceSpearman(SemanticSpace space, BasicComposition composition) {
-        SemanticSpace phraseSpace = composition.composeSpace(space, composeData);
-        return correlation.evaluateSpaceSpearman(phraseSpace);
-    }
     
     public double evaluateSpaceSpearman(SMSemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, composeData);

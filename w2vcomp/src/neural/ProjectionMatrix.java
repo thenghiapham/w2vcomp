@@ -60,7 +60,8 @@ public class ProjectionMatrix {
     }
     
     public SimpleMatrix getVector(String word) {
-        int wordIndex = vocab.get(word);
+        
+        int wordIndex = getWordIndex(word);
         // TODO: transpose all?
         // what about unknown word here
         return getVector(wordIndex); 
@@ -90,7 +91,10 @@ public class ProjectionMatrix {
     }
     
     public int getWordIndex(String word) {
-        return vocab.get(word);
+        if (vocab.containsKey(word))
+            return vocab.get(word);
+        else
+            return -1;
     }
     
     // synchronize??
