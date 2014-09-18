@@ -148,7 +148,7 @@ public class IOUtils {
         StringBuffer buffer = new StringBuffer();
         while (true) {
             int nextByte = inputStream.read();
-            if (nextByte == -1 || nextByte == ' ' || nextByte == '\n') {
+            if (nextByte == -1 || nextByte == ' ' || nextByte == '\n' || nextByte == '\t') {
                 if (nextByte == -1 && buffer.length() == 0) {
                     return null;
                 } else {

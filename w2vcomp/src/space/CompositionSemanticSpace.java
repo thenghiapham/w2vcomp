@@ -1,5 +1,8 @@
 package space;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+
 import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
@@ -14,8 +17,15 @@ public class CompositionSemanticSpace {
     protected ProjectionMatrix      projectionMatrix;
     protected CompositionMatrices   compositionMatrices;
     
-    public static CompositionSemanticSpace loadCompositionSpace(String inputFilePath) {
+    public static CompositionSemanticSpace loadCompositionSpace(String inputFilePath, boolean binary) {
         return null;
+    }
+    
+    public static CompositionSemanticSpace loadCompositionSpace(BufferedInputStream inputStream, 
+            boolean binary) throws IOException{
+        ProjectionMatrix projectionMatrix = ProjectionMatrix.loadProjectionMatrix(inputStream, binary);
+        CompositionMatrices compositionMatrices = CompositionMatrices.loadConstructionMatrices(inputStream, binary);
+        return new CompositionSemanticSpace(projectionMatrix, compositionMatrices);
     }
     
     public CompositionSemanticSpace(ProjectionMatrix projectionMatrix, 

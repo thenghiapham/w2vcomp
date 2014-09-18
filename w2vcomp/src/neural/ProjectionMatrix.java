@@ -1,21 +1,38 @@
 package neural;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.HashMap;
 import java.util.Random;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.IOUtils;
 import common.exception.ValueException;
 
 import vocab.Vocab;
 
 public class ProjectionMatrix {
-    protected Vocab vocab;
+    protected HashMap<String, Integer> vocab;
     protected SimpleMatrix vectors;
     
     protected ProjectionMatrix(Vocab vocab, SimpleMatrix vectors) {
-        this.vocab = vocab; 
+        this.vocab = new HashMap<>();
+        for (int i = 0; i < vocab.getVocabSize(); i++) {
+            this.vocab.put(vocab.getEntry(i).word, i);
+        }
         this.vectors = vectors;
     }
+    
+    // TODO: unknown word
+    protected ProjectionMatrix(HashMap<String, Integer> vocab, SimpleMatrix vectors) {
+        this.vocab = vocab;
+        this.vectors = vectors;
+    }
+    
+    
     
     // TODO: random initialization
     public static ProjectionMatrix randomInitialize(Vocab vocab, int hiddenLayerSize) {
@@ -43,8 +60,9 @@ public class ProjectionMatrix {
     }
     
     public SimpleMatrix getVector(String word) {
-        int wordIndex = vocab.getWordIndex(word);
+        int wordIndex = vocab.get(word);
         // TODO: transpose all?
+        // what about unknown word here
         return getVector(wordIndex); 
     }
     
@@ -62,17 +80,17 @@ public class ProjectionMatrix {
     public SimpleMatrix getVector(int wordIndex) {
         // TODO: null or zeros?
         SimpleMatrix result = null;
-        if (wordIndex <= -2 || wordIndex >= vocab.getVocabSize())
+        if (wordIndex <= -2 || wordIndex >= vocab.size())
             return result;
         else if (wordIndex == -1)
-            result = vectors.extractVector(true, vocab.getVocabSize());
+            result = vectors.extractVector(true, vocab.size());
         else
             result = vectors.extractVector(true, wordIndex);
         return result.transpose();
     }
     
     public int getWordIndex(String word) {
-        return vocab.getWordIndex(word);
+        return vocab.get(word);
     }
     
     // synchronize??
@@ -83,7 +101,7 @@ public class ProjectionMatrix {
 //        String word;
         if (wordIndex == -1) {
 //            word = "default";
-            wordIndex = vocab.getVocabSize();
+            wordIndex = vocab.size();
         } else {
 //            word = vocab.getEntry(wordIndex).word;
         }
@@ -105,5 +123,27 @@ public class ProjectionMatrix {
     //TODO: copy the matrix so that it won't be modified?
     public SimpleMatrix getMatrix() {
         return vectors;
+    }
+    
+    public static ProjectionMatrix loadProjectionMatrix(BufferedInputStream inputStream, boolean binary) throws IOException{
+        // TODO: binary
+        int wordNumber = Integer.parseInt(IOUtils.readWord(inputStream));
+        int vectorSize = Integer.parseInt(IOUtils.readWord(inputStream));
+        byte[] rowData = new byte[vectorSize * 4];
+        ByteBuffer buffer = ByteBuffer.wrap(rowData);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        HashMap<String, Integer> vocab = new HashMap<>();
+        // TODO: add unknown word?
+        SimpleMatrix vectors = new SimpleMatrix(wordNumber, vectorSize);
+        for (int i = 0; i < wordNumber; i++) {
+            String word = IOUtils.readWord(inputStream);
+            inputStream.read(rowData);
+            for (int j = 0; j < vectorSize; j++) {
+                vectors.set(i, j, buffer.getFloat(j * 4));
+            }
+            vocab.put(word, i);
+            inputStream.read();
+        }
+        return new ProjectionMatrix(vocab, vectors);
     }
 }

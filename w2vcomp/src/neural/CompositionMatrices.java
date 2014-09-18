@@ -188,7 +188,26 @@ public class CompositionMatrices {
         }
     }
     
-    public static CompositionMatrices loadConstructionMatrices(BufferedInputStream inputStream, boolean binary) {
-        return null;
+    public static CompositionMatrices loadConstructionMatrices(BufferedInputStream inputStream, boolean binary) throws IOException{
+        int constructionNumber = Integer.parseInt(IOUtils.readWord(inputStream));
+        HashMap<String, String> constructionMap = new HashMap<>();
+        for (int i = 0; i < constructionNumber; i++) {
+            String root = IOUtils.readWord(inputStream);
+            String child1 = IOUtils.readWord(inputStream);
+            String child2 = IOUtils.readWord(inputStream);
+            String group = IOUtils.readWord(inputStream);
+            String construction = root + " " + child1 + " " + child2;
+            constructionMap.put(construction, group);
+        }
+        
+        int groupNumber = Integer.parseInt(IOUtils.readWord(inputStream));
+        SimpleMatrix[] compositionMatrices = new SimpleMatrix[groupNumber];
+        HashMap<String, Integer> groupMap = new HashMap<>();
+        for (int i = 0; i < groupNumber; i++) {
+            String group = IOUtils.readWord(inputStream);
+            groupMap.put(group, i);
+            compositionMatrices[i] = new SimpleMatrix(IOUtils.readMatrix(inputStream, binary));
+        }
+        return new CompositionMatrices(groupMap, constructionMap, compositionMatrices);
     }
 }
