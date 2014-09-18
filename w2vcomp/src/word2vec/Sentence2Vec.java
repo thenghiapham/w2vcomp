@@ -109,43 +109,17 @@ public abstract class Sentence2Vec {
     }
 
     public void initNetwork(String initFile) {
-        loadNetwork(initFile, true);
+        loadWholeNetwork(initFile, true);
     }
 
 
     public void saveVector(String outputFile, boolean binary) {
         // Save the word vectors as a Semantic space
         // save number of words, length of each vector
-        int vocabSize = vocab.getVocabSize();
-
         try {
             BufferedOutputStream os = new BufferedOutputStream(
                     new FileOutputStream(outputFile));
-            String firstLine = "" + vocabSize + " " + hiddenLayerSize
-                    + "\n";
-            os.write(firstLine.getBytes(Charset.forName("UTF-8")));
-            // save vectors
-            for (int i = 0; i < vocabSize; i++) {
-                VocabEntry word = vocab.getEntry(i);
-                double[] vector = projectionMatrix.getVector(i).getMatrix().getData();
-                os.write((word.word + " ").getBytes("UTF-8"));
-                if (binary) {
-                    ByteBuffer buffer = ByteBuffer
-                            .allocate(4 * hiddenLayerSize);
-                    buffer.order(ByteOrder.LITTLE_ENDIAN);
-                    for (int j = 0; j < hiddenLayerSize; j++) {
-                        buffer.putFloat((float) vector[j]);
-                    }
-                    os.write(buffer.array());
-                } else {
-                    StringBuffer sBuffer = new StringBuffer();
-                    for (int j = 0; j < hiddenLayerSize; j++) {
-                        sBuffer.append("" + vector[j] + " ");
-                    }
-                    os.write(sBuffer.toString().getBytes());
-                }
-                os.write("\n".getBytes());
-            }
+            saveVector(os, binary);
             os.flush();
             os.close();
         } catch (IOException e) {
@@ -153,10 +127,40 @@ public abstract class Sentence2Vec {
         }
     }
     
+    public void saveVector(BufferedOutputStream os, boolean binary) 
+            throws IOException{
+        int vocabSize = vocab.getVocabSize();
+        String firstLine = "" + vocabSize + " " + hiddenLayerSize
+                + "\n";
+        os.write(firstLine.getBytes(Charset.forName("UTF-8")));
+        // save vectors
+        for (int i = 0; i < vocabSize; i++) {
+            VocabEntry word = vocab.getEntry(i);
+            double[] vector = projectionMatrix.getVector(i).getMatrix().getData();
+            os.write((word.word + " ").getBytes("UTF-8"));
+            if (binary) {
+                ByteBuffer buffer = ByteBuffer
+                        .allocate(4 * hiddenLayerSize);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                for (int j = 0; j < hiddenLayerSize; j++) {
+                    buffer.putFloat((float) vector[j]);
+                }
+                os.write(buffer.array());
+            } else {
+                StringBuffer sBuffer = new StringBuffer();
+                for (int j = 0; j < hiddenLayerSize; j++) {
+                    sBuffer.append("" + vector[j] + " ");
+                }
+                os.write(sBuffer.toString().getBytes());
+            }
+            os.write("\n".getBytes());
+        }        
+    }
+    
 
     
     // TODO: composition matrices?
-    public void saveNetwork(String outputFile, boolean binary) {
+    public void saveWholeNetwork(String outputFile, boolean binary) {
         try {
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
             IOUtils.saveMatrix(outputStream, projectionMatrix.getMatrix(), binary);
@@ -168,7 +172,7 @@ public abstract class Sentence2Vec {
         
     }
     
-    public void loadNetwork(String inputFile, boolean binary) {
+    public void loadWholeNetwork(String inputFile, boolean binary) {
         try {
             BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile));
             double[][] matrix = IOUtils.readMatrix(inputStream, binary);
@@ -199,6 +203,19 @@ public abstract class Sentence2Vec {
         }
     }
 
+    public void saveCompositionNetwork(String outputFile, boolean binary) {
+        try {
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+            saveVector(outputStream, binary);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void saveCompositionMatrices(BufferedOutputStream outputStream, boolean binary) {
+        
+    }
+    
     public abstract void trainModel(ArrayList<TreeInputStream> inputStreams);
 
 }

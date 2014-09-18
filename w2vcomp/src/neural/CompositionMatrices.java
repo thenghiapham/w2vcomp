@@ -1,5 +1,8 @@
 package neural;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,77 +11,95 @@ import java.util.Random;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.IOUtils;
 import common.SimpleMatrixUtils;
 
 public class CompositionMatrices {
+    public static final String DEFAULT_STRING = "default";
     protected SimpleMatrix[] compositionMatrices;
+
+    // key for synchorizing
     protected Integer[] keys;
-    protected HashMap<String, String> constructionGroups;
+    
+    // map from contruction to construction's group id
+    protected HashMap<String, String> constructionMap;
+    
+    // map from construction group id to matrix id
+    // default matrix is at first position
     protected HashMap<String, Integer> groupMap;
+    
+    // weight decay for learning
     protected double weightDecay = 1e-4;
     
-    protected CompositionMatrices(HashMap<String, Integer> groupMap, HashMap<String, String> constructionGroups, SimpleMatrix[] compositionMatrices) {
+    protected CompositionMatrices(HashMap<String, Integer> groupMap, 
+            HashMap<String, String> constructionMap, 
+            SimpleMatrix[] compositionMatrices) {
         this.compositionMatrices = compositionMatrices;
         this.groupMap = groupMap;
-        this.constructionGroups = constructionGroups;
+        this.constructionMap = constructionMap;
         this.keys = new Integer[compositionMatrices.length];
         for (int i = 0; i < compositionMatrices.length; i++) {
             keys[i] = i;
         }
     }
     
-    public static CompositionMatrices randomInitialize(HashMap<String, String> constructionGroups, int hiddenLayerSize) {
+    public static CompositionMatrices randomInitialize(HashMap<String, String> constructionMap, 
+            int hiddenLayerSize) {
         HashSet<String> groups = new HashSet<String>();
-        if (constructionGroups != null) {
-            for (String key: constructionGroups.keySet()) {
-                String group = constructionGroups.get(key);
+        if (constructionMap != null) {
+            for (String key: constructionMap.keySet()) {
+                String group = constructionMap.get(key);
                 if (group != null && !groups.contains(group)) {
                     groups.add(group);
                 }
             }
         } else {
-            constructionGroups = new HashMap<String, String>();
+            constructionMap = new HashMap<String, String>();
         }
         
         
         List<String> constructions = new ArrayList<String>(groups); 
-        HashMap<String, Integer> constructionMap= new HashMap<>();
+        HashMap<String, Integer> groupMap= new HashMap<>();
         SimpleMatrix[] compositionMatrices = new SimpleMatrix[constructions.size() + 1];
         int index = 0;
         compositionMatrices[index] = createRandomMatrix(hiddenLayerSize);
+        groupMap.put(DEFAULT_STRING, 0);
         for (String construction : constructions) {
             index++;
-            constructionMap.put(construction, index);
+            groupMap.put(construction, index);
             compositionMatrices[index] = createRandomMatrix(hiddenLayerSize);
         }
-        return new CompositionMatrices(constructionMap, constructionGroups, compositionMatrices);
+        return new CompositionMatrices(groupMap, constructionMap, compositionMatrices);
     }
     
-    public static CompositionMatrices identityInitialize(HashMap<String, String> constructionGroups, int hiddenLayerSize) {
+    public static CompositionMatrices identityInitialize(HashMap<String, String> constructionMap, 
+            int hiddenLayerSize) {
         HashSet<String> groups = new HashSet<String>();
-        if (constructionGroups != null) {
-            for (String key: constructionGroups.keySet()) {
-                String group = constructionGroups.get(key);
+        if (constructionMap != null) {
+            for (String key: constructionMap.keySet()) {
+                String group = constructionMap.get(key);
                 if (group != null && !groups.contains(group)) {
                     groups.add(group);
                 }
             }
         } else {
-            constructionGroups = new HashMap<String, String>();
+            constructionMap = new HashMap<String, String>();
         }
         
         List<String> constructions = new ArrayList<String>(groups); 
         
-        HashMap<String, Integer> constructionMap= new HashMap<>();
+        HashMap<String, Integer> groupMap= new HashMap<>();
         SimpleMatrix[] compositionMatrices = new SimpleMatrix[constructions.size() + 1];
         int index = 0;
         compositionMatrices[index] = createIdentityMatrix(hiddenLayerSize);
+        groupMap.put(DEFAULT_STRING, 0);
+        
         for (String construction : constructions) {
             index++;
-            constructionMap.put(construction, index);
+            groupMap.put(construction, index);
             compositionMatrices[index] = createIdentityMatrix(hiddenLayerSize);
         }
-        return new CompositionMatrices(constructionMap, constructionGroups, compositionMatrices);
+        return new CompositionMatrices(groupMap, constructionMap, compositionMatrices);
     }
     
     protected static SimpleMatrix createRandomMatrix(int hiddenLayerSize) {
@@ -98,18 +119,21 @@ public class CompositionMatrices {
     }
     
     public int getConstructionIndex(String construction) {
-        if (constructionGroups.containsKey(construction))
-            return groupMap.get(constructionGroups.get(construction));
-        else
-            return 0;
+        if (constructionMap.containsKey(construction)) {
+            return groupMap.get(constructionMap.get(construction));
+        } else {
+            // default
+            return groupMap.get(DEFAULT_STRING);
+        }
     }
     
     public SimpleMatrix getCompositionMatrix(String construction) {
-        if (constructionGroups.containsKey(construction)) {
-            return compositionMatrices[groupMap.get(constructionGroups.get(construction))];
-        } else
+        if (constructionMap.containsKey(construction)) {
+            return compositionMatrices[groupMap.get(constructionMap.get(construction))];
+        } else {
             // default construction
-            return compositionMatrices[0];
+            return compositionMatrices[groupMap.get(DEFAULT_STRING)];
+        }
     }
     
     protected void updateSingleConstruction(int index, SimpleMatrix gradient) {
@@ -150,5 +174,21 @@ public class CompositionMatrices {
     
     public void setWeightDecay(double weightDecay) {
         this.weightDecay = weightDecay;
+    }
+    
+    public void saveConstructionMatrices(BufferedOutputStream outputStream, boolean binary) throws IOException{
+        outputStream.write(("" + constructionMap.keySet().size() + "\n").getBytes());
+        for (String construction : constructionMap.keySet()) {
+            outputStream.write((construction + " " + constructionMap.get(construction) + "\n").getBytes());
+        }
+        outputStream.write(("" + groupMap.keySet().size() + "\n").getBytes());
+        for (String group : groupMap.keySet()) {
+            outputStream.write((group + "\n").getBytes());
+            IOUtils.saveMatrix(outputStream, compositionMatrices[0], binary);
+        }
+    }
+    
+    public static CompositionMatrices loadConstructionMatrices(BufferedInputStream inputStream, boolean binary) {
+        return null;
     }
 }
