@@ -4,7 +4,10 @@ import neural.ActivationFunction;
 
 import org.ejml.simple.SimpleMatrix;
 
+import space.SemanticSpace;
+
 import common.SimpleMatrixUtils;
+import common.exception.UnimplementedException;
 
 public class FullAdditive extends BasicComposition{
     protected SimpleMatrix compositionMatrix;
@@ -25,6 +28,11 @@ public class FullAdditive extends BasicComposition{
             result = SimpleMatrixUtils.applyActivationFunction(result, function);
         }
         return result;
+    }
+    
+    @Override
+    public SemanticSpace composeSpace(SemanticSpace inputSpace, String[] phrases) {
+        throw new UnimplementedException("this method is not applicable to FullAdditive");
     }
     
 }

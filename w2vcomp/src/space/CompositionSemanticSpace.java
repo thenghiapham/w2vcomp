@@ -14,7 +14,7 @@ import neural.ProjectionMatrix;
 import neural.SimpleTreeNetwork;
 import neural.Tanh;
 
-public class CompositionSemanticSpace {
+public class CompositionSemanticSpace implements SemanticSpace {
     protected ProjectionMatrix      projectionMatrix;
     protected CompositionMatrices   compositionMatrices;
     
@@ -70,6 +70,26 @@ public class CompositionSemanticSpace {
     
     public SimpleMatrix getConstructionMatrix(String construction) {
         return compositionMatrices.getCompositionMatrix(construction);
+    }
+
+    @Override
+    public int getVectorSize() {
+        // TODO Auto-generated method stub
+        return projectionMatrix.getVectorSize();
+    }
+
+    @Override
+    public Neighbor[] getNeighbors(String word, int noNeighbor) {
+        // TODO Auto-generated method stub
+//        throw new UnIm
+        return null;
+    }
+
+    @Override
+    public Neighbor[] getNeighbors(SimpleMatrix vector, int noNeighbor,
+            String[] excludedWords) {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 //    public SimpleMatrix getGroupMatrix(String group) {

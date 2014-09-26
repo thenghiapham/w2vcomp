@@ -37,4 +37,20 @@ public abstract class BasicComposition {
         return new SMSemanticSpace(phrases, compose(uMatrix, vMatrix));
     }
     
+    public SemanticSpace composeSpace(SemanticSpace inputSpace, String[] phrases) {
+        int phraseNum = phrases.length;
+        int vectorSize = inputSpace.getVectorSize();
+        SimpleMatrix composedMatrix = new SimpleMatrix(phraseNum, vectorSize);
+        for (int i = 0; i < phraseNum; i++) {
+            String[] words = phrases[i].split(" ");
+            SimpleMatrix composedVector = inputSpace.getVector(words[0]);
+            for (int j = 1; j < words.length; j++) {
+                SimpleMatrix newVector = inputSpace.getVector(words[j]);
+                composedVector = compose(composedVector, newVector);
+            }
+            composedMatrix.setRow(i, 0, composedVector.getMatrix().data);
+        }
+        return new SMSemanticSpace(phrases, composedMatrix);
+    }
+    
 }

@@ -109,8 +109,8 @@ public class SvdPlot extends JFrame {
         DataTable projLine21 = exLines2[1];
         DataTable projLine22 = exLines2[2];
         
-        Double x3 = 0.0;
-        Double y3 = 0.8;
+        Double x3 = 0.8;
+        Double y3 = 0.0;
         
         DataTable[] exLines3 = getExample(x3, y3);
         DataTable approxLine3 = exLines3[0];
@@ -122,14 +122,19 @@ public class SvdPlot extends JFrame {
         examplePoint1.add(x1,y1);
         
         DataTable examplePoint2 = new DataTable(Double.class, Double.class);
-        examplePoint2.add(x3,y3);
-        examplePoint2.add(x3,y3);
+        examplePoint2.add(x2,y2);
+        examplePoint2.add(x2,y2);
+        
+        DataTable examplePoint3 = new DataTable(Double.class, Double.class);
+        examplePoint3.add(x3,y3);
+        examplePoint3.add(x3,y3);
         
         
         XYPlot plot = new XYPlot(randomPoints, line, approxLine1, 
                 projLine11, projLine12, approxLine2, 
                 projLine21, projLine22, approxLine3, 
-                projLine31, projLine32, examplePoint1, examplePoint2);
+                projLine31, projLine32, examplePoint1, 
+                examplePoint2, examplePoint3);
               
 
         plot.setPointRenderer(line, null);
@@ -187,13 +192,19 @@ public class SvdPlot extends JFrame {
         plot.setLineRenderer(projLine32, exampleLineRdr3);
         
         PointRenderer pointExampleRnd1 = new DefaultPointRenderer2D();
-        pointExampleRnd1.setShape(new Ellipse2D.Double(-4, -4, 8, 8));
+        pointExampleRnd1.setShape(new Ellipse2D.Double(-5, -5, 10, 10));
         pointExampleRnd1.setColor(red);
         plot.setPointRenderer(examplePoint1, pointExampleRnd1);
+        
         PointRenderer pointExampleRnd2 = new DefaultPointRenderer2D();
-        pointExampleRnd2.setShape(new Ellipse2D.Double(-4, -4, 8, 8));
+        pointExampleRnd2.setShape(new Ellipse2D.Double(-5, -5, 10, 10));
         pointExampleRnd2.setColor(green);
         plot.setPointRenderer(examplePoint2, pointExampleRnd2);
+        
+        PointRenderer pointExampleRnd3 = new DefaultPointRenderer2D();
+        pointExampleRnd3.setShape(new Ellipse2D.Double(-5, -5, 10, 10));
+        pointExampleRnd3.setColor(black);
+        plot.setPointRenderer(examplePoint3, pointExampleRnd3);
 
         plot.setInsets(new Insets2D.Double(20.0, 50.0, 40.0, 20.0));
         getContentPane().add(new InteractivePanel(plot), BorderLayout.CENTER);

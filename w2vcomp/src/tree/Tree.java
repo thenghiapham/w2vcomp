@@ -256,6 +256,24 @@ public class Tree {
         return result;
     }
     
+    public String getSurfaceString() {
+        StringBuffer buffer = new StringBuffer();
+        getRecurseveSurfaceString(buffer);
+        return buffer.toString();
+    }
+    
+    protected void getRecurseveSurfaceString(StringBuffer buffer) {
+        if (isTerminal()) {
+            buffer.append(rootLabel);
+        } else {
+            children.get(0).getRecurseveSurfaceString(buffer);
+            for (int i = 1; i < children.size(); i++) {
+                buffer.append(" ");
+                children.get(i).getRecurseveSurfaceString(buffer);
+            }
+        }
+    }
+    
     protected int putSurfaceString(int pos, String[] words) {
         if (this.isTerminal()) {
             words[pos] = this.rootLabel;
