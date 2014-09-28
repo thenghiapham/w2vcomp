@@ -10,6 +10,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.ejml.alg.dense.mult.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 
+import common.exception.UnimplementedException;
+
 /**
  * This class provides some utility method for the SimpleMatrix class
  * @author thenghiapham
@@ -241,4 +243,18 @@ public class SimpleMatrixUtils {
         return Collections.min(dataAsList);
     }
     
+    public static SimpleMatrix rowNormalize(SimpleMatrix input) {
+        int numCols = input.numCols();
+        int numRows = input.numRows();
+        SimpleMatrix output = new SimpleMatrix(numRows, numCols);
+        for (int i = 0; i < input.numRows(); i++) {
+            SimpleMatrix row = input.extractMatrix(i, i + 1, 0, numCols);
+            double length = row.normF();
+            if (length != 0) {
+                row = row.scale(1 / length);
+                output.setRow(i, 0, row.getMatrix().getData());
+            }
+        }
+        return output;
+    }
 }
