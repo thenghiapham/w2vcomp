@@ -18,6 +18,8 @@ public class WeightedAdditive extends BasicComposition{
     
  // Everything is row vectors or row major matrices
     public SimpleMatrix compose(SimpleMatrix uMatrix, SimpleMatrix vMatrix) {
+        if (uMatrix == null) return vMatrix;
+        if (vMatrix == null) return uMatrix;
         return uMatrix.scale(alpha).plus(vMatrix.scale(beta));
     }
     

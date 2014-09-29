@@ -1,14 +1,16 @@
 package common.correlation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 
-import common.DataStructureUtils;
 import common.IOUtils;
 import composition.BasicComposition;
+import composition.WeightedAdditive;
 
 import space.CompositionSemanticSpace;
+import space.RawSemanticSpace;
 import space.SMSemanticSpace;
 import space.SemanticSpace;
 import tree.Tree;
@@ -62,6 +64,18 @@ public class ParsedPhraseCorrelation{
         parseCorrelation = new MenCorrelation(parsePhrasePairs, golds);
         surfaceCorrelation = new MenCorrelation(surfacePhrasePairs, golds);
         
+        parsedPhrase = new String[parsePhraseSet.size()];
+        int index = 0;
+        for (String phrase: parsePhraseSet) {
+            parsedPhrase[index] = phrase;
+            index++;
+        }
+        surfacePhrase = new String[surfacePhraseSet.size()];
+        index = 0;
+        for (String phrase: surfacePhraseSet) {
+            surfacePhrase[index] = phrase;
+            index++;
+        }
         // TODO: change string sets to arrays
     }
     
@@ -117,4 +131,15 @@ public class ParsedPhraseCorrelation{
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrase, space.getComposedMatrix(parsedPhrase));
         return parseCorrelation.evaluateSpaceSpearman(phraseSpace);
     }
+    
+    public static void main(String[] args) throws IOException {
+        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp2tft", true);
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin2tft");
+        WeightedAdditive add = new WeightedAdditive();
+        ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation("/home/thenghiapham/work/project/mikolov/sick/postprocessed/SICK_train_trial.txt");
+        System.out.println("an add: " + sickCorrelation.evaluateSpacePearson(space, add));
+        System.out.println("an comp: " + sickCorrelation.evaluateSpacePearson(compSpace));
+    }
+    
+    
 }
