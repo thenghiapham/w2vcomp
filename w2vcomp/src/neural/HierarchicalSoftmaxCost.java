@@ -25,7 +25,7 @@ public class HierarchicalSoftmaxCost implements CostFunction{
     }
 
     @Override
-    public SimpleMatrix getError(SimpleMatrix predictedMatrix, SimpleMatrix
+    public SimpleMatrix derivative(SimpleMatrix predictedMatrix, SimpleMatrix
             goldMatrix) {
         // TODO Auto-generated method stub
         double[] predictedValues = predictedMatrix.getMatrix().getData();

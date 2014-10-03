@@ -7,7 +7,19 @@ import common.SimpleMatrixUtils;
 import space.SMSemanticSpace;
 import space.SemanticSpace;
 
+/**
+ * BasicComposition implements supplementary functions for a composition model
+ * except for the most basic "compose" function, which is in turn implemented 
+ * in the subclasses
+ */
 public abstract class BasicComposition {
+    
+    /**
+     * Basic "abstract" composition function
+     * @param uMatrix
+     * @param vMatrix
+     * @return phrase matrix
+     */
     public abstract SimpleMatrix compose(SimpleMatrix uMatrix, SimpleMatrix vMatrix);
     
     public double[] compose(double[] u, double[] v) {

@@ -47,7 +47,7 @@ public class OutputLayer extends BasicLayer implements Layer{
     
     @Override
     public void backward() {
-        SimpleMatrix outError = costFunction.getError(output, goldOutput);
+        SimpleMatrix outError = costFunction.derivative(output, goldOutput);
         if (activation != null) {
             outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
         }

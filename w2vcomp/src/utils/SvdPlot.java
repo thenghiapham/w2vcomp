@@ -13,7 +13,6 @@ import de.erichseifert.gral.data.*;
 import de.erichseifert.gral.data.comparators.Ascending;
 import de.erichseifert.gral.plots.XYPlot;
 import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
-import de.erichseifert.gral.plots.lines.LineRenderer;
 import de.erichseifert.gral.plots.points.DefaultPointRenderer2D;
 import de.erichseifert.gral.plots.points.PointRenderer;
 import de.erichseifert.gral.ui.InteractivePanel;
@@ -62,6 +61,7 @@ public class SvdPlot extends JFrame {
         return table;
     }
     
+    @SuppressWarnings("unchecked")
     public DataTable[] getExample(Double x, Double y) {
         Double x1 = (x + y) / 2;
         Double y1 = x1;
@@ -87,6 +87,7 @@ public class SvdPlot extends JFrame {
         return new DataTable[]{approxLine, projLine1, projLine2};
     }
 
+    @SuppressWarnings("unchecked")
     public SvdPlot() throws IOException {
         DataSource source = createRandomSetNearLine(1, 0.05, 100);
         DataTable randomPoints = new DataTable(source);

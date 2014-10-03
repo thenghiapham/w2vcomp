@@ -25,7 +25,7 @@ public class NegativeSamplingCost implements CostFunction{
     }
 
     @Override
-    public SimpleMatrix getError(SimpleMatrix predictedMatrix, SimpleMatrix 
+    public SimpleMatrix derivative(SimpleMatrix predictedMatrix, SimpleMatrix 
             goldMatrix) {
         double[] predictedValues = predictedMatrix.getMatrix().getData();
         double[] goldValues = goldMatrix.getMatrix().getData();
