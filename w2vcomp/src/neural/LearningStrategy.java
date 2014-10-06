@@ -8,7 +8,7 @@ public abstract class LearningStrategy {
     protected SimpleMatrix outputVectors;
     public abstract int[] getOutputIndices(String word);
     public abstract SimpleMatrix getGoldOutput(String word);
-    public abstract CostFunction getCostFunction();
+    public abstract ObjectiveFunction getCostFunction();
     
     public LearningStrategy(SimpleMatrix outputVectors) {
         this.outputVectors = outputVectors;

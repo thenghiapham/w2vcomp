@@ -2,12 +2,24 @@ package neural;
 
 import org.ejml.simple.SimpleMatrix;
 
-public class NegativeSamplingCost implements CostFunction{
+public class NegativeSamplingObjective implements ObjectiveFunction{
 
+    /**
+     * goldMatrix: a one-hot array, where the first element is 1, indicating
+     *             the target word
+     * predictedMatrix: outputs of the sigmoid function with respect to
+     *             the target word, & the negative samples
+     * return: sum {if the sigmoid value is zero, don't take it into account
+     *             {log(sigmoid value) if the gold value is 1 
+     *             {1 - log(sigmoid value) if gold code bit is 0
+     *             
+     */
     @Override
-    public double computeCost(SimpleMatrix predictedMatrix, SimpleMatrix 
+    public double computeObjective(SimpleMatrix predictedMatrix, SimpleMatrix 
             goldMatrix) {
-        // TODO Auto-generated method stub
+        // TODO: also check the special cases: 0 and 1
+        //       it seems to make a difference when the point is very close to 
+        //       0 or 1 and got rounded by the pre-computed table
         double[] predictedValues = predictedMatrix.getMatrix().getData();
         double[] goldValues = goldMatrix.getMatrix().getData();
         double cost = 0;
@@ -24,6 +36,16 @@ public class NegativeSamplingCost implements CostFunction{
         return cost;
     }
 
+    /**
+     * goldMatrix: a one-hot array, where the first element is 1, indicating
+     *             the target word
+     * predictedMatrix: outputs of the sigmoid function with respect to
+     *             the target word, & the negative samples
+     * return: sum {if the sigmoid value is zero, don't take it into account
+     *             {1 / (sigmoid value) if the gold value is 1 
+     *             {-1 / (1 - sigmoid value) if gold code bit is 0
+     *             
+     */
     @Override
     public SimpleMatrix derivative(SimpleMatrix predictedMatrix, SimpleMatrix 
             goldMatrix) {

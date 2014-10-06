@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 
-import neural.CostFunction;
-import neural.HierarchicalSoftmaxCost;
-import neural.NegativeSamplingCost;
+import neural.ObjectiveFunction;
+import neural.HierarchicalSoftmaxObjective;
+import neural.NegativeSamplingObjective;
 import neural.OutputLayer;
 import neural.ProjectionLayer;
 import neural.Sigmoid;
@@ -27,7 +27,7 @@ public class SimpleNetworkTest {
         sigmoidTable = new SigmoidTable();
     }
     
-    public ValueGradient computeGrad(SimpleMatrix input, SimpleMatrix softmaxWeight, SimpleMatrix output, CostFunction function) {
+    public ValueGradient computeGrad(SimpleMatrix input, SimpleMatrix softmaxWeight, SimpleMatrix output, ObjectiveFunction function) {
         ProjectionLayer pLayer = new ProjectionLayer(input);
         OutputLayer oLayer = new OutputLayer(softmaxWeight, new Sigmoid(), output, function);
         pLayer.addOutLayer(oLayer);
@@ -44,7 +44,7 @@ public class SimpleNetworkTest {
         return new ValueGradient(value, gradients);
     }
     
-    public ArrayList<SimpleMatrix> computeNumericGrad(SimpleMatrix input, SimpleMatrix softmaxWeight, SimpleMatrix output, CostFunction function) {
+    public ArrayList<SimpleMatrix> computeNumericGrad(SimpleMatrix input, SimpleMatrix softmaxWeight, SimpleMatrix output, ObjectiveFunction function) {
         ArrayList<SimpleMatrix> numGradients = new ArrayList<>();
         SimpleMatrix theta[] = new SimpleMatrix[]{input, softmaxWeight};
         double e = 1e-4;
@@ -78,9 +78,9 @@ public class SimpleNetworkTest {
         SimpleMatrix inputWord = new SimpleMatrix(2,1,true, new double[]{1,0});
         SimpleMatrix softmaxWeight = new SimpleMatrix(2,2,true, new double[]{1,0,0,1});
         SimpleMatrix softmaxValue = new SimpleMatrix(2,1,true, new double[]{1,0});
-        ValueGradient valueGrad = computeGrad(inputWord, softmaxWeight, softmaxValue, new HierarchicalSoftmaxCost());
+        ValueGradient valueGrad = computeGrad(inputWord, softmaxWeight, softmaxValue, new HierarchicalSoftmaxObjective());
         ArrayList<SimpleMatrix> grads = valueGrad.gradients;
-        ArrayList<SimpleMatrix> numGrads = computeNumericGrad(inputWord, softmaxWeight, softmaxValue, new HierarchicalSoftmaxCost());
+        ArrayList<SimpleMatrix> numGrads = computeNumericGrad(inputWord, softmaxWeight, softmaxValue, new HierarchicalSoftmaxObjective());
         for (int i = 0; i < 1; i++) {
             System.out.println(grads.get(i));
             System.out.println(numGrads.get(i));
@@ -93,9 +93,9 @@ public class SimpleNetworkTest {
         SimpleMatrix inputWord = new SimpleMatrix(2,1,true, new double[]{1,0});
         SimpleMatrix softmaxWeight = new SimpleMatrix(2,2,true, new double[]{1,0,0,1});
         SimpleMatrix softmaxValue = new SimpleMatrix(2,1,true, new double[]{1,0});
-        ValueGradient valueGrad = computeGrad(inputWord, softmaxWeight, softmaxValue, new NegativeSamplingCost());
+        ValueGradient valueGrad = computeGrad(inputWord, softmaxWeight, softmaxValue, new NegativeSamplingObjective());
         ArrayList<SimpleMatrix> grads = valueGrad.gradients;
-        ArrayList<SimpleMatrix> numGrads = computeNumericGrad(inputWord, softmaxWeight, softmaxValue, new NegativeSamplingCost());
+        ArrayList<SimpleMatrix> numGrads = computeNumericGrad(inputWord, softmaxWeight, softmaxValue, new NegativeSamplingObjective());
         for (int i = 0; i < 1; i++) {
             System.out.println(grads.get(i));
             System.out.println(numGrads.get(i));

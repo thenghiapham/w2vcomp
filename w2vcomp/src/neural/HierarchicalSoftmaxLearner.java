@@ -10,12 +10,12 @@ import vocab.VocabEntry;
 
 public class HierarchicalSoftmaxLearner extends LearningStrategy{
     protected Vocab vocab;
-    protected CostFunction costFunction;
+    protected ObjectiveFunction costFunction;
     
     protected HierarchicalSoftmaxLearner(Vocab vocab, SimpleMatrix outVectors) {
         super(outVectors);
         this.vocab = vocab;
-        costFunction = new HierarchicalSoftmaxCost();
+        costFunction = new HierarchicalSoftmaxObjective();
     }
     
     // TODO: random initialization
@@ -64,7 +64,7 @@ public class HierarchicalSoftmaxLearner extends LearningStrategy{
     }
 
     @Override
-    public CostFunction getCostFunction() {
+    public ObjectiveFunction getCostFunction() {
         // TODO Auto-generated method stub
         return costFunction;
     }

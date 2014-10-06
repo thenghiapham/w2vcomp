@@ -6,7 +6,7 @@ import common.SimpleMatrixUtils;
 import common.exception.IllegalOperationException;
 
 public class OutputLayer extends BasicLayer implements Layer{
-    protected CostFunction costFunction;
+    protected ObjectiveFunction costFunction;
     
     protected SimpleMatrix inputWeights;
     protected ActivationFunction activation;
@@ -23,7 +23,7 @@ public class OutputLayer extends BasicLayer implements Layer{
     
     protected int[] weightVectorIndices;
     
-    public OutputLayer(SimpleMatrix weights, ActivationFunction activation, SimpleMatrix goldOutput, CostFunction costFunction) {
+    public OutputLayer(SimpleMatrix weights, ActivationFunction activation, SimpleMatrix goldOutput, ObjectiveFunction costFunction) {
         this.inputWeights = weights;
         this.activation = activation;
         this.goldOutput = goldOutput;
@@ -56,7 +56,7 @@ public class OutputLayer extends BasicLayer implements Layer{
     }
 
     public double getCost() {
-        return costFunction.computeCost(output, goldOutput);
+        return costFunction.computeObjective(output, goldOutput);
     }
     
     @Override

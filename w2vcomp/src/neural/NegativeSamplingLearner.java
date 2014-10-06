@@ -11,7 +11,7 @@ public class NegativeSamplingLearner extends LearningStrategy{
     protected UniGram uniGram;
     protected Vocab vocab;
     protected int noSamples;
-    protected CostFunction costFunction;
+    protected ObjectiveFunction costFunction;
     
     protected SimpleMatrix goldOutput;
     
@@ -47,7 +47,7 @@ public class NegativeSamplingLearner extends LearningStrategy{
         this.vocab = vocab;
         this.noSamples = noSamples;
         this.uniGram = new UniGram(vocab);
-        costFunction = new NegativeSamplingCost();
+        costFunction = new NegativeSamplingObjective();
         
         initializeOutput();
     }
@@ -80,7 +80,7 @@ public class NegativeSamplingLearner extends LearningStrategy{
     }
 
     @Override
-    public CostFunction getCostFunction() {
+    public ObjectiveFunction getCostFunction() {
         // TODO Auto-generated method stub
         return costFunction;
     }

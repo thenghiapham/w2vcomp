@@ -122,7 +122,7 @@ public class TreeNetwork {
                             if (indices == null) continue;
                             SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
                             SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
-                            CostFunction costFunction = outputBuilder.getCostFunction();
+                            ObjectiveFunction costFunction = outputBuilder.getCostFunction();
                             OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction);
                             outputLayer.addInLayer(layer);
                             layer.addOutLayer(outputLayer);

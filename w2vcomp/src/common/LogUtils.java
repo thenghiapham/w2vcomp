@@ -15,9 +15,6 @@ public class LogUtils {
     
     static public void setup(String logFileName) throws IOException {
 
-        // get the global logger to configure it
-//        Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
         // suppress the logging output to the console
         Logger rootLogger = Logger.getLogger("");
         Handler[] handlers = rootLogger.getHandlers();

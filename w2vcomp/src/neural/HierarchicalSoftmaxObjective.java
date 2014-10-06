@@ -2,15 +2,21 @@ package neural;
 
 import org.ejml.simple.SimpleMatrix;
 
-public class HierarchicalSoftmaxCost implements CostFunction{
+public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
 
     /**
-     * 
+     * goldMatrix: the (Huffman) binary code of a word
+     * predictedMatrix: outputs of the sigmoid function of the path from the
+     *    root to the word in the hierarchy
+     * return: sum {if the sigmoid value is zero, don't take it into account
+     *             {log(sigmoid value) if gold code bit is 0 
+     *             {1 - log(sigmoid value) if gold code bit is 1
+     *             
      */
     @Override
-    public double computeCost(SimpleMatrix predictedMatrix, SimpleMatrix 
+    public double computeObjective(SimpleMatrix predictedMatrix, SimpleMatrix 
             goldMatrix) {
-        // TODO Auto-generated method stub
+        // TODO: check the special case 0, 1
         double[] predictedValues = predictedMatrix.getMatrix().getData();
         double[] goldValues = goldMatrix.getMatrix().getData();
         double cost = 0;
@@ -27,10 +33,18 @@ public class HierarchicalSoftmaxCost implements CostFunction{
         return cost;
     }
 
+    /**
+     * goldMatrix: the (Huffman) binary code of a word
+     * predictedMatrix: outputs of the sigmoid function of the path from the
+     *    root to the word in the hierarchy
+     * return: the derivate of the objective function, which is
+     *             sum {if the sigmoid value is zero, don't take it into account
+     *                 {1 / (sigmoid value) if gold code bit is 0 
+     *                 {-1 / (1 - sigmoid value) if gold code bit is 1
+     */
     @Override
     public SimpleMatrix derivative(SimpleMatrix predictedMatrix, SimpleMatrix
             goldMatrix) {
-        // TODO Auto-generated method stub
         double[] predictedValues = predictedMatrix.getMatrix().getData();
         double[] goldValues = goldMatrix.getMatrix().getData();
         double[] rawError = new double[predictedValues.length];
