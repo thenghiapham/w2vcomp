@@ -25,20 +25,20 @@ import vocab.Vocab;
 public class ProjectionMatrix {
     // TODO: handling unknown word?
     //       either: learn it, assign zero, or return zero vector? 
-    protected HashMap<String, Integer> vocab;
+    protected HashMap<String, Integer> dictionary;
     protected SimpleMatrix vectors;
     
     protected ProjectionMatrix(Vocab vocab, SimpleMatrix vectors) {
-        this.vocab = new HashMap<>();
+        this.dictionary = new HashMap<>();
         for (int i = 0; i < vocab.getVocabSize(); i++) {
-            this.vocab.put(vocab.getEntry(i).word, i);
+            this.dictionary.put(vocab.getEntry(i).word, i);
         }
         this.vectors = vectors;
     }
     
     
-    protected ProjectionMatrix(HashMap<String, Integer> vocab, SimpleMatrix vectors) {
-        this.vocab = vocab;
+    protected ProjectionMatrix(HashMap<String, Integer> dictionary, SimpleMatrix vectors) {
+        this.dictionary = dictionary;
         this.vectors = vectors;
     }
     
@@ -83,18 +83,18 @@ public class ProjectionMatrix {
     public SimpleMatrix getVector(int wordIndex) {
         // TODO: null or zeros?
         SimpleMatrix result = null;
-        if (wordIndex <= -2 || wordIndex >= vocab.size())
+        if (wordIndex <= -2 || wordIndex >= dictionary.size())
             return result;
         else if (wordIndex == -1)
-            result = vectors.extractVector(true, vocab.size());
+            result = vectors.extractVector(true, dictionary.size());
         else
             result = vectors.extractVector(true, wordIndex);
         return result.transpose();
     }
     
     public int getWordIndex(String word) {
-        if (vocab.containsKey(word))
-            return vocab.get(word);
+        if (dictionary.containsKey(word))
+            return dictionary.get(word);
         else
             return -1;
     }
@@ -107,7 +107,7 @@ public class ProjectionMatrix {
 //        String word;
         if (wordIndex == -1) {
 //            word = "default";
-            wordIndex = vocab.size();
+            wordIndex = dictionary.size();
         } else {
 //            word = vocab.getEntry(wordIndex).word;
         }
