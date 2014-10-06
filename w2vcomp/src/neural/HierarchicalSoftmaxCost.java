@@ -4,6 +4,9 @@ import org.ejml.simple.SimpleMatrix;
 
 public class HierarchicalSoftmaxCost implements CostFunction{
 
+    /**
+     * 
+     */
     @Override
     public double computeCost(SimpleMatrix predictedMatrix, SimpleMatrix 
             goldMatrix) {
