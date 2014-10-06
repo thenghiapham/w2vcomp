@@ -22,7 +22,7 @@ public abstract class LearningStrategy {
     public void updateMatrix(int[] indices, SimpleMatrix gradients, double learningRate) {
         gradients = gradients.scale(learningRate);
         SimpleMatrix orginalRows = SimpleMatrixUtils.getRows(outputVectors, indices);
-        SimpleMatrix newRows = orginalRows.plus(gradients);
+        SimpleMatrix newRows = orginalRows.minus(gradients);
         for (int i = 0; i < indices.length; i++) {
             outputVectors.setRow(indices[i], 0, newRows.extractVector(true, i).getMatrix().data);
         }

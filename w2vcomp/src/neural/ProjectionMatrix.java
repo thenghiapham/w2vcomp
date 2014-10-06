@@ -119,7 +119,7 @@ public class ProjectionMatrix {
         }
 //        System.out.println(word + " not_null");
         gradient = gradient.scale(learningRate);
-        SimpleMatrix newRow = originalRow.plus(gradient);
+        SimpleMatrix newRow = originalRow.minus(gradient);
         vectors.setRow(wordIndex, 0, newRow.getMatrix().getData());
     
     }

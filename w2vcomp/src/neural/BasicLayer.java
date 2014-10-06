@@ -6,6 +6,12 @@ import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
 
+/**
+ * This abstract class implements some of the basic method defined in Layer 
+ * interface
+ * @author thenghiapham
+ *
+ */
 public abstract class BasicLayer implements Layer {
 
     protected ArrayList<Layer> inLayers;
@@ -15,6 +21,7 @@ public abstract class BasicLayer implements Layer {
         inLayers = new ArrayList<>();
         outLayers = new ArrayList<>();
     }
+    
     
     @Override
     public void addInLayer(Layer inLayer) {
@@ -31,7 +38,6 @@ public abstract class BasicLayer implements Layer {
         for (Layer inLayer: inLayers) {
             inputs.add(inLayer.getOutput());
         }
-//        System.out.println(toTreeString());
         return SimpleMatrixUtils.concatenateVectors(inputs);
     }
     

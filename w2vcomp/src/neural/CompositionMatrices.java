@@ -139,7 +139,7 @@ public class CompositionMatrices {
     protected void updateSingleConstruction(int index, SimpleMatrix gradient) {
         // TODO: review this
         synchronized (keys[index]) {
-            compositionMatrices[index] = compositionMatrices[index].plus(gradient);
+            compositionMatrices[index] = compositionMatrices[index].minus(gradient);
         }
     }
     
@@ -166,7 +166,7 @@ public class CompositionMatrices {
         for (Integer key : gradientMap.keySet()) {
             SimpleMatrix gradient =  gradientMap.get(key);
             if (learningRate != 0) {
-                gradient = gradient.minus(compositionMatrices[key].scale(weightDecayTimes.get(key) * weightDecay));
+                gradient = gradient.plus(compositionMatrices[key].scale(weightDecayTimes.get(key) * weightDecay));
             }
             updateSingleConstruction(key, gradient.scale(learningRate));
         }

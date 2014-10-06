@@ -3,13 +3,15 @@ package neural;
 import org.ejml.simple.SimpleMatrix;
 
 public class NegativeSamplingObjective implements ObjectiveFunction{
+    // Since this is cost function, the value here is the opposite of 
+    // the value in Mikolov's paper
 
     /**
      * goldMatrix: a one-hot array, where the first element is 1, indicating
      *             the target word
      * predictedMatrix: outputs of the sigmoid function with respect to
      *             the target word, & the negative samples
-     * return: sum {if the sigmoid value is zero, don't take it into account
+     * return: - sum {if the sigmoid value is 0 or 1, don't take it into account
      *             {log(sigmoid value) if the gold value is 1 
      *             {1 - log(sigmoid value) if gold code bit is 0
      *             
@@ -33,7 +35,7 @@ public class NegativeSamplingObjective implements ObjectiveFunction{
                 }
             }
         }
-        return cost;
+        return -cost;
     }
 
     /**
@@ -41,9 +43,9 @@ public class NegativeSamplingObjective implements ObjectiveFunction{
      *             the target word
      * predictedMatrix: outputs of the sigmoid function with respect to
      *             the target word, & the negative samples
-     * return: sum {if the sigmoid value is zero, don't take it into account
-     *             {1 / (sigmoid value) if the gold value is 1 
-     *             {-1 / (1 - sigmoid value) if gold code bit is 0
+     * return:     {0 if the sigmoid value is 0 or 1
+     *             {-1 / (sigmoid value) if the gold value is 1 
+     *             {1 / (1 - sigmoid value) if gold code bit is 0
      *             
      */
     @Override
@@ -58,9 +60,9 @@ public class NegativeSamplingObjective implements ObjectiveFunction{
             } else {
                 // TODO: problem with cutting off value of sigmoid here
                 if (goldValues[i] == 1) {
-                    rawError[i] = 1 / predictedValues[i];
+                    rawError[i] = -1 / predictedValues[i];
                 } else {
-                    rawError[i] = -1 / (1 - predictedValues[i]);
+                    rawError[i] = 1 / (1 - predictedValues[i]);
                 }
             }
         }

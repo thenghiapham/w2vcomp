@@ -3,7 +3,9 @@ package neural;
 import org.ejml.simple.SimpleMatrix;
 
 public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
-
+    // Since this is cost function, the value here is the opposite of 
+    // the value in Mikolov's paper
+    
     /**
      * goldMatrix: the (Huffman) binary code of a word
      * predictedMatrix: outputs of the sigmoid function of the path from the
@@ -30,7 +32,7 @@ public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
                 }
             }
         }
-        return cost;
+        return -cost;
     }
 
     /**
@@ -38,7 +40,7 @@ public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
      * predictedMatrix: outputs of the sigmoid function of the path from the
      *    root to the word in the hierarchy
      * return: the derivate of the objective function, which is
-     *             sum {if the sigmoid value is zero, don't take it into account
+     *                 {0 if the sigmoid value is 0 or 1
      *                 {1 / (sigmoid value) if gold code bit is 0 
      *                 {-1 / (1 - sigmoid value) if gold code bit is 1
      */
@@ -53,9 +55,9 @@ public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
                 rawError[i] = 0;
             } else {
                 if (goldValues[i] == 0) {
-                    rawError[i] = 1 / predictedValues[i];
+                    rawError[i] = -1 / predictedValues[i];
                 } else {
-                    rawError[i] = - 1 / (1 - predictedValues[i]);
+                    rawError[i] = 1 / (1 - predictedValues[i]);
                 }
             }
         }
