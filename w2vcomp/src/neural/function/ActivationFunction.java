@@ -1,4 +1,4 @@
-package neural;
+package neural.function;
 
 public interface ActivationFunction {
     public double activation(double x);

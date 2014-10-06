@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import neural.ActivationFunction;
+import neural.function.ActivationFunction;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.ejml.alg.dense.mult.MatrixDimensionException;

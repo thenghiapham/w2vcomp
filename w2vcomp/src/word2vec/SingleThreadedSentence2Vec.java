@@ -12,9 +12,9 @@ import common.correlation.MenCorrelation;
 
 
 //import neural.IdentityFunction;
-import neural.Sigmoid;
-import neural.Tanh;
 import neural.TreeNetwork;
+import neural.function.Sigmoid;
+import neural.function.Tanh;
 
 import space.SMSemanticSpace;
 import tree.Tree;

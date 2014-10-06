@@ -14,7 +14,17 @@ import common.exception.ValueException;
 
 import vocab.Vocab;
 
+/**
+ * This class takes care of
+ * - keeping vector representation of words
+ * - updating vector representation of words
+ * - creating projection layers
+ * @author thenghiapham
+ *
+ */
 public class ProjectionMatrix {
+    // TODO: handling unknown word?
+    //       either: learn it, assign zero, or return zero vector? 
     protected HashMap<String, Integer> vocab;
     protected SimpleMatrix vectors;
     
@@ -26,15 +36,18 @@ public class ProjectionMatrix {
         this.vectors = vectors;
     }
     
-    // TODO: unknown word
+    
     protected ProjectionMatrix(HashMap<String, Integer> vocab, SimpleMatrix vectors) {
         this.vocab = vocab;
         this.vectors = vectors;
     }
     
-    
-    
-    // TODO: random initialization
+    /**
+     * 
+     * @param vocab
+     * @param hiddenLayerSize
+     * @return
+     */
     public static ProjectionMatrix randomInitialize(Vocab vocab, int hiddenLayerSize) {
         Random rand = new Random();
         double[][] outVectors = new double[vocab.getVocabSize() + 1][hiddenLayerSize];
@@ -67,17 +80,6 @@ public class ProjectionMatrix {
         return getVector(wordIndex); 
     }
     
-    // TODO: 
-//    public SimpleMatrix getVectors(String[] words) {
-//        int[] indices = new int[words.length];
-//        for (int i = 0; i < words.length; i++) {
-//            int wordIndex = vocab.getWordIndex(words[i]);
-//            indices[i] = (wordIndex==-1)?vocab.getVocabSize():wordIndex;
-//        }
-//        return SimpleMatrixUtils.getRows(vectors, indices);
-//    }
-    
-
     public SimpleMatrix getVector(int wordIndex) {
         // TODO: null or zeros?
         SimpleMatrix result = null;

@@ -1,4 +1,4 @@
-package neural;
+package neural.layer;
 
 import org.ejml.simple.SimpleMatrix;
 

@@ -12,7 +12,7 @@ import tree.Tree;
 import neural.CompositionMatrices;
 import neural.ProjectionMatrix;
 import neural.SimpleTreeNetwork;
-import neural.Tanh;
+import neural.function.Tanh;
 
 public class CompositionSemanticSpace implements SemanticSpace {
     protected ProjectionMatrix      projectionMatrix;

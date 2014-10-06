@@ -5,12 +5,12 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 
-import neural.ObjectiveFunction;
-import neural.HierarchicalSoftmaxObjective;
-import neural.NegativeSamplingObjective;
-import neural.OutputLayer;
-import neural.ProjectionLayer;
-import neural.Sigmoid;
+import neural.function.HierarchicalSoftmaxObjective;
+import neural.function.NegativeSamplingObjective;
+import neural.function.ObjectiveFunction;
+import neural.function.Sigmoid;
+import neural.layer.OutputLayer;
+import neural.layer.ProjectionLayer;
 
 import org.ejml.simple.SimpleMatrix;
 import org.junit.Before;

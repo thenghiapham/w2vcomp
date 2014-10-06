@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import neural.function.ActivationFunction;
+import neural.layer.HiddenLayer;
+import neural.layer.Layer;
+import neural.layer.ProjectionLayer;
+
 import org.ejml.simple.SimpleMatrix;
 
 import tree.Tree;
@@ -96,7 +101,7 @@ public class SimpleTreeNetwork {
         for (Layer layer: hiddenLayers) {
             layer.forward();
         }
-        return hiddenLayers.get(hiddenLayers.size() - 1).output;
+        return hiddenLayers.get(hiddenLayers.size() - 1).getOutput();
     }
     
 

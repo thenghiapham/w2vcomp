@@ -1,24 +1,46 @@
-package neural;
+package neural.layer;
+
+import neural.function.ActivationFunction;
+import neural.function.ObjectiveFunction;
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
 import common.exception.IllegalOperationException;
 
+/**
+ * This class represents an output layer (a network can have many output layers)
+ * It cannot have out-coming layers
+ * The in-coming layers can be
+ *   - projection layer (for predicting target words of a single word)
+ *   - hidden layer (for predicting target words of a phrase)
+ * It has both an activation function and an objective function
+ * 
+ * @author thenghiapham
+ *
+ */
 public class OutputLayer extends BasicLayer implements Layer{
     protected ObjectiveFunction costFunction;
     
     protected SimpleMatrix inputWeights;
     protected ActivationFunction activation;
     
-    
+    // Temporary computing result
     protected SimpleMatrix tempZ;
+    
+    // Combined input column vector
     protected SimpleMatrix input;
+    
+    // output vector
     protected SimpleMatrix output;
+    
     protected SimpleMatrix error;
+    
     protected SimpleMatrix gradient;
     
     protected SimpleMatrix goldOutput;
+    
+    // output of the cost function
     protected double cost;
     
     protected int[] weightVectorIndices;
@@ -32,6 +54,7 @@ public class OutputLayer extends BasicLayer implements Layer{
     
     @Override
     public void forward() {
+        // Exactly like in hidden layer
         input = getInLayerIntput();
         tempZ = inputWeights.mult(input);
         if (activation != null) 
@@ -47,6 +70,9 @@ public class OutputLayer extends BasicLayer implements Layer{
     
     @Override
     public void backward() {
+        // Similar to hidden layer's backward
+        // the difference is that here the error coming directly from the
+        // objective function
         SimpleMatrix outError = costFunction.derivative(output, goldOutput);
         if (activation != null) {
             outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
@@ -55,6 +81,15 @@ public class OutputLayer extends BasicLayer implements Layer{
         error = inputWeights.transpose().mult(outError);
     }
 
+    /**
+     * For debugging purpose
+     * It is used in checking gradient
+     * (Checking the gradient of the network involved sum up the cost
+     * function of all the output layers) 
+     * 
+     * Can only be-called after calling forward
+     * @return
+     */
     public double getCost() {
         return costFunction.computeObjective(output, goldOutput);
     }
@@ -81,7 +116,8 @@ public class OutputLayer extends BasicLayer implements Layer{
         return weightVectorIndices;
     }
     
-    public String toString() {
+    @Override
+    public String getTypeString() {
         return "O";
     }
 }

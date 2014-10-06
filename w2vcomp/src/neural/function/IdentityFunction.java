@@ -1,4 +1,5 @@
-package neural;
+package neural.function;
+
 
 public class IdentityFunction implements ActivationFunction {
 

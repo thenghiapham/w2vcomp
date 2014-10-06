@@ -1,6 +1,7 @@
-package neural;
+package neural.layer;
 
 import java.util.ArrayList;
+
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -8,7 +9,9 @@ import common.SimpleMatrixUtils;
 
 /**
  * This abstract class implements some of the basic method defined in Layer 
- * interface
+ * interface.
+ * 
+ * In this implementation, input vector for every layer is column vector
  * @author thenghiapham
  *
  */
@@ -33,6 +36,11 @@ public abstract class BasicLayer implements Layer {
         outLayers.add(outLayer);
     }
     
+    /**
+     * Concatenate the input matrices (from the incoming layer)
+     * into the a single input matrix
+     * @return
+     */
     protected SimpleMatrix getInLayerIntput() {
         ArrayList<SimpleMatrix> inputs = new ArrayList<>();
         for (Layer inLayer: inLayers) {
@@ -41,6 +49,10 @@ public abstract class BasicLayer implements Layer {
         return SimpleMatrixUtils.concatenateVectors(inputs);
     }
     
+    /**
+     * Sum up all the back-propagate error from the out-coming layers
+     * @return
+     */
     protected SimpleMatrix getOutLayerError() {
         if (outLayers.size() == 0) return null;
         ArrayList<SimpleMatrix> errors = new ArrayList<>();
@@ -57,11 +69,18 @@ public abstract class BasicLayer implements Layer {
         return result;
     }
     
-    public String toString() {
-        return "B";
-    }
+    /**
+     * For debuging purpose
+     * Return the string indicating the type of the layer
+     */
+    public abstract String getTypeString();
+    
+    /**
+     * For debuging purpose:
+     * return a string indicating the structure of the layers below it in a tree
+     */
     public String toTreeString() {
-        String treeString = "("+ this.toString();
+        String treeString = "("+ this.getTypeString();
         if (inLayers.size() > 0) {
             treeString += " ";
             for (Layer child : inLayers)

@@ -5,6 +5,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
+import neural.function.ActivationFunction;
+import neural.function.ObjectiveFunction;
+import neural.layer.HiddenLayer;
+import neural.layer.Layer;
+import neural.layer.OutputLayer;
+import neural.layer.ProjectionLayer;
+
 import org.ejml.simple.SimpleMatrix;
 
 import tree.Tree;

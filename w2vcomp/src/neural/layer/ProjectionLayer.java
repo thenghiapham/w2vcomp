@@ -1,10 +1,19 @@
-package neural;
+package neural.layer;
+
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.exception.IllegalOperationException;
 
-
+/**
+ * Projection layer
+ *    - the output of this layer is identical to the input
+ *    - the gradient of this layer is identical to the error back-propagated 
+ *      from the out-coming layers
+ *    - cannot have in-coming layers
+ * @author thenghiapham
+ *
+ */
 public class ProjectionLayer extends BasicLayer implements Layer{
 
     protected SimpleMatrix vector;
@@ -44,7 +53,8 @@ public class ProjectionLayer extends BasicLayer implements Layer{
         throw new IllegalOperationException("Cannot add inLayer to a ProjectionLayer");
     }
     
-    public String toString() {
+    @Override
+    public String getTypeString() {
         return "P";
     }
 }

@@ -1,6 +1,6 @@
 package composition;
 
-import neural.ActivationFunction;
+import neural.function.ActivationFunction;
 
 import org.ejml.simple.SimpleMatrix;
 

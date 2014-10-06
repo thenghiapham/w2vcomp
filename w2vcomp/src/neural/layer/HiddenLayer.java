@@ -1,9 +1,22 @@
-package neural;
+package neural.layer;
+
+import neural.function.ActivationFunction;
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
 
+/**
+ * HiddenLayer:
+ * - in-coming layers can be
+ *     + projection layer
+ *     + hidden layer
+ * + out-coming layer can be
+ *     + hidden layer
+ *     + output layer
+ * @author thenghiapham
+ *
+ */
 public class HiddenLayer extends BasicLayer implements Layer{
     
     protected SimpleMatrix inputWeights;
@@ -23,6 +36,11 @@ public class HiddenLayer extends BasicLayer implements Layer{
     
     @Override
     public void forward() {
+        /*
+         * - combine the input from the in-coming layers
+         * - multiply with weight matrix with the input vector (z_i)
+         * - apply activation function if exist (a_i)
+         */
         input = getInLayerIntput();
         tempZ = inputWeights.mult(input);
         if (activation != null) 
@@ -33,6 +51,11 @@ public class HiddenLayer extends BasicLayer implements Layer{
     
     @Override
     public void backward() {
+        /*
+         * typical backward formula
+         * - computing both gradient of the weights and backward error for the
+         *   incoming layers
+         */
         SimpleMatrix parentError = getOutLayerError();
         if (parentError == null) return;
         if (activation != null) {
@@ -40,12 +63,6 @@ public class HiddenLayer extends BasicLayer implements Layer{
         }
         gradient = parentError.mult(input.transpose());
         error = inputWeights.transpose().mult(parentError);
-    }
-    
-
-
-    public SimpleMatrix getInput() {
-        return input;
     }
     
     @Override
@@ -58,6 +75,7 @@ public class HiddenLayer extends BasicLayer implements Layer{
         else return null;
     }
     
+    @Override
     public SimpleMatrix getGradient() {
         return gradient;
     }
@@ -67,7 +85,8 @@ public class HiddenLayer extends BasicLayer implements Layer{
         return output;
     }
     
-    public String toString() {
+    @Override
+    public String getTypeString() {
         return "H";
     }
 }

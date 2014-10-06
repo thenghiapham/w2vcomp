@@ -2,6 +2,9 @@ package neural;
 
 import java.util.Random;
 
+import neural.function.NegativeSamplingObjective;
+import neural.function.ObjectiveFunction;
+
 import org.ejml.simple.SimpleMatrix;
 
 import vocab.Vocab;
