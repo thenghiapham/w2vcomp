@@ -212,6 +212,11 @@ public class CompositionMatrices {
     
     /**GROUP OF UPDATING METHODS***/
     
+    /**
+     * synchorized-ish method
+     * @param index
+     * @param delta
+     */
     protected void updateConstructionGroup(int index, SimpleMatrix delta) {
         // TODO: review this
         synchronized (keys[index]) {
@@ -229,6 +234,7 @@ public class CompositionMatrices {
         updateConstructionGroup(index, gradient.scale(learningRate));
     }
     
+    /**SAVE LOAD METHODS**/
     /**
      * 
      * @param constructionIndices
@@ -260,6 +266,14 @@ public class CompositionMatrices {
         }
     }
     
+    /**
+     * Saving all the info & data  into a stream in 2 steps
+     * - save the constructions + construction groups
+     * - save the matrix with group's name as id
+     * @param outputStream
+     * @param binary
+     * @throws IOException
+     */
     public void saveConstructionMatrices(BufferedOutputStream outputStream, boolean binary) throws IOException{
         outputStream.write(("" + constructionMap.keySet().size() + "\n").getBytes());
         for (String construction : constructionMap.keySet()) {
@@ -272,6 +286,14 @@ public class CompositionMatrices {
         }
     }
     
+    /**
+     * Load all the info & data from a stream in 2 steps
+     * - load the constructions + construction groups
+     * - load the matrix with group's name as id
+     * @param outputStream
+     * @param binary
+     * @throws IOException
+     */
     public static CompositionMatrices loadConstructionMatrices(BufferedInputStream inputStream, boolean binary) throws IOException{
         int constructionNumber = Integer.parseInt(IOUtils.readWord(inputStream));
         HashMap<String, String> constructionMap = new HashMap<>();
@@ -295,6 +317,7 @@ public class CompositionMatrices {
         return new CompositionMatrices(groupMap, constructionMap, compositionMatrices);
     }
     
+    /**GET SET METHODS**/
     public void setWeightDecay(double weightDecay) {
         this.weightDecay = weightDecay;
     }
