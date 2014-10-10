@@ -207,7 +207,7 @@ public class TreeNetwork {
         for (Layer layer: hiddenLayers) {
             hiddenGradients.add(layer.getGradient());
         }
-        hiddenBuilder.updateConstructions(compositionMatrixIndices, hiddenGradients, learningRate);
+        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate);
         
         for (int i = 0; i < outputLayers.size(); i++) {
             outputBuilder.updateMatrix(outVectorIndices.get(i), 

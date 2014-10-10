@@ -212,18 +212,30 @@ public class CompositionMatrices {
     
     /**GROUP OF UPDATING METHODS***/
     
-    protected void updateSingleConstruction(int index, SimpleMatrix gradient) {
+    protected void updateConstructionGroup(int index, SimpleMatrix delta) {
         // TODO: review this
         synchronized (keys[index]) {
-            compositionMatrices[index] = compositionMatrices[index].minus(gradient);
+            compositionMatrices[index] = compositionMatrices[index].minus(delta);
         }
     }
     
-    public void updateConstruction(int index, SimpleMatrix gradient, double learningRate) {
-        updateSingleConstruction(index, gradient.scale(learningRate));
+    /**
+     * Update the matrix of a construction group
+     * @param index: the index of the matrix
+     * @param gradient
+     * @param learningRate
+     */
+    protected void updateConstructionGroup(int index, SimpleMatrix gradient, double learningRate) {
+        updateConstructionGroup(index, gradient.scale(learningRate));
     }
     
-    public void updateConstructions(ArrayList<Integer> constructionIndices, ArrayList<SimpleMatrix> gradients, double learningRate) {
+    /**
+     * 
+     * @param constructionIndices
+     * @param gradients
+     * @param learningRate
+     */
+    public void updateMatrices(ArrayList<Integer> constructionIndices, ArrayList<SimpleMatrix> gradients, double learningRate) {
         HashMap<Integer, SimpleMatrix> gradientMap = new HashMap<>();
         HashMap<Integer, Integer> weightDecayTimes = new HashMap<>();
         int gradientNum = gradients.size();
@@ -244,7 +256,7 @@ public class CompositionMatrices {
             if (learningRate != 0) {
                 gradient = gradient.plus(compositionMatrices[key].scale(weightDecayTimes.get(key) * weightDecay));
             }
-            updateSingleConstruction(key, gradient.scale(learningRate));
+            updateConstructionGroup(key, gradient.scale(learningRate));
         }
     }
     
