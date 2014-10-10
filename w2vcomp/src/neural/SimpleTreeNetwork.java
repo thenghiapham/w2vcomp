@@ -13,6 +13,13 @@ import org.ejml.simple.SimpleMatrix;
 
 import tree.Tree;
 
+/**
+ * This class represent a tree neural network for composing phrase vectors
+ * It simplifies available code of TreeNetwork by removing code used in learning
+ * constructions' matrices and word vector representations
+ * @author pham
+ *
+ */
 public class SimpleTreeNetwork {
     
     protected Tree parseTree;

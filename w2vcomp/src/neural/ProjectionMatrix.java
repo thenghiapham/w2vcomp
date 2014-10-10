@@ -60,12 +60,10 @@ public class ProjectionMatrix {
         return new ProjectionMatrix(vocab, new SimpleMatrix(outVectors));
     }
     
-    // TODO: initialize with zero
     public static ProjectionMatrix zeroInitialize(Vocab vocab, int hiddenLayerSize) {
         return new ProjectionMatrix(vocab, new SimpleMatrix(vocab.getVocabSize() + 1, hiddenLayerSize));
     }
     
-    // TODO: initialize with saved matrix
     public static ProjectionMatrix initializeFromMatrix(Vocab vocab, SimpleMatrix saveMatrix) {
         if (vocab.getVocabSize() != saveMatrix.numRows() - 1)
             throw new ValueException("the matrix should have one column for unknown world");

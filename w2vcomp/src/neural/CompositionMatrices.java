@@ -14,11 +14,24 @@ import org.ejml.simple.SimpleMatrix;
 import common.IOUtils;
 import common.SimpleMatrixUtils;
 
+/**
+ * This class takes care of the matrices for all the constructions
+ * Each construction (eg. NP JJ NN) belong to a group of constructions.
+ * Each matrix corresponds to one group of constructions, and is used in 
+ * composing phrases' vectors that belong to that group.
+ * Any construction that does not belong to any group is mapped to the
+ * "default" group. The matrix for the default group can:
+ * - either be fixed (identity)
+ * - or learnt
+ * @author pham
+ *
+ */
 public class CompositionMatrices {
     public static final String DEFAULT_STRING = "default";
+    public static final double DEFAULT_WEIGHT_DECAY = 1e-4;
     protected SimpleMatrix[] compositionMatrices;
 
-    // key for synchorizing
+    // key for synchorizing when updating a specific matrix
     protected Integer[] keys;
     
     // map from contruction to construction's group id
@@ -31,6 +44,14 @@ public class CompositionMatrices {
     // weight decay for learning
     protected double weightDecay = 1e-4;
     
+    /****GROUP OF CONSTRUCTORS AND INITIALIZATION METHOD*/
+    
+    /**
+     * protected constructor: cannot be called outside of the class (or subclass)
+     * @param groupMap
+     * @param constructionMap
+     * @param compositionMatrices
+     */
     protected CompositionMatrices(HashMap<String, Integer> groupMap, 
             HashMap<String, String> constructionMap, 
             SimpleMatrix[] compositionMatrices) {
@@ -43,8 +64,18 @@ public class CompositionMatrices {
         }
     }
     
+    /**
+     * create an instance of CompositionMatrices with randomly initialization 
+     * for all the matrices for all the constructions
+     * The index of the matrix of the group starts at 1, since 0 is where
+     * the matrix of the "default" group is
+     * @param constructionMap: a map that maps each construction into a group
+     * @param hiddenLayerSize: the size of the vectors
+     * @return an instance CompositionMatrices
+     */
     public static CompositionMatrices randomInitialize(HashMap<String, String> constructionMap, 
             int hiddenLayerSize) {
+        // create the set of groups
         HashSet<String> groups = new HashSet<String>();
         if (constructionMap != null) {
             for (String key: constructionMap.keySet()) {
@@ -57,10 +88,12 @@ public class CompositionMatrices {
             constructionMap = new HashMap<String, String>();
         }
         
-        
+        // create the array of matrices and a map to map from group to matrix index
         List<String> constructions = new ArrayList<String>(groups); 
-        HashMap<String, Integer> groupMap= new HashMap<>();
         SimpleMatrix[] compositionMatrices = new SimpleMatrix[constructions.size() + 1];
+        HashMap<String, Integer> groupMap= new HashMap<>();
+        
+        // initialize the matrices & fill in the map
         int index = 0;
         compositionMatrices[index] = createRandomMatrix(hiddenLayerSize);
         groupMap.put(DEFAULT_STRING, 0);
@@ -72,6 +105,15 @@ public class CompositionMatrices {
         return new CompositionMatrices(groupMap, constructionMap, compositionMatrices);
     }
     
+    /**
+     * create an instance of CompositionMatrices with identity-initialization 
+     * for all the matrices for all the constructions
+     * The index of the matrix of the group starts at 1, since 0 is where
+     * the matrix of the "default" group is
+     * @param constructionMap: a map that maps each construction into a group
+     * @param hiddenLayerSize: the size of the vectors
+     * @return an instance CompositionMatrices
+     */
     public static CompositionMatrices identityInitialize(HashMap<String, String> constructionMap, 
             int hiddenLayerSize) {
         HashSet<String> groups = new HashSet<String>();
@@ -102,6 +144,12 @@ public class CompositionMatrices {
         return new CompositionMatrices(groupMap, constructionMap, compositionMatrices);
     }
     
+    /**
+     * create a random n x 2n matrix
+     * the values in the matrix are uniformly distributed in the range [-0.5/n, 0.5/n]
+     * @param hiddenLayerSize: n
+     * @return
+     */
     protected static SimpleMatrix createRandomMatrix(int hiddenLayerSize) {
         Random random = new Random();
         SimpleMatrix randomMatrix1 = SimpleMatrix.random(hiddenLayerSize, hiddenLayerSize, - 0.5, 0.5, random);
@@ -109,32 +157,60 @@ public class CompositionMatrices {
         return SimpleMatrixUtils.hStack(randomMatrix1, randomMatrix2).scale(1 / hiddenLayerSize);
     }
     
+    /**
+     * create a n x 2n matrix where its two halves are identity matrices
+     * @param hiddenLayerSize
+     * @return
+     */
     public static SimpleMatrix createIdentityMatrix(int hiddenLayerSize) {
         SimpleMatrix identity = SimpleMatrix.identity(hiddenLayerSize);
         return SimpleMatrixUtils.hStack(identity, identity);
     }
     
+    
+    /**GROUP OF METHODS TO RETRIEVE THE MATRIX FOR THE CONSTRUCTIONS****/
+    
+    /**
+     * retrieve the composition matrix from the index
+     * @param constructionIndex
+     * @return
+     */
     public SimpleMatrix getCompositionMatrix(int constructionIndex) {
         return compositionMatrices[constructionIndex];
     }
     
+    
+    /**
+     * Retrieve the index of the construction group for a construction
+     * @param construction
+     * @return
+     */
     public int getConstructionIndex(String construction) {
         if (constructionMap.containsKey(construction)) {
             return groupMap.get(constructionMap.get(construction));
         } else {
-            // default
+            // unknown construction -> default group
             return groupMap.get(DEFAULT_STRING);
         }
     }
     
+    /**
+     * Retrieve the composition matrix for a construction
+     * (It is the combination of the above two methods)
+     * @param construction
+     * @return
+     */
     public SimpleMatrix getCompositionMatrix(String construction) {
         if (constructionMap.containsKey(construction)) {
             return compositionMatrices[groupMap.get(constructionMap.get(construction))];
         } else {
-            // default construction
+            // unknown construction -> default group
             return compositionMatrices[groupMap.get(DEFAULT_STRING)];
         }
     }
+    
+    
+    /**GROUP OF UPDATING METHODS***/
     
     protected void updateSingleConstruction(int index, SimpleMatrix gradient) {
         // TODO: review this
@@ -172,10 +248,6 @@ public class CompositionMatrices {
         }
     }
     
-    public void setWeightDecay(double weightDecay) {
-        this.weightDecay = weightDecay;
-    }
-    
     public void saveConstructionMatrices(BufferedOutputStream outputStream, boolean binary) throws IOException{
         outputStream.write(("" + constructionMap.keySet().size() + "\n").getBytes());
         for (String construction : constructionMap.keySet()) {
@@ -209,5 +281,9 @@ public class CompositionMatrices {
             compositionMatrices[i] = new SimpleMatrix(IOUtils.readMatrix(inputStream, binary));
         }
         return new CompositionMatrices(groupMap, constructionMap, compositionMatrices);
+    }
+    
+    public void setWeightDecay(double weightDecay) {
+        this.weightDecay = weightDecay;
     }
 }
