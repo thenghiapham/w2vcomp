@@ -102,29 +102,47 @@ public class TreeNetwork {
         
         HashMap<Tree, Layer> layerMap = new HashMap<>();
         
+        // create a list of node in the parse Tree
+        // from bottom to top
         ArrayList<Tree> reverseNodeList = parseTree.allNodes();
         Collections.reverse(reverseNodeList);
+        
+        
+        // creating projection layers &  hidden layers
+        // corresponding to each node in the parse tree
+        // from child nodes to parent nodes
         for (Tree node: reverseNodeList) {
             Layer layer = null;
             if (node.isPreTerminal()) {
+                // create projection layers at the preterminal nodes
                 Tree terminalChild = node.getChildren().get(0);
                 String word = terminalChild.getRootLabel();
                 int wordIndex = projectionBuilder.getWordIndex(word);
                 SimpleMatrix vector = projectionBuilder.getVector(word);
+                
                 layer = new ProjectionLayer(vector);
                 network.addProjectionLayer((ProjectionLayer) layer, wordIndex);
             } else if (node.isTerminal()) {
-                
+                // do nothing for terminal nodes
             } else {
+                // only create the hidden layer for nodes that has a certain height
+                // (i.e. nodes that will be attached to an output layer)
                 if (outputLayerHeight == -1 || node.getHeight() <= outputLayerHeight) {
                     ArrayList<Tree> children = node.getChildren();
                     if (children.size() == 1) {
+                        // if the node has one child (type raising, etc)
+                        // map the node's layer to the child's layer
                         layer = layerMap.get(children.get(0));
                     } else {
+                        // if a node has >= 2 children (2 in binary tree)
+                        // create a new layer
+                        // attach its childen' layers to the new layer as input
+                        // the input weight matrix is taken from the corresponding
+                        // construction
                         String construction = node.getConstruction();
-//                        System.out.println(construction);
                         SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
                         int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
+                        
                         layer = new HiddenLayer(weights, hiddenLayerActivation);
                         for (Tree child: children) {
                             Layer childLayer = layerMap.get(child);
@@ -138,7 +156,8 @@ public class TreeNetwork {
             if (layer != null)
                 layerMap.put(node, layer);
         }
-        // TODO:?
+        
+        // add the output layers to the suitable layers
         network.setLayerMap(layerMap);
         network.addOutputLayers(outputBuilder, outputLayerActivation, maxWindowSize, outputLayerHeight, allLevel, lexical);
         return network;
@@ -146,12 +165,14 @@ public class TreeNetwork {
     
     protected void addOutputLayers(LearningStrategy outputBuilder, ActivationFunction outputLayerActivation, int maxWindowSize, 
             int outputLayerHeight, boolean allLevel, boolean lexical) {
+
+        // get the 
         String[] sentence = parseTree.getSurfaceWords();
         Random random = new Random();
+
+        // going through the nodes that have a projection layer or hidden layer 
         for (Tree node: layerMap.keySet()) {
-            // TODO: changable here to 1 if one to include Mikolov's skipgram
             int height = node.getHeight();
-            
             if (height >= 1 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
                 if (!allLevel && (height != outputLayerHeight || (outputLayerHeight == -1 && node != parseTree))) {
                     continue;

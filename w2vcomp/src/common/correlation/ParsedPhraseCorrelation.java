@@ -54,11 +54,11 @@ public class ParsedPhraseCorrelation{
             String surfacePhrase1 = Tree.fromPennTree(phrase1).getSurfaceString();
             String surfacePhrase2 = Tree.fromPennTree(phrase2).getSurfaceString();
             surfacePhrasePairs[i][0] = surfacePhrase1;
-            surfacePhrasePairs[i][0] = surfacePhrase2;
+            surfacePhrasePairs[i][1] = surfacePhrase2;
             parsePhraseSet.add(phrase1);
             parsePhraseSet.add(phrase2);
             surfacePhraseSet.add(surfacePhrase1);
-            surfacePhraseSet.add(surfacePhrase1);
+            surfacePhraseSet.add(surfacePhrase2);
             golds[i] = Double.parseDouble(elements[2]);
         }
         parseCorrelation = new MenCorrelation(parsePhrasePairs, golds);
@@ -133,8 +133,8 @@ public class ParsedPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp2tft", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin2tft");
+        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp2ttt", true);
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin2ttt");
         WeightedAdditive add = new WeightedAdditive();
         ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation("/home/thenghiapham/work/project/mikolov/sick/postprocessed/SICK_train_trial.txt");
         System.out.println("an add: " + sickCorrelation.evaluateSpacePearson(space, add));

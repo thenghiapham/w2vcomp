@@ -24,9 +24,11 @@ import vocab.Vocab;
  */
 public class ProjectionMatrix {
     // TODO: handling unknown word?
-    //       either: learn it, assign zero, or return zero vector? 
+    //       either: assign zero, don't update? 
+    // for now, zero vector, don't use unknow word
     protected HashMap<String, Integer> dictionary;
     protected SimpleMatrix vectors;
+    protected SimpleMatrix zeroVector;
     
     protected ProjectionMatrix(Vocab vocab, SimpleMatrix vectors) {
         this.dictionary = new HashMap<>();
@@ -34,12 +36,14 @@ public class ProjectionMatrix {
             this.dictionary.put(vocab.getEntry(i).word, i);
         }
         this.vectors = vectors;
+        zeroVector = new SimpleMatrix(1, vectors.numCols());
     }
     
     
     protected ProjectionMatrix(HashMap<String, Integer> dictionary, SimpleMatrix vectors) {
         this.dictionary = dictionary;
         this.vectors = vectors;
+        zeroVector = new SimpleMatrix(1, vectors.numCols());
     }
     
     /**
@@ -65,8 +69,8 @@ public class ProjectionMatrix {
     }
     
     public static ProjectionMatrix initializeFromMatrix(Vocab vocab, SimpleMatrix saveMatrix) {
-        if (vocab.getVocabSize() != saveMatrix.numRows() - 1)
-            throw new ValueException("the matrix should have one column for unknown world");
+        if (vocab.getVocabSize() != saveMatrix.numRows())
+            throw new ValueException("the matrix should have one column for unknown word");
         return new ProjectionMatrix(vocab, saveMatrix);
     }
     
@@ -84,7 +88,7 @@ public class ProjectionMatrix {
         if (wordIndex <= -2 || wordIndex >= dictionary.size())
             return result;
         else if (wordIndex == -1)
-            result = vectors.extractVector(true, dictionary.size());
+            result = zeroVector;
         else
             result = vectors.extractVector(true, wordIndex);
         return result.transpose();
