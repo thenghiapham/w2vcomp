@@ -16,20 +16,43 @@ import org.ejml.simple.SimpleMatrix;
 
 import tree.Tree;
 
+/**
+ * TreeNetwork class
+ * creates a neural network from a parse tree
+ * 
+ * @author pham
+ *
+ */
 public class TreeNetwork {
     protected Tree parseTree;
+    
+    /*
+     * layers in the local network 
+     */
     protected ArrayList<ProjectionLayer> projectionLayers;
     protected ArrayList<HiddenLayer> hiddenLayers;
     protected ArrayList<OutputLayer> outputLayers;
+    
+    /*
+     * indices of the matrices, vectors to update
+     */
     protected ArrayList<Integer> compositionMatrixIndices;
     protected ArrayList<Integer> inputVectorIndices;
     protected ArrayList<int[]> outVectorIndices;
     
+    /*
+     * references to global data 
+     */
     protected ProjectionMatrix projectionBuilder;
     protected CompositionMatrices hiddenBuilder;
     protected LearningStrategy outputBuilder;
     HashMap<Tree, Layer> layerMap;
     
+    /**
+     * Constructor
+     * Create an empty network
+     * @param parseTree
+     */
     protected TreeNetwork(Tree parseTree) {
         this.parseTree = parseTree;
         projectionLayers = new ArrayList<>();
@@ -41,18 +64,39 @@ public class TreeNetwork {
         
     }
     
-    
+    /**
+     * Creating a neural network from global data & the parse tree
+     *   - build the layers bottom up (until a certain level)
+     *   - add the output layers to all the hidden layers (and projection layers) 
+     * @param parseTree
+     * @param projectionBuilder
+     * @param hiddenBuilder
+     * @param outputBuilder
+     * @param hiddenLayerActivation
+     * @param outputLayerActivation
+     * @param maxWindowSize: window size
+     * @param outputLayerHeight
+     * @param allLevel
+     * @param lexical
+     * @return
+     * TODO: add condition for adding surrounding context
+     * (just a matter of adding previous & next sentence as Strings)
+     */
     public static TreeNetwork createNetwork(Tree parseTree, ProjectionMatrix projectionBuilder, 
             CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
             int maxWindowSize, int outputLayerHeight, boolean allLevel, boolean lexical) {
         
+        // setting global references
         TreeNetwork network = new TreeNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
         network.outputBuilder = outputBuilder;
         
-        
+        // adding information about height 
+        // & position (left and right position) in the sentence
+        // to each node of the parse tree
+        // TODO: unit test here
         parseTree.updateHeight();
         parseTree.updatePosition(0);
         
