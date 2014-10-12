@@ -30,6 +30,17 @@ public class LogUtils {
         fileTxt.setFormatter(formatterTxt);
         rootLogger.addHandler(fileTxt);
 
-      }
+    }
+    
+    static public void logToConsole(Level level) throws IOException {
+
+        // set the level
+        Logger rootLogger = Logger.getLogger("");
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(new SimpleFormatter());
+        handler.setLevel(level);
+        rootLogger.addHandler(handler);
+        rootLogger.log(Level.INFO, "Start logging");
+    }
 
 }

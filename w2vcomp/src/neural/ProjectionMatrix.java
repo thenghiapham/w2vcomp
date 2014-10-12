@@ -216,4 +216,5 @@ public class ProjectionMatrix {
     public int getVectorSize() {
         return vectors.numCols();
     }
+    
 }

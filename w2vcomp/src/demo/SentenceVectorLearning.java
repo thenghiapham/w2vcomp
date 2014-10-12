@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import common.IOUtils;
 import common.LogUtils;
@@ -21,24 +22,24 @@ import demo.TestConstants;
 
 public class SentenceVectorLearning {
     public static void main(String[] args) throws IOException{
-        int hiddenLayerSize = 40;
+//        LogUtils.logToConsole(Level.ALL);
+        int hiddenLayerSize = 10;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 3;
+        int phraseLevel = 2;
         boolean allLevel = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
         IOUtils.printConstructions(constructionGroups);
         Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
-                //hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel, 
-                hierarchialSoftmax, negativeSampling, subSampling, null, phraseLevel,
-                allLevel, false, TestConstants.S_MEN_FILE);
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel, 
+//                hierarchialSoftmax, negativeSampling, subSampling, null, phraseLevel,
+                allLevel, true, TestConstants.S_MEN_FILE);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
-//        String initFile = TestConstants.S_INITIALIZATION_FILE;
         String logFile = TestConstants.S_LOG_FILE;
         LogUtils.setup(logFile);
         

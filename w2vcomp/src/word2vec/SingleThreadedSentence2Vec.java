@@ -108,6 +108,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         // TODO Auto-generated method stub
         if (men != null) {
             LOGGER.log(Level.INFO, "men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
+            System.out.println("men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
         }
         LOGGER.log(Level.INFO, "norm comp: " + compositionMatrices.getCompositionMatrix("blah").normF());
         LOGGER.log(Level.INFO, "norm proj: " + projectionMatrix.getMatrix().normF());

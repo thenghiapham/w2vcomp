@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import neural.function.ActivationFunction;
 import neural.function.ObjectiveFunction;
@@ -24,6 +26,8 @@ import tree.Tree;
  *
  */
 public class TreeNetwork {
+    private static final Logger LOGGER = Logger.getLogger(TreeNetwork.class.getName());
+    
     protected Tree parseTree;
     
     /*
@@ -47,6 +51,10 @@ public class TreeNetwork {
     protected CompositionMatrices hiddenBuilder;
     protected LearningStrategy outputBuilder;
     HashMap<Tree, Layer> layerMap;
+    
+    // for debuging
+    // TODO: remove
+    HashMap<Layer, Tree> treeMap;
     
     /**
      * Constructor
@@ -86,7 +94,8 @@ public class TreeNetwork {
             CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
             int maxWindowSize, int outputLayerHeight, boolean allLevel, boolean lexical) {
-        
+//        LOGGER.log(Level.FINE, parseTree.toPennTree());
+//        System.out.println("parse tree: " + parseTree.toPennTree());
         // setting global references
         TreeNetwork network = new TreeNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
@@ -101,6 +110,9 @@ public class TreeNetwork {
         parseTree.updatePosition(0);
         
         HashMap<Tree, Layer> layerMap = new HashMap<>();
+        
+        //TODO: remove
+        HashMap<Layer, Tree> treeMap = new HashMap<>();
         
         // create a list of node in the parse Tree
         // from bottom to top
@@ -153,13 +165,22 @@ public class TreeNetwork {
                     }
                 }
             }
-            if (layer != null)
+            if (layer != null) {
                 layerMap.put(node, layer);
+                
+                //TODO: remove
+                treeMap.put(layer, node);
+            }
+                
         }
         
         // add the output layers to the suitable layers
         network.setLayerMap(layerMap);
         network.addOutputLayers(outputBuilder, outputLayerActivation, maxWindowSize, outputLayerHeight, allLevel, lexical);
+        
+        //TODO: remove
+        network.treeMap = treeMap;
+        
         return network;
     }
     
@@ -299,6 +320,11 @@ public class TreeNetwork {
         for (int i = 0; i < projectionLayers.size(); i++) {
             int wordIndex = inputVectorIndices.get(i);
             SimpleMatrix gradient = projectionLayers.get(i).getGradient();
+            if (gradient == null) {
+//                System.out.println(" empty " + treeMap.get(projectionLayers.get(i)).toPennTree());
+                //LOGGER.log(Level.FINE, treeMap.get(projectionLayers.get(i)).toPennTree());
+                continue;
+            }
             projectionBuilder.updateVector(wordIndex, 
                     gradient, learningRate);
         }
