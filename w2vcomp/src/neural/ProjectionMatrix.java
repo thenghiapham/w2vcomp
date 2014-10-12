@@ -14,6 +14,7 @@ import common.exception.ValueException;
 
 import vocab.Vocab;
 
+
 /**
  * This class takes care of
  * - keeping vector representation of words
@@ -30,6 +31,12 @@ public class ProjectionMatrix {
     protected SimpleMatrix vectors;
     protected SimpleMatrix zeroVector;
     
+    /**
+     * protected constructors, forcing users to use the static methods to 
+     * instantiate an object
+     * @param vocab
+     * @param vectors
+     */
     protected ProjectionMatrix(Vocab vocab, SimpleMatrix vectors) {
         this.dictionary = new HashMap<>();
         for (int i = 0; i < vocab.getVocabSize(); i++) {
@@ -47,7 +54,7 @@ public class ProjectionMatrix {
     }
     
     /**
-     * 
+     * create a projection matrix with randomly initialized the vectors
      * @param vocab
      * @param hiddenLayerSize
      * @return
@@ -64,28 +71,54 @@ public class ProjectionMatrix {
         return new ProjectionMatrix(vocab, new SimpleMatrix(outVectors));
     }
     
+    /**
+     * create a projection matrix with the vectors initialized as zero
+     * @param vocab
+     * @param hiddenLayerSize
+     * @return
+     */
     public static ProjectionMatrix zeroInitialize(Vocab vocab, int hiddenLayerSize) {
         return new ProjectionMatrix(vocab, new SimpleMatrix(vocab.getVocabSize() + 1, hiddenLayerSize));
     }
     
+    /**
+     * create a projection matrix with saved vectors 
+     * @param vocab
+     * @param saveMatrix
+     * @return
+     */
     public static ProjectionMatrix initializeFromMatrix(Vocab vocab, SimpleMatrix saveMatrix) {
         if (vocab.getVocabSize() != saveMatrix.numRows())
             throw new ValueException("the matrix should have one column for unknown word");
         return new ProjectionMatrix(vocab, saveMatrix);
     }
     
+    
+    /**METHODS FOR EXTRACTING A VECTOR**/
+    
+    /**
+     * Extracting a vector for a word in the vocabulary
+     * If the word is not in the vocabulary, return the zero vector
+     * @param word
+     * @return
+     */
     public SimpleMatrix getVector(String word) {
         
         int wordIndex = getWordIndex(word);
-        // TODO: transpose all?
-        // what about unknown word here
         return getVector(wordIndex); 
     }
     
+    
+    /**
+     * Extracting a vector for a word using the word index
+     * If the word index is -1 return zero vector
+     * @param word
+     * @return
+     */
     public SimpleMatrix getVector(int wordIndex) {
         // TODO: null or zeros?
         SimpleMatrix result = null;
-        if (wordIndex <= -2 || wordIndex >= dictionary.size())
+        if (wordIndex >= dictionary.size())
             return result;
         else if (wordIndex == -1)
             result = zeroVector;
@@ -94,6 +127,12 @@ public class ProjectionMatrix {
         return result.transpose();
     }
     
+    /**
+     * Get the index in the vocabulary of a word
+     * return -1 if the word is not in the vocabulary
+     * @param word
+     * @return
+     */
     public int getWordIndex(String word) {
         if (dictionary.containsKey(word))
             return dictionary.get(word);
@@ -101,47 +140,60 @@ public class ProjectionMatrix {
             return -1;
     }
     
-    // synchronize??
-    // maybe not as neccessary as synchronizing the composition matrix
+    // TODO: considering synchronizing for parallelizing
+    /**
+     * Update the vector for a word (using its index) with a gradient & a learning rate
+     * (it is called while learning with compomik)
+     * @param wordIndex
+     * @param gradient
+     * @param learningRate
+     */
     protected void updateVector(int wordIndex, SimpleMatrix gradient, 
             double learningRate) {
 
-//        String word;
         if (wordIndex == -1) {
-//            word = "default";
-            wordIndex = dictionary.size();
-        } else {
-//            word = vocab.getEntry(wordIndex).word;
+            // don't update the zero vector
+            return;
         }
         
         SimpleMatrix originalRow = vectors.extractVector(true, wordIndex);
         if (gradient == null) {
-//            System.out.println(word + " null");
-            return;
+            throw new ValueException("Gradient cannot be null");
         } else {
             gradient = gradient.transpose();
         }
-//        System.out.println(word + " not_null");
+        // scale with learning rate
+        // subtract the vector with the gradient
+        // assign back the vector
         gradient = gradient.scale(learningRate);
         SimpleMatrix newRow = originalRow.minus(gradient);
         vectors.setRow(wordIndex, 0, newRow.getMatrix().getData());
-    
     }
     
-    //TODO: copy the matrix so that it won't be modified?
-    public SimpleMatrix getMatrix() {
-        return vectors;
-    }
     
+    /**
+     * Load a ProjectionMatrix instance from a file
+     * The data in a file should have this format
+     * - number of words (string), vector size (string)
+     * - [word (string), vector (list of float in binary), endline]
+     * @param inputStream
+     * @param binary
+     * @return
+     * @throws IOException
+     */
     public static ProjectionMatrix loadProjectionMatrix(BufferedInputStream inputStream, boolean binary) throws IOException{
-        // TODO: binary
+        // TODO: implement the case where binary = false
+        // for now, only consider binary = true
+        
+        // read the number of words & vector size
         int wordNumber = Integer.parseInt(IOUtils.readWord(inputStream));
         int vectorSize = Integer.parseInt(IOUtils.readWord(inputStream));
+        
+        // read every word and its corresponding vector
         byte[] rowData = new byte[vectorSize * 4];
         ByteBuffer buffer = ByteBuffer.wrap(rowData);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
-        HashMap<String, Integer> vocab = new HashMap<>();
-        // TODO: add unknown word?
+        HashMap<String, Integer> dictionary = new HashMap<>();
         SimpleMatrix vectors = new SimpleMatrix(wordNumber, vectorSize);
         for (int i = 0; i < wordNumber; i++) {
             String word = IOUtils.readWord(inputStream);
@@ -149,10 +201,16 @@ public class ProjectionMatrix {
             for (int j = 0; j < vectorSize; j++) {
                 vectors.set(i, j, buffer.getFloat(j * 4));
             }
-            vocab.put(word, i);
+            dictionary.put(word, i);
             inputStream.read();
         }
-        return new ProjectionMatrix(vocab, vectors);
+        return new ProjectionMatrix(dictionary, vectors);
+    }
+    
+    
+    /**GET SET METHODS**/
+    public SimpleMatrix getMatrix() {
+        return vectors;
     }
     
     public int getVectorSize() {
