@@ -184,39 +184,77 @@ public class TreeNetwork {
             
             Layer layer = layerMap.get(node);
             int windowSize = random.nextInt(maxWindowSize) + 1;
+            
+            // get the left and right position of the phrase
+            // pick k words to the left and k words to the right to train the phrase 
+            // (k = windowSize)
             for (int i = node.getLeftmostPosition() - windowSize; i <= node.getRightmostPosition() + windowSize; i++) {
                 if ((i >= 0 && i < sentence.length && (i < node.getLeftmostPosition() || i > node.getRightmostPosition()))) {
-                    // TODO: do something if word is not in Vocab
+                    
+                    // adding the output layers to the hidden/projection layer 
+                    // corresponding to the phrase 
                     int[] indices = outputBuilder.getOutputIndices(sentence[i]);
                     if (indices == null) continue;
                     SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
                     SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
+                    
                     ObjectiveFunction costFunction = outputBuilder.getCostFunction();
                     OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction);
                     outputLayer.addInLayer(layer);
                     layer.addOutLayer(outputLayer);
+                    
                     addOutputLayer(outputLayer, indices);
                 }
             }
         }
     }
     
+    
+    /**METHODS TO KEEP TRACK OF DIFFERENT TYPES OF LAYER**/
+    // This is necessary because layers of different types are used to
+    // update different components (projectionMatrix, compositionMatrix,
+    // and softmax/negativeSampling)
+    
+    /**
+     * keep track of the hidden layer
+     * @param layer
+     * @param compositionIndex
+     */
     public void addHiddenLayer(HiddenLayer layer, int compositionIndex) {
         hiddenLayers.add(layer);
         compositionMatrixIndices.add(compositionIndex);
     }
     
+    /**
+     * keep track of the projection layer
+     * @param layer
+     * @param compositionIndex
+     */
     public void addProjectionLayer(ProjectionLayer layer, int inputVectorIndex) {
         projectionLayers.add(layer);
         inputVectorIndices.add(inputVectorIndex);
     }
     
+    /**
+     * keep track of the output layer
+     * @param layer
+     * @param outVectorIndex
+     */
     public void addOutputLayer(OutputLayer layer, int[] outVectorIndex) {
         outputLayers.add(layer);
         outVectorIndices.add(outVectorIndex);
     }
     
     
+    /**METHODS FOR LEARNING**/
+    /**
+     * train the network with the parseTree
+     * it involves 3 steps
+     *   - forward (to compute output)
+     *   - backward (to back-propagate errors)
+     *   - update the weights
+     * @param learningRate
+     */
     public void learn(double learningRate) {
         forward();
         backward();
@@ -251,7 +289,13 @@ public class TreeNetwork {
         }
     }
     
+    /**
+     * Updating the global components
+     * @param learningRate
+     */
     public void update(double learningRate) {
+        
+        // updating the projection matrix
         for (int i = 0; i < projectionLayers.size(); i++) {
             int wordIndex = inputVectorIndices.get(i);
             SimpleMatrix gradient = projectionLayers.get(i).getGradient();
@@ -259,22 +303,26 @@ public class TreeNetwork {
                     gradient, learningRate);
         }
         
+        // updating the compositionMatrices
         ArrayList<SimpleMatrix> hiddenGradients = new ArrayList<>();
         for (Layer layer: hiddenLayers) {
             hiddenGradients.add(layer.getGradient());
         }
         hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate);
         
+        // updating the hierarchical softmax or the negative sampling layer
         for (int i = 0; i < outputLayers.size(); i++) {
             outputBuilder.updateMatrix(outVectorIndices.get(i), 
                     outputLayers.get(i).getGradient(), learningRate);
         }
     }
     
+    /**GET/SET METHODS**/
     protected void setLayerMap(HashMap<Tree, Layer> layerMap) {
         this.layerMap = layerMap;
     }
     
+    /**DEBUGGING METHODS**/
     public String toString() {
         // TODO: print the whole network here
         return "";//((BasicLayer) layerMap.get(parseTree)).toTreeString();
