@@ -173,38 +173,30 @@ public class TreeNetwork {
         // going through the nodes that have a projection layer or hidden layer 
         for (Tree node: layerMap.keySet()) {
             int height = node.getHeight();
-            if (height >= 1 && (outputLayerHeight == -1 || height <= outputLayerHeight)) {
-                if (!allLevel && (height != outputLayerHeight || (outputLayerHeight == -1 && node != parseTree))) {
+            
+            if (!allLevel) {
+                if (outputLayerHeight != -1 && height != outputLayerHeight)
                     continue;
-                } else if (height == 1 && !lexical) {
-                    continue;
-                } else {
-                    // TODO: put it back when doing preprocessing
-                    // two steps for pre-processing:
-                    // - putting the information to the terminal node
-                    // - removing one branch node
-                    Layer layer = layerMap.get(node);
-//                    if (layer instanceof ProjectionLayer) continue;
-//                    HiddenLayer hiddenLayer = (HiddenLayer) layer;
-                    int windowSize = random.nextInt(maxWindowSize) + 1;
-                    for (int i = node.getLeftmostPosition() - windowSize; i <= node.getRightmostPosition() + windowSize; i++) {
-                        if ((i >= 0 && i < sentence.length && (i < node.getLeftmostPosition() || i > node.getRightmostPosition()))) {
-                            // TODO: do something if word is not in Vocab
-                            int[] indices = outputBuilder.getOutputIndices(sentence[i]);
-                            if (indices == null) continue;
-                            SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
-                            SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
-                            ObjectiveFunction costFunction = outputBuilder.getCostFunction();
-                            OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction);
-                            outputLayer.addInLayer(layer);
-                            layer.addOutLayer(outputLayer);
-                            addOutputLayer(outputLayer, indices);
-                        }
-                    }
-                }
-                
+                if (!lexical && height == 1) continue;
             } else {
-                continue;
+                if (!lexical && height == 1) continue;
+            }
+            
+            Layer layer = layerMap.get(node);
+            int windowSize = random.nextInt(maxWindowSize) + 1;
+            for (int i = node.getLeftmostPosition() - windowSize; i <= node.getRightmostPosition() + windowSize; i++) {
+                if ((i >= 0 && i < sentence.length && (i < node.getLeftmostPosition() || i > node.getRightmostPosition()))) {
+                    // TODO: do something if word is not in Vocab
+                    int[] indices = outputBuilder.getOutputIndices(sentence[i]);
+                    if (indices == null) continue;
+                    SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
+                    SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
+                    ObjectiveFunction costFunction = outputBuilder.getCostFunction();
+                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction);
+                    outputLayer.addInLayer(layer);
+                    layer.addOutLayer(outputLayer);
+                    addOutputLayer(outputLayer, indices);
+                }
             }
         }
     }
@@ -226,7 +218,6 @@ public class TreeNetwork {
     
     
     public void learn(double learningRate) {
-//        System.out.println(this);
         forward();
         backward();
         update(learningRate);
@@ -285,6 +276,7 @@ public class TreeNetwork {
     }
     
     public String toString() {
+        // TODO: print the whole network here
         return "";//((BasicLayer) layerMap.get(parseTree)).toTreeString();
     }
     
