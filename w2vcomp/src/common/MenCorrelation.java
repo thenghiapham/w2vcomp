@@ -34,6 +34,12 @@ public class MenCorrelation {
 		readDataset(dataset);
 	}
 	
+	public MenCorrelation(String dataset, int field) {
+        pearson = new PearsonsCorrelation();
+        spearman = new SpearmansCorrelation();
+        readDataset(dataset,field);
+    }
+	
 	
 	public MenCorrelation(String[][] wordPairs, double[] golds) {
 	    pearson = new PearsonsCorrelation();
@@ -59,6 +65,24 @@ public class MenCorrelation {
 			golds[i] = Double.parseDouble(elements[2]);
 		}
 	}
+	
+	/**
+     * Read the word pairs and the gold standard from the dataset's
+     * field field
+     * @param dataset
+     */
+    public void readDataset(String dataset, int field) {
+        ArrayList<String> data = IOUtils.readFile(dataset);
+        golds = new double[data.size()];
+        wordPairs = new String[data.size()][2];
+        for (int i = 0; i < data.size(); i++) {
+            String dataPiece = data.get(i);
+            String elements[] = dataPiece.split("[ \t]+");
+            wordPairs[i][0] = elements[0];
+            wordPairs[i][1] = elements[1];
+            golds[i] = Double.parseDouble(elements[field]);
+        }
+    }
 	
 	/**
 	 * Compute the pearson correlation of the predicted values against the gold
@@ -101,9 +125,15 @@ public class MenCorrelation {
      */
 	public double evaluateSpaceSpearman(SemanticSpace space) {
         double[] predicts = new double[golds.length];
+        //int exists = 0;
+
         for (int i = 0; i < golds.length; i++) {
             predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
+            //if (predicts[i] == 0){
+            //    exists++;
+            //}
         }
+        //System.out.println(exists/ (double)golds.length+" are 0");
         return spearman.correlation(golds, predicts);
     }
 	

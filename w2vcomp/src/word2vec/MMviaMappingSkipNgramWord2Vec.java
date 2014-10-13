@@ -9,14 +9,14 @@ import vocab.Vocab;
 import vocab.VocabEntry;
 import io.word.Phrase;
 
-public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
-    public MMSkipNgramWord2Vec(int projectionLayerSize, int windowSize,
+public class MMviaMappingSkipNgramWord2Vec extends SingleThreadWord2Vec {
+    public MMviaMappingSkipNgramWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample);
     }
     
-    public MMSkipNgramWord2Vec(int projectionLayerSize, int windowSize,
+    public MMviaMappingSkipNgramWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages , double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample, menFile);
@@ -26,11 +26,12 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
         // train with the sentence
         double[] a1 = new double[projectionLayerSize];
         double[] a1error = new double[projectionLayerSize];
+        SimpleMatrix a2error = new SimpleMatrix(projectionLayerSize,projectionLayerSize);
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
         
         
-        boolean updateAtTheEnd=true;
+        boolean updateAtTheEnd=false;
         
         for (int wordPosition = 0; wordPosition < sentence.length; wordPosition++) {
 
@@ -49,8 +50,6 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
             int start = rand.nextInt(windowSize);
 
             VocabEntry targetWord = vocab.getEntry(wordIndex);
-            String percept =    targetWord.word;      
-            int jPerceptIndex = images.getIndex(percept);
             //modality 1
             for (int i = start; i < windowSize * 2 + 1 - start; i++) {
                 if (i != windowSize) {
@@ -93,7 +92,8 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
                                         * weights0[wordIndex][j];
                             }
                         }
-                    }                 
+                    }
+
                 }
                     
              }
@@ -102,20 +102,29 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
                 for (int j = 0; j < projectionLayerSize; j++) {
                     weights0[wordIndex][j] += a1error[j];
                     a1error[j] = 0;
-
                 }
+               
             }
         
-            /*************    FOR SECOND MODALITY   ****************/
-          
-            //if (jPerceptIndex==-1){
-             //   jPerceptIndex = lastImageUsed;
-           // }
+           
         
-            
+        
+            String percept =    targetWord.word;      
+            int jPerceptIndex = images.getIndex(percept);
        
             // NEGATIVE SAMPLING  
-            if (negativeSamplesImages > 0  && jPerceptIndex!=-1) {
+            if (negativeSamplesImages > 0 && jPerceptIndex!=-1) {
+                //map word vector
+                SimpleMatrix mapped_vector_row = (new SimpleMatrix(1,projectionLayerSize,false, weights0[wordIndex])).mult(imageProjectionLayer);
+                
+                //sum for rows for image projection layer
+                double[] cols = new double[projectionLayerSize];    
+                for (int j=0;j<projectionLayerSize;j++){
+                    cols[j] = 0;
+                    for (int i=0;i<projectionLayerSize;i++){
+                        cols[j] += imageProjectionLayer.get(i,j);
+                    }
+                }
                 
                 for (int l = 0; l < negativeSamplesImages + 1; l++) {
                     int target;
@@ -132,28 +141,22 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
                     }
                     double z2 = 0;
                     double gradient;
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        z2 += weights0[wordIndex][j]
-                            * negativeWeights1Images[target][j];
-                    }
+                    
+                    z2 =  mapped_vector_row.mult(new SimpleMatrix(projectionLayerSize,1,true, negativeWeights1Images[target])).get(0,0);
                     double a2 = sigmoidTable.getSigmoid(z2);
                     gradient = (double) ((label - a2) * alpha);
                     for (int j = 0; j < projectionLayerSize; j++) {
-                        
                         a1error[j] += gradient
-                            * negativeWeights1Images[target][j];
-                        
-                        
+                            * negativeWeights1Images[target][j] * cols[j];
                     }
-                    
+                    a2error.plus((new SimpleMatrix(projectionLayerSize,1,true, weights0[wordIndex]).mult(new SimpleMatrix(1,projectionLayerSize,true, negativeWeights1Images[target]))).scale(gradient));
                 }
-                lastImageUsed = jPerceptIndex;
+                imageProjectionLayer.plus(a2error);
             }
-
+                       
             // Learn weights input -> hidden
             for (int j = 0; j < projectionLayerSize; j++) {
                 weights0[wordIndex][j] += a1error[j];
-                
             }
         
         }

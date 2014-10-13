@@ -85,6 +85,9 @@ public class SVDFusion {
     public static void main(String[] args) {
         
         MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);
+        MenCorrelation sim999 = new MenCorrelation(TestConstants.SIMLEX_FILE);
+        MenCorrelation semSim =  new MenCorrelation(TestConstants.Carina_FILE,2);
+        MenCorrelation visSim =  new MenCorrelation(TestConstants.Carina_FILE,3);
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         SVDFusion baseline = new SVDFusion(wordSpace, visionSpace);
@@ -94,8 +97,12 @@ public class SVDFusion {
         
         
         SemanticSpace mapped_vectors = baseline.mapData(wordSpace, k, false);
-        System.out.println("Correlation with Baseline "+k+": " + men.evaluateSpacePearson(mapped_vectors)); 
-        System.out.println("Correlation with Original "+men.evaluateSpacePearson(wordSpace)); 
+        System.out.println("Men "+k+": " + men.evaluateSpaceSpearman(mapped_vectors)); 
+        System.out.println("simlex "+k+": " + sim999.evaluateSpaceSpearman(mapped_vectors)); 
+        System.out.println("semSim "+k+": " + semSim.evaluateSpaceSpearman(mapped_vectors)); 
+        System.out.println("visSim "+k+": " + visSim.evaluateSpaceSpearman(mapped_vectors)); 
+
+
 
         
       

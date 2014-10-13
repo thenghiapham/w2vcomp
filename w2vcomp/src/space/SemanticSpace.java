@@ -19,9 +19,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.ejml.simple.SimpleMatrix;
+
 import vocab.Vocab;
 
 import common.DataStructureUtils;
+import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 
 public class SemanticSpace {
@@ -43,6 +46,14 @@ public class SemanticSpace {
         words = DataStructureUtils.stringListToArray(wordList);
         word2Index = DataStructureUtils.arrayToMap(words);
         vectors = DataStructureUtils.arrayListTo2dArray(vectorList);
+        vectorSize = vectors[0].length;
+    }
+    
+    
+    public SemanticSpace(List<String> wordList, double[][] vectors) {
+        words = DataStructureUtils.stringListToArray(wordList);
+        word2Index = DataStructureUtils.arrayToMap(words);
+        this.vectors = vectors;
         vectorSize = vectors[0].length;
     }
     
@@ -265,6 +276,33 @@ public class SemanticSpace {
             return getNeighbors(vector, noNeighbor, new String[] { word });
         }
     }
+    
+    public Neighbor[] getNeighbors(String word, int noNeighbor, SemanticSpace space2) {
+        double[] vector = getVector(word);
+        if (vector == null) {
+            return null;
+        } else {
+            return getNeighbors(vector, noNeighbor, new String[] { word }, space2);
+        }
+    }
+    
+    public Neighbor[] getNeighbors(double[] vector, int noNeighbor,
+            String[] excludedWords, SemanticSpace space2) {
+        Neighbor[] neighbors = new Neighbor[space2.words.length];
+        
+        int neighborIndex = 0;
+        for (int i = 0; i < space2.words.length; i++) {
+            neighbors[neighborIndex] = new Neighbor(space2.words[i],
+                     Similarity.cosine(vector, space2.vectors[i]));
+            neighborIndex++;
+        }
+        Arrays.sort(neighbors, Neighbor.NeighborComparator);
+        if (noNeighbor < space2.words.length) {
+            return Arrays.copyOfRange(neighbors, 0, noNeighbor);
+        } else {
+            return neighbors;
+        }
+    }
 
     public static void printVector(double[] vector) {
         StringBuffer buffer = new StringBuffer();
@@ -303,6 +341,17 @@ public class SemanticSpace {
         return new SemanticSpace(newWordList, newVectors);
     }
 
+    public SemanticSpace  rowNormalize(){
+        ArrayList<String> newWordList = new ArrayList<String>();
+        ArrayList<double[]> newVectors = new ArrayList<double[]>();
+        for (String word : words) {
+                newWordList.add(word);
+                SimpleMatrix u = new SimpleMatrix(1,vectorSize,true,this.getVector(word));
+                newVectors.add(SimpleMatrixUtils.to2DArray(u.scale(1000000/u.normF()))[0]);
+        }
+        return new SemanticSpace(newWordList, newVectors);
+    }
+    
     public int getVectorSize() {
         return vectorSize;
     }

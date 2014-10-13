@@ -3,6 +3,7 @@ package baselines;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.ejml.ops.CommonOps;
 import org.ejml.simple.SimpleMatrix;
 import org.ejml.simple.SimpleSVD;
 
@@ -74,7 +75,13 @@ public class SVDBackFusion {
 //            toBeMappedMatrix = visualV.extractMatrix(0, visualV.numRows(), 0, k);
         }
         
-        SimpleMatrix mapped = mappedMatrix.solve(data_mat.transpose()).transpose();
+        System.out.println(data_mat.numRows());
+        System.out.println(data_mat.numCols());
+        
+        System.out.println(mappedMatrix.numRows());
+        System.out.println(mappedMatrix.numCols());
+        SimpleMatrix mapped = new SimpleMatrix(mappedMatrix.numCols(), data_mat.numRows());
+        CommonOps.solve(mappedMatrix.getMatrix(),data_mat.transpose().getMatrix(),mapped.getMatrix());//mappedMatrix.solve(data_mat.transpose()).transpose();
         return new SemanticSpace(data.getWords(),SimpleMatrixUtils.to2DArray(mapped));
     }
     
@@ -90,7 +97,7 @@ public class SVDBackFusion {
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         SVDBackFusion baseline = new SVDBackFusion(wordSpace, visionSpace);
         
-        int k=300;
+        int k=400;
      
         
         

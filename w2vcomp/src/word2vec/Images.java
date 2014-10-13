@@ -11,6 +11,10 @@ import java.util.Set;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 
+import common.IOUtils;
+
+import demo.TestConstants;
+
 import space.SemanticSpace;
 import vocab.Vocab;
 
@@ -24,12 +28,19 @@ public class Images {
     HashMap<String, Integer> word2Index;
     
     
-    public Images(String textFile) {
+    public Images(String textFile,boolean all) {
         random = new Random();
 
         this.space = SemanticSpace.importSpace(textFile);
+        if (!all){
+            Set<String> trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
+            this.space = this.space.getSubSpace(trConcepts);
+        }
+        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training");
+   
+        
         this.word2Index = space.getWord2Index();
-        random_vecs();
+        //random_vecs();
         //shuffling_vecs();
 
         this.randomTablesize = this.word2Index.size();
@@ -49,6 +60,9 @@ public class Images {
        for (int i=0;i<this.randomTablesize; i++){
            this.randomTable[i] = i;
        }
+       
+       
+       
     }
    
    protected void  random_vecs(){
@@ -127,6 +141,8 @@ public class Images {
     return cors;
        
    }
+   
+   
    
    public SemanticSpace getVisionSpace(){
        return this.space;

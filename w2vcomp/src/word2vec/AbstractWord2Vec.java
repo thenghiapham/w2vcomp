@@ -14,6 +14,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.ejml.simple.SimpleMatrix;
+
 import space.SemanticSpace;
 import vocab.Vocab;
 import vocab.VocabEntry;
@@ -42,6 +44,7 @@ public abstract class AbstractWord2Vec {
     /* for the 2 modalities*/
     protected int              negativeSamplesImages;
     protected Images           images;
+    protected int              lastImageUsed;   
     
 
     protected double            subSample;
@@ -75,6 +78,7 @@ public abstract class AbstractWord2Vec {
      * negativeSamples
      */
     double[][]                  weights0, weights1, negativeWeights1, negativeWeights1Images;
+    SimpleMatrix                imageProjectionLayer;
 
     // Random instance
     // for randomize window size, initial weights, subsampling probability
@@ -157,6 +161,8 @@ public abstract class AbstractWord2Vec {
         if (negativeSamples > 0) {
             negativeWeights1 = new double[vocabSize][projectionLayerSize];
         }
+        
+      
         vocab.assignCode();
     }
 
@@ -171,9 +177,11 @@ public abstract class AbstractWord2Vec {
         boolean readInit = (new File(initFile)).exists();
         if (!readInit) {
             randomInitProjectionMatrices();
+            randomInitImageProjectionMatrix();
             saveProjectionMatrices(initFile);
         } else {
             loadProjectionMatrices(initFile);
+            randomInitImageProjectionMatrix();
         }
     }
 
@@ -186,8 +194,11 @@ public abstract class AbstractWord2Vec {
             for (int j = 0; j < projectionLayerSize; j++) {
                 weights0[i][j] = (double) (rand.nextFloat() - 0.5)
                         / projectionLayerSize;
+                //System.out.println("Weigts "+weights0[i][j]);
             }
         }
+        
+       
         // TODO: remove this since Mikolov doesn't initialize this
 //        for (int i = 0; i < vocab.getVocabSize() -1 ; i++) {
 //            for (int j = 0; j < projectionLayerSize; j++) {
@@ -195,6 +206,18 @@ public abstract class AbstractWord2Vec {
 //                        / projectionLayerSize;
 //            }
 //        }
+    }
+    
+    protected void randomInitImageProjectionMatrix(){
+        double[][] mat = new double[projectionLayerSize][projectionLayerSize];  //cross-modal mapping
+        
+        for (int i = 0; i < projectionLayerSize; i++) {
+            for (int j = 0; j < projectionLayerSize; j++) {
+                mat[i][j] = (double) (rand.nextFloat() - 0.5)
+                        / projectionLayerSize ;
+            }
+        }
+        imageProjectionLayer = new SimpleMatrix(mat);
     }
 
     public void saveVector(String outputFile, boolean binary) {
@@ -247,9 +270,10 @@ public abstract class AbstractWord2Vec {
         this.negativeWeights1Images = images.getVectors();
     }
     
-    public void initImages(String textFile){
-        images = new Images(textFile);
+    public void initImages(String textFile,boolean all){
+        images = new Images(textFile, all);
         setImageWeights();
+        lastImageUsed = 0;
     }
     
     public Images getImages(){

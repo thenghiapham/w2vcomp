@@ -28,7 +28,7 @@ public class WordVectorLearning {
         //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(300,5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 10, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 20, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
         // 0);
         
@@ -45,9 +45,9 @@ public class WordVectorLearning {
 
         boolean learnVocab = !(new File(vocabFile)).exists();
         
-        Vocab vocab = new Vocab(5);
+        Vocab vocab = new Vocab(5); //wiki 50, enwik5
         if (!learnVocab)
-            vocab.loadVocab(vocabFile);// ,minFrequency);
+            vocab.loadVocab(vocabFile);// ,minFrequency,5);
         else {
             vocab.learnVocabFromTrainFile(trainFile);
             // save vocabulary
@@ -58,7 +58,7 @@ public class WordVectorLearning {
         
         word2vec.initNetwork(initFile);
         
-        word2vec.initImages(TestConstants.VISION_FILE);
+        word2vec.initImages(TestConstants.VISION_FILE,false);
         
        
       

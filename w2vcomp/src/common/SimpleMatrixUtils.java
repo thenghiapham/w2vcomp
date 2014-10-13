@@ -110,4 +110,13 @@ public class SimpleMatrixUtils {
         SimpleMatrix scaledX = x.scale(dot / (lengthA * lengthX * lengthX * lengthX));
         return scaledA.minus(scaledX);
     }
+
+    public static SimpleMatrix sumRows(SimpleMatrix simpleMatrix) {
+        SimpleMatrix sum = new SimpleMatrix(1,simpleMatrix.numCols());
+        
+        for (int i=0;i<simpleMatrix.numRows();i++){
+            sum = sum.plus(simpleMatrix.extractVector(true, i));
+        }
+        return sum;
+    }
 }
