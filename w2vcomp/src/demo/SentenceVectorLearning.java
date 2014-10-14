@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 
 import common.IOUtils;
 import common.LogUtils;
@@ -22,14 +22,14 @@ import demo.TestConstants;
 public class SentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 100;
+        int hiddenLayerSize = 4;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 1;
-        boolean allLevel = true;
-        boolean lexical = true;
+        int phraseLevel = 2;
+        boolean allLevel = false;
+        boolean lexical = false;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
 //        IOUtils.printConstructions(constructionGroups);

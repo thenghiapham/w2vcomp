@@ -20,7 +20,6 @@ import neural.HierarchicalSoftmaxLearner;
 import neural.LearningStrategy;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
-import neural.layer.ProjectionLayer;
 
 import vocab.Vocab;
 import vocab.VocabEntry;

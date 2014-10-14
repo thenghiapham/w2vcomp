@@ -72,8 +72,9 @@ public class TanhTable {
         else if (x < -maxX)
             return -1;
         else {
-            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
-            return tanhTable[index];
+//            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
+//            return tanhTable[index];
+            return MathUtils.tanh(x);
         }
 
     }

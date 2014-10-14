@@ -5,6 +5,7 @@ import io.sentence.TreeInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +23,7 @@ import tree.Tree;
 
 public class SingleThreadedSentence2Vec extends Sentence2Vec{
     private static final Logger LOGGER = Logger.getLogger(SingleThreadedSentence2Vec.class.getName());
-    
+    Random random = new Random();
     MenCorrelation men;
 
     public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
@@ -120,11 +121,14 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
 
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new Tanh(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-//        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new IdentityFunction(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+//        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new Tanh(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new IdentityFunction(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
 //        System.out.println(parseTree);
 //        System.out.println(network.toString());
         network.learn(alpha);
+        if (random.nextDouble() <= 0.0001) {
+            network.checkGradient();
+        }
     }
     
 }

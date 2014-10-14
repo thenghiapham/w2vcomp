@@ -409,13 +409,18 @@ public class TreeNetwork {
             
             SimpleMatrix component = realGradients.get(i);
             SimpleMatrix numComponent = numericGradients.get(i);
+            if (component == null) {
+                component = new SimpleMatrix(numComponent.numRows(), numComponent.numCols());
+            }
             
             double squareError = component.minus(numComponent).normF();
             squareError = squareError * squareError;
             if (squareError / (component.numCols() * component.numRows()) > 1e-5) {
-                System.out.println("Big error");
+                System.out.println(squareError / (component.numCols() * component.numRows()));
+                System.out.println("Big error " + getLayerType(i));
             } else {
-//                System.out.println("Good error");
+//                System.out.println(squareError / (component.numCols() * component.numRows()));
+                System.out.println("Good error " + getLayerType(i));
             }
         }
     }
@@ -488,6 +493,21 @@ public class TreeNetwork {
             } else {
                 i = i - hiddenLayers.size();
                 return outputLayers.get(i);
+            }
+        }
+    }
+    
+    protected String getLayerType(int i) {
+        if (i < projectionLayers.size()) {
+            return "P" + i;
+        }
+        else {
+            i = i - projectionLayers.size();
+            if (i < hiddenLayers.size()) {
+                return "H" + i;
+            } else {
+                i = i - hiddenLayers.size();
+                return "O" + i;
             }
         }
     }
