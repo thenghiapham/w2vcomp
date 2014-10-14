@@ -30,7 +30,7 @@ public class MassSentenceVectorLearning {
         
         LogUtils.setup(TestConstants.S_LOG_FILE + outSuffix);
         
-        int hiddenLayerSize = 40;
+        int hiddenLayerSize = 100;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;

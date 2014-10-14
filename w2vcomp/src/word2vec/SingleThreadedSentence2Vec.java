@@ -13,6 +13,7 @@ import common.correlation.MenCorrelation;
 
 //import neural.IdentityFunction;
 import neural.TreeNetwork;
+import neural.function.IdentityFunction;
 import neural.function.Sigmoid;
 import neural.function.Tanh;
 
@@ -60,6 +61,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
 
     protected void trainModelThread(TreeInputStream inputStream) {
         // number of trained lines before this stream
+        printStatistics();
         long oldTrainedLines = trainedLines;
         long tmpTrainedLines = trainedLines;
         try {
@@ -109,6 +111,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         if (men != null) {
             LOGGER.log(Level.INFO, "men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
             System.out.println("men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
+            System.out.println("alpha: " + alpha);
         }
         LOGGER.log(Level.INFO, "norm comp: " + compositionMatrices.getCompositionMatrix("blah").normF());
         LOGGER.log(Level.INFO, "norm proj: " + projectionMatrix.getMatrix().normF());
@@ -118,6 +121,9 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
         TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new Tanh(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+//        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new IdentityFunction(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+//        System.out.println(parseTree);
+//        System.out.println(network.toString());
         network.learn(alpha);
     }
     

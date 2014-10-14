@@ -9,12 +9,15 @@ import java.util.logging.Logger;
 
 import neural.function.ActivationFunction;
 import neural.function.ObjectiveFunction;
+import neural.layer.BasicLayer;
 import neural.layer.HiddenLayer;
 import neural.layer.Layer;
 import neural.layer.OutputLayer;
 import neural.layer.ProjectionLayer;
 
 import org.ejml.simple.SimpleMatrix;
+
+import common.IOUtils;
 
 import tree.Tree;
 
@@ -204,7 +207,10 @@ public class TreeNetwork {
             }
             
             Layer layer = layerMap.get(node);
+            
             int windowSize = random.nextInt(maxWindowSize) + 1;
+            // TODO: turn back to random
+//            int windowSize = maxWindowSize;
             
             // get the left and right position of the phrase
             // pick k words to the left and k words to the right to train the phrase 
@@ -215,6 +221,8 @@ public class TreeNetwork {
                     // adding the output layers to the hidden/projection layer 
                     // corresponding to the phrase 
                     int[] indices = outputBuilder.getOutputIndices(sentence[i]);
+//                    IOUtils.printInts(indices);
+//                    System.out.println("****");
                     if (indices == null) continue;
                     SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
                     SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
@@ -226,8 +234,11 @@ public class TreeNetwork {
                     
                     addOutputLayer(outputLayer, indices);
                 }
+                
             }
+//            System.exit(0);
         }
+        
     }
     
     
@@ -280,6 +291,7 @@ public class TreeNetwork {
         forward();
         backward();
         update(learningRate);
+//        System.exit(0);
     }
     
     public void forward() {
@@ -351,7 +363,40 @@ public class TreeNetwork {
     /**DEBUGGING METHODS**/
     public String toString() {
         // TODO: print the whole network here
-        return "";//((BasicLayer) layerMap.get(parseTree)).toTreeString();
+        return toPennTree(parseTree);
+    }
+    
+    protected String toPennTree(Tree node) {
+        String treeString = "("+getLayerString(node);
+        ArrayList<Tree> children = node.getChildren();
+        if (children.size() == 1) {
+            treeString += " ";
+            if (children.get(0).getChildren().size() == 0)
+                treeString += getLayerString(children.get(0));
+            else
+                treeString += toPennTree(children.get(0));
+        }
+        else if (children.size() > 1) {
+            treeString += " ";
+            for (Tree child : children)
+                treeString += toPennTree(child);
+        }
+        treeString += ")";
+        return treeString;
+    }
+    
+    protected String getLayerString(Tree node) {
+        if (!layerMap.containsKey(node)) {
+            if (node.isTerminal()) return node.getRootLabel();
+            else return "N";
+        }
+        else {
+            BasicLayer layer = (BasicLayer) layerMap.get(node);
+            String result = layer.getTypeString() + node.getHeight();
+            if (layer.getOutSize() >= 2)
+                result = result + "*" + layer.getOutSize();
+            return result;
+        }
     }
     
 }

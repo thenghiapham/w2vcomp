@@ -90,5 +90,8 @@ public abstract class BasicLayer implements Layer {
         return treeString;
     }
 
+    public int getOutSize() {
+        return outLayers.size();
+    }
 
 }

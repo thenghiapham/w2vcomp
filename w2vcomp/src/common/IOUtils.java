@@ -28,6 +28,7 @@ public class IOUtils {
      * Print an integer array to standard out
      */
     public static void printInts(int[] array) {
+//        System.out.println(array.length);
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < array.length; i++) {
             buffer.append(array[i]);

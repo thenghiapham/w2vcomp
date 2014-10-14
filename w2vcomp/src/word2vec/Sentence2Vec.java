@@ -20,6 +20,7 @@ import neural.HierarchicalSoftmaxLearner;
 import neural.LearningStrategy;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
+import neural.layer.ProjectionLayer;
 
 import vocab.Vocab;
 import vocab.VocabEntry;
@@ -111,6 +112,21 @@ public abstract class Sentence2Vec {
     public void initNetwork(String initFile) {
         loadWholeNetwork(initFile, true);
     }
+    
+    public void simpleInit(String initFile) {
+        
+//        if (hierarchicalSoftmax) {
+//            learningStrategy = HierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
+//        } else {
+//            learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
+//        }
+        loadProjectionMatrix(initFile, true);
+        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+        vocab.assignCode();
+        
+        // number of lines = frequency of end of line character?
+        this.totalLines = vocab.getEntry(0).frequency;
+    }
 
 
     public void saveVector(String outputFile, boolean binary) {
@@ -190,6 +206,39 @@ public abstract class Sentence2Vec {
                     learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
                 }
             } else {
+                matrix = IOUtils.readMatrix(inputStream, binary);
+                if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
+                    System.out.println("matrix size does not match");
+                } else {
+                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, new SimpleMatrix(matrix));
+                }
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void loadProjectionMatrix(String inputFile, boolean binary) {
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile));
+            double[][] matrix = IOUtils.readMatrix(inputStream, binary);
+            if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
+                System.out.println("matrix size does not match");
+            } else {
+                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+            }
+            
+            if (hierarchicalSoftmax) {
+                matrix = IOUtils.readMatrix(inputStream, binary);
+                if (matrix.length != vocab.getVocabSize() -1 || matrix[0].length != hiddenLayerSize) {
+                    System.out.println("matrix size does not match");
+                } else {
+                    System.out.println("here");
+                    learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                }
+            }
+            if (negativeSamples > 0) {
                 matrix = IOUtils.readMatrix(inputStream, binary);
                 if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                     System.out.println("matrix size does not match");

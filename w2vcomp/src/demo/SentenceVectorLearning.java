@@ -15,7 +15,6 @@ import common.IOUtils;
 import common.LogUtils;
 
 import vocab.Vocab;
-import word2vec.Sentence2Vec;
 import word2vec.SingleThreadedSentence2Vec;
 
 import demo.TestConstants;
@@ -23,24 +22,26 @@ import demo.TestConstants;
 public class SentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 10;
+        int hiddenLayerSize = 100;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 2;
+        int phraseLevel = 1;
         boolean allLevel = true;
+        boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-        IOUtils.printConstructions(constructionGroups);
-        Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
+//        IOUtils.printConstructions(constructionGroups);
+        SingleThreadedSentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel, 
 //                hierarchialSoftmax, negativeSampling, subSampling, null, phraseLevel,
-                allLevel, true, TestConstants.S_MEN_FILE);
+                allLevel, lexical, TestConstants.S_MEN_FILE);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String logFile = TestConstants.S_LOG_FILE;
+        String initFile = TestConstants.S_INITIALIZATION_FILE;
         LogUtils.setup(logFile);
         
         System.out.println("Starting training using file " + trainFile);
@@ -58,7 +59,7 @@ public class SentenceVectorLearning {
 
         sentence2vec.setVocab(vocab);
 
-        sentence2vec.initNetwork();
+        sentence2vec.simpleInit(initFile);
 
         // single threaded instead of multithreading
         System.out.println("Start training");
