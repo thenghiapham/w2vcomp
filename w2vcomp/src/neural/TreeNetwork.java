@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import neural.function.ActivationFunction;
 import neural.function.ObjectiveFunction;
+import neural.layer.BasicLayer;
 import neural.layer.HiddenLayer;
 import neural.layer.Layer;
 import neural.layer.OutputLayer;
@@ -16,6 +17,7 @@ import neural.layer.ProjectionLayer;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.ValueGradient;
 import tree.Tree;
 
 /**
@@ -27,6 +29,7 @@ import tree.Tree;
  */
 public class TreeNetwork {
     private static final Logger LOGGER = Logger.getLogger(TreeNetwork.class.getName());
+    private static final double epsilon = 1e-4;
     
     protected Tree parseTree;
     
@@ -354,4 +357,94 @@ public class TreeNetwork {
         return "";//((BasicLayer) layerMap.get(parseTree)).toTreeString();
     }
     
+    /**CHECKING GRADIENTS**/
+    public void checkGradient() {
+        ArrayList<SimpleMatrix> realGradients = computeRealGradient();
+        ArrayList<SimpleMatrix> numericGradients = computeNumericGradient();
+        for (int i = 0; i < realGradients.size(); i++) {
+            
+            SimpleMatrix component = realGradients.get(i);
+            SimpleMatrix numComponent = numericGradients.get(i);
+            
+            double squareError = component.minus(numComponent).normF();
+            squareError = squareError * squareError;
+            if (squareError / (component.numCols() * component.numRows()) > 1e-5) {
+                System.out.println("Big error");
+            } else {
+//                System.out.println("Good error");
+            }
+        }
+    }
+    
+    protected ArrayList<SimpleMatrix> computeRealGradient() {
+        forward();
+        backward();
+        
+        ArrayList<SimpleMatrix> gradients = new ArrayList<SimpleMatrix>();
+        // loop through the layers to get the gradients
+        for (ProjectionLayer layer: projectionLayers) {
+            gradients.add(layer.getGradient());
+        }
+        for (HiddenLayer layer: hiddenLayers) {
+            gradients.add(layer.getGradient());
+        }
+        for (OutputLayer layer: outputLayers) {
+            gradients.add(layer.getGradient());
+        }
+        return gradients;
+    }
+    
+    protected double computeCost() {
+        forward();
+        double cost = 0;
+        for (OutputLayer layer: outputLayers) {
+            cost += layer.getCost();
+        }
+        return cost;
+    }
+    
+    protected ArrayList<SimpleMatrix> computeNumericGradient() {
+        ArrayList<SimpleMatrix> gradients = new ArrayList<SimpleMatrix>();
+        int numLayers = projectionLayers.size() + hiddenLayers.size() + outputLayers.size();
+        for (int i = 0; i < numLayers; i++) {
+            SimpleMatrix gradient = computeNumericGradient(i);
+            gradients.add(gradient);
+        }
+        return gradients;
+    }
+    
+    protected SimpleMatrix computeNumericGradient(int i) {
+        // find the layer that correspond to the index i
+        // compute the numeric graident of that layer
+        BasicLayer layer = getLayer(i);
+        SimpleMatrix weights = layer.getWeights();
+        SimpleMatrix delta = new SimpleMatrix(weights.numRows(), weights.numCols());
+        int size = weights.numRows() * weights.numCols();
+        for (int index = 0; index < size; index++) {
+            double element = weights.get(index);
+            weights.set(index, element + epsilon);
+            double plusCost = computeCost();
+            weights.set(index, element - epsilon);
+            double minusCost = computeCost();
+            
+            delta.set(index, (plusCost - minusCost) / (2 * epsilon));
+            weights.set(index, element);
+        }
+        return delta;
+    }
+    
+    protected BasicLayer getLayer(int i) {
+        if (i < projectionLayers.size()) {
+            return projectionLayers.get(i);
+        }
+        else {
+            i = i - projectionLayers.size();
+            if (i < hiddenLayers.size()) {
+                return hiddenLayers.get(i);
+            } else {
+                i = i - hiddenLayers.size();
+                return outputLayers.get(i);
+            }
+        }
+    }
 }

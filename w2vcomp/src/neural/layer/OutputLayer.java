@@ -120,4 +120,16 @@ public class OutputLayer extends BasicLayer implements Layer{
     public String getTypeString() {
         return "O";
     }
+
+    @Override
+    public SimpleMatrix getWeights() {
+        // TODO Auto-generated method stub
+        return inputWeights;
+    }
+
+    @Override
+    public void setWeights(SimpleMatrix weights) {
+        // TODO Auto-generated method stub
+        this.inputWeights = weights;
+    }
 }
