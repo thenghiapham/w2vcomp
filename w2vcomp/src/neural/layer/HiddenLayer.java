@@ -89,4 +89,16 @@ public class HiddenLayer extends BasicLayer implements Layer{
     public String getTypeString() {
         return "H";
     }
+
+    @Override
+    public SimpleMatrix getWeights() {
+        // TODO Auto-generated method stub
+        return inputWeights;
+    }
+
+    @Override
+    public void setWeights(SimpleMatrix weights) {
+        // TODO Auto-generated method stub
+        inputWeights = weights;
+    }
 }

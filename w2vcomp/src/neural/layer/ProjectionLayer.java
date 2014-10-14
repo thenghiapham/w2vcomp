@@ -57,4 +57,16 @@ public class ProjectionLayer extends BasicLayer implements Layer{
     public String getTypeString() {
         return "P";
     }
+
+    @Override
+    public SimpleMatrix getWeights() {
+        // TODO Auto-generated method stub
+        return vector;
+    }
+
+    @Override
+    public void setWeights(SimpleMatrix weights) {
+        // TODO Auto-generated method stub
+        this.vector = weights;
+    }
 }

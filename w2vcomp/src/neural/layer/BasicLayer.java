@@ -70,6 +70,14 @@ public abstract class BasicLayer implements Layer {
     }
     
     /**
+     * For gradientChecking purpose
+     * Return the string indicating the type of the layer
+     */
+    public abstract SimpleMatrix getWeights();
+    public abstract void setWeights(SimpleMatrix weights);
+    
+    
+    /**
      * For debuging purpose
      * Return the string indicating the type of the layer
      */
