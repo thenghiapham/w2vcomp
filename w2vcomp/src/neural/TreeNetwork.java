@@ -17,9 +17,7 @@ import neural.layer.ProjectionLayer;
 
 import org.ejml.simple.SimpleMatrix;
 
-import common.IOUtils;
 
-import common.ValueGradient;
 import tree.Tree;
 
 /**
@@ -418,6 +416,12 @@ public class TreeNetwork {
             if (squareError / (component.numCols() * component.numRows()) > 1e-5) {
                 System.out.println(squareError / (component.numCols() * component.numRows()));
                 System.out.println("Big error " + getLayerType(i));
+//                System.out.println("real");
+//                System.out.println(component);
+//                System.out.println("num");
+//                System.out.println(numComponent);
+//                System.out.println("layer");
+//                System.out.println(getLayer(i).getWeights());
             } else {
 //                System.out.println(squareError / (component.numCols() * component.numRows()));
                 System.out.println("Good error " + getLayerType(i));
@@ -467,18 +471,20 @@ public class TreeNetwork {
         // compute the numeric graident of that layer
         BasicLayer layer = getLayer(i);
         SimpleMatrix weights = layer.getWeights();
+        SimpleMatrix tmpWeights = weights.copy();
+        layer.setWeights(tmpWeights);
         SimpleMatrix delta = new SimpleMatrix(weights.numRows(), weights.numCols());
         int size = weights.numRows() * weights.numCols();
         for (int index = 0; index < size; index++) {
-            double element = weights.get(index);
-            weights.set(index, element + epsilon);
+            double element = tmpWeights.get(index);
+            tmpWeights.set(index, element + epsilon);
             double plusCost = computeCost();
-            weights.set(index, element - epsilon);
+            tmpWeights.set(index, element - epsilon);
             double minusCost = computeCost();
-            
             delta.set(index, (plusCost - minusCost) / (2 * epsilon));
-            weights.set(index, element);
+            tmpWeights.set(index, element);
         }
+        layer.setWeights(weights);
         return delta;
     }
     

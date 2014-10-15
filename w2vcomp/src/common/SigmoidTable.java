@@ -58,16 +58,15 @@ public class SigmoidTable {
      * Get the sigmoid function for x from the pre-computed table
      */
     public double getSigmoid(double x) {
-        if (x > maxX)
-            return 1;
-        else if (x < -maxX)
-            return 0;
-        else {
+//        if (x > maxX)
+//            return 1;
+//        else if (x < -maxX)
+//            return 0;
+//        else {
 //            int index = (int) Math.round((x + maxX) / (2 * maxX) * (tableSize - 1));
 //            return sigmoidTable[index];
-            return MathUtils.sigmoid(x);
-        }
-
+//        }
+        return MathUtils.sigmoid(x);
     }
 
 }

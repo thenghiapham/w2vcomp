@@ -145,6 +145,22 @@ public class CompositionMatrices {
     }
     
     /**
+     * DEBUGGING PURPOSE
+     * TODO: remove
+     */
+    public static CompositionMatrices createSimple( 
+            SimpleMatrix defaultMatrix) {
+        HashMap<String, String> constructionMap = new HashMap<String, String>();
+        HashMap<String, Integer> groupMap= new HashMap<>();
+        
+        SimpleMatrix[] compositionMatrices = new SimpleMatrix[1];
+        compositionMatrices[0] = defaultMatrix;
+        groupMap.put(DEFAULT_STRING, 0);
+        return new CompositionMatrices(groupMap, constructionMap, compositionMatrices);
+    }
+    
+    
+    /**
      * create a random n x 2n matrix
      * the values in the matrix are uniformly distributed in the range [-0.5/n, 0.5/n]
      * @param hiddenLayerSize: n
