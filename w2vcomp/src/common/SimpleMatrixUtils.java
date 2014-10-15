@@ -10,6 +10,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.ejml.alg.dense.mult.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 
+import common.exception.ValueException;
+
 /**
  * This class provides some utility method for the SimpleMatrix class
  * @author thenghiapham
@@ -255,4 +257,47 @@ public class SimpleMatrixUtils {
         }
         return output;
     }
+    
+    /**
+     * 
+     * @param input
+     * @return
+     */
+    public static SimpleMatrix normalize(SimpleMatrix matrix, double wantedNormF) {
+        double normF = matrix.normF();
+        if (normF > wantedNormF) {
+            matrix = matrix.scale(wantedNormF / normF);
+        }
+        return matrix;
+    }
+    
+    public static void checkNaN(SimpleMatrix input) {
+        int size = input.numCols() * input.numRows();
+        double[] data = input.getMatrix().data;
+        for (int i = 0; i < size; i++) {
+            if (Double.isNaN(data[i])) {
+                throw new ValueException("NaN");
+            }
+            if (Double.isInfinite(data[i])) {
+                throw new ValueException("Inf");
+            }
+//            if (Math.abs(data[i]) > 10000) {
+//                throw new ValueException("Big");
+//            }
+//            if (Double.)
+        }
+    }
+    
+    public static boolean checkValueInRange(SimpleMatrix input, double lowerBound, double upperBound) {
+        int size = input.numCols() * input.numRows();
+        double[] data = input.getMatrix().data;
+        for (int i = 0; i < size; i++) {
+            if (data[i] < lowerBound || data[i] > upperBound) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
 }

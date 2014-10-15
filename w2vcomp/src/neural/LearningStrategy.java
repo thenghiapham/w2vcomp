@@ -4,6 +4,7 @@ import neural.function.ObjectiveFunction;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.IOUtils;
 import common.SimpleMatrixUtils;
 
 public abstract class LearningStrategy {
@@ -25,7 +26,9 @@ public abstract class LearningStrategy {
         gradients = gradients.scale(learningRate);
         SimpleMatrix orginalRows = SimpleMatrixUtils.getRows(outputVectors, indices);
         SimpleMatrix newRows = orginalRows.minus(gradients);
+//        IOUtils.printInts(indices);
         for (int i = 0; i < indices.length; i++) {
+            
             outputVectors.setRow(indices[i], 0, newRows.extractVector(true, i).getMatrix().data);
         }
     }

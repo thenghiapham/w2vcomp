@@ -7,6 +7,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
 import common.exception.IllegalOperationException;
+import common.exception.ValueException;
 
 /**
  * This class represents an output layer (a network can have many output layers)
@@ -56,7 +57,16 @@ public class OutputLayer extends BasicLayer implements Layer{
     public void forward() {
         // Exactly like in hidden layer
         input = getInLayerIntput();
+        SimpleMatrixUtils.checkNaN(input);
+        SimpleMatrixUtils.checkNaN(inputWeights);
         tempZ = inputWeights.mult(input);
+        try {
+            SimpleMatrixUtils.checkNaN(tempZ);
+        } catch (ValueException e) {
+            System.out.println("input " + input);
+            System.out.println("inputWeights " + inputWeights);
+        }
+        SimpleMatrixUtils.checkNaN(tempZ);
         if (activation != null) 
             output = SimpleMatrixUtils.applyActivationFunction(tempZ,activation);
         else
@@ -73,12 +83,33 @@ public class OutputLayer extends BasicLayer implements Layer{
         // Similar to hidden layer's backward
         // the difference is that here the error coming directly from the
         // objective function
-        SimpleMatrix outError = costFunction.derivative(output, goldOutput);
-        if (activation != null) {
-            outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
+//        SimpleMatrix outError = costFunction.derivative(output, goldOutput);
+//        if (activation != null) {
+//            outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
+//        }
+        
+        SimpleMatrix outError = new SimpleMatrix(output.numRows(), output.numCols());
+        double[] rawOut = output.getMatrix().data;
+        double[] rawGold = goldOutput.getMatrix().data;
+        double[] rawOutError = outError.getMatrix().data;
+        for (int i = 0; i < rawOut.length; i++) {
+            if (rawGold[i] == 0) {
+                rawOutError[i] = rawOut[i] - 1;
+            } else {
+                rawOutError[i] = rawOut[i];
+            }
+            if (Double.isNaN(rawOutError[i]) ) {
+                System.out.println(outError);
+            }
         }
+        SimpleMatrixUtils.checkNaN(outError);
+//        System.out.println("e1" + outError1);
+//        System.out.println("e2" + outError);
+//        System.exit(0);
         gradient = outError.mult(input.transpose());
+        SimpleMatrixUtils.checkNaN(gradient);
         error = inputWeights.transpose().mult(outError);
+        SimpleMatrixUtils.checkNaN(error);
     }
 
     /**

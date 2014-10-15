@@ -414,8 +414,8 @@ public class TreeNetwork {
             double squareError = component.minus(numComponent).normF();
             squareError = squareError * squareError;
             if (squareError / (component.numCols() * component.numRows()) > 1e-5) {
-                System.out.println(squareError / (component.numCols() * component.numRows()));
-                System.out.println("Big error " + getLayerType(i));
+//                System.out.println(squareError / (component.numCols() * component.numRows()));
+//                System.out.println("Big error " + getLayerType(i));
 //                System.out.println("real");
 //                System.out.println(component);
 //                System.out.println("num");
@@ -424,7 +424,7 @@ public class TreeNetwork {
 //                System.out.println(getLayer(i).getWeights());
             } else {
 //                System.out.println(squareError / (component.numCols() * component.numRows()));
-                System.out.println("Good error " + getLayerType(i));
+//                System.out.println("Good error " + getLayerType(i));
             }
         }
     }

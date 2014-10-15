@@ -28,7 +28,10 @@ import common.SimpleMatrixUtils;
  */
 public class CompositionMatrices {
     public static final String DEFAULT_STRING = "default";
-    public static final double DEFAULT_WEIGHT_DECAY = 1e-4;
+    public static final double DEFAULT_WEIGHT_DECAY = 1e-3;
+    public static final double MAX_NORM = 5;
+    // TODO: turn it back
+//    public static final double DEFAULT_WEIGHT_DECAY = 0;
     protected SimpleMatrix[] compositionMatrices;
 
     // key for synchorizing when updating a specific matrix
@@ -42,7 +45,7 @@ public class CompositionMatrices {
     protected HashMap<String, Integer> groupMap;
     
     // weight decay for learning
-    protected double weightDecay = 1e-4;
+    protected double weightDecay = DEFAULT_WEIGHT_DECAY;
     
     /****GROUP OF CONSTRUCTORS AND INITIALIZATION METHOD*/
     
@@ -170,7 +173,9 @@ public class CompositionMatrices {
         Random random = new Random();
         SimpleMatrix randomMatrix1 = SimpleMatrix.random(hiddenLayerSize, hiddenLayerSize, - 0.5, 0.5, random);
         SimpleMatrix randomMatrix2 = SimpleMatrix.random(hiddenLayerSize, hiddenLayerSize, - 0.5, 0.5, random);
-        return SimpleMatrixUtils.hStack(randomMatrix1, randomMatrix2).scale(1 / hiddenLayerSize);
+        SimpleMatrix result = SimpleMatrixUtils.hStack(randomMatrix1, randomMatrix2).scale(1 /(double) hiddenLayerSize);
+//        System.out.println(result);
+        return result;
     }
     
     /**
@@ -235,9 +240,10 @@ public class CompositionMatrices {
      */
     protected void updateConstructionGroup(int index, SimpleMatrix delta) {
         // TODO: review this
-        synchronized (keys[index]) {
-            compositionMatrices[index] = compositionMatrices[index].minus(delta);
-        }
+        SimpleMatrix newMatrix = compositionMatrices[index].minus(delta);
+        newMatrix = SimpleMatrixUtils.normalize(newMatrix, MAX_NORM);
+
+        compositionMatrices[index] = newMatrix;
     }
     
     /**

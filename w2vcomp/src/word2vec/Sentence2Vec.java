@@ -34,6 +34,7 @@ import common.IOUtils;
 
 public abstract class Sentence2Vec {
     
+    // TODO: change back
     public static final double DEFAULT_STARTING_ALPHA      = 0.025;
     public static final int    DEFAULT_MAX_SENTENCE_LENGTH = 100;
 
@@ -101,7 +102,8 @@ public abstract class Sentence2Vec {
         } else {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
-        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+//        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+        compositionMatrices = CompositionMatrices.randomInitialize(constructionGroups, hiddenLayerSize);
         vocab.assignCode();
         
         // number of lines = frequency of end of line character?
@@ -120,7 +122,8 @@ public abstract class Sentence2Vec {
 //            learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
 //        }
         loadProjectionMatrix(initFile, true);
-        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+//        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+        compositionMatrices = CompositionMatrices.randomInitialize(constructionGroups, hiddenLayerSize);
         vocab.assignCode();
         
         // number of lines = frequency of end of line character?

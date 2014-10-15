@@ -5,6 +5,7 @@ import neural.function.ActivationFunction;
 import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
+import common.exception.ValueException;
 
 /**
  * HiddenLayer:
@@ -42,11 +43,21 @@ public class HiddenLayer extends BasicLayer implements Layer{
          * - apply activation function if exist (a_i)
          */
         input = getInLayerIntput();
+        SimpleMatrixUtils.checkNaN(input);
+        SimpleMatrixUtils.checkNaN(inputWeights);
         tempZ = inputWeights.mult(input);
+        try {
+            SimpleMatrixUtils.checkNaN(tempZ);
+        } catch (ValueException e) {
+            System.out.println("input " + input);
+            System.out.println("inputWeights " + inputWeights);
+        }
+        SimpleMatrixUtils.checkNaN(tempZ);
         if (activation != null) 
             output = SimpleMatrixUtils.applyActivationFunction(tempZ,activation);
         else
             output = tempZ;
+        SimpleMatrixUtils.checkNaN(output);
     }
     
     @Override
@@ -56,13 +67,17 @@ public class HiddenLayer extends BasicLayer implements Layer{
          * - computing both gradient of the weights and backward error for the
          *   incoming layers
          */
+        
         SimpleMatrix parentError = getOutLayerError();
         if (parentError == null) return;
         if (activation != null) {
             parentError = parentError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
+            SimpleMatrixUtils.checkNaN(parentError);
         }
         gradient = parentError.mult(input.transpose());
+        SimpleMatrixUtils.checkNaN(gradient);
         error = inputWeights.transpose().mult(parentError);
+        SimpleMatrixUtils.checkNaN(error);
     }
     
     @Override

@@ -42,7 +42,7 @@ public class SentenceVectorLearning {
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String logFile = TestConstants.S_LOG_FILE;
         String initFile = TestConstants.S_INITIALIZATION_FILE;
-        LogUtils.setup(logFile);
+//        LogUtils.setup(logFile);
         
         System.out.println("Starting training using file " + trainFile);
         boolean learnVocab = !(new File(vocabFile)).exists();

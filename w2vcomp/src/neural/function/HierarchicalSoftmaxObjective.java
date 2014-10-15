@@ -23,7 +23,8 @@ public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
         double[] goldValues = goldMatrix.getMatrix().getData();
         double cost = 0;
         for (int i = 0; i < predictedValues.length; i++) {
-            if (predictedValues[i] == 0 || predictedValues[i] == 1) continue;
+            if (predictedValues[i] <= 1e-6 || predictedValues[i] >= (1-1e-6)) continue;
+//            if (predictedValues[i] == 0 || predictedValues[i] == 1) continue;
             else {
                 if (goldValues[i] == 0) {
                     cost += Math.log(predictedValues[i]);
@@ -41,8 +42,8 @@ public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
      *    root to the word in the hierarchy
      * return: the derivate of the objective function, which is
      *                 {0 if the sigmoid value is 0 or 1
-     *                 {1 / (sigmoid value) if gold code bit is 0 
-     *                 {-1 / (1 - sigmoid value) if gold code bit is 1
+     *                 {-1 / (sigmoid value) if gold code bit is 0 
+     *                 {1 / (1 - sigmoid value) if gold code bit is 1
      */
     @Override
     public SimpleMatrix derivative(SimpleMatrix predictedMatrix, SimpleMatrix
@@ -51,6 +52,7 @@ public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
         double[] goldValues = goldMatrix.getMatrix().getData();
         double[] rawError = new double[predictedValues.length];
         for (int i = 0; i < predictedValues.length; i++) {
+//            if (predictedValues[i] <= 1e-6 || predictedValues[i] >= (1-1e-6)) {
             if (predictedValues[i] == 0 || predictedValues[i] == 1) {
                 rawError[i] = 0;
             } else {
