@@ -26,10 +26,10 @@ public class NNCorrelation extends TwoWordPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp-1ttt", true);
+        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/old/bnc.cmp-1ttt", true);
         NNCorrelation anCorrelation = new NNCorrelation("/home/thenghiapham/work/dataset/lapata/nn_lemma.txt");
 //        MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin-1ttt");
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/old/bnc.bin-1ttt");
         WeightedAdditive add = new WeightedAdditive();
         System.out.println("nn add: " + anCorrelation.evaluateSpacePearson(space, add));
         System.out.println("nn comp: " + anCorrelation.evaluateSpacePearson(compSpace));

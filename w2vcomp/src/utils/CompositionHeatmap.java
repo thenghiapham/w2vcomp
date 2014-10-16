@@ -9,8 +9,11 @@ import space.CompositionSemanticSpace;
 
 public class CompositionHeatmap {
     public static void main(String[] args) {
-        String compSpaceFile = "/home/thenghiapham/work/project/mikolov/output/bnc.cmp3tft";
-        String construction = "NP JJ NN";
+        String compSpaceFile = "/home/thenghiapham/work/project/mikolov/output/old/bnc.cmp-1ttt";
+//        String construction = "VP VB NP";
+        String construction = "NP NN NN";
+//        String construction = "NP JJ NN";
+//        String construction = "S NP VP";
         CompositionSemanticSpace space = CompositionSemanticSpace.loadCompositionSpace(compSpaceFile, true);
         SimpleMatrix compMatrix = space.getConstructionMatrix(construction);
         JFrame f = new JFrame();
