@@ -22,14 +22,14 @@ import demo.TestConstants;
 public class SentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 4;
+        int hiddenLayerSize = 100;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 2;
-        boolean allLevel = false;
-        boolean lexical = false;
+        int phraseLevel = 4;
+        boolean allLevel = true;
+        boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
 //        IOUtils.printConstructions(constructionGroups);
@@ -39,10 +39,11 @@ public class SentenceVectorLearning {
                 allLevel, lexical, TestConstants.S_MEN_FILE);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE;
+        String compFile = TestConstants.S_COMPOSITION_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String logFile = TestConstants.S_LOG_FILE;
         String initFile = TestConstants.S_INITIALIZATION_FILE;
-//        LogUtils.setup(logFile);
+        LogUtils.setup(logFile);
         
         System.out.println("Starting training using file " + trainFile);
         boolean learnVocab = !(new File(vocabFile)).exists();
@@ -59,7 +60,8 @@ public class SentenceVectorLearning {
 
         sentence2vec.setVocab(vocab);
 
-        sentence2vec.simpleInit(initFile);
+//        sentence2vec.simpleInit(initFile);
+        sentence2vec.initNetwork();
 
         // single threaded instead of multithreading
         System.out.println("Start training");
@@ -69,6 +71,7 @@ public class SentenceVectorLearning {
             inputStreams.add(treeInputStream);
             sentence2vec.trainModel(inputStreams);
             sentence2vec.saveVector(outputFile, true);
+            sentence2vec.saveCompositionNetwork(compFile, true);
         } catch (IOException e) {
             System.exit(1);
         }

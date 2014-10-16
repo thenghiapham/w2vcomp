@@ -44,13 +44,16 @@ public class OutputLayer extends BasicLayer implements Layer{
     // output of the cost function
     protected double cost;
     
+    protected double coefficient;
+    
     protected int[] weightVectorIndices;
     
-    public OutputLayer(SimpleMatrix weights, ActivationFunction activation, SimpleMatrix goldOutput, ObjectiveFunction costFunction) {
+    public OutputLayer(SimpleMatrix weights, ActivationFunction activation, SimpleMatrix goldOutput, ObjectiveFunction costFunction, double coefficient) {
         this.inputWeights = weights;
         this.activation = activation;
         this.goldOutput = goldOutput;
         this.costFunction = costFunction;
+        this.coefficient = coefficient;
     }
     
     @Override
@@ -83,29 +86,26 @@ public class OutputLayer extends BasicLayer implements Layer{
         // Similar to hidden layer's backward
         // the difference is that here the error coming directly from the
         // objective function
-//        SimpleMatrix outError = costFunction.derivative(output, goldOutput);
-//        if (activation != null) {
-//            outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
-//        }
-        
-        SimpleMatrix outError = new SimpleMatrix(output.numRows(), output.numCols());
-        double[] rawOut = output.getMatrix().data;
-        double[] rawGold = goldOutput.getMatrix().data;
-        double[] rawOutError = outError.getMatrix().data;
-        for (int i = 0; i < rawOut.length; i++) {
-            if (rawGold[i] == 0) {
-                rawOutError[i] = rawOut[i] - 1;
-            } else {
-                rawOutError[i] = rawOut[i];
-            }
-            if (Double.isNaN(rawOutError[i]) ) {
-                System.out.println(outError);
-            }
+        SimpleMatrix outError = costFunction.derivative(output, goldOutput).scale(coefficient);
+        if (activation != null) {
+            outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
         }
+        
+//        SimpleMatrix outError = new SimpleMatrix(output.numRows(), output.numCols());
+//        double[] rawOut = output.getMatrix().data;
+//        double[] rawGold = goldOutput.getMatrix().data;
+//        double[] rawOutError = outError.getMatrix().data;
+//        for (int i = 0; i < rawOut.length; i++) {
+//            if (rawGold[i] == 0) {
+//                rawOutError[i] = rawOut[i] - 1;
+//            } else {
+//                rawOutError[i] = rawOut[i];
+//            }
+//            if (Double.isNaN(rawOutError[i]) ) {
+//                System.out.println(outError);
+//            }
+//        }
         SimpleMatrixUtils.checkNaN(outError);
-//        System.out.println("e1" + outError1);
-//        System.out.println("e2" + outError);
-//        System.exit(0);
         gradient = outError.mult(input.transpose());
         SimpleMatrixUtils.checkNaN(gradient);
         error = inputWeights.transpose().mult(outError);
@@ -122,7 +122,7 @@ public class OutputLayer extends BasicLayer implements Layer{
      * @return
      */
     public double getCost() {
-        return costFunction.computeObjective(output, goldOutput);
+        return coefficient * costFunction.computeObjective(output, goldOutput);
     }
     
     @Override

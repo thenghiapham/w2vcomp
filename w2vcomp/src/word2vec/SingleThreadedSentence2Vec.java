@@ -111,7 +111,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     protected void printStatistics() {
         // TODO Auto-generated method stub
         if (men != null) {
-//            LOGGER.log(Level.INFO, "men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
+            LOGGER.log(Level.INFO, "men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
             System.out.println("men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
             System.out.println("alpha: " + alpha);
             System.out.println(projectionMatrix.getMatrix().normF());
@@ -133,9 +133,9 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
 //        System.out.println(parseTree);
 //        System.out.println(network.toString());
         network.learn(alpha);
-        if (random.nextDouble() <= 0.0001) {
-            network.checkGradient();
-        }
+//        if (random.nextDouble() <= 0.0001) {
+//            network.checkGradient();
+//        }
     }
     
 }

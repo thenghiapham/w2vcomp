@@ -29,7 +29,7 @@ import common.SimpleMatrixUtils;
 public class CompositionMatrices {
     public static final String DEFAULT_STRING = "default";
     public static final double DEFAULT_WEIGHT_DECAY = 1e-3;
-    public static final double MAX_NORM = 5;
+    public static final double MAX_NORM = 10;
     // TODO: turn it back
 //    public static final double DEFAULT_WEIGHT_DECAY = 0;
     protected SimpleMatrix[] compositionMatrices;

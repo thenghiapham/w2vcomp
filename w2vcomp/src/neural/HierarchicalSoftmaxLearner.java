@@ -4,6 +4,7 @@ package neural;
 import java.util.Random;
 
 import neural.function.HierarchicalSoftmaxObjective;
+//import neural.function.HierarchicalSoftmaxObjective2;
 import neural.function.ObjectiveFunction;
 
 import org.ejml.simple.SimpleMatrix;
@@ -19,6 +20,7 @@ public class HierarchicalSoftmaxLearner extends LearningStrategy{
         super(outVectors);
         this.vocab = vocab;
         costFunction = new HierarchicalSoftmaxObjective();
+//        costFunction = new HierarchicalSoftmaxObjective2();
     }
     
     // TODO: random initialization

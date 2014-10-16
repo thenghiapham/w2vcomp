@@ -16,10 +16,11 @@ import java.util.HashMap;
 import org.ejml.simple.SimpleMatrix;
 
 import neural.CompositionMatrices;
-import neural.HierarchicalSoftmaxLearner;
+//import neural.HierarchicalSoftmaxLearner;
 import neural.LearningStrategy;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
+import neural.RawHierarchicalSoftmaxLearner;
 
 import vocab.Vocab;
 import vocab.VocabEntry;
@@ -98,7 +99,7 @@ public abstract class Sentence2Vec {
     public void initNetwork() {
         projectionMatrix = ProjectionMatrix.randomInitialize(vocab, hiddenLayerSize);
         if (hierarchicalSoftmax) {
-            learningStrategy = HierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
+            learningStrategy = RawHierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
         } else {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
@@ -205,7 +206,7 @@ public abstract class Sentence2Vec {
                 if (matrix.length != vocab.getVocabSize() -1 || matrix[0].length != hiddenLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
-                    learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                    learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
                 }
             } else {
                 matrix = IOUtils.readMatrix(inputStream, binary);
@@ -237,7 +238,7 @@ public abstract class Sentence2Vec {
                     System.out.println("matrix size does not match");
                 } else {
                     System.out.println("here");
-                    learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                    learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
                 }
             }
             if (negativeSamples > 0) {

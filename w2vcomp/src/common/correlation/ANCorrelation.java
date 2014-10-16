@@ -24,8 +24,8 @@ public class ANCorrelation extends TwoWordPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp2tft", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin2tft");
+        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp-1ttt", true);
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin-1ttt");
         WeightedAdditive add = new WeightedAdditive();
         ANCorrelation anCorrelation = new ANCorrelation("/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemma.txt");
         System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space, add));

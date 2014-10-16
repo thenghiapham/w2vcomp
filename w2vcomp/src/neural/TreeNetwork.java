@@ -30,6 +30,7 @@ import tree.Tree;
 public class TreeNetwork {
     private static final Logger LOGGER = Logger.getLogger(TreeNetwork.class.getName());
     private static final double epsilon = 1e-4;
+    private static final double LEVEL_DECAY = 0.5;
     
     protected Tree parseTree;
     
@@ -207,6 +208,7 @@ public class TreeNetwork {
             }
             
             Layer layer = layerMap.get(node);
+            double coefficient = Math.pow(LEVEL_DECAY, height);
             
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random
@@ -228,7 +230,7 @@ public class TreeNetwork {
                     SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                     
                     ObjectiveFunction costFunction = outputBuilder.getCostFunction();
-                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction);
+                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, coefficient);
                     outputLayer.addInLayer(layer);
                     layer.addOutLayer(outputLayer);
                     

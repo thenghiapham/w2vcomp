@@ -272,20 +272,17 @@ public class SimpleMatrixUtils {
     }
     
     public static void checkNaN(SimpleMatrix input) {
-        int size = input.numCols() * input.numRows();
-        double[] data = input.getMatrix().data;
-        for (int i = 0; i < size; i++) {
-            if (Double.isNaN(data[i])) {
-                throw new ValueException("NaN");
-            }
-            if (Double.isInfinite(data[i])) {
-                throw new ValueException("Inf");
-            }
-//            if (Math.abs(data[i]) > 10000) {
-//                throw new ValueException("Big");
+        //TODO: remove checkNaN every where
+//        int size = input.numCols() * input.numRows();
+//        double[] data = input.getMatrix().data;
+//        for (int i = 0; i < size; i++) {
+//            if (Double.isNaN(data[i])) {
+//                throw new ValueException("NaN");
 //            }
-//            if (Double.)
-        }
+//            if (Double.isInfinite(data[i])) {
+//                throw new ValueException("Inf");
+//            }
+//        }
     }
     
     public static boolean checkValueInRange(SimpleMatrix input, double lowerBound, double upperBound) {

@@ -2,10 +2,11 @@ package neural.function;
 
 import org.ejml.simple.SimpleMatrix;
 
-public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
+public class HierarchicalSoftmaxObjective2 implements ObjectiveFunction{
     // Since this is cost function, the value here is the opposite of 
     // the value in Mikolov's paper
-    
+    protected static final double SHIFT_VALUE = 0.005;
+    protected static final double MULT = 1 - SHIFT_VALUE;
     /**
      * goldMatrix: the (Huffman) binary code of a word
      * predictedMatrix: outputs of the sigmoid function of the path from the
@@ -23,14 +24,10 @@ public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
         double[] goldValues = goldMatrix.getMatrix().getData();
         double cost = 0;
         for (int i = 0; i < predictedValues.length; i++) {
-//            if (predictedValues[i] <= 1e-6 || predictedValues[i] >= (1-1e-6)) continue;
-            if (predictedValues[i] == 0 || predictedValues[i] == 1) continue;
-            else {
-                if (goldValues[i] == 0) {
-                    cost += Math.log(predictedValues[i]);
-                } else {
-                    cost += Math.log(1 - predictedValues[i]);
-                }
+            if (goldValues[i] == 0) {
+                cost += Math.log(SHIFT_VALUE + MULT * (predictedValues[i]));
+            } else {
+                cost += Math.log(SHIFT_VALUE + MULT * (1 - predictedValues[i]));
             }
         }
         return -cost;
@@ -52,15 +49,10 @@ public class HierarchicalSoftmaxObjective implements ObjectiveFunction{
         double[] goldValues = goldMatrix.getMatrix().getData();
         double[] rawError = new double[predictedValues.length];
         for (int i = 0; i < predictedValues.length; i++) {
-//            if (predictedValues[i] <= 1e-6 || predictedValues[i] >= (1-1e-6)) {
-            if (predictedValues[i] == 0 || predictedValues[i] == 1) {
-                rawError[i] = 0;
+            if (goldValues[i] == 0) {
+                rawError[i] = -1 / (SHIFT_VALUE + MULT * (predictedValues[i]));
             } else {
-                if (goldValues[i] == 0) {
-                    rawError[i] = -1 / predictedValues[i];
-                } else {
-                    rawError[i] = 1 / (1 - predictedValues[i]);
-                }
+                rawError[i] = 1 / (SHIFT_VALUE + MULT * (1 - predictedValues[i]));
             }
         }
         return new SimpleMatrix(predictedMatrix.numRows(), 
