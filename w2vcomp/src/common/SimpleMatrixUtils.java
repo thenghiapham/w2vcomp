@@ -296,5 +296,33 @@ public class SimpleMatrixUtils {
         return true;
     }
     
+    public static SimpleMatrix createUniformMatrix(int numRows, int numCols, double value) {
+        SimpleMatrix result = new SimpleMatrix(numCols, numCols);
+        double[] rawData = result.getMatrix().data;
+        for (int i = 0; i < rawData.length; i++) {
+            rawData[i] = value;
+        }
+        return result;
+    }
     
+    public static SimpleMatrix sumSplit(SimpleMatrix input) {
+        double[] rawData = input.getMatrix().data;
+        int length = rawData.length;
+        int halfLength = length / 2;
+        double[] resultData = new double[halfLength];
+        for (int i = 0; i < halfLength; i++) {
+            resultData[i] = rawData[i] + rawData[i + halfLength];
+        }
+        return new SimpleMatrix(halfLength, 1, true, resultData);
+    }
+    
+    public static SimpleMatrix duplicateRows(SimpleMatrix input) {
+        double[] rawData = input.getMatrix().data;
+        int length = rawData.length;
+        int newLength = length * 2;
+        double[] resultData = new double[newLength];
+        System.arraycopy(rawData, 0, resultData, 0, length);
+        System.arraycopy(rawData, 0, resultData, length, length);
+        return new SimpleMatrix(input.numRows() * 2, input.numCols(), true, resultData);
+    }
 }

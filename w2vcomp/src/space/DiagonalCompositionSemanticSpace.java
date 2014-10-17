@@ -9,17 +9,17 @@ import org.ejml.simple.SimpleMatrix;
 import common.SimpleMatrixUtils;
 
 import tree.Tree;
-import neural.CompositionMatrices;
+import neural.DiagonalCompositionMatrices;
 import neural.ProjectionMatrix;
+import neural.SimpleDiagonalTreeNetwork;
 import neural.SimpleTreeNetwork;
-import neural.function.IdentityFunction;
 import neural.function.Tanh;
 
-public class CompositionSemanticSpace implements CompositionalSemanticSpace {
+public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSpace {
     protected ProjectionMatrix      projectionMatrix;
-    protected CompositionMatrices   compositionMatrices;
+    protected DiagonalCompositionMatrices   compositionMatrices;
     
-    public static CompositionSemanticSpace loadCompositionSpace(String inputFilePath, boolean binary) {
+    public static DiagonalCompositionSemanticSpace loadCompositionSpace(String inputFilePath, boolean binary) {
         try {
             BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFilePath));
             return loadCompositionSpace(inputStream, binary);
@@ -29,22 +29,22 @@ public class CompositionSemanticSpace implements CompositionalSemanticSpace {
         }
     }
     
-    public static CompositionSemanticSpace loadCompositionSpace(BufferedInputStream inputStream, 
+    public static DiagonalCompositionSemanticSpace loadCompositionSpace(BufferedInputStream inputStream, 
             boolean binary) throws IOException{
         ProjectionMatrix projectionMatrix = ProjectionMatrix.loadProjectionMatrix(inputStream, binary);
-        CompositionMatrices compositionMatrices = CompositionMatrices.loadConstructionMatrices(inputStream, binary);
-        return new CompositionSemanticSpace(projectionMatrix, compositionMatrices);
+        DiagonalCompositionMatrices compositionMatrices = DiagonalCompositionMatrices.loadConstructionMatrices(inputStream, binary);
+        return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices);
     }
     
-    public CompositionSemanticSpace(ProjectionMatrix projectionMatrix, 
-            CompositionMatrices compositionMatrices) {
+    public DiagonalCompositionSemanticSpace(ProjectionMatrix projectionMatrix, 
+            DiagonalCompositionMatrices compositionMatrices) {
         this.projectionMatrix = projectionMatrix;
         this.compositionMatrices = compositionMatrices;
     }
     
     public SimpleMatrix getComposedVector(String parseTreeString) {
         Tree parseTree = Tree.fromPennTree(parseTreeString);
-        SimpleTreeNetwork network = SimpleTreeNetwork.createComposingNetwork(parseTree, 
+        SimpleDiagonalTreeNetwork network = SimpleDiagonalTreeNetwork.createComposingNetwork(parseTree, 
                 projectionMatrix, compositionMatrices, new Tanh());
 //                projectionMatrix, compositionMatrices, new IdentityFunction());
         SimpleMatrix topVector = network.compose();

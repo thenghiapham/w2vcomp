@@ -9,7 +9,8 @@ import common.IOUtils;
 import composition.BasicComposition;
 import composition.WeightedAdditive;
 
-import space.CompositionSemanticSpace;
+import space.CompositionalSemanticSpace;
+import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 import space.SMSemanticSpace;
 import space.SemanticSpace;
@@ -33,12 +34,21 @@ public class ParsedPhraseCorrelation{
     String[] parsedPhrase;
     String[] surfacePhrase;
 
+    protected ParsedPhraseCorrelation() {
+        
+    }
+    
     public ParsedPhraseCorrelation(String dataset) {
         readDataset(dataset);
     }
     
     public void readDataset(String dataset) {
         ArrayList<String> data = IOUtils.readFile(dataset);
+        convertRawData(data);
+        // TODO: change string sets to arrays
+    }
+    
+    protected void convertRawData(ArrayList<String> data) {
         double[] golds = new double[data.size()];
         String[][] parsePhrasePairs = new String[data.size()][2];
         String[][] surfacePhrasePairs = new String[data.size()][2];
@@ -76,7 +86,8 @@ public class ParsedPhraseCorrelation{
             surfacePhrase[index] = phrase;
             index++;
         }
-        // TODO: change string sets to arrays
+        
+        
     }
     
     /**
@@ -110,7 +121,7 @@ public class ParsedPhraseCorrelation{
     }
     
     
-    public double evaluateSpacePearson(CompositionSemanticSpace space) {
+    public double evaluateSpacePearson(CompositionalSemanticSpace space) {
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrase, space.getComposedMatrix(parsedPhrase));
         return parseCorrelation.evaluateSpacePearson(phraseSpace);
    }
@@ -127,14 +138,14 @@ public class ParsedPhraseCorrelation{
         return surfaceCorrelation.evaluateSpaceSpearman(phraseSpace);
     }
     
-    public double evaluateSpaceSpearman(CompositionSemanticSpace space) {
+    public double evaluateSpaceSpearman(CompositionalSemanticSpace space) {
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrase, space.getComposedMatrix(parsedPhrase));
         return parseCorrelation.evaluateSpaceSpearman(phraseSpace);
     }
     
     public static void main(String[] args) throws IOException {
-        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/old/bnc.cmp-1ttt", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/old/bnc.bin-1ttt");
+        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.bin");
         WeightedAdditive add = new WeightedAdditive();
         ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation("/home/thenghiapham/work/project/mikolov/sick/postprocessed/SICK_train_trial.txt");
         System.out.println("an add: " + sickCorrelation.evaluateSpacePearson(space, add));

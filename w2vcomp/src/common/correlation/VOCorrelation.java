@@ -2,7 +2,7 @@ package common.correlation;
 
 import java.io.IOException;
 
-import space.CompositionSemanticSpace;
+import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 
 import composition.WeightedAdditive;
@@ -24,8 +24,8 @@ public class VOCorrelation extends TwoWordPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/old/bnc.cmp-1ttt", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/old/bnc.bin-1ttt");
+        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.bin");
         WeightedAdditive add = new WeightedAdditive();
         VOCorrelation anCorrelation = new VOCorrelation("/home/thenghiapham/work/dataset/lapata/vo_lemma.txt");
         System.out.println("vo add: " + anCorrelation.evaluateSpacePearson(space, add));

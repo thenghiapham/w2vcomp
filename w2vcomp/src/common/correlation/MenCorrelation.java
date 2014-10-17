@@ -10,8 +10,6 @@ import space.SemanticSpace;
 
 import common.IOUtils;
 
-import demo.TestConstants;
-
 
 /**
  * This class can be used to evaluate a word vector space by computing the
@@ -94,6 +92,8 @@ public class MenCorrelation {
 	    double[] predicts = new double[golds.length];
 	    for (int i = 0; i < golds.length; i++) {
 	        predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
+//	        System.out.println(wordPairs[i][0]);
+//	        System.out.println(wordPairs[i][1]);
 	    }
 	    return pearson.correlation(golds, predicts);
 	}
@@ -123,8 +123,8 @@ public class MenCorrelation {
 	public static void main(String[] args) {
 //	    SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
 //	    RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.CCG_VECTOR_FILE);
-	    RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin3ttt");
-	    MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
+	    RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/old/bnc.bin");
+	    MenCorrelation men = new MenCorrelation("/home/thenghiapham/work/project/mikolov/men/MEN_dataset_lemma.txt");
 	    System.out.println("men: " + men.evaluateSpacePearson(space));
 	}
 }

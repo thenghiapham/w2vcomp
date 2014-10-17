@@ -15,6 +15,7 @@ import common.IOUtils;
 import common.LogUtils;
 
 import vocab.Vocab;
+import word2vec.DiagonalSentence2Vec;
 import word2vec.SingleThreadedSentence2Vec;
 
 import demo.TestConstants;
@@ -27,13 +28,13 @@ public class SentenceVectorLearning {
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 4;
+        int phraseLevel = -1;
         boolean allLevel = true;
         boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
 //        IOUtils.printConstructions(constructionGroups);
-        SingleThreadedSentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
+        SingleThreadedSentence2Vec sentence2vec = new DiagonalSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel, 
 //                hierarchialSoftmax, negativeSampling, subSampling, null, phraseLevel,
                 allLevel, lexical, TestConstants.S_MEN_FILE);
@@ -42,7 +43,6 @@ public class SentenceVectorLearning {
         String compFile = TestConstants.S_COMPOSITION_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String logFile = TestConstants.S_LOG_FILE;
-        String initFile = TestConstants.S_INITIALIZATION_FILE;
         LogUtils.setup(logFile);
         
         System.out.println("Starting training using file " + trainFile);

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import common.IOUtils;
 import composition.BasicComposition;
 
-import space.CompositionSemanticSpace;
+import space.CompositionalSemanticSpace;
 import space.SMSemanticSpace;
 import space.SemanticSpace;
 
@@ -89,7 +89,7 @@ public abstract class TwoWordPhraseCorrelation{
     }
     
     
-    public double evaluateSpacePearson(CompositionSemanticSpace space) {
+    public double evaluateSpacePearson(CompositionalSemanticSpace space) {
         String[] parseComposeData = getParseComposeData();
         String[] newRows = new String[composeData.length];
         for (int i = 0; i < newRows.length; i++) {
@@ -111,7 +111,7 @@ public abstract class TwoWordPhraseCorrelation{
         return correlation.evaluateSpaceSpearman(phraseSpace);
     }
     
-    public double evaluateSpaceSpearman(CompositionSemanticSpace space) {
+    public double evaluateSpaceSpearman(CompositionalSemanticSpace space) {
          String[] parseComposeData = getParseComposeData();
          String[] newRows = new String[composeData.length];
          for (int i = 0; i < newRows.length; i++) {
