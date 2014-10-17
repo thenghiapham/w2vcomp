@@ -1,5 +1,6 @@
 package common;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
@@ -163,5 +165,61 @@ public class IOUtils {
             e.printStackTrace();
         }
         return result;
+    }
+    
+    public static String readWord(BufferedInputStream inputStream) throws IOException{
+        StringBuffer buffer = new StringBuffer();
+        while (true) {
+            int nextByte = inputStream.read();
+            if (nextByte == -1 || nextByte == ' ' || nextByte == '\n' || nextByte == '\t') {
+                if (nextByte == -1 && buffer.length() == 0) {
+                    return null;
+                } else {
+                    break;
+                }
+            } else {
+                buffer.append((char) nextByte);
+            }
+        }
+        return buffer.toString();
+    }
+    
+    public static double[][] readMatrix(BufferedInputStream inputStream, boolean binary) {
+        try {
+            if (binary) {
+                int numRows = Integer.parseInt(readWord(inputStream));
+                int numCols = Integer.parseInt(readWord(inputStream));
+                byte[] rowData = new byte[numCols * 8];
+                ByteBuffer buffer = ByteBuffer.wrap(rowData);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                double[][] result = new double[numRows][numCols];
+                for (int i = 0; i < numRows; i++) {
+                    inputStream.read(rowData);
+                    for (int j = 0; j < numCols; j++) {
+                        result[i][j] = buffer.getDouble(j * 8);
+                    }
+                    inputStream.read();
+                }
+                return result;
+            } else {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = reader.readLine();
+                int numRows = Integer.parseInt(line.split(" ")[0]);
+                int numCols = Integer.parseInt(line.split(" ")[1]);
+                double[][] result = new double[numRows][numCols];
+                for (int i = 0; i < numRows; i++) {
+                    line = reader.readLine();
+                    String[] elements = line.split(" ");
+                    for (int j = 0; j < numCols; j++) {
+                        result[i][j] = Double.parseDouble(elements[j]); 
+                    }
+                }
+                return result;
+            }  
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

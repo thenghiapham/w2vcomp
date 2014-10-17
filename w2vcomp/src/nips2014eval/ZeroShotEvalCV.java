@@ -1,4 +1,4 @@
-package demo;
+package nips2014eval;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,29 +9,35 @@ import java.util.Set;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.HeatMapPanel;
 import common.IOUtils;
 import common.SimpleMatrixUtils;
+import demo.TestConstants;
 
 import space.Neighbor;
 import space.SemanticSpace;
 
-public class ZeroShotEval {
+public class ZeroShotEvalCV {
     
     long seed ;
     
     SemanticSpace vision;
     SemanticSpace language;
     
+    Set<String> skipragramConcepts;
+    Set<String> zeroshotConcepts;
+    Set<String> allConcepts;
+  
+    SimpleMatrix trVision;
+    SimpleMatrix trLanguage;
+    SimpleMatrix tsVision;
+    SimpleMatrix tsLanguage;
+    
+    Set<String> searchConcepts;
     Set<String> trConcepts;
     Set<String> tsConcepts;
-    Set<String> allConcepts;
     
-    SimpleMatrix trVision ;
-    SimpleMatrix tsVision ;
-    SimpleMatrix trLanguage ;
-    SimpleMatrix tsLanguage ;
-    
-    
+    static double[] lambdas = {0,1,2,3,4,5,6,7,8,9,10,11,12};
     
     
     enum trainingDirection {
@@ -39,7 +45,8 @@ public class ZeroShotEval {
     }
     
     
-    public ZeroShotEval(SemanticSpace language, SemanticSpace vision, boolean normalize){
+    public ZeroShotEvalCV(SemanticSpace language, SemanticSpace vision, boolean normalize ){
+        
         
         if (normalize){
             this.language = language.rowNormalize();
@@ -51,6 +58,7 @@ public class ZeroShotEval {
         }
         
         createTrainingTestData(language, vision);
+       
         
     }
     
@@ -60,43 +68,63 @@ public class ZeroShotEval {
 
         allConcepts = new HashSet<String>(vision.getWord2Index().keySet());
         allConcepts.retainAll(language.getWord2Index().keySet());
-        
-        
-        /* //Create random set from seed 
-        //create training and testing concepts
-        ArrayList<String> el = new ArrayList<String>(allConcepts);
-        Collections.shuffle(el,new Random(seed));
-        trConcepts = new HashSet<String>(el.subList(0, 1769));
-        tsConcepts = new HashSet<String>(el.subList(1769, el.size()-1));
-        for (String w: trConcepts){
-            System.out.println(w);
-        }*/
-        
-        
-        //read in train and test set
-        trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
-        tsConcepts = new HashSet<String>(allConcepts);
-        tsConcepts.removeAll(trConcepts);
-        
-        
-        System.out.println(trConcepts.size()+" "+tsConcepts.size());
+
         System.out.println(allConcepts.size());
-        
-        //create training and testing spaces
+        //read in train and test set
+        skipragramConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
+        zeroshotConcepts = new HashSet<String>(allConcepts);
+        zeroshotConcepts.removeAll(skipragramConcepts);
        
-        trVision = new SimpleMatrix(vision.getSubSpace(trConcepts).getVectors());
-        tsVision = new SimpleMatrix(vision.getSubSpace(tsConcepts).getVectors());
-        trLanguage = new SimpleMatrix(language.getSubSpace(trConcepts).getVectors());
-        tsLanguage = new SimpleMatrix(language.getSubSpace(tsConcepts).getVectors());
+        
         
                 
     }
     
+    public void startCV(int folds,trainingDirection dir){
+        SimpleMatrix mapping, estimated;
+        
+        ArrayList<String> concepts = new ArrayList<String>(zeroshotConcepts);
+
+        System.out.println("Size of 0shot concepts "+zeroshotConcepts.size());
+     
+        
+        int fold_size = concepts.size()/folds;
+        for (double lambda: lambdas){
+            double[] ranks= new  double[] {0,0,0,0,0,0};
+            for (int i=0;i<folds;i++){
+                int start_index = fold_size * i;
+                int end_index = start_index + fold_size;
+                trConcepts = new HashSet<String>(concepts);
+                tsConcepts = new HashSet<String>(concepts.subList(start_index, end_index));
+                trConcepts.removeAll(tsConcepts);
+                trConcepts.addAll(skipragramConcepts);
+                searchConcepts  = allConcepts;
     
-    private static SimpleMatrix solve(SimpleMatrix A, SimpleMatrix B) {
+                
+                trVision = new SimpleMatrix(vision.getSubSpace(trConcepts).getVectors());
+                tsVision = new SimpleMatrix(vision.getSubSpace(tsConcepts).getVectors());
+                trLanguage = new SimpleMatrix(language.getSubSpace(trConcepts).getVectors());
+                tsLanguage = new SimpleMatrix(language.getSubSpace(tsConcepts).getVectors());
+                
+                mapping = trainMapping(dir,lambda);
+                //HeatMapPanel.plotHeatMap(mapping);
+    
+                estimated = applyMapping(mapping,dir);
+                int j=0;
+                for(double r: evalRankAggr(estimated, dir )){
+                    ranks[j++] += r/(double)folds;
+    
+                }
+             }
+            printRanks(ranks);
+        }
+    }
+    
+    
+    
+    
+    private static SimpleMatrix solve(SimpleMatrix A, SimpleMatrix B,double lambda) {
         SimpleMatrix ATA = A.transpose().mult(A);
-        //11 and 2.5
-        double lambda = 2.5;
         int size = ATA.numCols();
         SimpleMatrix eye = SimpleMatrix.identity(size).scale(lambda);
         SimpleMatrix eyeTeye = eye.transpose().mult(eye);
@@ -105,36 +133,33 @@ public class ZeroShotEval {
         
     }
     
-    public SimpleMatrix trainMapping(trainingDirection dir){
+    private SimpleMatrix trainMapping(trainingDirection dir, double lambda){
         
         switch(dir){
         case v2l:
-            System.out.println("Training v2l "+trConcepts.size()+" concepts");
-            return solve(trVision,trLanguage);
+            return solve(trVision,trLanguage,lambda);
         case l2v:
-            System.out.println("Training l2v for "+trConcepts.size()+" concepts");
-            return solve(trLanguage,trVision);
+            return solve(trLanguage,trVision, lambda);
         }
         return null;
     }
     
+   
     
-    public SimpleMatrix applyMapping(SimpleMatrix mappingF, trainingDirection dir){
+    private SimpleMatrix applyMapping(SimpleMatrix mappingF, trainingDirection dir){
         
         
         switch(dir){
         case v2l:
-            System.out.println("Mapping v2l "+tsConcepts.size()+" concepts");
             return tsVision.mult(mappingF);
         case l2v:
-            System.out.println("Mapping l2v for "+tsConcepts.size()+" concepts");
             return tsLanguage.mult(mappingF);
         }
         
         return null;
     }
     
-    public double[] evalRankAggr(SimpleMatrix vectors, trainingDirection dir){
+    private double[] evalRankAggr(SimpleMatrix vectors, trainingDirection dir ){
         double[] ranks= new  double[] {0,0,0,0,0,0 };
         
         SemanticSpace space = new SemanticSpace(new ArrayList<String>(tsConcepts),SimpleMatrixUtils.to2DArray(vectors));
@@ -142,14 +167,13 @@ public class ZeroShotEval {
         
         switch (dir){
         case l2v:
-            evalSpace = vision.getSubSpace(allConcepts);
+            evalSpace = vision.getSubSpace(searchConcepts);
             break;
         case v2l:
-            evalSpace = language.getSubSpace(allConcepts);
+            evalSpace = language.getSubSpace(searchConcepts);
             break;
         }
-        int r=0;
-        System.out.println("size of eval space "+evalSpace.getWords().length);
+        //System.out.println("size of eval space "+searchConcepts.size());
         int numOfNs = 100;
         for (String word: tsConcepts){
             Neighbor[] NNs = space.getNeighbors(word, numOfNs,  evalSpace);
@@ -157,7 +181,6 @@ public class ZeroShotEval {
             for (int i=0;i<numOfNs;i++){
                
                 if (NNs[i].word==word){
-                    r+=i;
                     if (i==0){
                         ranks[0]+=1; ranks[1]+=1; ranks[2]+=1; ranks[3]+=1; ranks[4]+=1;  ranks[5]+=1;
                         break;
@@ -186,7 +209,7 @@ public class ZeroShotEval {
             }
             
         }
-        System.out.println(r/(double) tsConcepts.size());
+        //System.out.println(r/(double) tsConcepts.size());
         for (int i=0;i<ranks.length;i++){
             ranks[i] /= (double) tsConcepts.size();
         }
@@ -198,14 +221,13 @@ public class ZeroShotEval {
     
     
     
-    private void printRanks(double [] ranks){
-        System.out.println("P@1: "+ranks[0] * 100);
-        System.out.println("P@2: "+ranks[1] * 100);
-        System.out.println("P@10: "+ranks[2] * 100);
-        System.out.println("P@20: "+ranks[3] * 100);
-        System.out.println("P@50: "+ranks[4] * 100);
-
-
+    public void printRanks(double [] ranks){
+        System.out.print("P@1: "+ranks[0] * 100+" ");
+        System.out.print("P@2: "+ranks[1] * 100+" ");
+        System.out.print("P@10: "+ranks[2] * 100+" ");
+        System.out.print("P@20: "+ranks[3] * 100+" ");
+        System.out.print("P@50: "+ranks[4] * 100+" ");
+        System.out.println();
     }
 
     /**
@@ -217,41 +239,25 @@ public class ZeroShotEval {
         //long seed = TestConstants.SEED;
         System.out.println("Seed is "+seed);
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9_0.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9_20m_z.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         
         trainingDirection dir = trainingDirection.v2l;
         
         //training mapping
-        ZeroShotEval exp = new ZeroShotEval(wordSpace,visionSpace,false);
-        SimpleMatrix mappingF = exp.trainMapping(dir);
-        SimpleMatrix estimated = exp.applyMapping(mappingF,dir);
-
-        //evaluate mapping
-        double[] ranks = exp.evalRankAggr(estimated, dir);
-        exp.printRanks(ranks);
-        //without mapping
-        System.out.println("Without applying mapping");
-        //without mapping for l2v
-        if (dir == trainingDirection.l2v){
-            estimated = new SimpleMatrix(wordSpace.getSubSpace(exp.tsConcepts).getVectors());
-        }
-        else{ //without mapping for v2l
-            estimated = new SimpleMatrix(visionSpace.getSubSpace(exp.tsConcepts).getVectors());
-        }
-        //evaluate mapping
-
-        ranks = exp.evalRankAggr(estimated, dir);
-        exp.printRanks(ranks);
+        ZeroShotEvalCV exp = new ZeroShotEvalCV(wordSpace,visionSpace,false);
         
+        
+        //evaluate mapping
+        exp.startCV(5,dir);
         
         
         
      
+        
+     
 
     }
-
-    
 
 }

@@ -1,7 +1,14 @@
 package common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.ejml.alg.dense.mult.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
+
+import edu.stanford.nlp.util.ArrayUtils;
 
 /**
  * This class provides some utility method for the SimpleMatrix class
@@ -118,5 +125,49 @@ public class SimpleMatrixUtils {
             sum = sum.plus(simpleMatrix.extractVector(true, i));
         }
         return sum;
+    }
+    
+    // TODO: can be rewrite so that it doesn't require extra library
+    public static double elementMax(SimpleMatrix input) {
+        double[] matData = input.getMatrix().data;
+        ArrayList<Double> a = new ArrayList<Double>();
+        for (Double d:matData){
+            a.add(d);
+        }
+        System.out.println(a.size());
+        return Collections.max(a);
+    }
+    
+    public static double elementMin(SimpleMatrix input) {
+        double[] matData = input.getMatrix().data;
+        ArrayList<Double> a = new ArrayList<Double>();
+        for (Double d:matData){
+            a.add(d);
+        }
+        return Collections.min(a);
+    }
+    
+    public static SimpleMatrix getRows(SimpleMatrix originalMatrix, int[] indices) {
+        int numCols = originalMatrix.numCols();
+        double[] originalData = originalMatrix.getMatrix().getData();
+        double[] destinationData = new double[indices.length * numCols];
+        for (int i = 0;i < indices.length; i++) {
+            int index = indices[i];
+            System.arraycopy(originalData, numCols * index, destinationData, 
+                    i * numCols, numCols);
+        }
+        return new SimpleMatrix(indices.length, numCols, true, destinationData);
+    }
+    
+    public static SimpleMatrix getRows(SimpleMatrix originalMatrix, int firstNRows) {
+        int numCols = originalMatrix.numCols();
+        double[] originalData = originalMatrix.getMatrix().getData();
+        double[] destinationData = new double[firstNRows * numCols];
+        for (int i = 0;i < firstNRows; i++) {
+            int index = i;
+            System.arraycopy(originalData, numCols * index, destinationData, 
+                    i * numCols, numCols);
+        }
+        return new SimpleMatrix(firstNRows, numCols, true, destinationData);
     }
 }

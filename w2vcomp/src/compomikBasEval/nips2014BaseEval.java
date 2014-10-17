@@ -26,7 +26,7 @@ public class nips2014BaseEval {
 
     
     enum datasetType {
-        twopairs, onepair, sentence;
+        twopairs, onepair, sentence, svo;
     }
     
     
@@ -47,7 +47,11 @@ public class nips2014BaseEval {
         case sentence:
             sentencePairs = new ArrayList<ArrayList<ArrayList<String>>>();
             readDatasetSick(dataset);
-        
+            break;
+        case svo:
+            sentencePairs = new ArrayList<ArrayList<ArrayList<String>>>();
+            readDatasetGreffen(dataset);
+            break;
         }
         
        
@@ -88,6 +92,7 @@ public class nips2014BaseEval {
     }
     
     
+    
     private void readDatasetSick(String dataset) {
         ArrayList<String> data = IOUtils.readFile(dataset);
         golds = new double[data.size()];
@@ -98,7 +103,7 @@ public class nips2014BaseEval {
             ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
             for (int j=1;j<3;j++){
                 ArrayList<String> sentence = new ArrayList<String>();
-                for (String word:elements[j].replace(",", "").split(" ")){
+                for (String word:elements[j].replace(",", "").replace(".", "").split(" ")){
                     sentence.add(word);
                 }
                 temp.add(j-1,sentence);
@@ -106,6 +111,34 @@ public class nips2014BaseEval {
             
             sentencePairs.add(i, temp);
             golds[i] = Double.parseDouble(elements[3]);
+            
+        }
+    }
+    
+    private void readDatasetGreffen(String dataset) {
+        ArrayList<String> data = IOUtils.readFile(dataset);
+        golds = new double[data.size()];
+       
+        for (int i = 0; i < data.size(); i++) {
+            String dataPiece = data.get(i);
+            String elements[] = dataPiece.split(" ");
+            
+            ArrayList<ArrayList<String>> temp = new ArrayList<ArrayList<String>>();
+            ArrayList<String> sentence= new ArrayList<String>();
+            sentence.add(elements[2]);
+            sentence.add(elements[3]);
+            sentence.add(elements[4]);
+            sentence.add(elements[6]);
+            sentence.add(elements[7]);
+            temp.add(0,sentence);
+            
+            ArrayList<String> sentence1= new ArrayList<String>(sentence);
+            sentence1.remove(2);
+            sentence1.add(2,elements[5]);
+            temp.add(1,sentence1);
+            
+            sentencePairs.add(i, temp);
+            golds[i] = Double.parseDouble(elements[8]);
             
         }
     }
@@ -132,9 +165,10 @@ public class nips2014BaseEval {
                 mat3 = new SimpleMatrix(1,space.getVectorSize(),false,space.getVector(phrasePairs.get(i)[2]));
 
 
-                s[j] = MathUtils.cosine(SimpleMatrixUtils.to2DArray(mat3)[0], SimpleMatrixUtils.to2DArray(mat1.plus(mat2))[0]);
+                s[j] = MathUtils.cosine(SimpleMatrixUtils.to2DArray(mat1.plus(mat2))[0], SimpleMatrixUtils.to2DArray(mat2.plus(mat3))[0]);
                 j++;
                 break;
+               
             }         
         }
         return s;
@@ -163,7 +197,7 @@ public class nips2014BaseEval {
         PearsonsCorrelation pearson = new PearsonsCorrelation();
         SpearmansCorrelation spearman = new SpearmansCorrelation();
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/bnc/out_bnc_300.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/masterclic4/temp/bnc.bin");
         String ANDataset = "/home/angeliki/Documents/mikolov_composition/misc/compo_misc/an_lemma.txt";
         
         nips2014BaseEval eval1 = new nips2014BaseEval(wordSpace, ANDataset,datasetType.twopairs);
@@ -171,27 +205,32 @@ public class nips2014BaseEval {
         for (int i=0;i<ranks1.length;i++){
            // System.out.println(ranks1[i]+" "+eval1.golds[i]);
         }
-        System.out.println("AN Dataset: " + spearman.correlation(ranks1, eval1.golds)); 
+        System.out.println("AN Dataset: " + pearson.correlation(ranks1, eval1.golds)); 
         
         String NNDataset = "/home/angeliki/Documents/mikolov_composition/misc/compo_misc/nn_lemma.txt";
         eval1 = new nips2014BaseEval(wordSpace, NNDataset,datasetType.twopairs);
         ranks1= eval1.simsPairs(datasetType.twopairs);
-        System.out.println("NN Dataset: " + spearman.correlation(ranks1, eval1.golds)); 
+        System.out.println("NN Dataset: " + pearson.correlation(ranks1, eval1.golds)); 
         
         String SVDataset = "/home/angeliki/Documents/mikolov_composition/misc/compo_misc/sv_lemma.txt";
         eval1 = new nips2014BaseEval(wordSpace, SVDataset,datasetType.onepair);
         ranks1= eval1.simsPairs(datasetType.onepair);
-        System.out.println("SV Dataset: " + spearman.correlation(ranks1, eval1.golds)); 
+        System.out.println("SV Dataset: " + pearson.correlation(ranks1, eval1.golds)); 
         
         String VODataset = "/home/angeliki/Documents/mikolov_composition/misc/compo_misc/vo_lemma.txt";
         eval1 = new nips2014BaseEval(wordSpace, VODataset,datasetType.twopairs);
         ranks1= eval1.simsPairs(datasetType.twopairs);
-        System.out.println("VO Dataset: " + spearman.correlation(ranks1, eval1.golds)); 
+        System.out.println("VO Dataset: " + pearson.correlation(ranks1, eval1.golds)); 
         
         String SickDataset = "/home/angeliki/Documents/mikolov_composition/misc/compo_misc/SICK_train_trial.txt";
         eval1 = new nips2014BaseEval(wordSpace, SickDataset,datasetType.sentence);
         ranks1= eval1.simsSick();
         System.out.println("Sick: " + pearson.correlation(ranks1, eval1.golds)); 
+        
+        String Greffen = "/home/angeliki/Documents/mikolov_composition/misc/compo_misc/GS2012data.txt";
+        eval1 = new nips2014BaseEval(wordSpace, Greffen,datasetType.svo);
+        ranks1= eval1.simsSick();
+        System.out.println("Greffen: " + pearson.correlation(ranks1, eval1.golds));
 
 
     }

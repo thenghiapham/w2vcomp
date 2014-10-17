@@ -15,11 +15,14 @@ public class PrintNeighbors {
      */
     public static void main(String[] args) {
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9_20tt.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9_20.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
+        
+        
         
         Set<String> allConcepts = new HashSet<String>(visionSpace.getWord2Index().keySet());
         allConcepts.retainAll(wordSpace.getWord2Index().keySet());
+     
         
         Set<String> trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
         Set<String> tsConcepts = new HashSet<String>(allConcepts);
@@ -27,7 +30,6 @@ public class PrintNeighbors {
         
         
         for (String word: tsConcepts){
-            word = "sea";
             System.out.print(word+":");
             for (Neighbor s: wordSpace.getNeighbors(word, 10)){
                 System.out.print(s.word+" ");

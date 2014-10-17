@@ -206,8 +206,9 @@ public class SemanticSpace {
 
     public double[] getVector(String word) {
         Integer index = word2Index.get(word);
-        if (word == null) {
-            return null;
+        
+        if (index == null) {
+            return SimpleMatrixUtils.to2DArray(new SimpleMatrix(1,vectorSize))[0];
         } else {
             return vectors[index];
         }
