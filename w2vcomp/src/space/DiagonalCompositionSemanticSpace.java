@@ -13,6 +13,7 @@ import tree.Tree;
 import neural.DiagonalCompositionMatrices;
 import neural.ProjectionMatrix;
 import neural.SimpleDiagonalTreeNetwork;
+import neural.function.IdentityFunction;
 //import neural.SimpleTreeNetwork;
 import neural.function.Tanh;
 
@@ -64,8 +65,8 @@ public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSp
     public SimpleMatrix getComposedVector(String parseTreeString) {
         Tree parseTree = Tree.fromPennTree(parseTreeString);
         SimpleDiagonalTreeNetwork network = SimpleDiagonalTreeNetwork.createComposingNetwork(parseTree, 
-                projectionMatrix, compositionMatrices, new Tanh());
-//                projectionMatrix, compositionMatrices, new IdentityFunction());
+//                projectionMatrix, compositionMatrices, new Tanh());
+                projectionMatrix, compositionMatrices, new IdentityFunction());
         SimpleMatrix topVector = network.compose();
         return topVector;
     }

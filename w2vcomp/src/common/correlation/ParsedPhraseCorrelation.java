@@ -144,9 +144,9 @@ public class ParsedPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
-        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.bin");
+        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.bin");
         WeightedAdditive add = new WeightedAdditive();
         ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation("/home/thenghiapham/work/project/mikolov/sick/postprocessed/SICK_train_trial.txt");
         System.out.println("an add: " + sickCorrelation.evaluateSpacePearson(space, add));
