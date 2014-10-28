@@ -4,7 +4,6 @@ import neural.function.ObjectiveFunction;
 
 import org.ejml.simple.SimpleMatrix;
 
-import common.IOUtils;
 import common.SimpleMatrixUtils;
 
 public abstract class LearningStrategy {

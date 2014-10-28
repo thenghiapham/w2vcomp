@@ -16,7 +16,6 @@ import common.correlation.MenCorrelation;
 import neural.TreeNetwork;
 import neural.function.IdentityFunction;
 import neural.function.Sigmoid;
-import neural.function.Tanh;
 
 import space.SMSemanticSpace;
 import tree.Tree;

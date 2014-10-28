@@ -11,7 +11,6 @@ import neural.function.ActivationFunction;
 import neural.function.ObjectiveFunction;
 import neural.layer.BasicLayer;
 import neural.layer.DiagonalHiddenLayer;
-import neural.layer.HiddenLayer;
 import neural.layer.Layer;
 import neural.layer.OutputLayer;
 import neural.layer.ProjectionLayer;
@@ -417,6 +416,7 @@ public class DiagonalTreeNetwork {
             double squareError = component.minus(numComponent).normF();
             squareError = squareError * squareError;
             if (squareError / (component.numCols() * component.numRows()) > 1e-5) {
+                LOGGER.log(Level.FINE, "Big error " + squareError / (component.numCols() * component.numRows()));
 //                System.out.println(squareError / (component.numCols() * component.numRows()));
 //                System.out.println("Big error " + getLayerType(i));
 //                System.out.println("real");

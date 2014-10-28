@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import neural.function.ActivationFunction;
@@ -416,6 +415,7 @@ public class TreeNetwork {
             double squareError = component.minus(numComponent).normF();
             squareError = squareError * squareError;
             if (squareError / (component.numCols() * component.numRows()) > 1e-5) {
+                LOGGER.fine("Big error: " + squareError / (component.numCols() * component.numRows()));
 //                System.out.println(squareError / (component.numCols() * component.numRows()));
 //                System.out.println("Big error " + getLayerType(i));
 //                System.out.println("real");

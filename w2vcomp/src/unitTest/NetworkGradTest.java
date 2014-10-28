@@ -1,9 +1,5 @@
 package unitTest;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
 
 import neural.CompositionMatrices;
 import neural.HierarchicalSoftmaxLearner;
@@ -11,7 +7,6 @@ import neural.ProjectionMatrix;
 import neural.TreeNetwork;
 import neural.function.IdentityFunction;
 import neural.function.Sigmoid;
-import neural.function.Tanh;
 
 import org.ejml.simple.SimpleMatrix;
 import org.junit.Before;
@@ -19,9 +14,7 @@ import org.junit.Test;
 
 import tree.Tree;
 import vocab.Vocab;
-import word2vec.SkipGramPhrase2Vec;
 import common.SigmoidTable;
-import common.ValueGradient;
 
 public class NetworkGradTest {
     SigmoidTable sigmoidTable;
@@ -33,7 +26,6 @@ public class NetworkGradTest {
     @Test
     public void testSimpleSoftmax() {
 
-        SkipGramPhrase2Vec w2v = new SkipGramPhrase2Vec(2, 2, true, 0, 1e-3);
         double[] rawInputPhrase = new double[]{1,0,0,1,0.5, 0.5};
         double[] rawCompositionMatrix = new double[]{2, 0, 0, 2, 1, 0, 0, 1};
         double[] rawSoftmaxWeight = new double[]{1,0,0,1};

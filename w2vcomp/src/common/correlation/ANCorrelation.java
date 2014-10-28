@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import composition.WeightedAdditive;
 
-import space.CompositionSemanticSpace;
 import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 

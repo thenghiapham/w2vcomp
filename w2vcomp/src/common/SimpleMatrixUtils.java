@@ -10,8 +10,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.ejml.alg.dense.mult.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 
-import common.exception.ValueException;
-
 /**
  * This class provides some utility method for the SimpleMatrix class
  * @author thenghiapham

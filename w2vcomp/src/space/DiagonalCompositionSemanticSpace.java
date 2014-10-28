@@ -12,7 +12,7 @@ import tree.Tree;
 import neural.DiagonalCompositionMatrices;
 import neural.ProjectionMatrix;
 import neural.SimpleDiagonalTreeNetwork;
-import neural.SimpleTreeNetwork;
+//import neural.SimpleTreeNetwork;
 import neural.function.Tanh;
 
 public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSpace {
