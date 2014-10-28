@@ -3,6 +3,7 @@ package space;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -33,6 +34,24 @@ public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSp
             boolean binary) throws IOException{
         ProjectionMatrix projectionMatrix = ProjectionMatrix.loadProjectionMatrix(inputStream, binary);
         DiagonalCompositionMatrices compositionMatrices = DiagonalCompositionMatrices.loadConstructionMatrices(inputStream, binary);
+        return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices);
+    }
+    
+    
+    public static DiagonalCompositionSemanticSpace loadProjectionSpace(String inputFilePath, boolean binary) {
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFilePath));
+            return loadProjectionSpace(inputStream, binary);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public static DiagonalCompositionSemanticSpace loadProjectionSpace(BufferedInputStream inputStream, 
+            boolean binary) throws IOException{
+        ProjectionMatrix projectionMatrix = ProjectionMatrix.loadProjectionMatrix(inputStream, binary);
+        DiagonalCompositionMatrices compositionMatrices = DiagonalCompositionMatrices.identityInitialize(new HashMap<String, String>(), projectionMatrix.getVectorSize());
         return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices);
     }
     

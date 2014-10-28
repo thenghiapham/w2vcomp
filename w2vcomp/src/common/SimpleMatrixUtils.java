@@ -295,7 +295,7 @@ public class SimpleMatrixUtils {
     }
     
     public static SimpleMatrix createUniformMatrix(int numRows, int numCols, double value) {
-        SimpleMatrix result = new SimpleMatrix(numCols, numCols);
+        SimpleMatrix result = new SimpleMatrix(numRows, numCols);
         double[] rawData = result.getMatrix().data;
         for (int i = 0; i < rawData.length; i++) {
             rawData[i] = value;
