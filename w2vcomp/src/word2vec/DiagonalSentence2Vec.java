@@ -7,27 +7,21 @@ import neural.DiagonalTreeNetwork;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
 import neural.RawHierarchicalSoftmaxLearner;
-import neural.function.IdentityFunction;
+import neural.function.ActivationFunction;
 import neural.function.Sigmoid;
+import space.DiagonalCompositionSemanticSpace;
+import space.ProjectionAdaptorSpace;
 import tree.Tree;
 
 public class DiagonalSentence2Vec extends SingleThreadedSentence2Vec{
 
     public DiagonalSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample,
-            HashMap<String, String> constructionGroups, int phraseHeight,
+            HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight,
             boolean allLevel, boolean lexical) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, constructionGroups, phraseHeight, allLevel, lexical);
+                subSample, constructionGroups, hiddenActivationFunction, phraseHeight, allLevel, lexical);
         // TODO Auto-generated constructor stub
-    }
-    
-    public DiagonalSentence2Vec(int hiddenLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
-            HashMap<String, String> constructionGroups, int phraseHeight, 
-            boolean allLevel, boolean lexical, String menCorrelationFile) {
-        super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, constructionGroups, phraseHeight, allLevel, lexical, menCorrelationFile);
     }
     
     // call after learning or loading vocabulary
@@ -38,19 +32,18 @@ public class DiagonalSentence2Vec extends SingleThreadedSentence2Vec{
         } else {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
-        compositionMatrices = DiagonalCompositionMatrices.randomInitialize(constructionGroups, hiddenLayerSize);
+        compositionMatrices = DiagonalCompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
         vocab.assignCode();
         
         this.totalLines = vocab.getEntry(0).frequency;
+        
+        space = new DiagonalCompositionSemanticSpace(projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, hiddenActivationFunction);
+        singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
     }
 
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
-//        DiagonalTreeNetwork network = DiagonalTreeNetwork.createNetwork(parseTree, projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, new Tanh(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-        DiagonalTreeNetwork network = DiagonalTreeNetwork.createNetwork(parseTree, projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, new IdentityFunction(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-//        System.out.println(parseTree);
-//        System.out.println(network.toString());
-//        System.out.println(parseTree);
+        DiagonalTreeNetwork network = DiagonalTreeNetwork.createNetwork(parseTree, projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
         network.learn(alpha);
 //        if (random.nextDouble() <= 0.0001) {
 //            network.checkGradient();

@@ -10,42 +10,52 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import common.correlation.MenCorrelation;
+import common.correlation.ParsedPhraseCorrelation;
+import common.correlation.TwoWordPhraseCorrelation;
 
-
-//import neural.IdentityFunction;
 import neural.TreeNetwork;
-import neural.function.IdentityFunction;
+import neural.function.ActivationFunction;
 import neural.function.Sigmoid;
 
-import space.SMSemanticSpace;
+import space.CompositionSemanticSpace;
+import space.CompositionalSemanticSpace;
+import space.ProjectionAdaptorSpace;
+import space.SemanticSpace;
 import tree.Tree;
 
 public class SingleThreadedSentence2Vec extends Sentence2Vec{
     private static final Logger LOGGER = Logger.getLogger(SingleThreadedSentence2Vec.class.getName());
     Random random = new Random();
-    MenCorrelation men;
+    ActivationFunction hiddenActivationFunction;
+    ArrayList<MenCorrelation> wordCorrelations;
+    ArrayList<TwoWordPhraseCorrelation> phraseCorrelations;
+    ArrayList<ParsedPhraseCorrelation> sentenceCorrelations;
+    CompositionalSemanticSpace space;
+    SemanticSpace singleWordSpace;
 
     public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
-            HashMap<String, String> constructionGroups, int phraseHeight, boolean allLevel, boolean lexical) {
+            HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight, boolean allLevel, boolean lexical) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, constructionGroups, phraseHeight, allLevel, lexical);
-        men = null;
+                subSample, constructionGroups, phraseHeight, 
+                allLevel, lexical);
+        this.hiddenActivationFunction = hiddenActivationFunction;
+        wordCorrelations = new ArrayList<>();
+        phraseCorrelations = new ArrayList<>();
+        sentenceCorrelations = new ArrayList<>();
     }
     
-    public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
-            HashMap<String, String> constructionGroups, int phraseHeight, 
-            boolean allLevel, boolean lexical, String menCorrelationFile) {
-        super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, constructionGroups, phraseHeight, allLevel, lexical);
-        men = new MenCorrelation(menCorrelationFile);
-        
+    @Override
+    public void initNetwork() {
+        super.initNetwork();
+        space = new CompositionSemanticSpace(projectionMatrix, compositionMatrices, hiddenActivationFunction);
+        singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
     }
-
+    
     @Override
     public void trainModel(ArrayList<TreeInputStream> inputStreams) {
         // TODO Auto-generated method stub
+        
         System.out.println("line num: " + totalLines);
         System.out.println("vocab size: " + vocab.getVocabSize());
         System.out.println("hidden size: " + hiddenLayerSize);
@@ -58,6 +68,8 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         }
         System.out.println("total read line num: " + this.trainedLines);
     }
+    
+    
 
     protected void trainModelThread(TreeInputStream inputStream) {
         // number of trained lines before this stream
@@ -109,33 +121,48 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
 
     protected void printStatistics() {
         // TODO Auto-generated method stub
-        if (men != null) {
-            LOGGER.log(Level.INFO, "men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
-            System.out.println("men: " + men.evaluateSpacePearson(new SMSemanticSpace(vocab, projectionMatrix.getMatrix(), false)));
-            System.out.println("alpha: " + alpha);
-            System.out.println(projectionMatrix.getMatrix().normF());
-            System.out.println(compositionMatrices.getCompositionMatrix("NN").normF());
-            System.out.println(compositionMatrices.getCompositionMatrix("NP JJ NN").normF());
-            System.out.println(compositionMatrices.getCompositionMatrix("NP NN NN").normF());
-            System.out.println(learningStrategy.getMatrix().normF());
-            
+        System.out.println("alpha: " + alpha);
+        System.out.println(projectionMatrix.getMatrix().normF());
+        System.out.println(compositionMatrices.getCompositionMatrix("NN").normF());
+        System.out.println(compositionMatrices.getCompositionMatrix("NP JJ NN").normF());
+        System.out.println(compositionMatrices.getCompositionMatrix("NP NN NN").normF());
+        System.out.println(learningStrategy.getMatrix().normF());
+        for (MenCorrelation men : wordCorrelations) {
+            double correlation = men.evaluateSpacePearson(singleWordSpace);
+            LOGGER.log(Level.INFO, "men: " + correlation);
+            System.out.println("men: " + correlation);
         }
-//        LOGGER.log(Level.INFO, "norm comp: " + compositionMatrices.getCompositionMatrix("blah").normF());
-//        LOGGER.log(Level.INFO, "norm proj: " + projectionMatrix.getMatrix().normF());
-//        LOGGER.log(Level.INFO, "norm out: " + learningStrategy.getMatrix().normF());
+        for (TwoWordPhraseCorrelation phraseCorrelation : phraseCorrelations) {
+            double correlation = phraseCorrelation.evaluateSpacePearson(space);
+            LOGGER.log(Level.INFO, phraseCorrelation.getName() + ": " + correlation);
+            System.out.println(phraseCorrelation.getName() + ": " + correlation);
+        }
+        for (ParsedPhraseCorrelation sentenceCorrelation : sentenceCorrelations) {
+            double correlation = sentenceCorrelation.evaluateSpacePearson(space);
+            LOGGER.log(Level.INFO, sentenceCorrelation.getName() + ": " + correlation);
+            System.out.println(sentenceCorrelation.getName() + ": " + correlation);
+        }
     }
-
+    
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
-//        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new Tanh(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, new IdentityFunction(), new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-//        System.out.println(parseTree);
-//        System.out.println(network.toString());
+        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
         network.learn(alpha);
 //        if (random.nextDouble() <= 0.0001) {
 //            network.checkGradient();
 //        }
     }
     
+    public void addMenCorrelation(MenCorrelation men) {
+        wordCorrelations.add(men);
+    }
+    
+    public void addPhraseCorrelation(TwoWordPhraseCorrelation phrase) {
+        phraseCorrelations.add(phrase);
+    }
+    
+    public void addSentenceCorrelation(ParsedPhraseCorrelation sentence) {
+        sentenceCorrelations.add(sentence);
+    }
 }
 

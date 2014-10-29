@@ -7,19 +7,21 @@ import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.IOUtils;
 import common.SimpleMatrixUtils;
 
 import tree.Tree;
 import neural.DiagonalCompositionMatrices;
 import neural.ProjectionMatrix;
 import neural.SimpleDiagonalTreeNetwork;
+import neural.function.ActivationFunction;
 import neural.function.IdentityFunction;
-//import neural.SimpleTreeNetwork;
 import neural.function.Tanh;
 
 public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSpace {
     protected ProjectionMatrix      projectionMatrix;
     protected DiagonalCompositionMatrices   compositionMatrices;
+    protected ActivationFunction hiddenActivationFunction;
     
     public static DiagonalCompositionSemanticSpace loadCompositionSpace(String inputFilePath, boolean binary) {
         try {
@@ -35,7 +37,12 @@ public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSp
             boolean binary) throws IOException{
         ProjectionMatrix projectionMatrix = ProjectionMatrix.loadProjectionMatrix(inputStream, binary);
         DiagonalCompositionMatrices compositionMatrices = DiagonalCompositionMatrices.loadConstructionMatrices(inputStream, binary);
-        return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices);
+        String functionString = IOUtils.readWord(inputStream);
+        ActivationFunction function = new IdentityFunction();
+        if ("tanh".equals(functionString)) {
+            function = new Tanh();
+        }
+        return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices, function);
     }
     
     
@@ -53,20 +60,20 @@ public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSp
             boolean binary) throws IOException{
         ProjectionMatrix projectionMatrix = ProjectionMatrix.loadProjectionMatrix(inputStream, binary);
         DiagonalCompositionMatrices compositionMatrices = DiagonalCompositionMatrices.identityInitialize(new HashMap<String, String>(), projectionMatrix.getVectorSize());
-        return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices);
+        return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices, new IdentityFunction());
     }
     
     public DiagonalCompositionSemanticSpace(ProjectionMatrix projectionMatrix, 
-            DiagonalCompositionMatrices compositionMatrices) {
+            DiagonalCompositionMatrices compositionMatrices, ActivationFunction hiddenActivationFunction) {
         this.projectionMatrix = projectionMatrix;
         this.compositionMatrices = compositionMatrices;
+        this.hiddenActivationFunction = hiddenActivationFunction;
     }
     
     public SimpleMatrix getComposedVector(String parseTreeString) {
         Tree parseTree = Tree.fromPennTree(parseTreeString);
         SimpleDiagonalTreeNetwork network = SimpleDiagonalTreeNetwork.createComposingNetwork(parseTree, 
-//                projectionMatrix, compositionMatrices, new Tanh());
-                projectionMatrix, compositionMatrices, new IdentityFunction());
+                projectionMatrix, compositionMatrices, hiddenActivationFunction);
         SimpleMatrix topVector = network.compose();
         return topVector;
     }
@@ -114,8 +121,5 @@ public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSp
         return null;
     }
     
-//    public SimpleMatrix getGroupMatrix(String group) {
-//        return compositionMatrices.g
-//    }
     
 }

@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import neural.function.ActivationFunction;
+import neural.function.IdentityFunction;
+
 import common.IOUtils;
 import common.LogUtils;
 
@@ -40,18 +43,17 @@ public class MassSentenceVectorLearning {
         boolean allLevel = new Boolean(allLevelString);
         boolean lexical = new Boolean(lexicalString);
         boolean useConstruction = new Boolean(constructionString);
-        
+        ActivationFunction hiddenActivationFunction = new IdentityFunction();
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         HashMap<String, String> constructionGroups = new HashMap<String, String>();
         
         if (useConstruction) {
             constructionGroups = IOUtils.readConstructionGroup(constructionFile);
         }
-        // IOUtils.printConstructions(constructionGroups);
+        
         Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
-                //hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel, 
-                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel,
-                allLevel, lexical, TestConstants.S_MEN_FILE);
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction,
+                phraseLevel, allLevel, lexical);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE + outSuffix;
         String vocabFile = TestConstants.S_VOCABULARY_FILE + outSuffix;

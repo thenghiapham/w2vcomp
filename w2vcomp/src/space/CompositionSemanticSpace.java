@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.IOUtils;
 import common.SimpleMatrixUtils;
 
 import tree.Tree;
@@ -13,11 +14,15 @@ import neural.CompositionMatrices;
 import neural.ProjectionMatrix;
 import neural.SimpleTreeNetwork;
 //import neural.function.IdentityFunction;
+//import neural.function.Tanh;
+import neural.function.ActivationFunction;
+import neural.function.IdentityFunction;
 import neural.function.Tanh;
 
 public class CompositionSemanticSpace implements CompositionalSemanticSpace {
     protected ProjectionMatrix      projectionMatrix;
     protected CompositionMatrices   compositionMatrices;
+    protected ActivationFunction hiddenActivationFunction;
     
     public static CompositionSemanticSpace loadCompositionSpace(String inputFilePath, boolean binary) {
         try {
@@ -33,20 +38,25 @@ public class CompositionSemanticSpace implements CompositionalSemanticSpace {
             boolean binary) throws IOException{
         ProjectionMatrix projectionMatrix = ProjectionMatrix.loadProjectionMatrix(inputStream, binary);
         CompositionMatrices compositionMatrices = CompositionMatrices.loadConstructionMatrices(inputStream, binary);
-        return new CompositionSemanticSpace(projectionMatrix, compositionMatrices);
+        String functionString = IOUtils.readWord(inputStream);
+        ActivationFunction function = new IdentityFunction();
+        if ("tanh".equals(functionString)) {
+            function = new Tanh();
+        }
+        return new CompositionSemanticSpace(projectionMatrix, compositionMatrices, function);
     }
     
     public CompositionSemanticSpace(ProjectionMatrix projectionMatrix, 
-            CompositionMatrices compositionMatrices) {
+            CompositionMatrices compositionMatrices, ActivationFunction activationFunction) {
         this.projectionMatrix = projectionMatrix;
         this.compositionMatrices = compositionMatrices;
+        this.hiddenActivationFunction = activationFunction;
     }
     
     public SimpleMatrix getComposedVector(String parseTreeString) {
         Tree parseTree = Tree.fromPennTree(parseTreeString);
         SimpleTreeNetwork network = SimpleTreeNetwork.createComposingNetwork(parseTree, 
-                projectionMatrix, compositionMatrices, new Tanh());
-//                projectionMatrix, compositionMatrices, new IdentityFunction());
+                projectionMatrix, compositionMatrices, hiddenActivationFunction);
         SimpleMatrix topVector = network.compose();
         return topVector;
     }

@@ -25,6 +25,7 @@ public class MenCorrelation {
 	double[] golds;
 	PearsonsCorrelation pearson;
 	SpearmansCorrelation spearman;
+	String name = "";
 	
 	/**
 	 * Initialize with the path to the dataset file
@@ -118,6 +119,14 @@ public class MenCorrelation {
 	 */
 	public double[] getGolds() {
 	    return golds;
+	}
+	
+	public void setName(String name) {
+	    this.name = name;
+	}
+	
+	public String getName() {
+	    return this.name;
 	}
 	
 	public static void main(String[] args) {

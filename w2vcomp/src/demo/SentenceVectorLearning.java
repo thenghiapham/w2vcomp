@@ -9,10 +9,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import neural.function.ActivationFunction;
+import neural.function.IdentityFunction;
 //import java.util.logging.Level;
 
 import common.IOUtils;
 import common.LogUtils;
+import common.correlation.MenCorrelation;
+import common.correlation.ParsedPhraseCorrelation;
 
 import vocab.Vocab;
 import word2vec.DiagonalSentence2Vec;
@@ -32,12 +37,11 @@ public class SentenceVectorLearning {
         boolean allLevel = true;
         boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
+        ActivationFunction hiddenActivationFunction = new IdentityFunction();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-//        IOUtils.printConstructions(constructionGroups);
         SingleThreadedSentence2Vec sentence2vec = new DiagonalSentence2Vec(hiddenLayerSize, windowSize, 
-                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, phraseLevel, 
-//                hierarchialSoftmax, negativeSampling, subSampling, null, phraseLevel,
-                allLevel, lexical, TestConstants.S_MEN_FILE);
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String compFile = TestConstants.S_COMPOSITION_FILE;
@@ -59,10 +63,14 @@ public class SentenceVectorLearning {
         }
 
         sentence2vec.setVocab(vocab);
-
-//        sentence2vec.simpleInit(initFile);
         sentence2vec.initNetwork();
-
+        MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
+        men.setName("MEN");
+        sentence2vec.addMenCorrelation(men);
+        
+        ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
+        sick.setName("SICK");
+        sentence2vec.addSentenceCorrelation(sick);
         // single threaded instead of multithreading
         System.out.println("Start training");
         try {

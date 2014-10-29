@@ -28,6 +28,7 @@ public class ParsedPhraseCorrelation{
 
     MenCorrelation parseCorrelation;
     MenCorrelation surfaceCorrelation;
+    String name = "";
     
     // the info of hrases that need to be composed
     // it contains a list of string tuples (word1, word2, phrases)
@@ -141,6 +142,14 @@ public class ParsedPhraseCorrelation{
     public double evaluateSpaceSpearman(CompositionalSemanticSpace space) {
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrase, space.getComposedMatrix(parsedPhrase));
         return parseCorrelation.evaluateSpaceSpearman(phraseSpace);
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getName() {
+        return this.name;
     }
     
     public static void main(String[] args) throws IOException {

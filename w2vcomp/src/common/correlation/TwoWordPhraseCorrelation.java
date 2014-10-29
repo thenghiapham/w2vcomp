@@ -22,6 +22,7 @@ import space.SemanticSpace;
 public abstract class TwoWordPhraseCorrelation{
 
     MenCorrelation correlation;
+    String name = "";
     
     // the info of hrases that need to be composed
     // it contains a list of string tuples (word1, word2, phrases) 
@@ -122,4 +123,12 @@ public abstract class TwoWordPhraseCorrelation{
     }
     
     abstract protected String[] getParseComposeData();
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getName() {
+        return this.name;
+    }
 }
