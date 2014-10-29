@@ -450,7 +450,7 @@ public class DiagonalTreeNetwork {
         return gradients;
     }
     
-    protected double computeCost() {
+    public double computeCost() {
         forward();
         double cost = 0;
         for (OutputLayer layer: outputLayers) {

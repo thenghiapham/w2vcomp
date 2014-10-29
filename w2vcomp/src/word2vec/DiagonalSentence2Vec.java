@@ -40,6 +40,11 @@ public class DiagonalSentence2Vec extends SingleThreadedSentence2Vec{
         space = new DiagonalCompositionSemanticSpace(projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, hiddenActivationFunction);
         singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
     }
+    
+    protected double computeCost(Tree parseTree) {
+        DiagonalTreeNetwork network = DiagonalTreeNetwork.createNetwork(parseTree, projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+        return network.computeCost();
+    }
 
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
