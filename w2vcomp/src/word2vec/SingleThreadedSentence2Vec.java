@@ -32,7 +32,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     ArrayList<ParsedPhraseCorrelation> sentenceCorrelations;
     CompositionalSemanticSpace space;
     SemanticSpace singleWordSpace;
-    Tree testTree = Tree.fromPennTree("(ROOT (S (NP (EX there)) (@S (VP (VBZ is) (NP (NP (DT no) (@NP (@NP (NN vaccine) (CC or)) (NN cure))) (ADJP (RB currently) (JJ available)))) (. .))))");
+    Tree[] testTrees;
 
     public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
@@ -108,7 +108,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
                     tmpTrainedLines = trainedLines;
                     if (iteration % 4 == 0) {
                         printStatistics();
-                        System.out.println("cost: " + computeCost(testTree));
+                        System.out.println("cost: " + computeCost(testTrees));
                     }
                 }
                 
@@ -143,6 +143,14 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
             LOGGER.log(Level.INFO, sentenceCorrelation.getName() + ": " + correlation);
             System.out.println(sentenceCorrelation.getName() + ": " + correlation);
         }
+    }
+    
+    protected double computeCost(Tree[] parseTrees) {
+        double cost = 0;
+        for (Tree parseTree: parseTrees) {
+            cost += computeCost(parseTree);
+        }
+        return cost;
     }
     
     protected double computeCost(Tree parseTree) {
