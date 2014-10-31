@@ -77,6 +77,7 @@ public class ZeroShotEval {
         
         //read in train and test set
         trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
+        trConcepts.retainAll(allConcepts);
         tsConcepts = new HashSet<String>(allConcepts);
         tsConcepts.removeAll(trConcepts);
         
@@ -219,7 +220,7 @@ public class ZeroShotEval {
         //long seed = TestConstants.SEED;
         System.out.println("Seed is "+seed);
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9_20t.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_5.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         
@@ -230,7 +231,7 @@ public class ZeroShotEval {
         SimpleMatrix mappingF = exp.trainMapping(dir);
         SimpleMatrix estimated = exp.applyMapping(mappingF,dir);
 
-        HeatMapPanel.plotHeatMap(mappingF);
+        //HeatMapPanel.plotHeatMap(mappingF);
         //evaluate mapping
         double[] ranks = exp.evalRankAggr(estimated, dir);
         exp.printRanks(ranks);

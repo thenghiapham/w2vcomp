@@ -19,7 +19,7 @@ public class Nips2014EvalSets {
  
 
     public static void main(String[] args) {
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/bnc/out_bnc_100.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_0.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);
@@ -38,7 +38,7 @@ public class Nips2014EvalSets {
         
         
 
-
+       
 
     }
 

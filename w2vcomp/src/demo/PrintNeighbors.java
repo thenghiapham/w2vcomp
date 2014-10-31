@@ -15,7 +15,7 @@ public class PrintNeighbors {
      */
     public static void main(String[] args) {
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9_20.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic/out_enwiki9_20.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         
@@ -30,12 +30,13 @@ public class PrintNeighbors {
         
         
         for (String word: tsConcepts){
+            word = "summer";
             System.out.print(word+":");
-            for (Neighbor s: wordSpace.getNeighbors(word, 10)){
+            for (Neighbor s: wordSpace.getNeighbors(word, 5)){
                 System.out.print(s.word+" ");
             }
             System.out.print("@@VISION@@ ");
-            for (Neighbor s: wordSpace.getNeighbors(word, 10,visionSpace)){
+            for (Neighbor s: wordSpace.getNeighbors(word, 5,visionSpace)){
                 System.out.print(s.word+" ");
             }
             System.out.println();

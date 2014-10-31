@@ -29,7 +29,7 @@ public class LogPlotting extends JFrame {
         for (String fileName : fileNames) {
             
             
-            if (fileName.endsWith("lck") || !fileName.endsWith("log") || !fileName.startsWith("men-en-wiki9")) continue;
+            if (fileName.endsWith("lck") || !fileName.endsWith("log") || !fileName.startsWith("dump")) continue;
             System.out.println(fileName);
             String filePath = logDirPath + "/" + fileName;
             String suffix = fileName.split("log")[fileName.split("log").length - 1];

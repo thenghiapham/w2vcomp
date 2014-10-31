@@ -35,13 +35,25 @@ public class Images {
         if (!all){
             Set<String> trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
             this.space = this.space.getSubSpace(trConcepts);
+            
         }
-        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training");
-   
+        //for mapping debugging
+        /*double [][] newvecs = new double[this.space.getWords().length][30];
+        int i = 0;
+        for (double [] vec: this.space.getVectors()){
+           for (int j=0; j<30; j++){
+               newvecs[i][j]= vec[j];
+           }
+           i++;
+        }
+        this.space = new SemanticSpace(this.space.getWords(), newvecs);
+        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training");*/
+        
         
         this.word2Index = space.getWord2Index();
         //random_vecs();
         //shuffling_vecs();
+        System.out.println(this.space.getVectorSize());
 
         this.randomTablesize = this.word2Index.size();
         initImageTable();

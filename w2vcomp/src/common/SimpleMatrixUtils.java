@@ -170,4 +170,50 @@ public class SimpleMatrixUtils {
         }
         return new SimpleMatrix(firstNRows, numCols, true, destinationData);
     }
+    
+    public static SimpleMatrix sign(SimpleMatrix originalMatrix) {
+        int rows = originalMatrix.numRows();
+        int cols = originalMatrix.numCols();
+        double[][] old_mat = SimpleMatrixUtils.to2DArray(originalMatrix);
+        double val = 0;
+        for (int i = 0;i < rows; i++) {
+            for (int j = 0;j < cols; j++) {
+                   val = old_mat[i][j];
+                   if (val==0){
+                       old_mat[i][j] = 0;
+                   }
+                   else if (val>0){
+                       old_mat[i][j] = 1;
+                   }
+                   else {
+                       old_mat[i][j] = -1;
+                   }
+            }
+                    
+        }
+        return new SimpleMatrix(old_mat);
+    }
+    
+    
+    public static double non_zero(SimpleMatrix originalMatrix) {
+        int rows = originalMatrix.numRows();
+        int cols = originalMatrix.numCols();
+        double[][] old_mat = SimpleMatrixUtils.to2DArray(originalMatrix);
+
+        double val = 0;
+        double non_zero = 0.0;
+        for (int i = 0;i < rows; i++) {
+            for (int j = 0;j < cols; j++) {
+                   val = old_mat[i][j];
+                   if (val!=0){
+                       non_zero++;
+                   }
+                   
+            }
+                    
+        }
+        return non_zero/((double) rows * cols) ;
+    }
+    
 }
+  

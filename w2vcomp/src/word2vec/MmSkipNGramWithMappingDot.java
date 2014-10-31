@@ -2,6 +2,7 @@ package word2vec;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 
 import space.SemanticSpace;
@@ -9,14 +10,14 @@ import vocab.Vocab;
 import vocab.VocabEntry;
 import io.word.Phrase;
 
-public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
-    public MMSkipNgramWord2Vec(int projectionLayerSize, int windowSize,
+public class MmSkipNGramWithMappingDot extends SingleThreadWord2Vec {
+    public MmSkipNGramWithMappingDot(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample);
     }
     
-    public MMSkipNgramWord2Vec(int projectionLayerSize, int windowSize,
+    public MmSkipNGramWithMappingDot(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages , double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample, menFile);
@@ -26,11 +27,19 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
         // train with the sentence
         double[] a1 = new double[projectionLayerSize];
         double[] a1error = new double[projectionLayerSize];
+        SimpleMatrix a2error;
+
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
         
-        
         boolean updateAtTheEnd=false;
+        
+        //double lambda = 0.00001;
+        double lambda = 0.001;
+        //double lambd = 0.1;
+        //lambda = 0.0;
+        
+        
         
         for (int wordPosition = 0; wordPosition < sentence.length; wordPosition++) {
 
@@ -49,8 +58,8 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
             int start = rand.nextInt(windowSize);
 
             VocabEntry targetWord = vocab.getEntry(wordIndex);
-            String percept =    targetWord.word;      
-            int jPerceptIndex = images.getIndex(percept);
+            
+            
             //modality 1
             for (int i = start; i < windowSize * 2 + 1 - start; i++) {
                 if (i != windowSize) {
@@ -111,16 +120,13 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
            
         
             /*************    FOR SECOND MODALITY   ****************/
-          
-            //if (jPerceptIndex==-1){
-              //  jPerceptIndex = lastImageUsed;
-            //}
-        
-            
-       
-            // NEGATIVE SAMPLING  
-            if (negativeSamplesImages > 0  && jPerceptIndex!=-1) {
-                
+            String percept =    targetWord.word;      
+            int jPerceptIndex = images.getIndex(percept);
+            SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
+         // NEGATIVE SAMPLING  
+            if (negativeSamplesImages > 0 && jPerceptIndex!=-1) {
+                a2error = new SimpleMatrix(imageProjectionLayer.numRows(),imageProjectionLayer.numCols());
+
                 for (int l = 0; l < negativeSamplesImages + 1; l++) {
                     int target;
                     int label;
@@ -134,29 +140,35 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
                             continue;
                         label = 0;
                     }
-                    double z2 = 0;
-                    double gradient;
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        z2 += weights0[wordIndex][j]
-                            * negativeWeights1Images[target][j];
-                    }
-                    double a2 = sigmoidTable.getSigmoid(z2);
-                    gradient = (double) ((label - a2) * alpha);
-                    for (int j = 0; j < projectionLayerSize; j++) {
-                        
-                        a1error[j] += gradient
-                            * negativeWeights1Images[target][j];
-                        
-                        
-                    }
                     
+                    double gradient=0;
+    
+                    //map word vector
+                    SimpleMatrix mapped_vector_row = (new SimpleMatrix(1,projectionLayerSize,false, weights0[wordIndex])).mult(imageProjectionLayer);
+                    
+    
+                    double z2 = 0;
+                    SimpleMatrix temp = new SimpleMatrix(negativeWeights1Images[target].length,1,true, negativeWeights1Images[target]);
+                    z2 =  mapped_vector_row.mult(temp).get(0,0);
+                    //System.out.println(z2);
+                    double a2 = sigmoidTable.getSigmoid(z2);
+                    //System.out.println(a2);
+                    gradient = (double) ((label - a2) * alpha)/3;
+                    
+                    //calculate error with respect to the word representation
+                    a1error_temp  = a1error_temp.plus(imageProjectionLayer.mult(new SimpleMatrix(negativeWeights1Images[target].length, 1, false, negativeWeights1Images[target])).scale(gradient));
+                   //calculate error with respect to the projection layer
+                    a2error = a2error.plus(((new SimpleMatrix(weights0[wordIndex].length,1,true, weights0[wordIndex])).mult(new SimpleMatrix(1,negativeWeights1Images[target].length,false, negativeWeights1Images[target]))).scale(gradient));
+                    a2error = a2error.minus(SimpleMatrixUtils.sign(imageProjectionLayer).scale(lambda));          
+                    //update projection layer
                 }
-                lastImageUsed = jPerceptIndex;
+                    imageProjectionLayer = imageProjectionLayer.plus(a2error);
+                
             }
-
+            
             // Learn weights input -> hidden
             for (int j = 0; j < projectionLayerSize; j++) {
-                weights0[wordIndex][j] += a1error[j];
+                weights0[wordIndex][j] += a1error_temp.get(j, 0);
                 a1error[j] = 0;
             }
         

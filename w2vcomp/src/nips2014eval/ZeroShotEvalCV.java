@@ -72,6 +72,7 @@ public class ZeroShotEvalCV {
         System.out.println(allConcepts.size());
         //read in train and test set
         skipragramConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
+        skipragramConcepts.retainAll(allConcepts);
         zeroshotConcepts = new HashSet<String>(allConcepts);
         zeroshotConcepts.removeAll(skipragramConcepts);
        
@@ -97,7 +98,7 @@ public class ZeroShotEvalCV {
                 trConcepts = new HashSet<String>(concepts);
                 tsConcepts = new HashSet<String>(concepts.subList(start_index, end_index));
                 trConcepts.removeAll(tsConcepts);
-                trConcepts.addAll(skipragramConcepts);
+                //trConcepts.addAll(skipragramConcepts);
                 searchConcepts  = allConcepts;
     
                 
@@ -128,6 +129,7 @@ public class ZeroShotEvalCV {
         int size = ATA.numCols();
         SimpleMatrix eye = SimpleMatrix.identity(size).scale(lambda);
         SimpleMatrix eyeTeye = eye.transpose().mult(eye);
+        
         return (ATA.plus(eyeTeye)).pseudoInverse().mult(A.transpose()).mult(B);
         //return SimpleMatrix.identity(size);
         
@@ -239,7 +241,8 @@ public class ZeroShotEvalCV {
         //long seed = TestConstants.SEED;
         System.out.println("Seed is "+seed);
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/out_enwik9_20m_z.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/inverseProb/out_enwiki9_20z.bin");
+        
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         

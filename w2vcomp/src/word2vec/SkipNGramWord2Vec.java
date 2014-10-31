@@ -36,7 +36,7 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
                 continue;
 
             for (int i = 0; i < projectionLayerSize; i++) {
-                a1[i] = 0;
+               
                 a1error[i] = 0;
             }
 
@@ -100,8 +100,7 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
                             } else {
                                 target = unigram.randomWordIndex();
                                 if (target == 0) {
-                                    target = rand
-                                            .nextInt(vocab.getVocabSize() - 1) + 1;
+                                    target = rand.nextInt(vocab.getVocabSize() - 1) + 1;
                                 }
                                 if (target == wordIndex)
                                     continue;

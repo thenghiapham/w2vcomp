@@ -78,7 +78,7 @@ public abstract class AbstractWord2Vec {
      * negativeSamples
      */
     double[][]                  weights0, weights1, negativeWeights1, negativeWeights1Images;
-    SimpleMatrix                imageProjectionLayer;
+    SimpleMatrix                imageProjectionLayer, ones;
 
     // Random instance
     // for randomize window size, initial weights, subsampling probability
@@ -209,15 +209,18 @@ public abstract class AbstractWord2Vec {
     }
     
     protected void randomInitImageProjectionMatrix(){
-        double[][] mat = new double[projectionLayerSize][projectionLayerSize];  //cross-modal mapping
+        int imageProjectionLayerSize = 300;
+        double[][] mat = new double[projectionLayerSize][imageProjectionLayerSize];  //cross-modal mapping
         
         for (int i = 0; i < projectionLayerSize; i++) {
-            for (int j = 0; j < projectionLayerSize; j++) {
+            for (int j = 0; j < imageProjectionLayerSize; j++) {
                 mat[i][j] = (double) (rand.nextFloat() - 0.5)
-                        / projectionLayerSize ;
+                        / (imageProjectionLayerSize * imageProjectionLayerSize) ;
             }
         }
         imageProjectionLayer = new SimpleMatrix(mat);
+        
+      
     }
 
     public void saveVector(String outputFile, boolean binary) {

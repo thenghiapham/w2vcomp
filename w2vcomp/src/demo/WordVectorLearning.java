@@ -17,6 +17,8 @@ import common.exception.ValueException;
 import space.SemanticSpace;
 import vocab.Vocab;
 import word2vec.MMSkipNgramWord2Vec;
+import word2vec.MmSkipNGramWithMapping;
+import word2vec.MmSkipNGramWithMappingDot;
 //import word2vec.CBowWord2Vec;
 import word2vec.SkipNGramWord2Vec;
 
@@ -28,7 +30,8 @@ public class WordVectorLearning {
         //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(300,5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 20, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        MmSkipNGramWithMappingDot word2vec = new MmSkipNGramWithMappingDot(300, 5, true, 0, 5, (float) 1e-3, TestConstants.SIMLEX_FILE);
+        //MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
         // 0);
         
@@ -45,7 +48,7 @@ public class WordVectorLearning {
 
         boolean learnVocab = !(new File(vocabFile)).exists();
         
-        Vocab vocab = new Vocab(5); //wiki 50, enwik5
+        Vocab vocab = new Vocab(5); //wiki 50, enwik9 5
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency,5);
         else {
@@ -58,7 +61,7 @@ public class WordVectorLearning {
         
         word2vec.initNetwork(initFile);
         
-        word2vec.initImages(TestConstants.VISION_FILE,false);
+        word2vec.initImages(TestConstants.VISION_FILE,true);
         
        
       
@@ -76,9 +79,9 @@ public class WordVectorLearning {
             System.exit(1);
         }
         
-        double [] cors = word2vec.getCors();
-        System.out.println("Printing pearson "+cors[0]);
-        System.out.println("Printing spearman "+cors[1]);
+        //double [] cors = word2vec.getCors();
+        //System.out.println("Printing pearson "+cors[0]);
+        //System.out.println("Printing spearman "+cors[1]);
      
         
        
