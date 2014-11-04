@@ -148,6 +148,7 @@ public abstract class AbstractWord2Vec {
         }
         if (negativeSamples > 0) {
             negativeWeights1 = new double[vocabSize][projectionLayerSize];
+//            negativeWeights1 = weights0;
         }
         vocab.assignCode();
     }

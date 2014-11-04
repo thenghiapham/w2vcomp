@@ -22,6 +22,8 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     protected long oldWordCount;
     protected MenCorrelation men;
     protected RawSemanticSpace outputSpace;
+    protected RawSemanticSpace negSpace;
+    
 
     public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
@@ -51,6 +53,9 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         
         if (men != null) {
             outputSpace = new RawSemanticSpace(vocab, weights0, false);
+            if (negativeSamples > 0) {
+                negSpace = new RawSemanticSpace(vocab, negativeWeights1, false);
+            }
         }
         
         for (SentenceInputStream inputStream : inputStreams) {
@@ -100,8 +105,9 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                     if (alpha < starting_alpha * 0.0001) {
                         alpha = starting_alpha * 0.0001;
                     }
-                    if (men != null && outputSpace != null/* && iteration %2 == 0*/) {
+                    if (men != null && outputSpace != null && iteration %10 == 0) {
                         System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
+                        System.out.println("men neg: " + men.evaluateSpacePearson(negSpace));
                         printStatistics();
                     }
                     if (iteration % 10 == 0) {

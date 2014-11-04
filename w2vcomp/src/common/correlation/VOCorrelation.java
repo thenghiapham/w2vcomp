@@ -24,8 +24,8 @@ public class VOCorrelation extends TwoWordPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.bin");
+        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.bin");
         WeightedAdditive add = new WeightedAdditive();
         VOCorrelation anCorrelation = new VOCorrelation("/home/thenghiapham/work/dataset/lapata/vo_lemma.txt");
         System.out.println("vo add: " + anCorrelation.evaluateSpacePearson(space, add));

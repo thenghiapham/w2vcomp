@@ -32,7 +32,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     ArrayList<ParsedPhraseCorrelation> sentenceCorrelations;
     CompositionalSemanticSpace space;
     SemanticSpace singleWordSpace;
-    Tree[] testTrees;
+    ArrayList<Tree> testTrees;
 
     public SingleThreadedSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
@@ -44,6 +44,7 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         wordCorrelations = new ArrayList<>();
         phraseCorrelations = new ArrayList<>();
         sentenceCorrelations = new ArrayList<>();
+        testTrees = new ArrayList<>();
     }
     
     @Override
@@ -106,9 +107,9 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
 //                    LOGGER.log(Level.INFO, "Trained: " + trainedLines + " lines");
 //                    LOGGER.log(Level.INFO, "Training rate: " + alpha);
                     tmpTrainedLines = trainedLines;
-                    if (iteration % 4 == 0) {
+                    if (iteration % 20 == 0) {
                         printStatistics();
-                        System.out.println("cost: " + computeCost(testTrees));
+//                        System.out.println("cost: " + computeCost(testTrees));
                     }
                 }
                 
@@ -123,11 +124,11 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     protected void printStatistics() {
         // TODO Auto-generated method stub
         System.out.println("alpha: " + alpha);
-        System.out.println(projectionMatrix.getMatrix().normF());
-        System.out.println(compositionMatrices.getCompositionMatrix("NN").normF());
-        System.out.println(compositionMatrices.getCompositionMatrix("NP JJ NN").normF());
-        System.out.println(compositionMatrices.getCompositionMatrix("NP NN NN").normF());
-        System.out.println(learningStrategy.getMatrix().normF());
+//        System.out.println(projectionMatrix.getMatrix().normF());
+//        System.out.println(compositionMatrices.getCompositionMatrix("NN").normF());
+//        System.out.println(compositionMatrices.getCompositionMatrix("NP JJ NN").normF());
+//        System.out.println(compositionMatrices.getCompositionMatrix("NP NN NN").normF());
+//        System.out.println(learningStrategy.getMatrix().normF());
         for (MenCorrelation men : wordCorrelations) {
             double correlation = men.evaluateSpacePearson(singleWordSpace);
             LOGGER.log(Level.INFO, "men: " + correlation);
@@ -145,12 +146,12 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         }
     }
     
-    protected double computeCost(Tree[] parseTrees) {
+    protected double computeCost(ArrayList<Tree> parseTrees) {
         double cost = 0;
         for (Tree parseTree: parseTrees) {
             cost += computeCost(parseTree);
         }
-        return cost;
+        return cost / (parseTrees.size() + 1);
     }
     
     protected double computeCost(Tree parseTree) {
@@ -177,6 +178,10 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
     
     public void addSentenceCorrelation(ParsedPhraseCorrelation sentence) {
         sentenceCorrelations.add(sentence);
+    }
+    
+    public void setTestTrees(ArrayList<Tree> testTrees) {
+        this.testTrees = testTrees;
     }
 }
 

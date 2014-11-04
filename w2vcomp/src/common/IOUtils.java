@@ -18,6 +18,10 @@ import java.util.List;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.exception.ValueException;
+
+import tree.Tree;
+
 /**
  * This class contains a set of utility IO method 
  * @author pham
@@ -283,4 +287,26 @@ public class IOUtils {
         return result;
     }
     
+    public static ArrayList<Tree> readTree(String fileName) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            ArrayList<Tree> result = new ArrayList<Tree>();
+            String line = reader.readLine();
+            while (line != null && !line.equals("")) {
+                try {
+                    line = line.replaceAll("\\(\\)", "LRB)");
+                    line = line.replaceAll(" \\)", " RRB");
+                    result.add(Tree.fromPennTree(line));
+                } catch (ValueException e) {
+//                    e.printStackTrace();
+                }
+                line = reader.readLine();
+            }
+            reader.close();
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

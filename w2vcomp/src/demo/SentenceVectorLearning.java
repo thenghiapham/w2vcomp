@@ -19,6 +19,7 @@ import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 
+import tree.Tree;
 import vocab.Vocab;
 import word2vec.DiagonalSentence2Vec;
 import word2vec.SingleThreadedSentence2Vec;
@@ -28,7 +29,7 @@ import demo.TestConstants;
 public class SentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 100;
+        int hiddenLayerSize = 40;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
@@ -71,6 +72,9 @@ public class SentenceVectorLearning {
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         sick.setName("SICK");
         sentence2vec.addSentenceCorrelation(sick);
+        
+        ArrayList<Tree> validationTrees = IOUtils.readTree(TestConstants.S_VALIDATION_FILE);
+        sentence2vec.setTestTrees(validationTrees);
         // single threaded instead of multithreading
         System.out.println("Start training");
         try {

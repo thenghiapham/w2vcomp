@@ -280,6 +280,10 @@ public class CompositionMatrices {
             }
         }
         for (Integer key : gradientMap.keySet()) {
+            // TODO: blah
+            // don't update default matrices
+            if (key == 0) continue;
+            
             SimpleMatrix gradient =  gradientMap.get(key);
             if (learningRate != 0) {
                 gradient = gradient.plus(compositionMatrices[key].scale(weightDecayTimes.get(key) * weightDecay));

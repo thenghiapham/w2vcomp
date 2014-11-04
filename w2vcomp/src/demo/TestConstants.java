@@ -4,14 +4,15 @@ public class TestConstants {
 
 
     
-    public static final String TRAIN_FILE               = "/home/thenghiapham/svn/word2vec/text8";
-    public static final String VECTOR_FILE              = "/home/thenghiapham/svn/word2vec/out.bin";
-    public static final String VOCABULARY_FILE          = "/home/thenghiapham/svn/word2vec/out.voc";
-    public static final String INITIALIZATION_FILE      = "/home/thenghiapham/svn/word2vec/out.ini";
+    public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/text/wikiA.txt";
+    public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/text/wikiA.bin";
+    public static final String VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/text/wikiA.voc";
+    public static final String INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/text/wikiA.ini";
     
     public static final String S_PROJECT_DIR              = "/home/thenghiapham/work/project/mikolov/";
 //    public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
-    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions.txt";
+//    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions.txt";
+    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "tmp-constructions.txt";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "tmp_parsed/bnc.txt";
 //    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "parse/bnc/bnc.txt";
 //    public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/identity/";
@@ -27,7 +28,10 @@ public class TestConstants {
     
 //    public static final String S_LOG_DIR
     public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
-    public static final String S_SICK_FILE                 = S_PROJECT_DIR + "sick/postprocessed/SICK_train_trial.txt";
+//    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma_form_full";
+    
+    public static final String S_SICK_FILE                = S_PROJECT_DIR + "sick/postprocessed/SICK_train_trial.txt";
+    public static final String S_VALIDATION_FILE          = S_PROJECT_DIR + "tmp_parsed/test_bnc.txt";
     
 
 
