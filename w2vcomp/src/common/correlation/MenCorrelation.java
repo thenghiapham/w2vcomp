@@ -132,7 +132,7 @@ public class MenCorrelation {
 	public static void main(String[] args) {
 //	    SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
 //	    RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.CCG_VECTOR_FILE);
-	    RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/old/bnc.bin");
+	    RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.bin");
 	    MenCorrelation men = new MenCorrelation("/home/thenghiapham/work/project/mikolov/men/MEN_dataset_lemma.txt");
 	    System.out.println("men: " + men.evaluateSpacePearson(space));
 	}

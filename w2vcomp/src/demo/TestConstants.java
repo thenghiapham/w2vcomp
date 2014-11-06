@@ -4,7 +4,8 @@ public class TestConstants {
 
 
     
-    public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/text/wikiA.txt";
+    public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/text/wikiA_sample.txt";
+    public static final String TRAIN_DIR               = "/home/thenghiapham/work/project/mikolov/text/tmp";
     public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/text/wikiA.bin";
     public static final String VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/text/wikiA.voc";
     public static final String INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/text/wikiA.ini";
@@ -27,8 +28,8 @@ public class TestConstants {
     public static final String S_LOG_FILE                 = S_LOG_DIR + "sentence.log";
     
 //    public static final String S_LOG_DIR
-    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
-//    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma_form_full";
+//    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
+    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma_form_full";
     
     public static final String S_SICK_FILE                = S_PROJECT_DIR + "sick/postprocessed/SICK_train_trial.txt";
     public static final String S_VALIDATION_FILE          = S_PROJECT_DIR + "tmp_parsed/test_bnc.txt";

@@ -6,6 +6,7 @@ import composition.WeightedAdditive;
 
 //import demo.TestConstants;
 
+import space.CompositionSemanticSpace;
 import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 
@@ -26,7 +27,8 @@ public class NNCorrelation extends TwoWordPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+//        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
         NNCorrelation nnCorrelation = new NNCorrelation("/home/thenghiapham/work/dataset/lapata/nn_lemma.txt");
 //        MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
         RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.bin");
