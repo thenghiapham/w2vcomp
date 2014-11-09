@@ -1,6 +1,6 @@
 package common.exception;
 
-public class ValueException extends Exception {
+public class ValueException extends RuntimeException {
 
     /**
      * 
