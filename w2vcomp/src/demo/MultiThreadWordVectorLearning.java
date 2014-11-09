@@ -24,7 +24,7 @@ import demo.TestConstants;
 public class MultiThreadWordVectorLearning {
     public static void main(String[] args) throws ValueException, IOException {
 //        MmSkipNGramWithMappingCosine word2vec = new MmSkipNGramWithMappingCosine(300, 5, true, 0,1, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MultiThreadMMSkipgram word2vec = new MultiThreadMMSkipgram(300, 5, true, 0,-1, (float) 1e-3, TestConstants.MEN_FILE);
+        MultiThreadMMSkipgram word2vec = new MultiThreadMMSkipgram(300, 5, true, 0,10, (float) 1e-3, TestConstants.MEN_FILE);
 
         //MmSkipNGramWithMappingDot word2vec = new MmSkipNGramWithMappingDot(300, 5, true, 0, 1, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         //MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 20, (float) 1e-3, TestConstants.CCG_MEN_FILE);
