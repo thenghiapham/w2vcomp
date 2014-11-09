@@ -4,6 +4,7 @@ import org.ejml.simple.SimpleMatrix;
 import org.jblas.DoubleMatrix;
 
 import common.IOUtils;
+import common.MathUtils;
 import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 import demo.TestConstants;
@@ -13,14 +14,14 @@ import vocab.Vocab;
 import vocab.VocabEntry;
 import io.word.Phrase;
 
-public class MmSkipNGramWithMappingDot extends SingleThreadWord2Vec {
-    public MmSkipNGramWithMappingDot(int projectionLayerSize, int windowSize,
+public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
+    public MmSkipNGramWithMappingCosine(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample);
     }
     
-    public MmSkipNGramWithMappingDot(int projectionLayerSize, int windowSize,
+    public MmSkipNGramWithMappingCosine(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages , double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample, menFile);
@@ -40,7 +41,7 @@ public class MmSkipNGramWithMappingDot extends SingleThreadWord2Vec {
         
         double threshold = TestConstants.threshold;
         double r = 1.0;
-        //double lambda = 0.001;
+        double lambda = 0.001;
         //double lambda = 0.1;
         
         
@@ -105,7 +106,7 @@ public class MmSkipNGramWithMappingDot extends SingleThreadWord2Vec {
                             }
                             // Learn weights hidden -> output
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                weights1[iParentIndex][j] += gradient 
+                                weights1[iParentIndex][j] += gradient * r
                                         * weights0[wordIndex][j];
                             }
                         }
@@ -142,7 +143,7 @@ public class MmSkipNGramWithMappingDot extends SingleThreadWord2Vec {
                                         * negativeWeights1[target][j];
                             }
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                negativeWeights1[target][j] += gradient 
+                                negativeWeights1[target][j] += gradient * r
                                         * weights0[wordIndex][j];
                             }
                         }
@@ -168,8 +169,9 @@ public class MmSkipNGramWithMappingDot extends SingleThreadWord2Vec {
             //DOUBLEMATRIX: DoubleMatrix a1error_temp = new DoubleMatrix(a1error.length);
          // NEGATIVE SAMPLING  
             if (negativeSamplesImages > 0 && jPerceptIndex!=-1) {
-                mmWordsPerRun++;
                 a2error = new SimpleMatrix(imageProjectionLayer.numRows(),imageProjectionLayer.numCols());
+                mmWordsPerRun++;
+
                 //DOUBLEMATRIX: a2error = new DoubleMatrix(imageProjectionLayer.rows,imageProjectionLayer.columns);
                 for (int l = 0; l < negativeSamplesImages + 1; l++) {
                     int target;
@@ -188,32 +190,38 @@ public class MmSkipNGramWithMappingDot extends SingleThreadWord2Vec {
                     double gradient=0;
     
                     //map word vector
-                    SimpleMatrix mapped_vector_row = (new SimpleMatrix(1,projectionLayerSize,false, weights0[wordIndex])).mult(imageProjectionLayer);
+                    SimpleMatrix mapped_word_row = (new SimpleMatrix(1,projectionLayerSize,false, weights0[wordIndex])).mult(imageProjectionLayer);
                     //DOUBLEMATRIX: DoubleMatrix mapped_vector_row = (new DoubleMatrix(weights0[wordIndex]).transpose()).mmul(imageProjectionLayer);
     
                     double z2 = 0;
-                    SimpleMatrix temp = new SimpleMatrix(negativeWeights1Images[target].length,1,true, negativeWeights1Images[target]);
-                    z2 =  mapped_vector_row.mult(temp).get(0,0);
+                    SimpleMatrix image = new SimpleMatrix(negativeWeights1Images[target].length,1,true, negativeWeights1Images[target]);
+                    z2 =  MathUtils.cosine(mapped_word_row, image);
+                    //z2 =  mapped_vector_row.mult(temp).get(0,0);
                     //DOUBLEMATRIX: z2 = mapped_vector_row.dot(new DoubleMatrix(negativeWeights1Images[target]));
-                    double a2 = sigmoidTable.getSigmoid(z2);
-                    
-                    gradient = (double) ((label - a2) * alpha * r);
-                    //calculate error with respect to the word representation
-                    a1error_temp  = a1error_temp.plus(imageProjectionLayer.mult(new SimpleMatrix(negativeWeights1Images[target].length, 1, false, negativeWeights1Images[target])).scale(gradient));
+                    //double a2 = sigmoidTable.getSigmoid(z2);
+                    //error is 1-sim -> -sim
+                    gradient = (double) (z2 * alpha* r);
+                    //calculate error with respect to the cosine
+                    SimpleMatrix err_cos_row = MathUtils.cosineDerivative(mapped_word_row, image);
+                    a1error_temp  = a1error_temp.plus(imageProjectionLayer.mult(err_cos_row).scale(gradient));
                     //DOUBLEMATRIX: a1error_temp.addi((imageProjectionLayer.mmul((new DoubleMatrix(negativeWeights1Images[target]))))).mmuli(gradient);
                     //calculate error with respect to the projection layer
-                    a2error = a2error.plus(((new SimpleMatrix(weights0[wordIndex].length,1,true, weights0[wordIndex])).mult(new SimpleMatrix(1,negativeWeights1Images[target].length,false, negativeWeights1Images[target]))).scale(gradient));
+                    a2error = a2error.plus(((new SimpleMatrix(weights0[wordIndex].length,1,true, weights0[wordIndex])).mult(err_cos_row.transpose())).scale(gradient));
+                    //System.out.println("Before"+a2error.norm2());
                     //DOUBLEMATRIX: a2error.addi(((new DoubleMatrix(weights0[wordIndex]).mmul(new DoubleMatrix(negativeWeights1Images[target]).transpose())).mmuli(gradient)));
+                    //System.out.println("After"+a2error.norm2());
+                    //a2error = a2error.minus(SimpleMatrixUtils.sign(imageProjectionLayer).scale(lambda)); 
+                    a2error = a2error.minus(imageProjectionLayer.scale(lambda)); 
                     
                 }
               //update projection layer
                 imageProjectionLayer = imageProjectionLayer.plus(a2error);
                 //DOUBLEMATRIX: imageProjectionLayer.addi(a2error);
-                double norm = imageProjectionLayer.normF();
+                /*double norm = imageProjectionLayer.normF();
                 if (norm > threshold){
                     imageProjectionLayer = imageProjectionLayer.scale(threshold/norm);
                     //DOUBLEMATRIX: imageProjectionLayer.mmuli(threshold/norm);
-                }
+                }*/
                 
             }
             

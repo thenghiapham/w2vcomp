@@ -3,6 +3,7 @@ package word2vec;
 import org.ejml.simple.SimpleMatrix;
 
 import common.exception.ValueException;
+import demo.TestConstants;
 
 import space.SemanticSpace;
 import vocab.Vocab;
@@ -28,7 +29,8 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
         double[] a1error = new double[projectionLayerSize];
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
-        
+        double r = 1.0;
+
         
         boolean updateAtTheEnd=false;
         
@@ -51,6 +53,10 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
             VocabEntry targetWord = vocab.getEntry(wordIndex);
             String percept =    targetWord.word;      
             int jPerceptIndex = images.getIndex(percept);
+            
+            if (jPerceptIndex == -1 || negativeSamplesImages==0)  r = 1.0; else r = TestConstants.rate_multiplier; 
+
+            
             //modality 1
             for (int i = start; i < windowSize * 2 + 1 - start; i++) {
                 if (i != windowSize) {
@@ -90,7 +96,7 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
                             }
                             // Learn weights hidden -> output
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                weights1[iParentIndex][j] += gradient
+                                weights1[iParentIndex][j] += gradient * r
                                         * weights0[wordIndex][j];
                             }
                         }
@@ -113,7 +119,7 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
             /*************    FOR SECOND MODALITY   ****************/
           
             //if (jPerceptIndex==-1){
-              //  jPerceptIndex = lastImageUsed;
+            //    jPerceptIndex = lastImageUsed;
             //}
         
             
@@ -141,7 +147,7 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
                             * negativeWeights1Images[target][j];
                     }
                     double a2 = sigmoidTable.getSigmoid(z2);
-                    gradient = (double) ((label - a2) * alpha);
+                    gradient = (double) ((label - a2) * alpha * r);
                     for (int j = 0; j < projectionLayerSize; j++) {
                         
                         a1error[j] += gradient

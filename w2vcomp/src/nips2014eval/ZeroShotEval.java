@@ -220,7 +220,7 @@ public class ZeroShotEval {
         //long seed = TestConstants.SEED;
         System.out.println("Seed is "+seed);
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_5.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic/out_enwiki9_20.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         
@@ -231,7 +231,10 @@ public class ZeroShotEval {
         SimpleMatrix mappingF = exp.trainMapping(dir);
         SimpleMatrix estimated = exp.applyMapping(mappingF,dir);
 
-        //HeatMapPanel.plotHeatMap(mappingF);
+        HeatMapPanel.plotHeatMap(mappingF);
+        System.out.println(mappingF);
+        System.out.println(SimpleMatrixUtils.elementMax(mappingF));
+        System.out.println(SimpleMatrixUtils.elementMin(mappingF));
         //evaluate mapping
         double[] ranks = exp.evalRankAggr(estimated, dir);
         exp.printRanks(ranks);

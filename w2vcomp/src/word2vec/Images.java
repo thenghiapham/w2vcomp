@@ -38,16 +38,16 @@ public class Images {
             
         }
         //for mapping debugging
-        /*double [][] newvecs = new double[this.space.getWords().length][30];
+        double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
         int i = 0;
         for (double [] vec: this.space.getVectors()){
-           for (int j=0; j<30; j++){
+           for (int j=0; j<TestConstants.imageDimensions; j++){
                newvecs[i][j]= vec[j];
            }
            i++;
         }
         this.space = new SemanticSpace(this.space.getWords(), newvecs);
-        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training");*/
+        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training");
         
         
         this.word2Index = space.getWord2Index();
@@ -105,6 +105,9 @@ public class Images {
        return this.space.getVectors();
    }
    
+   public Random getRandom(){
+       return this.random;
+   }
    
    public int randomWordIndex() {
        int randomInt = random.nextInt(this.randomTablesize);
@@ -131,7 +134,7 @@ public class Images {
     SpearmansCorrelation spearman = new SpearmansCorrelation();
     
     int len = common_elements.size();
-    System.out.println(len);
+    //System.out.println(len);
     double[] sims_1 = new double[len*(len-1)/2];
     double[] sims_2 = new double[len*(len-1)/2];
     int k=0;

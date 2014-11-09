@@ -8,16 +8,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import baselines.SVDFusion;
 
 import common.LogUtils;
-import common.MenCorrelation;
 import common.exception.ValueException;
 
-import space.SemanticSpace;
 import vocab.Vocab;
 import word2vec.MMSkipNgramWord2Vec;
-import word2vec.MmSkipNGramWithMapping;
+import word2vec.MmSkipNGramWithMappingCosine;
 import word2vec.MmSkipNGramWithMappingDot;
 //import word2vec.CBowWord2Vec;
 import word2vec.SkipNGramWord2Vec;
@@ -26,14 +23,11 @@ import demo.TestConstants;
 
 public class WordVectorLearning {
     public static void main(String[] args) throws ValueException, IOException {
-//        CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, true, 0, (float) 0);
-        //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
-        //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
-        //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(300,5, true, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MmSkipNGramWithMappingDot word2vec = new MmSkipNGramWithMappingDot(300, 5, true, 0, 5, (float) 1e-3, TestConstants.SIMLEX_FILE);
-        //MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 0, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
-        // 0);
+        MmSkipNGramWithMappingCosine word2vec = new MmSkipNGramWithMappingCosine(300, 5, true, 0,1, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+
+        //MmSkipNGramWithMappingDot word2vec = new MmSkipNGramWithMappingDot(300, 5, true, 0, 1, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        //MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 20, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        
         
         //TODO: Assume that we extend vocabulary with new items
         //TODO: Assume that for every word we have its extended context
@@ -42,6 +36,7 @@ public class WordVectorLearning {
         String vocabFile = TestConstants.VOCABULARY_FILE;
         String initFile = TestConstants.INITIALIZATION_FILE;
         String logGile = TestConstants.LOG_FILE;
+        String mapFile = TestConstants.MAPPING_FUNCTION;
         LogUtils.setup(logGile);
         
         System.out.println("Starting training using file " + trainFile);
@@ -60,6 +55,7 @@ public class WordVectorLearning {
         word2vec.setVocab(vocab);
         
         word2vec.initNetwork(initFile);
+        //word2vec.saveMappingFunction(mapFile, false);
         
         word2vec.initImages(TestConstants.VISION_FILE,true);
         
@@ -75,13 +71,14 @@ public class WordVectorLearning {
             inputStreams.add(sentenceInputStream);
             word2vec.trainModel(inputStreams);
             word2vec.saveVector(outputFile, true);
+            word2vec.saveMappingFunction(mapFile, false);
            } catch (IOException e) {
             System.exit(1);
         }
         
-        //double [] cors = word2vec.getCors();
-        //System.out.println("Printing pearson "+cors[0]);
-        //System.out.println("Printing spearman "+cors[1]);
+        double [] cors = word2vec.getCors();
+        System.out.println("Printing pearson "+cors[0]);
+        System.out.println("Printing spearman "+cors[1]);
      
         
        

@@ -1,6 +1,8 @@
 package common;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
@@ -66,6 +68,26 @@ public class MenCorrelation {
 		}
 	}
 	
+	public static Set<String> readWords(String dataset, SemanticSpace space, int typeOfVec) {
+        Set<String> words = space.getWord2Index().keySet();
+
+	    
+        ArrayList<String> data = IOUtils.readFile(dataset);
+        Set<String> el = new HashSet<String>();
+        for (int i = 0; i < data.size(); i++) {
+            
+            String dataPiece = data.get(i);
+            String elements[] = dataPiece.split("[ \t]+");
+            for (int j=0;j<2;j++){
+                if ((typeOfVec==1 && words.contains(elements[j])) || (typeOfVec==2 && !words.contains(elements[j]))){
+                    el.add(elements[j]);
+                }
+            }
+       }
+        
+        return el;
+    }
+	
 	/**
      * Read the word pairs and the gold standard from the dataset's
      * field field
@@ -124,17 +146,56 @@ public class MenCorrelation {
      * @return
      */
 	public double evaluateSpaceSpearman(SemanticSpace space) {
-        double[] predicts = new double[golds.length];
-        //int exists = 0;
-
+	    double[] predicts = new double[golds.length];
         for (int i = 0; i < golds.length; i++) {
             predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
+        }
+        
+        //System.out.println(exists/ (double)golds.length+" are 0");
+        return spearman.correlation(golds, predicts);
+    }
+	
+	/**
+     * Evaluate the space using the spearman correlation
+     * @param space
+     * @return
+     */
+    public double evaluateSpaceSpearman2(SemanticSpace space,SemanticSpace space2, int typeOfVec) {
+        ArrayList<Double> predicts = new ArrayList<Double>();
+        ArrayList<Double> g  = new ArrayList<Double>();
+        Set<String> words = space2.getWord2Index().keySet();
+        
+       int exists = 0;
+
+        for (int i = 0; i < golds.length; i++) {
+            if (typeOfVec==1 && (!words.contains(wordPairs[i][0]) || !words.contains(wordPairs[i][1]))){
+               continue;
+            }
+            if (typeOfVec==2 && (words.contains(wordPairs[i][0]) || words.contains(wordPairs[i][1]))){
+                continue;
+            }
+            if (typeOfVec==3 && ( 
+                        (!words.contains(wordPairs[i][0]) &&  words.contains(wordPairs[i][1])) 
+                            || ( words.contains(wordPairs[i][0]) &&  words.contains(wordPairs[i][1])) )){
+                continue;
+            }
+            exists++;
+            predicts.add(space.getSim(wordPairs[i][0], wordPairs[i][1]));
+            g.add(golds[i]);
+            
             //if (predicts[i] == 0){
             //    exists++;
             //}
         }
+        double[] p1 = new double[g.size()]; 
+        double[] p2 = new double[g.size()]; 
+        for (int i=0 ;i<g.size();i++){
+            p1[i] = g.get(i);
+            p2[i] = predicts.get(i);
+        }
+        System.out.println(exists);
         //System.out.println(exists/ (double)golds.length+" are 0");
-        return spearman.correlation(golds, predicts);
+        return spearman.correlation(p1,p2);
     }
 	
 	/**

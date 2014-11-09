@@ -271,7 +271,7 @@ public class SemanticSpace {
 
     public Neighbor[] getNeighbors(String word, int noNeighbor) {
         double[] vector = getVector(word);
-        if (vector == null) {
+        if (vector[0]==0) {
             return null;
         } else {
             return getNeighbors(vector, noNeighbor, new String[] { word });

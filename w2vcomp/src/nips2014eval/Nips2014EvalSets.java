@@ -1,10 +1,16 @@
 package nips2014eval;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.HeatMapPanel;
+import common.IOUtils;
 import common.MenCorrelation;
 import common.SimpleMatrixUtils;
 
@@ -18,8 +24,8 @@ public class Nips2014EvalSets {
 
  
 
-    public static void main(String[] args) {
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_0.bin");
+    public static void main(String[] args) throws FileNotFoundException {
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_1_r4cosl0001.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);
@@ -27,17 +33,51 @@ public class Nips2014EvalSets {
         MenCorrelation semSim =  new MenCorrelation(TestConstants.Carina_FILE,2);
         MenCorrelation visSim =  new MenCorrelation(TestConstants.Carina_FILE,3);
         Images im = new Images(TestConstants.VISION_FILE, true);
+        
+        /*String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_mini_1_r4cos.txt";
+        
+        SimpleMatrix map = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream(mapFile)), false));
+        wordSpace = new SemanticSpace(wordSpace.getWords(), SimpleMatrixUtils.to2DArray((new SimpleMatrix(wordSpace.getVectors())).mult(map)));*/
         double[] cors = im.pairwise_cor(wordSpace);
+        
+        
+        
+        //wordSpace = visionSpace;
+        
+        
+        System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman2(wordSpace,visionSpace, 1)); 
+        System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman2(wordSpace,visionSpace,1)); 
+        System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman2(wordSpace,visionSpace,1)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman2(wordSpace,visionSpace,1 )); 
+        System.out.println();
+        
+        System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman2(wordSpace,visionSpace,2)); 
+        System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman2(wordSpace,visionSpace,2)); 
+        System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman2(wordSpace,visionSpace,2)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman2(wordSpace,visionSpace,2 )); 
+        System.out.println();
+       
+        
+        System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman2(wordSpace,visionSpace,3)); 
+        System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman2(wordSpace,visionSpace,3)); 
+        System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman2(wordSpace,visionSpace,3)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman2(wordSpace,visionSpace,3 )); 
+        System.out.println();
         
         System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman(wordSpace)); 
         System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman(wordSpace)); 
         System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman(wordSpace)); 
-        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman(wordSpace)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman(wordSpace )); 
         System.out.println("Printing pearson "+cors[0]);
         System.out.println("Printing spearman "+cors[1]);
         
+        /*String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_1_5_0.5_cnn.txt";
         
-
+        SimpleMatrix map = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream(mapFile)), false));
+        System.out.println(map.numCols()+" "+ map.numRows());
+        HeatMapPanel.plotHeatMap(map);
+        //System.out.println(map);*/
+        
        
 
     }

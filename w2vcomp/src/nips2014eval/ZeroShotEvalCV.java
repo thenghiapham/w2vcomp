@@ -241,7 +241,7 @@ public class ZeroShotEvalCV {
         //long seed = TestConstants.SEED;
         System.out.println("Seed is "+seed);
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/inverseProb/out_enwiki9_20z.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_mini_1_r4cosl0001.bin");
         
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         

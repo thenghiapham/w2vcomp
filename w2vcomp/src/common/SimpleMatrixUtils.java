@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.ejml.alg.dense.mult.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
+import org.jblas.DoubleMatrix;
 
 import edu.stanford.nlp.util.ArrayUtils;
 
@@ -87,6 +88,23 @@ public class SimpleMatrixUtils {
         double[][] result = new double[numRows][numCols];
         for (int i = 0; i < result.length; i++) {
             System.arraycopy(oneDArray, i * numCols, result[i], 0, numCols);
+        }
+        return result;
+    }
+    
+    /**
+     * Return the data of a SimpleMatrix as a 2d array
+     * (Since the internal structure of a SimpleMatrix is a 1d array, not 2d) 
+     * @param matrix
+     * @return
+     */
+    public static double[][] to2DArray(DoubleMatrix matrix) {
+        double[][] result = new double[matrix.rows][matrix.columns];
+      
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result.length;j++) {
+                result[i][j] = matrix.get(i, j);
+            }
         }
         return result;
     }

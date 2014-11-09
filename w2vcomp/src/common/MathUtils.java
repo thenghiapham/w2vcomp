@@ -24,6 +24,21 @@ public class MathUtils {
         else return dot(v1, v2) / (length1 * length2);
     }
 
+    
+    
+    /**
+     * Cosine of two vectors
+     * @param v1: 1st vector 
+     * @param v2: 2nd vector
+     * @return cosine value
+     */
+    public static double cosine(SimpleMatrix v1, SimpleMatrix v2) {
+        double length1 = v1.normF();
+        double length2 = v2.normF();
+        if (length1 == 0 || length2 == 0) return 0.0;
+        else return ((v1.mult(v2)).scale(1/(length1 * length2))).get(0,0);
+    }
+
     /**
      * Length of a vector
      * @param v: input vector
@@ -69,6 +84,18 @@ public class MathUtils {
         for (int i = 0; i < x.length; i++) {
             result[i] = (a[i] * rToScaleA) - (x[i] * rToScaleX);
         }
+        return result;
+    }
+    
+    
+    public static SimpleMatrix cosineDerivative(SimpleMatrix x, SimpleMatrix a) {
+        double lengthX = x.normF();
+        double lengthA = a.normF();
+        double dotP = x.mult(a).get(0,0);
+        double rToScaleA = 1 / (lengthX * lengthA);
+        double rToScaleX = dotP / (lengthA * lengthX * lengthX * lengthX);
+        SimpleMatrix result = (a.scale(rToScaleA)).minus(x.scale(rToScaleX).transpose());
+        
         return result;
     }
 }

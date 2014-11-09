@@ -81,6 +81,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     void trainModelThread(SentenceInputStream inputStream) {
         oldWordCount = wordCount;
         long lastWordCount = wordCount;
+        long lastWordCount2 = wordCount;
         try {
             int iteration = 0;
             while (true) {
@@ -105,6 +106,13 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
 //                System.out.println(wordCount);
 //                System.out.println(inputStream.getWordCount());
                 
+                if (wordCount - lastWordCount2 > 3080000){
+                    if (men != null && outputSpace != null/* && iteration %2 == 0*/) {
+                        System.out.println("Correlation "+(images.pairwise_cor(new SemanticSpace(vocab, weights0, false)))[1]);
+                     }
+                    lastWordCount2 = wordCount;
+                }
+                
                 if (wordCount - lastWordCount > 10000) {
                     iteration++;
                     // if (wordCount - lastWordCount > 50) {
@@ -117,21 +125,27 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                         alpha = starting_alpha * 0.0001;
                     }
                     if (men != null && outputSpace != null/* && iteration %2 == 0*/) {
-                        System.out.println("correlation: " + men.evaluateSpaceSpearman(outputSpace)+" "+ imageProjectionLayer.normF()+" "+weights0[2225][0]);
+                        //System.out.println("correlation: " + men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),1)+" "+men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),2));
+                        System.out.println("correlation: " + men.evaluateSpaceSpearman(outputSpace)+" and "+((double) mmWordsPerRun)/((double) wordCount - lastWordCount)+"% mm words");
+                        mmWordsPerRun = 0;
                         printStatistics();
                     }
                     if (iteration % 10 == 0) {
                         System.out.println("Trained: " + wordCount + " words");
                         System.out.println("Training rate: " + alpha);
+                        System.out.println("Visual stuff "+imageProjectionLayer.normF());
+                        
                     }
                     lastWordCount = wordCount;
                 }
                 
                         
+                
+                        
                 trainSentence(sentence);
                 trainPhrases(phrases, sentence);
             }
-        } catch (IOException e) {
+        } catch (IOException | ValueException  e) {
             e.printStackTrace();
             System.exit(1);
         }

@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.ejml.simple.SimpleMatrix;
+import org.jblas.DoubleMatrix;
 
 import space.SemanticSpace;
 import vocab.Vocab;
 import vocab.VocabEntry;
 import common.SigmoidTable;
+import demo.TestConstants;
 
 /**
  * Abstract class of word2vec
@@ -63,6 +65,7 @@ public abstract class AbstractWord2Vec {
     // uniGram language model, used in negativeSampling method
     protected UniGram          unigram;
     
+    int                         mmWordsPerRun;
     
  
     // pre-computed sigmoid Table for fast computing sigmoid
@@ -78,8 +81,9 @@ public abstract class AbstractWord2Vec {
      * negativeSamples
      */
     double[][]                  weights0, weights1, negativeWeights1, negativeWeights1Images;
+    
+    //DOUBLEMATRIX DoubleMatrix                imageProjectionLayer, ones;
     SimpleMatrix                imageProjectionLayer, ones;
-
     // Random instance
     // for randomize window size, initial weights, subsampling probability
     // and negative samples
@@ -209,7 +213,7 @@ public abstract class AbstractWord2Vec {
     }
     
     protected void randomInitImageProjectionMatrix(){
-        int imageProjectionLayerSize = 300;
+        int imageProjectionLayerSize = TestConstants.imageDimensions;
         double[][] mat = new double[projectionLayerSize][imageProjectionLayerSize];  //cross-modal mapping
         
         for (int i = 0; i < projectionLayerSize; i++) {
