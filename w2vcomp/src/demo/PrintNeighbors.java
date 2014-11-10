@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.HeatMapPanel;
 import common.IOUtils;
 import common.MenCorrelation;
 import common.SimpleMatrixUtils;
@@ -23,18 +24,19 @@ public class PrintNeighbors {
      */
     public static void main(String[] args) throws FileNotFoundException {
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_mini_1_r4cos.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_cosine/out_enwiki9_mini_0_r10.0l1.0E-4.bin");
         SemanticSpace wordSpace2 = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_0.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         System.out.println(wordSpace.getVectorSize());
         System.out.println(visionSpace.getVectorSize());
-        String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_mini_1_r4cos.txt";
+        String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_cosine/out_enwiki9_mini_0_r10.0l1.0E-4.mapping";
         
         SimpleMatrix map = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream(mapFile)), false));
         SemanticSpace wordSpaceMapped = new SemanticSpace(wordSpace.getWords(), SimpleMatrixUtils.to2DArray((new SimpleMatrix(wordSpace.getVectors())).mult(map)));
-        
-        //System.out.println(map);
+        HeatMapPanel.plotHeatMap(map);
+
+       
         
         Set<String> allConcepts = new HashSet<String>(visionSpace.getWord2Index().keySet());
         allConcepts.retainAll(wordSpace.getWord2Index().keySet());

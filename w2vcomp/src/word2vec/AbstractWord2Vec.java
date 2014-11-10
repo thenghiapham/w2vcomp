@@ -127,7 +127,7 @@ public abstract class AbstractWord2Vec {
             e.printStackTrace();
         }
     }
-
+    
     protected void loadProjectionMatrices(String weightFile) {
         try {
             BufferedInputStream inStream = new BufferedInputStream(
@@ -153,6 +153,58 @@ public abstract class AbstractWord2Vec {
         }
     }
     
+    protected void loadImageProjectionMatrices(String projectionFile) {
+        try {
+            BufferedInputStream inStream = new BufferedInputStream(
+                    new FileInputStream(projectionFile));
+            byte[] array = new byte[4];
+            inStream.read(array);
+            ByteBuffer buffer = ByteBuffer.wrap(array);
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            int from_dim = buffer.getInt(0);
+            inStream.read(array);
+            int to_dim = buffer.getInt(0);
+            System.out.println("from:" + from_dim);
+            System.out.println("new layer1 size:" + to_dim);
+            double [][] temp = new double[from_dim][to_dim];
+            for (int i = 0; i < from_dim; i++) {
+                for (int j = 0; j < to_dim; j++) {
+                    inStream.read(array);
+                    temp[i][j] = buffer.getFloat(0);
+                }
+            }
+            inStream.close();
+            imageProjectionLayer = new SimpleMatrix(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    protected void saveImageProjectionMatrix(String projectionFile) {
+        try {
+            BufferedOutputStream outStream = new BufferedOutputStream(
+                    new FileOutputStream(projectionFile));
+            ByteBuffer buffer = ByteBuffer.allocate(8);
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            buffer.putInt(projectionLayerSize);
+            buffer.putInt(TestConstants.imageDimensions);
+            outStream.write(buffer.array());
+            for (int i = 0; i < projectionLayerSize; i++) {
+                buffer = ByteBuffer.allocate(4 * TestConstants.imageDimensions);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                for (int j = 0; j < TestConstants.imageDimensions; j++) {
+                    buffer.putFloat((float) imageProjectionLayer.get(i,j));
+                }
+                outStream.write(buffer.array());
+            }
+            outStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+   
+    
     protected void initBare() {
         int vocabSize = vocab.getVocabSize();
         if (negativeSamples > 0) {
@@ -176,16 +228,25 @@ public abstract class AbstractWord2Vec {
         
     }
 
-    public void initNetwork(String initFile) {
+    public void initNetwork(String initFile, String projInitFile) {
         initBare();
         boolean readInit = (new File(initFile)).exists();
         if (!readInit) {
             randomInitProjectionMatrices();
-            randomInitImageProjectionMatrix();
             saveProjectionMatrices(initFile);
         } else {
+            System.out.println("Loading word projection init");
             loadProjectionMatrices(initFile);
+        }
+        readInit = (new File(projInitFile)).exists();
+        if (!readInit){
             randomInitImageProjectionMatrix();
+            saveImageProjectionMatrix(projInitFile);
+        }
+        else{
+            System.out.println("Loading image projection init");
+            loadImageProjectionMatrices(projInitFile);
+            System.out.println(imageProjectionLayer.normF());
         }
     }
 

@@ -23,7 +23,7 @@ import demo.TestConstants;
 
 public class WordVectorLearning {
     public static void main(String[] args) throws ValueException, IOException {
-        MmSkipNGramWithMappingCosine word2vec = new MmSkipNGramWithMappingCosine(300, 5, true, 0,1, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        MmSkipNGramWithMappingCosine word2vec = new MmSkipNGramWithMappingCosine(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3, TestConstants.CCG_MEN_FILE);
 
         //MmSkipNGramWithMappingDot word2vec = new MmSkipNGramWithMappingDot(300, 5, true, 0, 1, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         //MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 20, (float) 1e-3, TestConstants.CCG_MEN_FILE);
@@ -35,6 +35,7 @@ public class WordVectorLearning {
         String outputFile = TestConstants.VECTOR_FILE;
         String vocabFile = TestConstants.VOCABULARY_FILE;
         String initFile = TestConstants.INITIALIZATION_FILE;
+        String projInitFile = TestConstants.IMAGE_INITIALIZATION_FILE;
         String logGile = TestConstants.LOG_FILE;
         String mapFile = TestConstants.MAPPING_FUNCTION;
         LogUtils.setup(logGile);
@@ -54,7 +55,7 @@ public class WordVectorLearning {
 
         word2vec.setVocab(vocab);
         
-        word2vec.initNetwork(initFile);
+        word2vec.initNetwork(initFile,projInitFile);
         //word2vec.saveMappingFunction(mapFile, false);
         
         word2vec.initImages(TestConstants.VISION_FILE,true);

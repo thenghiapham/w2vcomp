@@ -40,7 +40,7 @@ public class MultiModalWordVectorLearning {
 
         word2vec.setVocab(vocab);
 
-        word2vec.initNetwork(initFile);
+        word2vec.initNetwork(initFile,initFile);
 
         // single threaded instead of multithreading
         System.out.println("Start training");

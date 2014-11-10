@@ -37,6 +37,7 @@ public class MathUtils {
         double length2 = v2.normF();
         if (length1 == 0 || length2 == 0) return 0.0;
         else return ((v1.mult(v2)).scale(1/(length1 * length2))).get(0,0);
+        
     }
 
     /**

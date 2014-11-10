@@ -39,10 +39,9 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
         
         boolean updateAtTheEnd=false;
         
-        double threshold = TestConstants.threshold;
         double r = 1.0;
-        double lambda = 0.001;
-        //double lambda = 0.1;
+        double lambda = TestConstants.lambda;
+       
         
         
         
@@ -61,6 +60,7 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
 
             // random actual window size
             int start = rand.nextInt(windowSize);
+            //int start = 0;
 
             VocabEntry targetWord = vocab.getEntry(wordIndex);
             String percept =    targetWord.word;      
@@ -106,7 +106,7 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
                             }
                             // Learn weights hidden -> output
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                weights1[iParentIndex][j] += gradient * r
+                                weights1[iParentIndex][j] += gradient *r
                                         * weights0[wordIndex][j];
                             }
                         }
@@ -143,7 +143,7 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
                                         * negativeWeights1[target][j];
                             }
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                negativeWeights1[target][j] += gradient * r
+                                negativeWeights1[target][j] += gradient *r
                                         * weights0[wordIndex][j];
                             }
                         }
@@ -168,7 +168,7 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
             SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
             //DOUBLEMATRIX: DoubleMatrix a1error_temp = new DoubleMatrix(a1error.length);
          // NEGATIVE SAMPLING  
-            if (negativeSamplesImages > 0 && jPerceptIndex!=-1) {
+            if (negativeSamplesImages != -1 && jPerceptIndex!=-1) {
                 a2error = new SimpleMatrix(imageProjectionLayer.numRows(),imageProjectionLayer.numCols());
                 mmWordsPerRun++;
 
@@ -200,7 +200,7 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
                     //DOUBLEMATRIX: z2 = mapped_vector_row.dot(new DoubleMatrix(negativeWeights1Images[target]));
                     //double a2 = sigmoidTable.getSigmoid(z2);
                     //error is 1-sim -> -sim
-                    gradient = (double) (z2 * alpha* r);
+                    gradient = (double) (  alpha* r);
                     //calculate error with respect to the cosine
                     SimpleMatrix err_cos_row = MathUtils.cosineDerivative(mapped_word_row, image);
                     a1error_temp  = a1error_temp.plus(imageProjectionLayer.mult(err_cos_row).scale(gradient));
@@ -217,11 +217,13 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
               //update projection layer
                 imageProjectionLayer = imageProjectionLayer.plus(a2error);
                 //DOUBLEMATRIX: imageProjectionLayer.addi(a2error);
-                /*double norm = imageProjectionLayer.normF();
-                if (norm > threshold){
-                    imageProjectionLayer = imageProjectionLayer.scale(threshold/norm);
-                    //DOUBLEMATRIX: imageProjectionLayer.mmuli(threshold/norm);
-                }*/
+                if (wordCount < 300000 ){
+                    double norm = imageProjectionLayer.normF();
+                    if (norm > TestConstants.threshold){
+                        imageProjectionLayer = imageProjectionLayer.scale(TestConstants.threshold/norm);
+                        //DOUBLEMATRIX: imageProjectionLayer.mmuli(threshold/norm);
+                    }
+                }
                 
             }
             
