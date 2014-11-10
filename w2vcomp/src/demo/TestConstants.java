@@ -12,8 +12,8 @@ public class TestConstants {
     
     public static final String S_PROJECT_DIR              = "/home/thenghiapham/work/project/mikolov/";
 //    public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
-//    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions.txt";
-    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "tmp-constructions.txt";
+    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions.txt";
+//    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "tmp-constructions.txt";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "tmp_parsed/bnc.txt";
 //    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "parse/bnc/bnc.txt";
 //    public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/identity/";
@@ -28,8 +28,8 @@ public class TestConstants {
     public static final String S_LOG_FILE                 = S_LOG_DIR + "sentence.log";
     
 //    public static final String S_LOG_DIR
-//    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
-    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma_form_full";
+    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
+//    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma_form_full";
     
     public static final String S_SICK_FILE                = S_PROJECT_DIR + "sick/postprocessed/SICK_train_trial.txt";
     public static final String S_VALIDATION_FILE          = S_PROJECT_DIR + "tmp_parsed/test_bnc.txt";

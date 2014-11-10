@@ -43,6 +43,9 @@ public class SentenceVectorLearning {
         SingleThreadedSentence2Vec sentence2vec = new DiagonalSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
+//        SingleThreadedSentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
         String trainFile = TestConstants.S_TRAIN_FILE;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String compFile = TestConstants.S_COMPOSITION_FILE;
@@ -73,8 +76,8 @@ public class SentenceVectorLearning {
         sick.setName("SICK");
         sentence2vec.addSentenceCorrelation(sick);
         
-        ArrayList<Tree> validationTrees = IOUtils.readTree(TestConstants.S_VALIDATION_FILE);
-        sentence2vec.setTestTrees(validationTrees);
+//        ArrayList<Tree> validationTrees = IOUtils.readTree(TestConstants.S_VALIDATION_FILE);
+//        sentence2vec.setTestTrees(validationTrees);
         // single threaded instead of multithreading
         System.out.println("Start training");
         try {
