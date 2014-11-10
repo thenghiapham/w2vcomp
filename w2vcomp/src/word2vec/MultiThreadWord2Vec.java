@@ -20,7 +20,6 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
 
     protected MenCorrelation men;
     protected SemanticSpace outputSpace;
-    protected SemanticSpace negSpace;
     long lastWordCount = 0;
     int iteration = 0;
     
@@ -56,18 +55,31 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         
         if (men != null) {
             outputSpace = new SemanticSpace(vocab, weights0, false);
-            if (negativeSamples > 0) {
-                negSpace = new SemanticSpace(vocab, negativeWeights1, false);
-            }
         }
         
-        for (SentenceInputStream inputStream : inputStreams) {
+        TrainingThread[] trainingThreads = new TrainingThread[inputStreams.size()];
+        for (int i = 0; i < inputStreams.size(); i++) {
+            SentenceInputStream inputStream = inputStreams.get(i);
             if (subSample > 0) {
                 inputStream = new SubSamplingSentenceInputStream(inputStream, subSample);
             }
             TrainingThread thread = new TrainingThread(inputStream);
+            trainingThreads[i] = thread;
             thread.start();
         }
+        
+        try {
+            for (TrainingThread thread: trainingThreads) {
+                thread.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        if (men != null) {
+            System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
+        }
+        
         System.out.println("total word count: " + wordCount);
     }
 
