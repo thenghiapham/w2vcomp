@@ -125,7 +125,7 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
             
        
             // NEGATIVE SAMPLING  
-            if (negativeSamplesImages > 0  && jPerceptIndex!=-1) {
+            if (negativeSamplesImages !=-1  && jPerceptIndex!=-1) {
                 
                 for (int l = 0; l < negativeSamplesImages + 1; l++) {
                     int target;
