@@ -73,8 +73,9 @@ public class SentenceVectorLearning {
         sick.setName("SICK");
         sentence2vec.addSentenceCorrelation(sick);
         
-        ArrayList<Tree> validationTrees = IOUtils.readTree(TestConstants.S_VALIDATION_FILE);
-        sentence2vec.setTestTrees(validationTrees);
+        /*
+         * ArrayList<Tree> validationTrees = IOUtils.readTree(TestConstants.S_VALIDATION_FILE);
+        sentence2vec.setTestTrees(validationTrees);*/
         // single threaded instead of multithreading
         System.out.println("Start training");
         try {
