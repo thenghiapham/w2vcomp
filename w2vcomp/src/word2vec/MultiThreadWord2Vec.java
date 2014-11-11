@@ -133,6 +133,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
 
                 trainSentence(sentence);
             }
+            System.out.println("real word Count" + ((SubSamplingSentenceInputStream) inputStream).getRealWordCount());
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
