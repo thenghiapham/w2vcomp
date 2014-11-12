@@ -16,6 +16,7 @@ import vocab.Vocab;
 import word2vec.MMSkipNgramWord2Vec;
 import word2vec.MmSkipNGramWithMappingCosine;
 import word2vec.MmSkipNGramWithMappingDot;
+import word2vec.MmSkipNGramWithMappingMaxMargin;
 //import word2vec.CBowWord2Vec;
 import word2vec.SkipNGramWord2Vec;
 
@@ -23,7 +24,8 @@ import demo.TestConstants;
 
 public class WordVectorLearning {
     public static void main(String[] args) throws ValueException, IOException {
-        MmSkipNGramWithMappingCosine word2vec = new MmSkipNGramWithMappingCosine(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        //MmSkipNGramWithMappingCosine word2vec = new MmSkipNGramWithMappingCosine(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3, TestConstants.CCG_MEN_FILE);
 
         //MmSkipNGramWithMappingDot word2vec = new MmSkipNGramWithMappingDot(300, 5, true, 0, 1, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         //MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 20, (float) 1e-3, TestConstants.CCG_MEN_FILE);

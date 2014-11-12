@@ -25,7 +25,7 @@ public class Nips2014EvalSets {
  
 
     public static void main(String[] args) throws FileNotFoundException {
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_cosine/out_enwiki9_mini_0_r10.0l1.0E-4.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_max/out_enwiki9_5_r15.0_r220.0l1.0E-4.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         
         MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);

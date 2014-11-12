@@ -65,8 +65,8 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
             VocabEntry targetWord = vocab.getEntry(wordIndex);
             String percept =    targetWord.word;      
             int jPerceptIndex = images.getIndex(percept);
-            if (jPerceptIndex == -1)  r = 1.0; else  r= TestConstants.rate_multiplier;
-           
+            if (jPerceptIndex == -1 || negativeSamplesImages!=-1)  r = 1.0; else  r= TestConstants.rate_multiplier_sft;
+            
             //modality 1
             for (int i = start; i < windowSize * 2 + 1 - start; i++) {
                 if (i != windowSize) {
@@ -148,6 +148,9 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
                             }
                         }
                     }
+                   
+                    
+                    
                     // Learn weights input -> hidden
                     if (!updateAtTheEnd){
                         for (int j = 0; j < projectionLayerSize; j++) {
@@ -166,12 +169,14 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
             /*************    FOR SECOND MODALITY   ****************/
             
             SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
+            if (jPerceptIndex == -1)  r = 1.0; else  r= TestConstants.rate_multiplier_grad;
+
             //DOUBLEMATRIX: DoubleMatrix a1error_temp = new DoubleMatrix(a1error.length);
          // NEGATIVE SAMPLING  
             if (negativeSamplesImages != -1 && jPerceptIndex!=-1) {
                 a2error = new SimpleMatrix(imageProjectionLayer.numRows(),imageProjectionLayer.numCols());
                 mmWordsPerRun++;
-
+                double z2 = 0;
                 //DOUBLEMATRIX: a2error = new DoubleMatrix(imageProjectionLayer.rows,imageProjectionLayer.columns);
                 for (int l = 0; l < negativeSamplesImages + 1; l++) {
                     int target;
@@ -193,7 +198,7 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
                     SimpleMatrix mapped_word_row = (new SimpleMatrix(1,projectionLayerSize,false, weights0[wordIndex])).mult(imageProjectionLayer);
                     //DOUBLEMATRIX: DoubleMatrix mapped_vector_row = (new DoubleMatrix(weights0[wordIndex]).transpose()).mmul(imageProjectionLayer);
     
-                    double z2 = 0;
+                   
                     SimpleMatrix image = new SimpleMatrix(negativeWeights1Images[target].length,1,true, negativeWeights1Images[target]);
                     z2 =  MathUtils.cosine(mapped_word_row, image);
                     //z2 =  mapped_vector_row.mult(temp).get(0,0);
@@ -225,13 +230,19 @@ public class MmSkipNGramWithMappingCosine extends SingleThreadWord2Vec {
                     }
                 }
                 
+               
+                
+                if (z2<0.5){
+                    System.out.println("MM: "+a1error_temp.normF()+" cos "+z2+" "+targetWord.word);
+                }
+                
+                // Learn weights input -> hidden
+                for (int j = 0; j < projectionLayerSize; j++) {
+                    weights0[wordIndex][j] += a1error_temp.get(j, 0);
+                    a1error[j] = 0;
+                }
             }
             
-            // Learn weights input -> hidden
-            for (int j = 0; j < projectionLayerSize; j++) {
-                weights0[wordIndex][j] += a1error_temp.get(j, 0);
-                a1error[j] = 0;
-            }
         
         }
 

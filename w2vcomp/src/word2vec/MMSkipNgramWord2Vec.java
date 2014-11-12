@@ -54,8 +54,7 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
             String percept =    targetWord.word;      
             int jPerceptIndex = images.getIndex(percept);
             
-            if (jPerceptIndex == -1 )  r = 1.0; else r = TestConstants.rate_multiplier; 
-
+            if (jPerceptIndex == -1 || negativeSamplesImages!=-1)  r = 1.0; else  r= TestConstants.rate_multiplier_sft;
             
             //modality 1
             for (int i = start; i < windowSize * 2 + 1 - start; i++) {
@@ -123,7 +122,8 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
             //}
         
             
-       
+            if (jPerceptIndex == -1 )  r = 1.0; else r = TestConstants.rate_multiplier_grad; 
+
             // NEGATIVE SAMPLING  
             if (negativeSamplesImages !=-1  && jPerceptIndex!=-1) {
                 

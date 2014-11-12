@@ -2,14 +2,18 @@ package demo;
 
 public class TestConstants {
     
-    public static final int wordDimensions = 40;
-    public static final int imageDimensions = 30;
-    public static final String typeOfLearning = "_mini";
+    public static final int wordDimensions = 300;
+    public static final int imageDimensions = 300;
+    public static final String typeOfLearning = "";
 
-    public static final double rate_multiplier = 10;
+    public static final double rate_multiplier_grad = 20;
+    public static final double rate_multiplier_sft = 1;
+
     public static final double lambda = 0.0001;
-    public static final int negative_samples = 0;
+    public static final int negative_samples = 5;
     public static final double threshold = 3;
+    public static final double margin = 0.5;
+
 
 
 
@@ -17,10 +21,12 @@ public class TestConstants {
     public static final String VISION_FILE              = "/home/angeliki/Documents/mikolov_composition/misc/pmisvd.aggr.dm";
     public static final long SEED                       = 292626718599866L;
     public static final String TRAIN_CONCEPTS              = "/home/angeliki/Documents/mikolov_composition/misc/trainingConcepts.txt";                                     
-    public static final String VECTOR_FILE              = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_cosine/out_enwiki9"+typeOfLearning+"_"
-                                                                                                        +negative_samples+"_r"+rate_multiplier+"l"+lambda+".bin";
-    public static final String MAPPING_FUNCTION         = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_cosine/out_enwiki9"+typeOfLearning+"_"
-            +negative_samples+"_r"+rate_multiplier+"l"+lambda+".mapping";   
+    public static final String VECTOR_FILE              = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_max/out_enwiki9"+typeOfLearning+"_"
+                                                                                                        +negative_samples+"_r1"+rate_multiplier_sft+
+                                                                                                        "_r2"+rate_multiplier_grad+"l"+lambda+".bin";
+    public static final String MAPPING_FUNCTION         = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_max/out_enwiki9"+typeOfLearning+"_"
+                                                                                                        +negative_samples+"_r1"+rate_multiplier_sft+
+                                                                                                        "_r2"+rate_multiplier_grad+"l"+lambda+".mapping";   
     public static final String VOCABULARY_FILE          = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic/out_enwik9"+typeOfLearning+".voc";
     public static final String INITIALIZATION_FILE      = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic/out_enwik9"+typeOfLearning+".ini";
     public static final String IMAGE_INITIALIZATION_FILE = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_cosine/"+TestConstants.wordDimensions+"_"+TestConstants.imageDimensions+".ini";

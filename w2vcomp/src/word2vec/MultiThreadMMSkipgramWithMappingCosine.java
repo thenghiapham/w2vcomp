@@ -58,7 +58,8 @@ public class MultiThreadMMSkipgramWithMappingCosine extends MultiThreadWord2Vec{
             VocabEntry targetWord = vocab.getEntry(wordIndex);
             String percept =    targetWord.word;      
             int jPerceptIndex = images.getIndex(percept);
-            if (jPerceptIndex == -1)  r = 1.0; else  r= TestConstants.rate_multiplier;
+            if (jPerceptIndex == -1 || negativeSamplesImages!=-1)  r = 1.0; else  r= TestConstants.rate_multiplier_sft;
+
            
             //modality 1
             for (int i = start; i < windowSize * 2 + 1 - start; i++) {
@@ -159,6 +160,8 @@ public class MultiThreadMMSkipgramWithMappingCosine extends MultiThreadWord2Vec{
             /*************    FOR SECOND MODALITY   ****************/
             
             SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
+            if (jPerceptIndex == -1)  r = 1.0; else  r= TestConstants.rate_multiplier_grad;
+
             //DOUBLEMATRIX: DoubleMatrix a1error_temp = new DoubleMatrix(a1error.length);
          // NEGATIVE SAMPLING  
             if (negativeSamplesImages > 0 && jPerceptIndex!=-1) {

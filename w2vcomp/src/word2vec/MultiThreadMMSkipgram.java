@@ -52,7 +52,7 @@ public class MultiThreadMMSkipgram extends MultiThreadWord2Vec{
             String percept =    targetWord.word;      
             int jPerceptIndex = images.getIndex(percept);
             
-            if (jPerceptIndex == -1 || negativeSamplesImages==0)  r = 1.0; else r = TestConstants.rate_multiplier; 
+            if (jPerceptIndex == -1 || negativeSamplesImages!=-1)  r = 1.0; else  r= TestConstants.rate_multiplier_sft;
 
             
             //modality 1
@@ -121,7 +121,8 @@ public class MultiThreadMMSkipgram extends MultiThreadWord2Vec{
             //}
         
             
-       
+            if (jPerceptIndex == -1)  r = 1.0; else  r= TestConstants.rate_multiplier_grad;
+
             // NEGATIVE SAMPLING  
             if (negativeSamplesImages > 0  && jPerceptIndex!=-1) {
                 
