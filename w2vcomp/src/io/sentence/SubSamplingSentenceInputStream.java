@@ -18,22 +18,29 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
     int[]               sentence;
     Phrase[]            phrases;
     Random              rand = new Random();
+    long                realWordCount;
 
     public SubSamplingSentenceInputStream(SentenceInputStream inputStream,
             double frequencyThreshold) {
         this.inputStream = inputStream;
         this.frequencyThreshold = frequencyThreshold;
+        realWordCount = 0;
     }
 
     protected boolean isSampled(long count, long totalCount) {
         double randomThreshold = (double) (Math.sqrt(count
                 / (frequencyThreshold * totalCount)) + 1)
                 * (frequencyThreshold * totalCount) / count;
-        if (randomThreshold >= rand.nextFloat()) {
-            return true;
-        } else {
-            return false;
-        }
+//        if (randomThreshold >= rand.nextFloat()) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+        if (randomThreshold >= ((rand.nextInt() % 65536) / (double)65536)) {
+          return true;
+      } else {
+          return false;
+      }
     }
 
     protected void filterSentence(int[] unFilteredSentence,
@@ -51,6 +58,7 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
                 filteredIndices.add(vocabEntryIndex);
                 newPositions[i] = newPosition;
                 newPosition++;
+                realWordCount++;
             }
             // set those words'positions that are not in vocab to -1
             else {
@@ -70,42 +78,6 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
 //        System.out.println();
         sentence = DataStructureUtils.intListToArray(filteredIndices);
 
-        ArrayList<Phrase> fileterPhraseList = new ArrayList<Phrase>();
-        for (Phrase unFilteredPhrase : unFilteredPhrases) {
-            int phraseType = unFilteredPhrase.phraseType;
-            int startPosition = newPositions[unFilteredPhrase.startPosition];
-            int endPosition = newPositions[unFilteredPhrase.endPosition];
-            // TODO: check if this condition is correct
-            if (endPosition - startPosition == unFilteredPhrase.endPosition - unFilteredPhrase.startPosition) {
-                Phrase phrase = new Phrase(phraseType, startPosition,
-                        endPosition, unFilteredPhrase.tree);
-                fileterPhraseList.add(phrase);
-            } 
-            else if (Math.max(startPosition, endPosition) >= 0) {
-                int maxPosition = Math.max(startPosition, endPosition);
-                Phrase phrase = new Phrase(phraseType, maxPosition,
-                        maxPosition, unFilteredPhrase.tree);
-                fileterPhraseList.add(phrase);
-            }
-        }
-//        System.out.println("New pos:");
-//        for (int i = 0; i < newPositions.length; i++)
-//        {
-//            System.out.print(""+i+":"+newPositions[i] + " ");
-//        }
-//        System.out.println("\nNew Sentence:");
-//        for (int i = 0; i < sentence.length; i++)
-//        {
-//            System.out.print(" "+sentence[i]);
-//        }
-//        System.out.println("\nNew phrase:");
-        phrases = DataStructureUtils.phraseListToArray(fileterPhraseList);
-//        for (int i = 0; i < phrases.length; i++)
-//        {
-//            System.out.print("("+phrases[i].startPosition + " " + +phrases[i].endPosition + ") ");
-//        }
-//        System.out.println();
-        
     }
 
     @Override
@@ -132,6 +104,10 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
     @Override
     public long getWordCount() {
         return inputStream.getWordCount();
+    }
+    
+    public long getRealWordCount() {
+        return realWordCount;
     }
 
 }
