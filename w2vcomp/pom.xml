@@ -67,6 +67,11 @@
         <artifactId>drmaa-gridengine</artifactId>
         <version>6.2u5</version>
     </dependency>
+    <dependency>
+        <groupId>org.zeromq</groupId>
+        <artifactId>jzmq</artifactId>
+        <version>3.1.0</version>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
