@@ -2,6 +2,7 @@ package demo;
 
 import io.sentence.BasicTreeInputStream;
 import io.sentence.TreeInputStream;
+import io.word.CombinedWordInputStream;
 import io.word.TreeWordInputStream;
 import io.word.WordInputStream;
 
@@ -19,48 +20,55 @@ import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 
-import tree.Tree;
 import vocab.Vocab;
-import word2vec.DiagonalSentence2Vec;
-import word2vec.MultiThreadDiagonalSentence2Vec;
-import word2vec.SingleThreadedSentence2Vec;
+import word2vec.MultiThreadWeightedSentence2Vec;
 
 import demo.TestConstants;
 
-public class SentenceVectorLearning {
+public class MultiThreadSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 100;
+        int hiddenLayerSize = 300;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = -1;
+        int phraseLevel = 2;
         boolean allLevel = true;
         boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-        MultiThreadDiagonalSentence2Vec sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
+        MultiThreadWeightedSentence2Vec sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
+//        MultiThreadDiagonalSentence2Vec sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
 //        SingleThreadedSentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
-        String trainFile = TestConstants.S_TRAIN_FILE;
+        String trainDirPath = TestConstants.S_TRAIN_DIR;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String compFile = TestConstants.S_COMPOSITION_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String logFile = TestConstants.S_LOG_FILE;
         LogUtils.setup(logFile);
         
-        System.out.println("Starting training using file " + trainFile);
+        File trainDir = new File(trainDirPath);
+        File[] trainFiles = trainDir.listFiles();
+        
         boolean learnVocab = !(new File(vocabFile)).exists();
-        Vocab vocab = new Vocab(5);
+        Vocab vocab = new Vocab(50);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {
-            WordInputStream wordInputStream = new TreeWordInputStream(new BasicTreeInputStream(trainFile));
+            ArrayList<WordInputStream> wordStreamList = new ArrayList<>();
+            for (File trainFile: trainFiles) {
+                WordInputStream wordStream = new TreeWordInputStream(new BasicTreeInputStream(trainFile));
+                wordStreamList.add(wordStream);
+            }
+            CombinedWordInputStream wordInputStream = new CombinedWordInputStream(wordStreamList);
             vocab.learnVocabFromTrainStream(wordInputStream);
             wordInputStream.close();
             // save vocabulary
@@ -82,9 +90,13 @@ public class SentenceVectorLearning {
         // single threaded instead of multithreading
         System.out.println("Start training");
         try {
-            TreeInputStream treeInputStream = new BasicTreeInputStream(trainFile);;
+            
             ArrayList<TreeInputStream> inputStreams = new ArrayList<TreeInputStream>();
-            inputStreams.add(treeInputStream);
+            for (File trainFile: trainFiles) {
+                TreeInputStream treeInputStream = new BasicTreeInputStream(trainFile);;
+                inputStreams.add(treeInputStream);
+            }
+            System.out.println(inputStreams.size());
             sentence2vec.trainModel(inputStreams);
             sentence2vec.saveVector(outputFile, true);
             sentence2vec.saveCompositionNetwork(compFile, true);

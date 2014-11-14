@@ -59,17 +59,17 @@ public class OutputLayer extends BasicLayer implements Layer{
     @Override
     public void forward() {
         // Exactly like in hidden layer
-        input = getInLayerIntput();
-        SimpleMatrixUtils.checkNaN(input);
-        SimpleMatrixUtils.checkNaN(inputWeights);
+        input = getInLayerInput();
+//        SimpleMatrixUtils.checkNaN(input);
+//        SimpleMatrixUtils.checkNaN(inputWeights);
         tempZ = inputWeights.mult(input);
-        try {
-            SimpleMatrixUtils.checkNaN(tempZ);
-        } catch (ValueException e) {
-            System.out.println("input " + input);
-            System.out.println("inputWeights " + inputWeights);
-        }
-        SimpleMatrixUtils.checkNaN(tempZ);
+//        try {
+//            SimpleMatrixUtils.checkNaN(tempZ);
+//        } catch (ValueException e) {
+//            System.out.println("input " + input);
+//            System.out.println("inputWeights " + inputWeights);
+//        }
+//        SimpleMatrixUtils.checkNaN(tempZ);
         if (activation != null) 
             output = SimpleMatrixUtils.applyActivationFunction(tempZ,activation);
         else
@@ -105,11 +105,11 @@ public class OutputLayer extends BasicLayer implements Layer{
 //                System.out.println(outError);
 //            }
 //        }
-        SimpleMatrixUtils.checkNaN(outError);
+//        SimpleMatrixUtils.checkNaN(outError);
         gradient = outError.mult(input.transpose());
-        SimpleMatrixUtils.checkNaN(gradient);
+//        SimpleMatrixUtils.checkNaN(gradient);
         error = inputWeights.transpose().mult(outError);
-        SimpleMatrixUtils.checkNaN(error);
+//        SimpleMatrixUtils.checkNaN(error);
     }
 
     /**

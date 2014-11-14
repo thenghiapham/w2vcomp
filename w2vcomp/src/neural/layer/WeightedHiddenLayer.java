@@ -1,5 +1,7 @@
 package neural.layer;
 
+import java.util.ArrayList;
+
 import neural.function.ActivationFunction;
 
 import org.ejml.simple.SimpleMatrix;
@@ -18,20 +20,24 @@ import common.exception.ValueException;
  * @author thenghiapham
  *
  */
-public class HiddenLayer extends BasicLayer implements Layer{
+public class WeightedHiddenLayer extends BasicLayer implements Layer{
     
-    protected SimpleMatrix inputWeights;
+    protected double alpha = 1;
+    protected double beta = 1;
     protected ActivationFunction activation;
     
+    protected ArrayList<SimpleMatrix> input;
+    protected SimpleMatrix inputWeights;
     protected SimpleMatrix tempZ;
-    protected SimpleMatrix input;
     protected SimpleMatrix output;
     protected SimpleMatrix error;
     protected SimpleMatrix gradient;
     
     
-    public HiddenLayer(SimpleMatrix weights, ActivationFunction activation) {
+    public WeightedHiddenLayer(SimpleMatrix weights, ActivationFunction activation) {
         this.inputWeights = weights;
+        alpha = weights.get(0);
+        beta = weights.get(1);
         this.activation = activation;
     }
     
@@ -42,22 +48,20 @@ public class HiddenLayer extends BasicLayer implements Layer{
          * - multiply with weight matrix with the input vector (z_i)
          * - apply activation function if exist (a_i)
          */
-        input = getInLayerInput();
-        SimpleMatrixUtils.checkNaN(input);
-        SimpleMatrixUtils.checkNaN(inputWeights);
-        tempZ = inputWeights.mult(input);
-        try {
-            SimpleMatrixUtils.checkNaN(tempZ);
-        } catch (ValueException e) {
-            System.out.println("input " + input);
-            System.out.println("inputWeights " + inputWeights);
-        }
-        SimpleMatrixUtils.checkNaN(tempZ);
+        input = getInLayerInputs();
+//        SimpleMatrixUtils.checkNaN(input.get(0));
+//        SimpleMatrixUtils.checkNaN(input.get(1));
+        tempZ = input.get(0).scale(alpha).plus(input.get(1).scale(beta));
+//        try {
+//            SimpleMatrixUtils.checkNaN(tempZ);
+//        } catch (ValueException e) {
+//            e.printStackTrace();
+//        }
         if (activation != null) 
             output = SimpleMatrixUtils.applyActivationFunction(tempZ,activation);
         else
             output = tempZ;
-        SimpleMatrixUtils.checkNaN(output);
+//        SimpleMatrixUtils.checkNaN(output);
     }
     
     @Override
@@ -72,12 +76,18 @@ public class HiddenLayer extends BasicLayer implements Layer{
         if (parentError == null) return;
         if (activation != null) {
             parentError = parentError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
-            SimpleMatrixUtils.checkNaN(parentError);
+//            SimpleMatrixUtils.checkNaN(parentError);
         }
-        gradient = parentError.mult(input.transpose());
-        SimpleMatrixUtils.checkNaN(gradient);
-        error = inputWeights.transpose().mult(parentError);
-        SimpleMatrixUtils.checkNaN(error);
+        double[] rawGrad = new double[2]; 
+        rawGrad[0] = parentError.dot(input.get(0));
+        rawGrad[1] = parentError.dot(input.get(1));
+        gradient = new SimpleMatrix(2, 1, true, rawGrad);
+//        SimpleMatrixUtils.checkNaN(gradient);
+        ArrayList<SimpleMatrix> childError = new ArrayList<>();
+        childError.add(parentError.scale(alpha));
+        childError.add(parentError.scale(beta));
+        error = SimpleMatrixUtils.concatenateVectors(childError);
+//        SimpleMatrixUtils.checkNaN(error);
     }
     
     @Override

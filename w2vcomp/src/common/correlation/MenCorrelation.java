@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.ejml.simple.SimpleMatrix;
 
 import space.RawSemanticSpace;
 import space.SemanticSpace;
@@ -130,9 +131,9 @@ public class MenCorrelation {
 	}
 	
 	public static void main(String[] args) {
-//	    SemanticSpace space = SemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
+//	    SemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
 //	    RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.CCG_VECTOR_FILE);
-	    RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.bin");
+	    RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.bin");
 	    MenCorrelation men = new MenCorrelation("/home/thenghiapham/work/project/mikolov/men/MEN_dataset_lemma.txt");
 	    System.out.println("men: " + men.evaluateSpacePearson(space));
 	}

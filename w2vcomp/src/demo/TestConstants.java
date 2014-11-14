@@ -12,20 +12,28 @@ public class TestConstants {
     
     public static final String S_PROJECT_DIR              = "/home/thenghiapham/work/project/mikolov/";
 //    public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
-    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions.txt";
+    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions1.txt";
 //    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "tmp-constructions.txt";
+//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/wiki";
+    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/bnc";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "tmp_parsed/bnc.txt";
 //    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "parse/bnc/bnc.txt";
 //    public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/identity/";
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
 //    public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/0.7/";
 //    public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/tanh/";
-    public static final String S_VECTOR_FILE              = S_OUT_DIR + "dbnc.bin";
-    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "dbnc.cmp";
-    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc.voc";
-    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "bnc.ini";
+//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wwiki.bin";
+//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wwiki.cmp";
+//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wwiki.voc";
+//    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wwiki.ini";
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wbnc.bin";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wbnc.cmp";
+    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wbnc.voc";
+    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wbnc.ini";
+    
     public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "sentence.log";
+//    public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki_sentence.log";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "bnc_sentence.log";
     
 //    public static final String S_LOG_DIR
     public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";

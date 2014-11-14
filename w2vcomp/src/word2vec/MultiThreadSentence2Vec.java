@@ -33,6 +33,7 @@ public class MultiThreadSentence2Vec extends Sentence2Vec{
     CompositionalSemanticSpace space;
     SemanticSpace singleWordSpace;
     ArrayList<Tree> testTrees;
+    long lastLineCount;
 
     public MultiThreadSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
@@ -57,21 +58,23 @@ public class MultiThreadSentence2Vec extends Sentence2Vec{
     @Override
     public void trainModel(ArrayList<TreeInputStream> inputStreams) {
         // TODO Auto-generated method stub
-        
+        lastLineCount = 0;
         System.out.println("line num: " + totalLines);
         System.out.println("vocab size: " + vocab.getVocabSize());
         System.out.println("hidden size: " + hiddenLayerSize);
         System.out.println("first word:" + vocab.getEntry(0).word);
         System.out.println("last word:"
                 + vocab.getEntry(vocab.getVocabSize() - 1).word);
+        System.out.println("size: " + inputStreams.size());
         
         TrainingThread[] trainingThreads = new TrainingThread[inputStreams.size()];
         for (int i = 0; i < inputStreams.size(); i++) {
+            System.out.println("i: " + i);
             TreeInputStream inputStream = inputStreams.get(i);
-            trainModelThread(inputStream);
             TrainingThread thread = new TrainingThread(inputStream);
             trainingThreads[i] = thread;
             thread.start();
+            
         }
         try {
             for (TrainingThread thread: trainingThreads) {
@@ -99,32 +102,36 @@ public class MultiThreadSentence2Vec extends Sentence2Vec{
                 // the output would be the list of the word's indices in the
                 // dictionary
                 Tree parseTree = inputStream.readTree();
-                if (parseTree == null) {
-                    trainedLines = oldTrainedLines + inputStream.getReadLine();
-                    break;
-                } 
+                
 
                 // check word count
                 // update alpha
-                trainedLines = oldTrainedLines + inputStream.getReadLine();
+                tmpTrainedLines = inputStream.getReadLine();
+                synchronized (this) {
+                    trainedLines += tmpTrainedLines - oldTrainedLines; 
+                }
+                oldTrainedLines = tmpTrainedLines;
                 
-                if (trainedLines - tmpTrainedLines >= 1000) {
-                    iteration++;
-                    // update alpha
-                    // what about thread safe???
-                    alpha = starting_alpha
-                            * (1 - (double) trainedLines / (totalLines + 1));
-                    if (alpha < starting_alpha * 0.0001) {
-                        alpha = starting_alpha * 0.0001;
-                    }
-//                    LOGGER.log(Level.INFO, "Trained: " + trainedLines + " lines");
-//                    LOGGER.log(Level.INFO, "Training rate: " + alpha);
-                    tmpTrainedLines = trainedLines;
-                    if (iteration % 20 == 0) {
-                        printStatistics();
-//                        System.out.println("cost: " + computeCost(testTrees));
+                
+                if (parseTree == null) {
+                    break;
+                } 
+                
+                synchronized (this) {
+                    if (trainedLines - lastLineCount >= 1000) {
+                        iteration++;
+                        alpha = starting_alpha
+                                * (1 - (double) trainedLines / (totalLines + 1));
+                        if (alpha < starting_alpha * 0.0001) {
+                            alpha = starting_alpha * 0.0001;
+                        }
+                        lastLineCount = trainedLines;
+                        if (iteration % 20 == 0) {
+                            printStatistics();
+                        }
                     }
                 }
+                
                 
                 trainSentence(parseTree);
             }

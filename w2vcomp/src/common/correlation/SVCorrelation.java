@@ -7,6 +7,7 @@ import java.util.HashSet;
 import space.CompositionSemanticSpace;
 import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
+import space.WeightedCompositionSemanticSpace;
 
 import common.IOUtils;
 import composition.WeightedAdditive;
@@ -49,9 +50,10 @@ public class SVCorrelation extends TwoWordPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+//        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+        WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
 //        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.bin");
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin");
         WeightedAdditive add = new WeightedAdditive();
         SVCorrelation anCorrelation = new SVCorrelation("/home/thenghiapham/work/dataset/lapata/sv_lemma.txt");
         System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space, add));

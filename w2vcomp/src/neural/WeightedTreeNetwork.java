@@ -10,10 +10,10 @@ import java.util.logging.Logger;
 import neural.function.ActivationFunction;
 import neural.function.ObjectiveFunction;
 import neural.layer.BasicLayer;
-import neural.layer.DiagonalHiddenLayer;
 import neural.layer.Layer;
 import neural.layer.OutputLayer;
 import neural.layer.ProjectionLayer;
+import neural.layer.WeightedHiddenLayer;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -27,10 +27,10 @@ import tree.Tree;
  * @author pham
  *
  */
-public class DiagonalTreeNetwork {
-    private static final Logger LOGGER = Logger.getLogger(DiagonalTreeNetwork.class.getName());
+public class WeightedTreeNetwork {
+    private static final Logger LOGGER = Logger.getLogger(WeightedTreeNetwork.class.getName());
     private static final double epsilon = 1e-4;
-    private static final double LEVEL_DECAY = 1;
+//    private static final double LEVEL_DECAY = 0.7;
     
     protected Tree parseTree;
     
@@ -38,7 +38,7 @@ public class DiagonalTreeNetwork {
      * layers in the local network 
      */
     protected ArrayList<ProjectionLayer> projectionLayers;
-    protected ArrayList<DiagonalHiddenLayer> hiddenLayers;
+    protected ArrayList<WeightedHiddenLayer> hiddenLayers;
     protected ArrayList<OutputLayer> outputLayers;
     
     /*
@@ -65,7 +65,7 @@ public class DiagonalTreeNetwork {
      * Create an empty network
      * @param parseTree
      */
-    protected DiagonalTreeNetwork(Tree parseTree) {
+    protected WeightedTreeNetwork(Tree parseTree) {
         this.parseTree = parseTree;
         projectionLayers = new ArrayList<>();
         hiddenLayers = new ArrayList<>();
@@ -94,14 +94,14 @@ public class DiagonalTreeNetwork {
      * TODO: add condition for adding surrounding context
      * (just a matter of adding previous & next sentence as Strings)
      */
-    public static DiagonalTreeNetwork createNetwork(Tree parseTree, ProjectionMatrix projectionBuilder, 
-            DiagonalCompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
+    public static WeightedTreeNetwork createNetwork(Tree parseTree, ProjectionMatrix projectionBuilder, 
+            WeightedCompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
             int maxWindowSize, int outputLayerHeight, boolean allLevel, boolean lexical) {
 //        LOGGER.log(Level.FINE, parseTree.toPennTree());
 //        System.out.println("parse tree: " + parseTree.toPennTree());
         // setting global references
-        DiagonalTreeNetwork network = new DiagonalTreeNetwork(parseTree);
+        WeightedTreeNetwork network = new WeightedTreeNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
         network.outputBuilder = outputBuilder;
@@ -159,13 +159,15 @@ public class DiagonalTreeNetwork {
                         SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
                         int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
                         
-                        layer = new DiagonalHiddenLayer(weights, hiddenLayerActivation);
+                        layer = new WeightedHiddenLayer(weights, hiddenLayerActivation);
                         for (Tree child: children) {
                             Layer childLayer = layerMap.get(child);
+                            // TODO: fix here
+                            if (childLayer == null) return null;
                             layer.addInLayer(childLayer);
                             childLayer.addOutLayer(layer);
                         }
-                        network.addHiddenLayer((DiagonalHiddenLayer) layer, compositionIndex);
+                        network.addHiddenLayer((WeightedHiddenLayer) layer, compositionIndex);
                     }
                 }
             }
@@ -198,6 +200,7 @@ public class DiagonalTreeNetwork {
         // going through the nodes that have a projection layer or hidden layer 
         for (Tree node: layerMap.keySet()) {
             int height = node.getHeight();
+            int width = node.getRightmostPosition() - node.getLeftmostPosition() + 1;
             
             if (!allLevel) {
                 if (outputLayerHeight != -1 && height != outputLayerHeight)
@@ -208,7 +211,9 @@ public class DiagonalTreeNetwork {
             }
             
             Layer layer = layerMap.get(node);
-            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
+            // TODO: change back?
+//            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
+            double coefficient = 1 / (double) width;
             
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random
@@ -254,7 +259,7 @@ public class DiagonalTreeNetwork {
      * @param layer
      * @param compositionIndex
      */
-    public void addHiddenLayer(DiagonalHiddenLayer layer, int compositionIndex) {
+    public void addHiddenLayer(WeightedHiddenLayer layer, int compositionIndex) {
         hiddenLayers.add(layer);
         compositionMatrixIndices.add(compositionIndex);
     }
@@ -348,7 +353,9 @@ public class DiagonalTreeNetwork {
         for (Layer layer: hiddenLayers) {
             hiddenGradients.add(layer.getGradient());
         }
-        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate);
+        
+        //TODO: change learning rate back
+        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * 0.001);
         
         // updating the hierarchical softmax or the negative sampling layer
         for (int i = 0; i < outputLayers.size(); i++) {
@@ -441,7 +448,7 @@ public class DiagonalTreeNetwork {
         for (ProjectionLayer layer: projectionLayers) {
             gradients.add(layer.getGradient());
         }
-        for (DiagonalHiddenLayer layer: hiddenLayers) {
+        for (WeightedHiddenLayer layer: hiddenLayers) {
             gradients.add(layer.getGradient());
         }
         for (OutputLayer layer: outputLayers) {
