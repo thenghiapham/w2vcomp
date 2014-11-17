@@ -30,9 +30,7 @@ public class ParseSentenceInputStream implements SentenceInputStream{
             ArrayList<Integer> wordIndexList = new ArrayList<>();
             for (String word: words) {
                 int wordIndex = vocab.getWordIndex(word);
-//                if (wordIndex != -1) {
                     wordIndexList.add(wordIndex);
-//                }
             }
             currentSentence = DataStructureUtils.intListToArray(wordIndexList);
             wordCount += currentSentence.length;
@@ -45,6 +43,7 @@ public class ParseSentenceInputStream implements SentenceInputStream{
         // TODO Auto-generated method stub
         return currentSentence;
     }
+    
     @Override
     public Phrase[] getCurrentPhrases() throws IOException {
         // TODO Auto-generated method stub

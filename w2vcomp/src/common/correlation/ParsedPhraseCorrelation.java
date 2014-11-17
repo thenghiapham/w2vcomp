@@ -8,6 +8,7 @@ import java.util.HashSet;
 import common.IOUtils;
 import composition.BasicComposition;
 import composition.WeightedAdditive;
+import demo.TestConstants;
 
 import space.CompositionSemanticSpace;
 import space.CompositionalSemanticSpace;
@@ -157,15 +158,16 @@ public class ParsedPhraseCorrelation{
     public static void main(String[] args) throws IOException {
 //        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
         WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
-//        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
+//        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
+        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
 //        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
 //        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.bin");
+        RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
         WeightedAdditive add = new WeightedAdditive();
         ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation("/home/thenghiapham/work/project/mikolov/sick/postprocessed/SICK_train_trial.txt");
         System.out.println("sick add: " + sickCorrelation.evaluateSpacePearson(space, add));
         System.out.println("sick comp: " + sickCorrelation.evaluateSpacePearson(compSpace));
-//        System.out.println("an add2: " + sickCorrelation.evaluateSpacePearson(addSpace));
+        System.out.println("an add2: " + sickCorrelation.evaluateSpacePearson(addSpace));
     }
     
     

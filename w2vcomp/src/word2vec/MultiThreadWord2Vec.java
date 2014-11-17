@@ -58,12 +58,22 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
             }
         }
         
-        for (SentenceInputStream inputStream : inputStreams) {
+        TrainingThread[] threads = new TrainingThread[inputStreams.size()];
+        for (int i = 0; i < inputStreams.size(); i++) {
+            SentenceInputStream inputStream = inputStreams.get(i);
             if (subSample > 0) {
                 inputStream = new SubSamplingSentenceInputStream(inputStream, subSample);
             }
-            TrainingThread thread = new TrainingThread(inputStream);
-            thread.start();
+            threads[i] = new TrainingThread(inputStream);
+            threads[i].start();
+        }
+        try {
+            for (TrainingThread thread: threads) {
+                    thread.join();
+            }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         System.out.println("total word count: " + wordCount);
     }

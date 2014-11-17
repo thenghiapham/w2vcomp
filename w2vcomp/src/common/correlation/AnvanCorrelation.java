@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
+import space.WeightedCompositionSemanticSpace;
 
 import common.IOUtils;
 import composition.WeightedAdditive;
@@ -46,8 +47,8 @@ public class AnvanCorrelation extends ParsedPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.bin");
+        WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin");
         WeightedAdditive add = new WeightedAdditive();
         AnvanCorrelation anvanCorrelation = new AnvanCorrelation("/home/thenghiapham/work/dataset/blah/GS2012data.txt");
         System.out.println("an add: " + anvanCorrelation.evaluateSpacePearson(space, add));

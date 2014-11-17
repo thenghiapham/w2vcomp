@@ -21,6 +21,7 @@ import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 
 import vocab.Vocab;
+import word2vec.MultiThreadDiagonalSentence2Vec;
 import word2vec.MultiThreadWeightedSentence2Vec;
 
 import demo.TestConstants;
@@ -28,12 +29,12 @@ import demo.TestConstants;
 public class MultiThreadSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 300;
+        int hiddenLayerSize = 100;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 2;
+        int phraseLevel = 3;
         boolean allLevel = true;
         boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
@@ -45,7 +46,7 @@ public class MultiThreadSentenceVectorLearning {
 //        MultiThreadDiagonalSentence2Vec sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
-//        SingleThreadedSentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
+//        MultiThreadDiagonalSentence2Vec sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
         String trainDirPath = TestConstants.S_TRAIN_DIR;
@@ -59,7 +60,7 @@ public class MultiThreadSentenceVectorLearning {
         File[] trainFiles = trainDir.listFiles();
         
         boolean learnVocab = !(new File(vocabFile)).exists();
-        Vocab vocab = new Vocab(50);
+        Vocab vocab = new Vocab(5);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {

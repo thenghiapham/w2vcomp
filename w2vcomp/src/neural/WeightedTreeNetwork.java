@@ -30,7 +30,7 @@ import tree.Tree;
 public class WeightedTreeNetwork {
     private static final Logger LOGGER = Logger.getLogger(WeightedTreeNetwork.class.getName());
     private static final double epsilon = 1e-4;
-//    private static final double LEVEL_DECAY = 0.7;
+    private static final double LEVEL_DECAY = 0.1;
     
     protected Tree parseTree;
     
@@ -212,8 +212,8 @@ public class WeightedTreeNetwork {
             
             Layer layer = layerMap.get(node);
             // TODO: change back?
-//            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
-            double coefficient = 1 / (double) width;
+            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
+//            double coefficient = 1 / (double) width;
             
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random

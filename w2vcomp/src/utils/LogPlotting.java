@@ -50,11 +50,11 @@ public class LogPlotting extends JFrame {
             String filePath = logDirPath + "/" + fileName;
             ArrayList<Double> men = IOUtils.readLog(filePath, "men");
             ArrayList<Double> sick = IOUtils.readLog(filePath, "SICK");
-            ArrayList<Double> smoothedMen = smooth(men, 20);
-            ArrayList<Double> smoothedSick = smooth(sick, 20);
-            data.add(smoothedMen);
+//            men = smooth(men, 50);
+//            sick = smooth(sick, 50);
+            data.add(men);
             labels.add("men");
-            data.add(smoothedSick);
+            data.add(sick);
             labels.add("sick");
         }
         XYPlot plot = PlotUtils.createTimePlot(data, labels);
