@@ -25,22 +25,24 @@ public class Nips2014EvalSets {
  
 
     public static void main(String[] args) throws FileNotFoundException {
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_max/out_enwiki9_5_r15.0_r220.0l1.0E-4.bin");
-        SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
+        //SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_max/out_enwiki9_5_r11.0_r220.0l1.0E-6.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/masterclic4/visLang/mmskipgram/out/hierarchical_stochastic_max_margin/out_wiki_n-1_m0.5_-1_r11.0_r220.0l1.0E-4.bin");
         
+        SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);
         MenCorrelation sim999 = new MenCorrelation(TestConstants.SIMLEX_FILE);
         MenCorrelation semSim =  new MenCorrelation(TestConstants.Carina_FILE,2);
         MenCorrelation visSim =  new MenCorrelation(TestConstants.Carina_FILE,3);
         Images im = new Images(TestConstants.VISION_FILE, true);
         
-        /*String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_mini_1_r4cos.txt";
+        /*String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_max/out_enwiki9_m0.5_5_r11.0_r220.0l1.0E-4.mapping";
         
         SimpleMatrix map = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream(mapFile)), false));
-        wordSpace = new SemanticSpace(wordSpace.getWords(), SimpleMatrixUtils.to2DArray((new SimpleMatrix(wordSpace.getVectors())).mult(map)));*/
+        map  = map.transpose();
+        wordSpace = new SemanticSpace(wordSpace.getWords(), SimpleMatrixUtils.to2DArray((new SimpleMatrix(wordSpace.getVectors())).mult(map)));
+        */
+        
         double[] cors = im.pairwise_cor(wordSpace);
-        
-        
         
         //wordSpace = visionSpace;
         

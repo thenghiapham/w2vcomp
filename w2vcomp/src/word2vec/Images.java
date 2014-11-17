@@ -126,7 +126,9 @@ public class Images {
    
    public double[] pairwise_cor(SemanticSpace space2){
     Set<String> common_elements = new HashSet<String>(word2Index.keySet());
+    System.out.println(common_elements.size());
     common_elements.retainAll(word2Index.keySet());
+    System.out.println(common_elements.size());
     ArrayList<String> list_of_els = new ArrayList<String>(common_elements);
     
     double[] cors = new double[2];

@@ -8,7 +8,9 @@ import java.util.ArrayList;
 
 import space.SemanticSpace;
 
+import common.IOUtils;
 import common.MenCorrelation;
+import common.SimpleMatrixUtils;
 
 /**
  * Still abstract class for learning words' vectors
@@ -58,6 +60,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         }
         
         TrainingThread[] trainingThreads = new TrainingThread[inputStreams.size()];
+        System.out.println(inputStreams.size());
         for (int i = 0; i < inputStreams.size(); i++) {
             SentenceInputStream inputStream = inputStreams.get(i);
             if (subSample > 0) {
@@ -157,6 +160,10 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         public void run() {
             trainModelThread(inputStream);
         }
+    }
+
+    public void saveMappingFunction(String outFile, boolean tobinary){
+        IOUtils.saveMatrix(outFile, SimpleMatrixUtils.to2DArray(imageProjectionLayer), tobinary);
     }
     
 }

@@ -8,10 +8,11 @@ import vocab.Vocab;
 
 public interface SentenceInputStream {
     public boolean readNextSentence(Vocab vocab) throws IOException;
-
     public int[] getCurrentSentence() throws IOException;
 
     public Phrase[] getCurrentPhrases() throws IOException;
+    
+    
 
     public long getWordCount();
 }

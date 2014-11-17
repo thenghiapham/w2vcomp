@@ -108,7 +108,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 
                 if (wordCount - lastWordCount2 > 3080000){
                     if (men != null && outputSpace != null/* && iteration %2 == 0*/) {
-                        System.out.println("Correlation "+(images.pairwise_cor(new SemanticSpace(vocab, weights0, false)))[1]);
+                        //System.out.println("Correlation "+(images.pairwise_cor(new SemanticSpace(vocab, weights0, false)))[1]);
                      }
                     lastWordCount2 = wordCount;
                 }
@@ -152,9 +152,9 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     }
 
     public void trainPhrases(Phrase[] phrases, int[] sentence) {
-        for (Phrase phrase : phrases) {
+        /*for (Phrase phrase : phrases) {
             trainSinglePhrase(phrase, sentence);
-        }
+        }*/
     }
     
     public void printStatistics() {

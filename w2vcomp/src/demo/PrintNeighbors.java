@@ -24,17 +24,15 @@ public class PrintNeighbors {
      */
     public static void main(String[] args) throws FileNotFoundException {
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_cosine/out_enwiki9_mini_0_r10.0l1.0E-4.bin");
-        SemanticSpace wordSpace2 = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping/out_enwiki9_0.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_max/out_enwiki9_m0.5_5_r11.0_r220.0l1.0E-4.bin");
         SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
-        
-        System.out.println(wordSpace.getVectorSize());
-        System.out.println(visionSpace.getVectorSize());
-        String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_cosine/out_enwiki9_mini_0_r10.0l1.0E-4.mapping";
-        
+        String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/hierarchical_stochastic_mapping_max/out_enwiki9_m0.5_5_r11.0_r220.0l1.0E-4.mapping";
         SimpleMatrix map = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream(mapFile)), false));
+        //map  = map.transpose();
+
         SemanticSpace wordSpaceMapped = new SemanticSpace(wordSpace.getWords(), SimpleMatrixUtils.to2DArray((new SimpleMatrix(wordSpace.getVectors())).mult(map)));
-        HeatMapPanel.plotHeatMap(map);
+//        HeatMapPanel.plotHeatMap(map);
+//        SemanticSpace wordSpaceMapped = wordSpace;
 
        
         
@@ -45,21 +43,21 @@ public class PrintNeighbors {
         Set<String> trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
         Set<String> tsConcepts = new HashSet<String>(allConcepts);
         tsConcepts.removeAll(trConcepts);
-        Set<String> words = MenCorrelation.readWords(TestConstants.CCG_MEN_FILE, visionSpace,2);
+        Set<String> words = MenCorrelation.readWords(TestConstants.Carina_FILE, visionSpace,1);
         System.out.println(words.size());
         for (String word: words){
-            System.out.print(word+":");
+            System.out.print(word+" --->");
             if (wordSpace.getNeighbors(word, 10)!=null){
                 for (Neighbor s: wordSpace.getNeighbors(word,5)){
                     System.out.print(s.word+" ");
                 }
             }
-            if (wordSpaceMapped.getNeighbors(word, 10)!=null){
-                System.out.print("@@Second SpaceN@@ ");
-                for (Neighbor s: wordSpaceMapped.getNeighbors(word, 5)){
-                    System.out.print(s.word+" ");
-                }
-            }
+//            if (wordSpaceMapped.getNeighbors(word, 10)!=null){
+//                System.out.print("@@Second SpaceN@@ ");
+//                for (Neighbor s: wordSpaceMapped.getNeighbors(word, 5)){
+//                    System.out.print(s.word+" ");
+//                }
+//            }
             if (wordSpace.getNeighbors(word, 5)!=null){
                 System.out.print("@@VISION@@ ");
                 for (Neighbor s: wordSpaceMapped.getNeighbors(word, 5,visionSpace)){

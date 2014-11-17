@@ -2,6 +2,8 @@ package word2vec;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.IOUtils;
+import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 import demo.TestConstants;
 
@@ -178,6 +180,10 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
     public void trainSinglePhrase(Phrase phrase, int[] pseudoSentence) {
         // TODO Auto-generated method stub
 
+    }
+    
+    public void saveMappingFunction(String outFile, boolean tobinary){
+        IOUtils.saveMatrix(outFile, SimpleMatrixUtils.to2DArray(imageProjectionLayer), tobinary);
     }
     
     

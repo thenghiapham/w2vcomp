@@ -25,10 +25,10 @@ import demo.TestConstants;
 public class WordVectorLearning {
     public static void main(String[] args) throws ValueException, IOException {
         //MmSkipNGramWithMappingCosine word2vec = new MmSkipNGramWithMappingCosine(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
 
         //MmSkipNGramWithMappingDot word2vec = new MmSkipNGramWithMappingDot(300, 5, true, 0, 1, (float) 1e-3, TestConstants.CCG_MEN_FILE);
-        //MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(300, 5, true, 0, 20, (float) 1e-3, TestConstants.CCG_MEN_FILE);
+        //MMSkipNgramWord2Vec word2vec = new MMSkipNgramWord2Vec(TestConstants.wordDimensions, 5, true, 0, TestConstants.negative_samples, (float) 1e-3, TestConstants.CCG_MEN_FILE);
         
         
         //TODO: Assume that we extend vocabulary with new items
@@ -58,7 +58,7 @@ public class WordVectorLearning {
         word2vec.setVocab(vocab);
         
         word2vec.initNetwork(initFile,projInitFile);
-        //word2vec.saveMappingFunction(mapFile, false);
+        word2vec.saveMappingFunction(mapFile, false);
         
         word2vec.initImages(TestConstants.VISION_FILE,true);
         

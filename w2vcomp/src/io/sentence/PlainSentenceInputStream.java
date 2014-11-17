@@ -74,4 +74,6 @@ public class PlainSentenceInputStream implements SentenceInputStream {
     public long getWordCount() {
         return wordCount;
     }
+
+    
 }

@@ -59,11 +59,15 @@ public class MenCorrelation {
 		ArrayList<String> data = IOUtils.readFile(dataset);
 		golds = new double[data.size()];
 		wordPairs = new String[data.size()][2];
+		
 		for (int i = 0; i < data.size(); i++) {
 			String dataPiece = data.get(i);
 			String elements[] = dataPiece.split("[ \t]+");
+			
+			
 			wordPairs[i][0] = elements[0];
 			wordPairs[i][1] = elements[1];
+			
 			golds[i] = Double.parseDouble(elements[2]);
 		}
 	}
@@ -181,6 +185,7 @@ public class MenCorrelation {
             }
             exists++;
             predicts.add(space.getSim(wordPairs[i][0], wordPairs[i][1]));
+            //System.out.println(wordPairs[i][0]+" "+wordPairs[i][1]);
             g.add(golds[i]);
             
             //if (predicts[i] == 0){
