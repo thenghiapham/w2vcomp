@@ -23,14 +23,16 @@ public class ParallelMain {
     public static void main(String[] args) {
 
         /*Configuration constants (to move somewhere else)*/
-        File home_path = new File("/home/german.kruszewski/projects/compomik");
+        File home_path = new File("/home/thenghia.pham/git/compomik");
 
         int aggregatorPort = 5556;
         int estimatorPort = 5557;
         int resultsPort = 5558;
 
-        String[] training_files = new String[] { TestConstants.S_TRAIN_FILE,
-                TestConstants.S_TRAIN_FILE };
+        
+        String trainDirPath = TestConstants.S_TRAIN_DIR;
+        File trainDir = new File(trainDirPath);
+        File[] trainFiles = trainDir.listFiles();
 
         
         // Create the DeathStar
@@ -56,10 +58,10 @@ public class ParallelMain {
 
             // Launch TIE Fighters
             // (Run parallel parameter-estimating jobs on each training file)
-            for (String training_file : training_files) {
+            for (File trainingFile : trainFiles) {
                 ParameterEstimatorWorker estimatorJob = new ParameterEstimatorWorker(
                         home_path, processMonitor.getHostname(),
-                        estimatorPort, training_file);
+                        estimatorPort, trainingFile.getAbsolutePath());
                 id = launcher.launch(estimatorJob);
                 proccess_ids.add(id);
             }
