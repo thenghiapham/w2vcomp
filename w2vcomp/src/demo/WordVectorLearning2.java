@@ -29,7 +29,7 @@ public class WordVectorLearning2 {
         boolean learnVocab = !(new File(vocabFile)).exists();
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
-        Vocab vocab = new Vocab(5);
+        Vocab vocab = new Vocab(50);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {
