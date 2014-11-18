@@ -33,13 +33,13 @@ public class W2vEstimator implements ParameterEstimator {
             while (tree != null) {
                 numLine += 1;
                 if (numLine % 10000 == 0) {
-                    parameters.setValue(10000);
+                    parameters.setValue(new Long(10000));
                     parameterMessager.sendUpdate(parameters);
                     System.out.println("numLine: " + numLine);
                 }
                 tree = inputStream.readTree();
             }
-            parameters.setValue(numLine % 10000);
+            parameters.setValue(new Long(numLine % 10000));
             parameterMessager.sendUpdate(parameters);
             parameterMessager.sendEnd();
         } catch (IOException e) {
