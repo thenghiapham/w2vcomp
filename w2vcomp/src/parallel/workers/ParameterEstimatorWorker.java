@@ -11,6 +11,8 @@ import org.zeromq.ZMQ.Socket;
 
 import parallel.comm.ParameterMessager;
 import parallel.workers.models.ExampleEstimator;
+import parallel.workers.w2v.W2vAggregator;
+import parallel.workers.w2v.W2vEstimator;
 
 /**
  * This is the actual worker (TIE Fighter)
@@ -72,7 +74,7 @@ public class ParameterEstimatorWorker extends BaseClusterLaunchable  {
                 monitorHostname, aggregatorPort, trainingFile);
         
         //Hardcoded task to run
-        ParameterEstimator estimator = new ExampleEstimator();
+        ParameterEstimator estimator = new W2vEstimator(trainingFile);
         paramEst.run(estimator);
     }
 }

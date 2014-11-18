@@ -12,6 +12,7 @@ import org.zeromq.ZMQ.Socket;
 
 import parallel.comm.ParameterMessage;
 import parallel.workers.models.ExampleAggregator;
+import parallel.workers.w2v.W2vAggregator;
 import utils.SerializationUtils;
 
 /**
@@ -120,7 +121,7 @@ public class ParameterAggregatorWorker extends BaseClusterLaunchable {
                 home_path, monitorHostname, estimatorsPort, monitorPort);
 
         //Hardcoded task to run
-        ParameterAggregator parameterAggregator = new ExampleAggregator();
+        ParameterAggregator parameterAggregator = new W2vAggregator();
 
         paramAgg.run(parameterAggregator);
     }
