@@ -6,9 +6,13 @@ import parallel.workers.ModelParameters;
 
 public class W2vParameters implements ModelParameters {
 
-    protected int numLines;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    protected long numLines;
     @Override
-    public Integer getValue() {
+    public Long getValue() {
         // TODO Auto-generated method stub
         return numLines;
     }
@@ -16,7 +20,7 @@ public class W2vParameters implements ModelParameters {
     @Override
     public void setValue(Serializable value) {
         // TODO Auto-generated method stub
-        numLines = (Integer) value;
+        numLines = (Long) value;
     }
 
 }
