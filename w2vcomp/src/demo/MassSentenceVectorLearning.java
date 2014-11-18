@@ -23,8 +23,6 @@ import vocab.Vocab;
 import word2vec.MultiThreadDiagonalSentence2Vec;
 import word2vec.MultiThreadSentence2Vec;
 import word2vec.MultiThreadWeightedSentence2Vec;
-import word2vec.Sentence2Vec;
-import word2vec.SingleThreadedSentence2Vec;
 
 import demo.TestConstants;
 
@@ -74,14 +72,16 @@ public class MassSentenceVectorLearning {
             sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
                     hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                     allLevel, lexical);
+            break;
         }
                 
-        String trainDirPath = TestConstants.S_TRAIN_DIR;
+        
         String outputFile = TestConstants.S_VECTOR_FILE.replace(".bin", outSuffix + ".bin");
         String compFile = TestConstants.S_COMPOSITION_FILE.replace(".cmp", outSuffix + ".cmp");
         String vocabFile = TestConstants.S_VOCABULARY_FILE.replace(".voc", outSuffix + ".voc");
         LogUtils.setup(TestConstants.S_LOG_FILE.replace(".log", outSuffix + ".log"));
         
+        String trainDirPath = TestConstants.S_TRAIN_DIR;
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
         

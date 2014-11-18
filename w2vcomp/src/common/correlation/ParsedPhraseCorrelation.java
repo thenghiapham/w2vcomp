@@ -157,9 +157,9 @@ public class ParsedPhraseCorrelation{
     
     public static void main(String[] args) throws IOException {
 //        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
-        WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
+        WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace(TestConstants.S_COMPOSITION_FILE, true);
 //        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
-        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
+//        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
 //        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
 //        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
         RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
@@ -167,7 +167,7 @@ public class ParsedPhraseCorrelation{
         ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         System.out.println("sick add: " + sickCorrelation.evaluateSpacePearson(space, add));
         System.out.println("sick comp: " + sickCorrelation.evaluateSpacePearson(compSpace));
-        System.out.println("an add2: " + sickCorrelation.evaluateSpacePearson(addSpace));
+//        System.out.println("an add2: " + sickCorrelation.evaluateSpacePearson(addSpace));
     }
     
     
