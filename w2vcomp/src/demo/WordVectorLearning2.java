@@ -20,7 +20,7 @@ import demo.TestConstants;
 
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
-        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(300, 5, true, 0, (float) 0, TestConstants.S_MEN_FILE);
+        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(300, 5, true, 0, (float) 1e-3, TestConstants.S_MEN_FILE);
         String trainDirPath = TestConstants.S_TRAIN_DIR;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;

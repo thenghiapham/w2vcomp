@@ -57,7 +57,7 @@ public class SVCorrelation extends TwoWordPhraseCorrelation{
 //        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
         RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin");
         WeightedAdditive add = new WeightedAdditive();
-        SVCorrelation anCorrelation = new SVCorrelation("/home/thenghiapham/work/dataset/lapata/sv_lemma.txt");
+        SVCorrelation anCorrelation = new SVCorrelation(TestConstants.S_SV_FILE);
         System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space, add));
         System.out.println("an comp: " + anCorrelation.evaluateSpacePearson(compSpace));
     }

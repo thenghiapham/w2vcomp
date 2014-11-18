@@ -164,7 +164,7 @@ public class ParsedPhraseCorrelation{
 //        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
         RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
         WeightedAdditive add = new WeightedAdditive();
-        ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation("/home/thenghiapham/work/project/mikolov/sick/postprocessed/SICK_train_trial.txt");
+        ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         System.out.println("sick add: " + sickCorrelation.evaluateSpacePearson(space, add));
         System.out.println("sick comp: " + sickCorrelation.evaluateSpacePearson(compSpace));
         System.out.println("an add2: " + sickCorrelation.evaluateSpacePearson(addSpace));

@@ -35,7 +35,7 @@ public class ANCorrelation extends TwoWordPhraseCorrelation{
 //        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin");
         RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
         WeightedAdditive add = new WeightedAdditive();
-        ANCorrelation anCorrelation = new ANCorrelation("/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemma.txt");
+        ANCorrelation anCorrelation = new ANCorrelation(TestConstants.S_AN_FILE);
         System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space, add));
         System.out.println("an comp: " + anCorrelation.evaluateSpacePearson(compSpace));
     }

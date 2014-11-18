@@ -33,9 +33,9 @@ public class VOCorrelation extends TwoWordPhraseCorrelation{
         WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
         RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
         WeightedAdditive add = new WeightedAdditive();
-        VOCorrelation anCorrelation = new VOCorrelation("/home/thenghiapham/work/dataset/lapata/vo_lemma.txt");
-        System.out.println("vo add: " + anCorrelation.evaluateSpacePearson(space, add));
-        System.out.println("vo comp: " + anCorrelation.evaluateSpacePearson(compSpace));
+        VOCorrelation voCorrelation = new VOCorrelation(TestConstants.S_VO_FILE);
+        System.out.println("vo add: " + voCorrelation.evaluateSpacePearson(space, add));
+        System.out.println("vo comp: " + voCorrelation.evaluateSpacePearson(compSpace));
     }
 
 }

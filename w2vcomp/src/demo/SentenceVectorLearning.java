@@ -19,11 +19,8 @@ import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 
-import tree.Tree;
 import vocab.Vocab;
-import word2vec.DiagonalSentence2Vec;
 import word2vec.MultiThreadDiagonalSentence2Vec;
-import word2vec.SingleThreadedSentence2Vec;
 
 import demo.TestConstants;
 

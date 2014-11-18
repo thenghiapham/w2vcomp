@@ -2,6 +2,7 @@ package demo;
 
 import io.sentence.BasicTreeInputStream;
 import io.sentence.TreeInputStream;
+import io.word.CombinedWordInputStream;
 import io.word.TreeWordInputStream;
 import io.word.WordInputStream;
 
@@ -15,8 +16,13 @@ import neural.function.IdentityFunction;
 
 import common.IOUtils;
 import common.LogUtils;
+import common.correlation.MenCorrelation;
+import common.correlation.ParsedPhraseCorrelation;
 
 import vocab.Vocab;
+import word2vec.MultiThreadDiagonalSentence2Vec;
+import word2vec.MultiThreadSentence2Vec;
+import word2vec.MultiThreadWeightedSentence2Vec;
 import word2vec.Sentence2Vec;
 import word2vec.SingleThreadedSentence2Vec;
 
@@ -24,47 +30,72 @@ import demo.TestConstants;
 
 public class MassSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
-        String levelString = args[0];
-        String allLevelString = args[1];
-        String lexicalString = args[2];
-        String constructionString = args[3];
-        String outSuffix = args[0] + args[1].charAt(0) + args[2].charAt(0)  
-                + args[3].charAt(0);
+        String hiddenLayerString = args[0];
+        String compType = args[1];
+        String levelString = args[2];
+        String allLevelString = args[3];
+        String lexicalString = args[4];
         
-        LogUtils.setup(TestConstants.S_LOG_FILE + outSuffix);
+        String outSuffix = compType + hiddenLayerString + "_" + levelString + "_" 
+                + allLevelString.charAt(0) + lexicalString.charAt(0);
         
-        int hiddenLayerSize = 100;
+        String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
+        
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
         
-        int phraseLevel = new Integer(levelString);
-        boolean allLevel = new Boolean(allLevelString);
-        boolean lexical = new Boolean(lexicalString);
-        boolean useConstruction = new Boolean(constructionString);
+        int hiddenLayerSize = Integer.parseInt(hiddenLayerString);
+        int phraseLevel = Integer.parseInt(levelString);
+        boolean allLevel = Boolean.parseBoolean(allLevelString);
+        boolean lexical = Boolean.parseBoolean(lexicalString);
+        
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
-        String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
-        HashMap<String, String> constructionGroups = new HashMap<String, String>();
-        
-        if (useConstruction) {
-            constructionGroups = IOUtils.readConstructionGroup(constructionFile);
+        HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
+        MultiThreadSentence2Vec sentence2vec;
+        switch (compType) {
+        case "w":
+            sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
+            break;
+        case "d":
+            sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
+            break;
+        case "f":
+            sentence2vec = new MultiThreadSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
+            break;
+        default:
+            sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
+                    hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                    allLevel, lexical);
         }
+                
+        String trainDirPath = TestConstants.S_TRAIN_DIR;
+        String outputFile = TestConstants.S_VECTOR_FILE.replace(".bin", outSuffix + ".bin");
+        String compFile = TestConstants.S_COMPOSITION_FILE.replace(".cmp", outSuffix + ".cmp");
+        String vocabFile = TestConstants.S_VOCABULARY_FILE.replace(".voc", outSuffix + ".voc");
+        LogUtils.setup(TestConstants.S_LOG_FILE.replace(".log", outSuffix + ".log"));
         
-        Sentence2Vec sentence2vec = new SingleThreadedSentence2Vec(hiddenLayerSize, windowSize, 
-                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction,
-                phraseLevel, allLevel, lexical);
-        String trainFile = TestConstants.S_TRAIN_FILE;
-        String outputFile = TestConstants.S_VECTOR_FILE + outSuffix;
-        String vocabFile = TestConstants.S_VOCABULARY_FILE + outSuffix;
-        String compFile = TestConstants.S_COMPOSITION_FILE + outSuffix;
-        System.out.println("Starting training using file " + trainFile);
+        File trainDir = new File(trainDirPath);
+        File[] trainFiles = trainDir.listFiles();
+        
         boolean learnVocab = !(new File(vocabFile)).exists();
         Vocab vocab = new Vocab(5);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {
-            WordInputStream wordInputStream = new TreeWordInputStream(new BasicTreeInputStream(trainFile));
+            ArrayList<WordInputStream> wordStreamList = new ArrayList<>();
+            for (File trainFile: trainFiles) {
+                WordInputStream wordStream = new TreeWordInputStream(new BasicTreeInputStream(trainFile));
+                wordStreamList.add(wordStream);
+            }
+            CombinedWordInputStream wordInputStream = new CombinedWordInputStream(wordStreamList);
             vocab.learnVocabFromTrainStream(wordInputStream);
             wordInputStream.close();
             // save vocabulary
@@ -72,15 +103,24 @@ public class MassSentenceVectorLearning {
         }
 
         sentence2vec.setVocab(vocab);
-
         sentence2vec.initNetwork();
-
-        // single threaded instead of multithreading
+        MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
+        men.setName("MEN");
+        sentence2vec.addMenCorrelation(men);
+        
+        ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
+        sick.setName("SICK");
+        sentence2vec.addSentenceCorrelation(sick);
+        
         System.out.println("Start training");
         try {
-            TreeInputStream treeInputStream = new BasicTreeInputStream(trainFile);;
+            
             ArrayList<TreeInputStream> inputStreams = new ArrayList<TreeInputStream>();
-            inputStreams.add(treeInputStream);
+            for (File trainFile: trainFiles) {
+                TreeInputStream treeInputStream = new BasicTreeInputStream(trainFile);;
+                inputStreams.add(treeInputStream);
+            }
+            System.out.println(inputStreams.size());
             sentence2vec.trainModel(inputStreams);
             sentence2vec.saveVector(outputFile, true);
             sentence2vec.saveCompositionNetwork(compFile, true);
