@@ -23,7 +23,7 @@ public class W2vEstimator implements ParameterEstimator {
     @Override
     public void run(ModelParameters init, ParameterMessager parameterMessager) {
         // TODO Auto-generated method stub
-        while (line!)
+//        while (line!)
     }
     
 
