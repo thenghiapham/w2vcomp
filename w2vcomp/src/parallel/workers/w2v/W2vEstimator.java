@@ -32,14 +32,14 @@ public class W2vEstimator implements ParameterEstimator {
             
             while (tree != null) {
                 numLine += 1;
-                if (numLine == 100000) {
-                    parameters.setValue(numLine);
+                if (numLine % 10000 == 0) {
+                    parameters.setValue(10000);
                     parameterMessager.sendUpdate(parameters);
-                    numLine = 0;
+                    System.out.println("numLine: " + numLine);
                 }
                 tree = inputStream.readTree();
             }
-            parameters.setValue(numLine);
+            parameters.setValue(numLine % 10000);
             parameterMessager.sendUpdate(parameters);
             parameterMessager.sendEnd();
         } catch (IOException e) {
