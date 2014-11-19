@@ -10,11 +10,13 @@ import java.util.Random;
 
 import common.MathUtils;
 import common.SigmoidTable;
+import common.correlation.MenCorrelation;
 import demo.TestConstants;
 
 import parallel.comm.ParameterMessager;
 import parallel.workers.ModelParameters;
 import parallel.workers.ParameterEstimator;
+import space.RawSemanticSpace;
 import tree.Tree;
 import vocab.Vocab;
 import vocab.VocabEntry;
@@ -41,6 +43,7 @@ public class SkipGramEstimator implements ParameterEstimator{
     SentenceInputStream inputStream;
     
     Random rand = new Random();
+    MenCorrelation men;
     
     public SkipGramEstimator(SentenceInputStream inputStream) {
         this.inputStream = inputStream;
@@ -54,6 +57,7 @@ public class SkipGramEstimator implements ParameterEstimator{
         }
         this.vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
         this.sigmoidTable = new SigmoidTable();
+        men = new MenCorrelation(TestConstants.S_MEN_FILE);
     }
     
     
@@ -105,9 +109,14 @@ public class SkipGramEstimator implements ParameterEstimator{
                     oldWordCount = wordCount;
                     System.out.println("alpha: " + alpha);
                     System.out.println("wordCount: " + wordCount);
+                    if (rand.nextFloat() <= 0.33) {
+                        RawSemanticSpace space = new RawSemanticSpace(vocab, weights0, false);
+                        System.out.println(men.evaluateSpacePearson(space));
+                    }
                 }
                 trainSentence(sentence);
             }
+            // TODO: if wordCount do something
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
