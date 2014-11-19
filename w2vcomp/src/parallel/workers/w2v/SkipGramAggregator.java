@@ -43,6 +43,7 @@ public class SkipGramAggregator implements ParameterAggregator{
             weights1 = new double[vocabSize][projectionLayerSize];
         }
         vocab.assignCode();
+        modelParams = new SkipGramParameters(alpha, wordCount, weights0, weights1);
     }
     
     public void buildVocab(String vocabFile) {
