@@ -52,9 +52,11 @@ public class SkipGramAggregator implements ParameterAggregator{
         else {
             try {
                 File trainDir = new File(TestConstants.S_TRAIN_DIR);
+                System.out.println("train dir: " + trainDir.getAbsolutePath());
                 File[] trainFiles = trainDir.listFiles();
                 ArrayList<WordInputStream> wordStreamList = new ArrayList<>();
                 for (File trainFile: trainFiles) {
+                    System.out.println("train file: " + trainFile.getAbsolutePath());
                     PushBackWordStream wordStream = new PushBackWordStream(trainFile.getAbsolutePath(), 100);
                     wordStreamList.add(wordStream);
                 }
