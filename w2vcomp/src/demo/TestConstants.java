@@ -60,32 +60,55 @@ public class TestConstants {
     
     
     
+//    public static final String S_PROJECT_HOME_DIR         = "/home/thenghia.pham/git/compomik";
+//    public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
+//    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "constructions/selected-constructions.txt";
+//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/split/bnc";
+////    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/split/wiki";
+//    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/bnc.txt";
+////    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/wiki.parse";
+//    public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
+//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "bnc.bin";
+//    public static final String S_TEXT_VECTOR_FILE         = S_OUT_DIR + "bnc.txt";
+//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "bnc.cmp";
+//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc.voc";
+//    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "bnc.ini";
+//    
+////    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wiki.bin";
+////    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wiki.cmp";
+////    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wiki.voc";
+////    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wiki.ini";
+//    
+////    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_wiki300_ss.bin";
+////    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "skip_wiki300_ss.cmp";
+////    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_wiki300_ss.voc";
+////    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skip_wiki300_ss.ini";
+//    
+//    public static final String S_LOG_DIR                  = S_PROJECT_DIR  + "log/";
+//    public static final String S_LOG_FILE                 = S_LOG_DIR + "bnc.log";
+////    public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki.log";
+//  
+//    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
+//    public static final String S_AN_FILE                  = S_PROJECT_DIR + "lapata/an_lemma.txt";
+//    public static final String S_NN_FILE                  = S_PROJECT_DIR + "lapata/nn_lemma.txt";
+//    public static final String S_VO_FILE                  = S_PROJECT_DIR + "lapata/vo_lemma.txt";
+//    public static final String S_SV_FILE                  = S_PROJECT_DIR + "lapata/sv_lemma.txt";
+//    public static final String S_SICK_FILE                = S_PROJECT_DIR + "sick/parsed/SICK_train_trial.txt";
+    
     public static final String S_PROJECT_HOME_DIR         = "/home/thenghia.pham/git/compomik";
     public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
     public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "constructions/selected-constructions.txt";
-    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/split/bnc";
-//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/split/wiki";
+    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/text_split";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/bnc.txt";
-//    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/wiki.parse";
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
-    public static final String S_VECTOR_FILE              = S_OUT_DIR + "bnc.bin";
-    public static final String S_TEXT_VECTOR_FILE         = S_OUT_DIR + "bnc.txt";
-    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "bnc.cmp";
-    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc.voc";
-    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "bnc.ini";
-    
-//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wiki.bin";
-//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wiki.cmp";
-//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wiki.voc";
-//    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wiki.ini";
-    
-//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_wiki300_ss.bin";
-//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "skip_wiki300_ss.cmp";
-//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_wiki300_ss.voc";
-//    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skip_wiki300_ss.ini";
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wiki9.bin";
+    public static final String S_TEXT_VECTOR_FILE         = S_OUT_DIR + "wiki9.txt";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wiki9.cmp";
+    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wiki9.voc";
+    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wiki9.ini";
     
     public static final String S_LOG_DIR                  = S_PROJECT_DIR  + "log/";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "bnc.log";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki9.log";
 //    public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki.log";
   
     public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";

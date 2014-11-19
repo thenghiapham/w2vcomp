@@ -1,6 +1,14 @@
 package parallel.workers.w2v;
 
 
+import io.word.CombinedWordInputStream;
+import io.word.PushBackWordStream;
+import io.word.WordInputStream;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import common.MathUtils;
 
 import demo.TestConstants;
@@ -23,9 +31,44 @@ public class SkipGramAggregator implements ParameterAggregator{
         starting_alpha = AbstractWord2Vec.DEFAULT_STARTING_ALPHA;
         alpha = starting_alpha;
         Vocab vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
-        vocab.loadVocab(TestConstants.S_VOCABULARY_FILE);
+        buildVocab(TestConstants.S_VOCABULARY_FILE);
         trainWords = vocab.getTrainWords();
+        
+        int vocabSize = vocab.getVocabSize();
+        int projectionLayerSize = RunningConstant.VECTOR_SIZE;
+        weights0 = new double[vocabSize][projectionLayerSize];
+        if (RunningConstant.HIERARCHICAL_SOFTMAX) {
+            weights1 = new double[vocabSize - 1][projectionLayerSize];
+        } else if (RunningConstant.NEGATIVE_SAMPLES > 0) {
+            weights1 = new double[vocabSize][projectionLayerSize];
+        }
+        vocab.assignCode();
     }
+    
+    public void buildVocab(String vocabFile) {
+        boolean learnVocab = !(new File(vocabFile)).exists();
+        if (!learnVocab)
+            vocab.loadVocab(vocabFile);// ,minFrequency);
+        else {
+            try {
+                File trainDir = new File(TestConstants.S_TRAIN_DIR);
+                File[] trainFiles = trainDir.listFiles();
+                ArrayList<WordInputStream> wordStreamList = new ArrayList<>();
+                for (File trainFile: trainFiles) {
+                    PushBackWordStream wordStream = new PushBackWordStream(trainFile.getAbsolutePath(), 100);
+                    wordStreamList.add(wordStream);
+                }
+                
+                CombinedWordInputStream wordStream = new CombinedWordInputStream(wordStreamList);
+                vocab.learnVocabFromTrainStream(wordStream);
+                // save vocabulary
+                vocab.saveVocab(vocabFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
     @Override
     public ModelParameters aggregate(ModelParameters content) {
         // TODO Auto-generated method stub

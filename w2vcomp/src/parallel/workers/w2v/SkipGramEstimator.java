@@ -54,7 +54,9 @@ public class SkipGramEstimator implements ParameterEstimator{
         }
         this.vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
         this.vocab.loadVocab(TestConstants.S_VOCABULARY_FILE);
-        this.unigram = new UniGram(vocab);
+        if (negativeSamples > 0) {
+            this.unigram = new UniGram(vocab);
+        }
         this.sigmoidTable = new SigmoidTable();
     }
     
