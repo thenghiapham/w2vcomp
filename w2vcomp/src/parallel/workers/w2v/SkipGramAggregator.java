@@ -62,8 +62,10 @@ public class SkipGramAggregator implements ParameterAggregator{
                 }
                 
                 CombinedWordInputStream wordStream = new CombinedWordInputStream(wordStreamList);
+                System.out.println("building vocab");
                 vocab.learnVocabFromTrainStream(wordStream);
                 // save vocabulary
+                System.out.println("building save vocab");
                 vocab.saveVocab(vocabFile);
             } catch (IOException e) {
                 e.printStackTrace();

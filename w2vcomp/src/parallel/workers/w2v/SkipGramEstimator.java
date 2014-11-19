@@ -53,10 +53,6 @@ public class SkipGramEstimator implements ParameterEstimator{
             inputStream = new SubSamplingSentenceInputStream(inputStream, subSample);
         }
         this.vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
-        this.vocab.loadVocab(TestConstants.S_VOCABULARY_FILE);
-        if (negativeSamples > 0) {
-            this.unigram = new UniGram(vocab);
-        }
         this.sigmoidTable = new SigmoidTable();
     }
     
@@ -64,6 +60,12 @@ public class SkipGramEstimator implements ParameterEstimator{
     
     @Override
     public void run(ModelParameters init, ParameterMessager parameterMessager) {
+        vocab.loadVocab(TestConstants.S_VOCABULARY_FILE);
+        if (negativeSamples > 0) {
+            this.unigram = new UniGram(vocab);
+        }
+        vocab.assignCode();
+        
         SkipGramParameters modelParams = (SkipGramParameters) init;
         alpha = modelParams.alpha;
         SkipGramParameters deltaParams;
