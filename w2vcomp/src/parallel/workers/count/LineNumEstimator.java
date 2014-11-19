@@ -1,21 +1,19 @@
-package parallel.workers.w2v;
+package parallel.workers.count;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import io.sentence.BasicTreeInputStream;
 import parallel.comm.ParameterMessager;
 import parallel.workers.ModelParameters;
 import parallel.workers.ParameterEstimator;
-import tree.Tree;
 
-public class W2vEstimator implements ParameterEstimator {
+public class LineNumEstimator implements ParameterEstimator {
 
 //    protected BasicTreeInputStream inputStream;
     protected BufferedReader reader;
     
-    public W2vEstimator(String inputFile) {
+    public LineNumEstimator(String inputFile) {
         try {
 //            inputStream = new BasicTreeInputStream(inputFile);
             reader = new BufferedReader(new FileReader(inputFile));
@@ -31,7 +29,7 @@ public class W2vEstimator implements ParameterEstimator {
     public void run(ModelParameters init, ParameterMessager parameterMessager) {
         // TODO Auto-generated method stub
         long numLine = 0;
-        W2vParameters parameters = new W2vParameters();
+        LineNumParameters parameters = new LineNumParameters();
         try {
 //            Tree tree = inputStream.readTree();
             String line = reader.readLine();

@@ -7,7 +7,7 @@ import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import parallel.comm.ParameterMessager;
-import parallel.workers.w2v.W2vEstimator;
+import parallel.workers.count.LineNumEstimator;
 
 /**
  * This is the actual worker (TIE Fighter)
@@ -68,7 +68,7 @@ public class ParameterEstimatorWorker implements Launchable  {
                 monitorHostname, aggregatorPort, trainingFile);
         
         //Hardcoded task to run
-        ParameterEstimator estimator = new W2vEstimator(trainingFile);
+        ParameterEstimator estimator = new LineNumEstimator(trainingFile);
         paramEst.run(estimator);
     }
 }

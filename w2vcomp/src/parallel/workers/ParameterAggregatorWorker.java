@@ -8,7 +8,7 @@ import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import parallel.comm.ParameterMessage;
-import parallel.workers.w2v.W2vAggregator;
+import parallel.workers.count.LineNumAggregator;
 import utils.SerializationUtils;
 
 /**
@@ -116,7 +116,7 @@ public class ParameterAggregatorWorker implements Launchable {
                 home_path, monitorHostname, estimatorsPort, monitorPort);
 
         //Hardcoded task to run
-        ParameterAggregator parameterAggregator = new W2vAggregator();
+        ParameterAggregator parameterAggregator = new LineNumAggregator();
 
         paramAgg.run(parameterAggregator);
     }

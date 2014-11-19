@@ -1,9 +1,9 @@
-package parallel.workers.w2v;
+package parallel.workers.count;
 
 import parallel.workers.ModelParameters;
 import parallel.workers.ParameterFinalizer;
 
-public class W2vFinalizer implements ParameterFinalizer{
+public class LineNumFinalizer implements ParameterFinalizer{
     
     @Override
     public void finish(ModelParameters finalParameters) {

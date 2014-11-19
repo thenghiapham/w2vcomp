@@ -1,14 +1,14 @@
-package parallel.workers.w2v;
+package parallel.workers.count;
 
 import parallel.workers.ModelParameters;
 import parallel.workers.ParameterAggregator;
 
-public class W2vAggregator implements ParameterAggregator {
+public class LineNumAggregator implements ParameterAggregator {
     long totalLineNum = 0;
     @Override
     public ModelParameters aggregate(ModelParameters content) {
         // TODO Auto-generated method stub
-        long additionalLineNum = ((W2vParameters) content).getValue();
+        long additionalLineNum = ((LineNumParameters) content).getValue();
         totalLineNum += additionalLineNum;
         content.setValue(totalLineNum);
         return content;
@@ -17,7 +17,7 @@ public class W2vAggregator implements ParameterAggregator {
     @Override
     public ModelParameters getAggregatedParameters() {
         // TODO Auto-generated method stub
-        W2vParameters finalParameters = new W2vParameters();
+        LineNumParameters finalParameters = new LineNumParameters();
         finalParameters.setValue(totalLineNum);
         return finalParameters;
     }

@@ -1,10 +1,10 @@
-package parallel.workers.w2v;
+package parallel.workers.count;
 
 import java.io.Serializable;
 
 import parallel.workers.ModelParameters;
 
-public class W2vParameters implements ModelParameters {
+public class LineNumParameters implements ModelParameters {
 
     /**
      * 
