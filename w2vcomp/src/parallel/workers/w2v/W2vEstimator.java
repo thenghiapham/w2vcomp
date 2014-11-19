@@ -41,7 +41,7 @@ public class W2vEstimator implements ParameterEstimator {
             }
             parameters.setValue(new Long(numLine % 10000));
             parameterMessager.sendUpdate(parameters);
-            parameterMessager.sendEnd();
+//            parameterMessager.sendEnd();
         } catch (IOException e) {
             e.printStackTrace();
         }
