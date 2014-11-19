@@ -1,13 +1,18 @@
 package parallel.workers;
 
+import io.sentence.PlainSentenceInputStream;
+import io.sentence.SentenceInputStream;
+import io.word.PushBackWordStream;
+
 import java.io.File;
+import java.io.IOException;
 
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import parallel.comm.ParameterMessager;
-import parallel.workers.count.LineNumEstimator;
+import parallel.workers.w2v.SkipGramEstimator;
 
 /**
  * This is the actual worker (TIE Fighter)
@@ -66,9 +71,14 @@ public class ParameterEstimatorWorker implements Launchable  {
 
         ParameterEstimatorWorker paramEst = new ParameterEstimatorWorker(home_path,
                 monitorHostname, aggregatorPort, trainingFile);
-        
-        //Hardcoded task to run
-        ParameterEstimator estimator = new LineNumEstimator(trainingFile);
-        paramEst.run(estimator);
+        try {
+            SentenceInputStream sentenceInputStream = new PlainSentenceInputStream(
+                    new PushBackWordStream(trainingFile, 100));
+            //Hardcoded task to run
+            ParameterEstimator estimator = new SkipGramEstimator(sentenceInputStream);
+            paramEst.run(estimator);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
