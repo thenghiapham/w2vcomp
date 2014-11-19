@@ -58,6 +58,7 @@ public class SkipGramEstimator implements ParameterEstimator{
         this.vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
         this.sigmoidTable = new SigmoidTable();
         men = new MenCorrelation(TestConstants.S_MEN_FILE);
+        System.out.println("Men size: " + men.getGolds().length);
     }
     
     
@@ -69,6 +70,8 @@ public class SkipGramEstimator implements ParameterEstimator{
             this.unigram = new UniGram(vocab);
         }
         vocab.assignCode();
+        System.out.println("Dictionary size :" + vocab.getVocabSize());
+        System.out.println("2nd word :" + vocab.getEntry(2).word);
         
         SkipGramParameters modelParams = (SkipGramParameters) init;
         alpha = modelParams.alpha;
