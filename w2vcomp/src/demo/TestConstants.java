@@ -69,6 +69,7 @@ public class TestConstants {
 //    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/wiki.parse";
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
     public static final String S_VECTOR_FILE              = S_OUT_DIR + "bnc.bin";
+    public static final String S_TEXT_VECTOR_FILE         = S_OUT_DIR + "bnc.txt";
     public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "bnc.cmp";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc.voc";
     public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "bnc.ini";

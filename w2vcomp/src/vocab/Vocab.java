@@ -8,11 +8,17 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class Vocab {
+public class Vocab implements Serializable{
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     // maximum length for a word
     // not particularly necessary
     public static int                  MAX_LENGTH = 100;

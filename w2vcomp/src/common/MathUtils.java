@@ -1,5 +1,7 @@
 package common;
 
+import java.util.Arrays;
+
 /**
  * This class contains a set of utility method for simple maths
  * (maybe should be replaced with utility method for SimpleMatrix class
@@ -62,5 +64,33 @@ public class MathUtils {
      */
     public static double tanh(double x) {
         return 1 - (double) (2.0 / (1.0 + Math.exp(2 * x)));
+    }
+    
+    public static void minusInPlace(double[][] original, double[][] delta) {
+        for (int i=0; i < original.length; i++) {
+            for (int j = 0; j < original[i].length; j++) {
+                original[i][j] -= delta[i][j];
+            }
+        }
+    }
+    
+    public static void plusInPlace(double[][] original, double[][] delta) {
+        for (int i=0; i < original.length; i++) {
+            for (int j = 0; j < original[i].length; j++) {
+                original[i][j] += delta[i][j];
+            }
+        }
+    }
+    
+    public static double[][] deepCopy(double[][] original) {
+        if (original == null) {
+            return null;
+        }
+
+        double[][] result = new double[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            result[i] = Arrays.copyOf(original[i], original[i].length);
+        }
+        return result;
     }
 }

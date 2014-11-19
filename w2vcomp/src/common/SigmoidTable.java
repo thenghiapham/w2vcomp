@@ -1,5 +1,7 @@
 package common;
 
+import java.io.Serializable;
+
 /**
  * An instance of this class pre-computed values for the sigmoid function
  * Its main purpose to increase the speed of the program (or so people say :P)
@@ -7,7 +9,12 @@ package common;
  * @author thenghiapham
  *
  */
-public class SigmoidTable {
+public class SigmoidTable implements Serializable{
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     
     // Default parameters for the table
     public static final double DEFAULT_MAX_X              = 6;

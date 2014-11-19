@@ -1,10 +1,16 @@
 package word2vec;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import vocab.Vocab;
 
-public class UniGram {
+public class UniGram implements Serializable{
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
     public static final int DEFAULT_TABLE_SIZE = 100000000;
     protected int           randomTablesize;
     protected int[]         randomTable;
