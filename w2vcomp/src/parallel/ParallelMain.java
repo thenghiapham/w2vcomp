@@ -38,7 +38,7 @@ public class ParallelMain {
                 resultsPort);
 
         // Spaceship launcher
-        final Launcher launcher = new MultiprocessLauncher(home_path);
+        final Launcher launcher = new ClusterLauncher(home_path);
 
         final ArrayList<String> proccess_ids = new ArrayList<String>();
         
