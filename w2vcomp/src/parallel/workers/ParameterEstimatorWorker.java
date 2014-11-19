@@ -2,16 +2,11 @@ package parallel.workers;
 
 import java.io.File;
 
-import org.ggf.drmaa.DrmaaException;
-import org.ggf.drmaa.JobTemplate;
-import org.ggf.drmaa.Session;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import parallel.comm.ParameterMessager;
-import parallel.workers.models.ExampleEstimator;
-import parallel.workers.w2v.W2vAggregator;
 import parallel.workers.w2v.W2vEstimator;
 
 /**
@@ -20,7 +15,7 @@ import parallel.workers.w2v.W2vEstimator;
  * @author german
  * 
  */
-public class ParameterEstimatorWorker extends BaseClusterLaunchable  {
+public class ParameterEstimatorWorker implements Launchable  {
 
     private String training_file;
     private String hostname;
@@ -28,7 +23,6 @@ public class ParameterEstimatorWorker extends BaseClusterLaunchable  {
 
     public ParameterEstimatorWorker(File home_path, String hostname,
             int aggregatorPort, String training_file) {
-        super(home_path);
         this.hostname = hostname;
         this.aggregatorPort = aggregatorPort;
         this.training_file = training_file;
@@ -59,9 +53,9 @@ public class ParameterEstimatorWorker extends BaseClusterLaunchable  {
     }
 
     @Override
-    public JobTemplate getJobTemplate(Session session) throws DrmaaException {
-        return getJobTemplate(session, new String[] { hostname,
-                new Integer(aggregatorPort).toString(), training_file });
+    public String[] getArgs() {
+        return new String[] { hostname,
+                new Integer(aggregatorPort).toString(), training_file };
     }
 
     public static void main(String[] args) {

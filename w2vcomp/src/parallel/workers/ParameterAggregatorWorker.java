@@ -3,15 +3,11 @@ package parallel.workers;
 import java.io.File;
 import java.io.Serializable;
 
-import org.ggf.drmaa.DrmaaException;
-import org.ggf.drmaa.JobTemplate;
-import org.ggf.drmaa.Session;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import parallel.comm.ParameterMessage;
-import parallel.workers.models.ExampleAggregator;
 import parallel.workers.w2v.W2vAggregator;
 import utils.SerializationUtils;
 
@@ -23,7 +19,7 @@ import utils.SerializationUtils;
  * 
  * @author german
  */
-public class ParameterAggregatorWorker extends BaseClusterLaunchable {
+public class ParameterAggregatorWorker implements Launchable {
 
     private String monitorHostname;
     private int    estimatorsPort;
@@ -31,7 +27,6 @@ public class ParameterAggregatorWorker extends BaseClusterLaunchable {
 
     public ParameterAggregatorWorker(File home_path, String monitorHostname,
             int estimatorsPort, int monitorPort) {
-        super(home_path);
         this.monitorHostname = monitorHostname;
         this.estimatorsPort = estimatorsPort;
         this.monitorPort = monitorPort;
@@ -105,10 +100,10 @@ public class ParameterAggregatorWorker extends BaseClusterLaunchable {
     }
 
     @Override
-    public JobTemplate getJobTemplate(Session session) throws DrmaaException {
-        return getJobTemplate(session, new String[] { monitorHostname,
+    public String[] getArgs() {
+        return new String[] { monitorHostname,
                 new Integer(estimatorsPort).toString(),
-                new Integer(monitorPort).toString(), });
+                new Integer(monitorPort).toString(), };
     }
 
     public static void main(String[] args) {

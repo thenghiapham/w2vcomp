@@ -8,5 +8,5 @@ PROJECT_DIR=$1/w2vcomp/w2vcomp
 cd $PROJECT_DIR
 PARAMS="$@"
 echo "Starting $MAIN_CLASS"
-mvn exec:java -Djava.library.path="$HOME/.local" -Dexec.mainClass="$MAIN_CLASS" -Dexec.args="$PARAMS"
+mvn exec:java -Djava.library.path="/usr/local/lib:$HOME/.local/lib" -Dexec.mainClass="$MAIN_CLASS" -Dexec.args="$PARAMS"
 echo "Done"

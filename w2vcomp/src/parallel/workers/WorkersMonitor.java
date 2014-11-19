@@ -6,7 +6,6 @@ import org.zeromq.ZMQ;
 
 import parallel.comm.MessageBroker;
 import parallel.comm.NetUtils;
-import parallel.workers.models.ExampleModelParameters;
 import utils.SerializationUtils;
 
 /**

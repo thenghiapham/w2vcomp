@@ -6,6 +6,10 @@ import parallel.workers.ParameterEstimator;
 
 public class ExampleEstimator implements ParameterEstimator {
 
+    public ExampleEstimator(String trainingFile) {
+        //Do nothing
+    }
+
     @Override
     public void run(ModelParameters _init, ParameterMessager parameterMessager) {
         
