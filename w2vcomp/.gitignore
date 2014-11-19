@@ -1,3 +1,4 @@
 /bin
 /target
 .attach_pid*
+/target/

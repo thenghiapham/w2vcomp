@@ -1,7 +1,8 @@
 package parallel.workers.w2v;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-
 
 import io.sentence.BasicTreeInputStream;
 import parallel.comm.ParameterMessager;
@@ -11,14 +12,18 @@ import tree.Tree;
 
 public class W2vEstimator implements ParameterEstimator {
 
-    protected BasicTreeInputStream inputStream;
+//    protected BasicTreeInputStream inputStream;
+    protected BufferedReader reader;
     
     public W2vEstimator(String inputFile) {
         try {
-            inputStream = new BasicTreeInputStream(inputFile);
+//            inputStream = new BasicTreeInputStream(inputFile);
+            reader = new BufferedReader(new FileReader(inputFile));
+            System.out.println("File name: " + inputFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            inputStream = null;
+//            inputStream = null;
+            reader = null;
             e.printStackTrace();
         }
     }
@@ -28,20 +33,23 @@ public class W2vEstimator implements ParameterEstimator {
         long numLine = 0;
         W2vParameters parameters = new W2vParameters();
         try {
-            Tree tree = inputStream.readTree();
-            
-            while (tree != null) {
+//            Tree tree = inputStream.readTree();
+            String line = reader.readLine();
+//            while (tree != null) {
+            while (line != null) {
                 numLine += 1;
                 if (numLine % 10000 == 0) {
                     parameters.setValue(new Long(10000));
                     parameterMessager.sendUpdate(parameters);
                     System.out.println("numLine: " + numLine);
                 }
-                tree = inputStream.readTree();
+//                tree = inputStream.readTree();
+                line = reader.readLine();
             }
             parameters.setValue(new Long(numLine % 10000));
             parameterMessager.sendUpdate(parameters);
-            parameterMessager.sendEnd();
+            System.out.println("numLine: " + numLine);
+//            parameterMessager.sendEnd();
         } catch (IOException e) {
             e.printStackTrace();
         }
