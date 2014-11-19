@@ -1,4 +1,4 @@
-package parallel.workers.models;
+package parallel.workers.example;
 
 import parallel.comm.ParameterMessager;
 import parallel.workers.ModelParameters;

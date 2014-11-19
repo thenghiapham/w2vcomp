@@ -1,4 +1,4 @@
-package parallel.workers.models;
+package parallel.workers.example;
 
 import parallel.workers.ModelParameters;
 import parallel.workers.ParameterAggregator;

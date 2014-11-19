@@ -7,7 +7,7 @@ import parallel.workers.ParameterAggregatorWorker;
 import parallel.workers.ParameterEstimatorWorker;
 import parallel.workers.ParameterFinalizer;
 import parallel.workers.WorkersMonitor;
-import parallel.workers.models.ExampleFinalizer;
+import parallel.workers.example.ExampleFinalizer;
 import demo.TestConstants;
 
 /**
