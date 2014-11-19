@@ -30,7 +30,7 @@ public class SkipGramAggregator implements ParameterAggregator{
     SkipGramParameters         modelParams;
     Random rand = new Random();
     public SkipGramAggregator() {
-        starting_alpha = AbstractWord2Vec.DEFAULT_STARTING_ALPHA;
+        starting_alpha = 0.0025;
         alpha = starting_alpha;
         vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
         buildVocab(TestConstants.S_VOCABULARY_FILE);
