@@ -16,7 +16,6 @@ import demo.TestConstants;
 import parallel.workers.ModelParameters;
 import parallel.workers.ParameterAggregator;
 import vocab.Vocab;
-import word2vec.AbstractWord2Vec;
 
 public class SkipGramAggregator implements ParameterAggregator{
     protected double           alpha;
@@ -30,7 +29,7 @@ public class SkipGramAggregator implements ParameterAggregator{
     SkipGramParameters         modelParams;
     Random rand = new Random();
     public SkipGramAggregator() {
-        starting_alpha = 0.0025;
+        starting_alpha = 0.025;
         alpha = starting_alpha;
         vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
         buildVocab(TestConstants.S_VOCABULARY_FILE);
@@ -85,17 +84,18 @@ public class SkipGramAggregator implements ParameterAggregator{
     @Override
     public ModelParameters aggregate(ModelParameters content) {
         // TODO Auto-generated method stub
+        System.out.println("old vector: " + weights0[2][0] + " " + weights0[2][1]);
         SkipGramParameters deltaParams = (SkipGramParameters) content;
         System.out.println("delta vector: " + deltaParams.weights0[2][0] + " " + deltaParams.weights0[2][1]);
-        MathUtils.plusInPlace(weights0, deltaParams.weights0);
-        MathUtils.plusInPlace(weights1, deltaParams.weights1);
+        MathUtils.plusInPlace(weights0, deltaParams.weights0, 0.5);
+        MathUtils.plusInPlace(weights1, deltaParams.weights1, 0.5);
         wordCount += deltaParams.wordCount;
         alpha = starting_alpha
                 * (1 - (double) wordCount / (trainWords + 1));
         if (alpha < starting_alpha * 0.0001) {
             alpha = starting_alpha * 0.0001;
         }
-        System.out.println("vector: " + weights0[2][0] + " " + weights0[2][1]);
+        System.out.println("new vector: " + weights0[2][0] + " " + weights0[2][1]);
         modelParams = new SkipGramParameters(alpha, wordCount, weights0, weights1);
         return modelParams;
     }

@@ -74,10 +74,10 @@ public class MathUtils {
         }
     }
     
-    public static void plusInPlace(double[][] original, double[][] delta) {
+    public static void plusInPlace(double[][] original, double[][] delta, double scale) {
         for (int i=0; i < original.length; i++) {
             for (int j = 0; j < original[i].length; j++) {
-                original[i][j] += delta[i][j];
+                original[i][j] += scale * delta[i][j];
             }
         }
     }
