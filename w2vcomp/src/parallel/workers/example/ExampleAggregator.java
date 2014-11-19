@@ -22,7 +22,12 @@ public class ExampleAggregator implements ParameterAggregator {
     }
 
     @Override
-    public ModelParameters getAggregatedParameters() {
+    public ModelParameters getInitParameters() {
+        return params;
+    }
+    
+    @Override
+    public ModelParameters getFinalParameters() {
         return params;
     }
 

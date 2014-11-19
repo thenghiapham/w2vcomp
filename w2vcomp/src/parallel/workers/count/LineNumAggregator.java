@@ -15,11 +15,18 @@ public class LineNumAggregator implements ParameterAggregator {
     }
 
     @Override
-    public ModelParameters getAggregatedParameters() {
+    public ModelParameters getInitParameters() {
         // TODO Auto-generated method stub
         LineNumParameters finalParameters = new LineNumParameters();
         finalParameters.setValue(totalLineNum);
         return finalParameters;
+    }
+
+
+    @Override
+    public ModelParameters getFinalParameters() {
+        // TODO Auto-generated method stub
+        return getInitParameters();
     }
 
 }

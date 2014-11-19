@@ -61,7 +61,7 @@ public class ParameterAggregatorWorker implements Launchable {
             switch (msg.getType()) {
             case "INIT":
                 res = new ParameterMessage("INIT_REPLY",
-                        parameterAggregator.getAggregatedParameters());
+                        parameterAggregator.getInitParameters());
                 n_workers += 1;
                 aggParamsResponder.send(SerializationUtils.serialize(res), 0);
                 break;
@@ -87,7 +87,7 @@ public class ParameterAggregatorWorker implements Launchable {
         aggParamsResponder.close();
 
         // Sir, we found the rebels
-        ModelParameters result = parameterAggregator.getAggregatedParameters();
+        ModelParameters result = parameterAggregator.getFinalParameters();
         System.out.println("Sending results");
         monitorResponder.send(SerializationUtils.serialize(result), 0);
         System.out.println("results sent");
