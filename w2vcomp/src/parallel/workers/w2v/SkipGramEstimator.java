@@ -113,6 +113,7 @@ public class SkipGramEstimator implements ParameterEstimator{
                     System.out.println("alpha: " + alpha);
                     System.out.println("wordCount: " + wordCount);
                     if (rand.nextFloat() <= 0.33) {
+                        System.out.println("vector: " + weights0[2][0] + " " + weights0[2][1]);
                         RawSemanticSpace space = new RawSemanticSpace(vocab, weights0, false);
                         System.out.println(men.evaluateSpacePearson(space));
                     }
