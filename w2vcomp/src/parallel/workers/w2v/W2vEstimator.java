@@ -16,6 +16,7 @@ public class W2vEstimator implements ParameterEstimator {
     public W2vEstimator(String inputFile) {
         try {
             inputStream = new BasicTreeInputStream(inputFile);
+            System.out.println("File name: " + inputFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             inputStream = null;
@@ -41,6 +42,7 @@ public class W2vEstimator implements ParameterEstimator {
             }
             parameters.setValue(new Long(numLine % 10000));
             parameterMessager.sendUpdate(parameters);
+            System.out.println("numLine: " + numLine);
 //            parameterMessager.sendEnd();
         } catch (IOException e) {
             e.printStackTrace();
