@@ -7,5 +7,5 @@ public class RunningConstant {
     public static final double SUBSAMPLE = 0;
     public static final int VECTOR_SIZE = 100;
     public static final int WINDOW_SIZE = 5;
-    public static final int MIN_FREQUENCY = 50;
+    public static final int MIN_FREQUENCY = 500;
 }
