@@ -87,8 +87,8 @@ public class SkipGramAggregator implements ParameterAggregator{
         System.out.println("old vector: " + weights0[2][0] + " " + weights0[2][1]);
         SkipGramParameters deltaParams = (SkipGramParameters) content;
         System.out.println("delta vector: " + deltaParams.weights0[2][0] + " " + deltaParams.weights0[2][1]);
-        MathUtils.plusInPlace(weights0, deltaParams.weights0, 1/5.0);
-        MathUtils.plusInPlace(weights1, deltaParams.weights1, 1/5.0);
+        MathUtils.plusInPlace(weights0, deltaParams.weights0, 1/3.0);
+        MathUtils.plusInPlace(weights1, deltaParams.weights1, 1/3.0);
         wordCount += deltaParams.wordCount;
         alpha = starting_alpha
                 * (1 - (double) wordCount / (trainWords + 1));
