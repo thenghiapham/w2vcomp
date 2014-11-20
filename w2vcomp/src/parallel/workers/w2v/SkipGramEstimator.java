@@ -110,7 +110,7 @@ public class SkipGramEstimator implements ParameterEstimator{
                     modelParams = (SkipGramParameters) parameterMessager
                             .sendUpdate(deltaParams).getContent();
                     weights0 = modelParams.weights0;
-                    weights1 = modelParams.weights0;
+                    weights1 = modelParams.weights1;
                     oldWeights0 = MathUtils.deepCopy(weights0);
                     oldWeights1 = MathUtils.deepCopy(weights1);
                     alpha = modelParams.alpha;
