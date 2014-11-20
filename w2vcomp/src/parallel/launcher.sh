@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -S /bin/bash
-export MAVEN_OPTS=-Xmx512m
+export MAVEN_OPTS=-Xmx2g
 MAIN_CLASS=$1
 shift
 PROJECT_DIR=$1/w2vcomp/w2vcomp

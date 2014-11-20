@@ -8,6 +8,7 @@ import parallel.workers.ParameterEstimatorWorker;
 import parallel.workers.ParameterFinalizer;
 import parallel.workers.WorkersMonitor;
 import parallel.workers.example.ExampleFinalizer;
+import parallel.workers.w2v.SkipGramFinalizer;
 import demo.TestConstants;
 
 /**
@@ -90,7 +91,7 @@ public class ParallelSkipGramMain {
 
         
         //Hardcoded class that knows what to do when the parameters are done computing
-        ParameterFinalizer finalizer = new ExampleFinalizer();
+        ParameterFinalizer finalizer = new SkipGramFinalizer();
         // Wait for the mission to be complete
         processMonitor.run(finalizer);
 
