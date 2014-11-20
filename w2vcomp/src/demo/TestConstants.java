@@ -98,9 +98,9 @@ public class TestConstants {
     public static final String S_PROJECT_HOME_DIR         = "/home/thenghia.pham/git/compomik";
     public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
     public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "constructions/selected-constructions.txt";
-//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/text_split/enwik9";
+    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/text_split/enwik9";
 //    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/full/bnc";
-    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/full/wik9";
+//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/full/wik9";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/bnc.txt";
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
     public static final String S_VECTOR_FILE              = S_OUT_DIR + "wiki9.bin";
