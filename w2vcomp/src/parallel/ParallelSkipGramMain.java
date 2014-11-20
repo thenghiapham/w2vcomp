@@ -22,9 +22,9 @@ public class ParallelSkipGramMain {
         /*Configuration constants (to move somewhere else)*/
         File home_path = new File(TestConstants.S_PROJECT_HOME_DIR);
 
-        int aggregatorPort = 5560;
-        int estimatorPort = 5561;
-        int resultsPort = 5562;
+        int aggregatorPort = 5556;
+        int estimatorPort = 5557;
+        int resultsPort = 5558;
 
         
         String trainDirPath = TestConstants.S_TRAIN_DIR;
