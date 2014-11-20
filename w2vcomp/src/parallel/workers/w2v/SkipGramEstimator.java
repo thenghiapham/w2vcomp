@@ -124,6 +124,7 @@ public class SkipGramEstimator implements ParameterEstimator{
                 }
                 trainSentence(sentence);
             }
+            System.out.println("end of file: " + wordCount);
             // TODO: if wordCount do something
         } catch (IOException e) {
             e.printStackTrace();

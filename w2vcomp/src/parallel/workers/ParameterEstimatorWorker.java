@@ -71,6 +71,7 @@ public class ParameterEstimatorWorker implements Launchable  {
 
         ParameterEstimatorWorker paramEst = new ParameterEstimatorWorker(home_path,
                 monitorHostname, aggregatorPort, trainingFile);
+        System.out.println("Train file: " + trainingFile);
         try {
             SentenceInputStream sentenceInputStream = new PlainSentenceInputStream(
                     new PushBackWordStream(trainingFile, 100));
