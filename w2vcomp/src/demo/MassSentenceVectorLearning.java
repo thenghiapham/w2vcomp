@@ -86,7 +86,7 @@ public class MassSentenceVectorLearning {
         File[] trainFiles = trainDir.listFiles();
         
         boolean learnVocab = !(new File(vocabFile)).exists();
-        Vocab vocab = new Vocab(5);
+        Vocab vocab = new Vocab(TestConstants.S_MIN_FREQUENCY);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {

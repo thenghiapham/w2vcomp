@@ -31,10 +31,13 @@ public class BasicTreeInputStream implements TreeInputStream {
             Tree tree = null;
             if (!line.equals("") && !line.startsWith("<text id")) {
                 try {
+                    readLineNum++;
                     line = line.replaceAll("\\(\\)", "LRB)");
                     line = line.replaceAll(" \\)", " RRB");
-                    tree = Tree.fromPennTree(line);
-                    readLineNum++;
+                    if (!(line.length() <= 20 || line.length() >= 1000)) {
+                        tree = Tree.fromPennTree(line);
+                    }
+                    
                 } catch (ValueException e) {
                     tree = null;
                 }

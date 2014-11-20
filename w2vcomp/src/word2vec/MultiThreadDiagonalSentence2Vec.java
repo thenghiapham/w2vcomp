@@ -48,8 +48,10 @@ public class MultiThreadDiagonalSentence2Vec extends MultiThreadSentence2Vec{
 
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
+        if (parseTree == null) return;
         DiagonalTreeNetwork network = DiagonalTreeNetwork.createNetwork(parseTree, projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-        network.learn(alpha);
+        if (network != null)
+            network.learn(alpha);
 //        if (random.nextDouble() <= 0.0001) {
 //            network.checkGradient();
 //        }
