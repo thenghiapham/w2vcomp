@@ -84,13 +84,11 @@ public class MessageBroker implements Runnable {
                 active_time += new_time - prev_time;
             }
             prev_time = new_time;
-            System.out.println(idle_time);
-            System.out.println(active_time);
 
             System.out.println("Time aggregator spent: idle ["
-                    + ((100 * idle_time) / (idle_time + prev_time))
+                    + ((100 * idle_time) / (idle_time + active_time))
                     + "%] active [" + ((100 * active_time)
-                    / (idle_time + prev_time)) + "%]");
+                    / (idle_time + active_time)) + "%]");
 
             if (items.pollin(0)) {
                 System.out.println("estimator socket");
