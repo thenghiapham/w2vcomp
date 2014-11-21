@@ -84,6 +84,8 @@ public class SkipGramEstimator implements ParameterEstimator{
         long oldWordCount = 0;
         long wordCount = 0;
         try {
+            double mean_batch = 1.0/2000000.0;
+            double batch_size = Math.log(1 - rand.nextDouble()) / -mean_batch;
             while (true) {
 
                 // read the whole sentence sentence,
@@ -98,8 +100,7 @@ public class SkipGramEstimator implements ParameterEstimator{
                 }
 
                 wordCount = inputStream.getWordCount();
-                double mean_batch = 1.0/2000000.0;
-                double batch_size = Math.log(1 - rand.nextDouble()) / -mean_batch;
+                
                 if (wordCount - oldWordCount >= batch_size) {
                     batch_size = Math.log(1 - rand.nextDouble()) / -mean_batch;
                     if (rand.nextFloat() <= 0.999) {
