@@ -85,7 +85,8 @@ public class SkipGramEstimator implements ParameterEstimator{
         long wordCount = 0;
         try {
             double mean_batch = 1.0/500000.0;
-            double batch_size = Math.log(1 - rand.nextDouble()) / -mean_batch;
+            int max_batch = 2000000;
+            double batch_size = Math.min(Math.log(1 - rand.nextDouble()) / -mean_batch, max_batch);
             while (true) {
 
                 // read the whole sentence sentence,
@@ -102,7 +103,7 @@ public class SkipGramEstimator implements ParameterEstimator{
                 wordCount = inputStream.getWordCount();
                 
                 if (wordCount - oldWordCount >= batch_size) {
-                    batch_size = Math.log(1 - rand.nextDouble()) / -mean_batch;
+                    batch_size = Math.min(Math.log(1 - rand.nextDouble()) / -mean_batch, max_batch);
                     if (rand.nextFloat() <= 0.999) {
                         RawSemanticSpace space = new RawSemanticSpace(vocab, weights0, false);
                         System.out.println(men.evaluateSpacePearson(space));

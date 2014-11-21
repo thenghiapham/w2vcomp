@@ -1,6 +1,7 @@
 package parallel.comm;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
@@ -65,6 +66,8 @@ public class MessageBroker implements Runnable {
         boolean more = false;
         byte[] message;
         int aggregator_requests = 0;
+        long prev_time = new Date().getTime();
+        long idle_time = 0, active_time = 0;
 
         System.out.println("Initiating communication proxy");
         // Switch messages between sockets
@@ -74,10 +77,23 @@ public class MessageBroker implements Runnable {
 
             System.out.println("Message received");
 
+            long new_time = new Date().getTime();
+            if (aggregator_requests == 0) {
+                idle_time += new_time - prev_time;
+            } else {
+                active_time += new_time - prev_time;
+            }
+            prev_time = new_time;
+
+            System.out.println("Time aggregator spent: idle [" + 100
+                    * idle_time / (idle_time + prev_time) + "%] active [" + 100
+                    * active_time / (idle_time + prev_time) + "%]");
+
             if (items.pollin(0)) {
                 System.out.println("estimator socket");
                 aggregator_requests += 1;
-                System.out.println("Total aggregator requests: " + aggregator_requests);
+                System.out.println("Total aggregator requests: "
+                        + aggregator_requests);
                 while (true) {
                     // receive message
                     message = paramEstimatorsSocket.recv(0);
@@ -94,7 +110,8 @@ public class MessageBroker implements Runnable {
             if (items.pollin(1)) {
                 System.out.println("agg socket");
                 aggregator_requests -= 1;
-                System.out.println("Total aggregator requests: " + aggregator_requests);
+                System.out.println("Total aggregator requests: "
+                        + aggregator_requests);
                 while (true) {
                     // receive message
                     message = paramsAggregatorSocket.recv(0);
