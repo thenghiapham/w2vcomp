@@ -64,6 +64,7 @@ public class MessageBroker implements Runnable {
 
         boolean more = false;
         byte[] message;
+        int aggregator_requests = 0;
 
         System.out.println("Initiating communication proxy");
         // Switch messages between sockets
@@ -75,6 +76,8 @@ public class MessageBroker implements Runnable {
 
             if (items.pollin(0)) {
                 System.out.println("estimator socket");
+                aggregator_requests += 1;
+                System.out.println("Total aggregator requests: " + aggregator_requests);
                 while (true) {
                     // receive message
                     message = paramEstimatorsSocket.recv(0);
@@ -90,6 +93,8 @@ public class MessageBroker implements Runnable {
             }
             if (items.pollin(1)) {
                 System.out.println("agg socket");
+                aggregator_requests -= 1;
+                System.out.println("Total aggregator requests: " + aggregator_requests);
                 while (true) {
                     // receive message
                     message = paramsAggregatorSocket.recv(0);
