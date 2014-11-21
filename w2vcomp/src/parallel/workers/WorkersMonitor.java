@@ -61,13 +61,14 @@ public class WorkersMonitor  {
         resultReqSocket.bind("tcp://*:" + resultsPort);
         resultReqSocket.send("You are in command now, Admiral Piett", 0);
 
-        System.out.println("Wating for result...");
+        System.out.println("Wating for result at port " + resultsPort + "...");
         byte[] final_result = resultReqSocket.recv();
+        System.out.println("Result received");
 
         ModelParameters finalParameters = (ModelParameters) SerializationUtils.deserialize(final_result);
         finalizer.finish(finalParameters);
                 
-
+        System.out.println("Stopping message broker");
         messageBroker.stop(context);
         System.out.println("Stopped");
         try {

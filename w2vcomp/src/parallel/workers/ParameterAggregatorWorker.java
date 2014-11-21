@@ -38,10 +38,12 @@ public class ParameterAggregatorWorker implements Launchable {
 
         Context context = ZMQ.context(1);
 
+        System.out.println("Conneting to the TIE fighters at "+ "tcp://" + monitorHostname + ":" + estimatorsPort);
         Socket aggParamsResponder = context.socket(ZMQ.REP);
         aggParamsResponder.connect("tcp://" + monitorHostname + ":"
                 + estimatorsPort);
 
+        System.out.println("Conneting to Darth Vader at "+ "tcp://" + monitorHostname + ":" + monitorPort);
         Socket monitorResponder = context.socket(ZMQ.REP);
         monitorResponder
                 .connect("tcp://" + monitorHostname + ":" + monitorPort);
@@ -104,7 +106,7 @@ public class ParameterAggregatorWorker implements Launchable {
     public String[] getArgs() {
         return new String[] { monitorHostname,
                 new Integer(estimatorsPort).toString(),
-                new Integer(monitorPort).toString(), };
+                new Integer(monitorPort).toString()};
     }
 
     public static void main(String[] args) {
