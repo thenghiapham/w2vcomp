@@ -84,7 +84,7 @@ public class SkipGramEstimator implements ParameterEstimator{
         long oldWordCount = 0;
         long wordCount = 0;
         try {
-            double mean_batch = 1.0/500000.0;
+            double mean_batch = 1.0/300000.0;
             int max_batch = 2000000;
             double batch_size = Math.min(Math.log(1 - rand.nextDouble()) / -mean_batch, max_batch);
             while (true) {
