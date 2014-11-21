@@ -91,8 +91,9 @@ public class ParameterAggregatorWorker implements Launchable {
 
         // Sir, we found the rebels
         ModelParameters result = parameterAggregator.getFinalParameters();
-        System.out.println("Sending results");
-        monitorResponder.send(SerializationUtils.serialize(result), 0);
+        byte[] serialized_results = SerializationUtils.serialize(result);
+        System.out.println("Sending results (" + serialized_results.length + " bytes)");
+        monitorResponder.send(serialized_results, 0);
         System.out.println("results sent");
 
         System.out.println("closing");
