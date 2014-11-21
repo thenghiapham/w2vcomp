@@ -39,7 +39,7 @@ public class ClusterLauncher implements Launcher {
     protected JobTemplate createJobTemplate(File home_path, Session session,
             String mainClass, String[] args) throws DrmaaException {
         JobTemplate jt = session.createJobTemplate();
-        jt.setNativeSpecification("-b n -j y -l h_vmem=4G -l h_cpu=48:0:0");
+        jt.setNativeSpecification("-b n -j y -l h_vmem=8G -l h_cpu=48:0:0");
         jt.setRemoteCommand(new File(home_path,
                 "w2vcomp/w2vcomp/src/parallel/launcher.sh").getPath());
         File working_directory = new File(home_path, "jobs");
