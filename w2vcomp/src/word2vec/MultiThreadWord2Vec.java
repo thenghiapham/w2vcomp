@@ -72,7 +72,6 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         long oldWordCount = 0;
         try {
             while (true) {
-
                 // read the whole sentence sentence,
                 // the output would be the list of the word's indices in the
                 // dictionary
@@ -93,7 +92,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
                 
                 synchronized (this) {
                     wordCount = wordCount + newSentenceWordCount;
-                    if (wordCount - lastWordCount > 10000) {
+                    if (wordCount - lastWordCount >= 100000) {
                         lastWordCount = wordCount;
                         iteration++;
                         // update alpha
@@ -108,7 +107,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
                             System.out.println("Trained: " + wordCount + " words");
                             System.out.println("Training rate: " + alpha);
                         }
-                        if (men != null && outputSpace != null && iteration %100 == 0) {
+                        if (men != null && outputSpace != null && iteration %10 == 0) {
                             System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
 //                            System.out.println("men neg: " + men.evaluateSpacePearson(negSpace));
                             printStatistics();
@@ -139,6 +138,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         }
         
         public void run() {
+            System.out.println("woo hoo");
             trainModelThread(inputStream);
         }
     }

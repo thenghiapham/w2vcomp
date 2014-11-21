@@ -1,11 +1,11 @@
 package demo;
 
 public class TestConstants {
-    public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/text/wikiA_sample.txt";
-    public static final String TRAIN_DIR               = "/home/thenghiapham/work/project/mikolov/text/tmp";
-    public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/text/wikiA.bin";
-    public static final String VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/text/wikiA.voc";
-    public static final String INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/text/wikiA.ini";
+    public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/corpus/enwik9";
+    public static final String TRAIN_DIR                = "/home/thenghiapham/work/project/multimik/corpus/split/enwik9";
+    public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/text/enwik9.bin";
+    public static final String VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/text/enwik9.voc";
+    public static final String INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/text/enwik9.ini";
     
    
     
@@ -37,6 +37,7 @@ public class TestConstants {
 ////    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wbnc.ini";
 //    
 //    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_bnc.bin";
+//    public static final String S_TEXT_VECTOR_FILE         = S_OUT_DIR + "skip_bnc.txt";
 //    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "skip_bnc.cmp";
 //    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_bnc.voc";
 //    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skip_bnc.ini";
@@ -57,10 +58,12 @@ public class TestConstants {
 //    public static final String S_SV_FILE                  = S_DATASET_DIR + "sv_lemma.txt";
 //    
 //    public static final String S_VALIDATION_FILE          = S_PROJECT_DIR + "tmp_parsed/test_bnc.txt";
-    
-    
-    
+//    
+//    
+//    
 //    public static final String S_PROJECT_HOME_DIR         = "/home/thenghia.pham/git/compomik";
+    
+    
 //    public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
 //    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "constructions/selected-constructions.txt";
 //    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/split/bnc";
@@ -98,9 +101,9 @@ public class TestConstants {
     public static final String S_PROJECT_HOME_DIR         = "/home/thenghia.pham/git/compomik";
     public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
     public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "constructions/selected-constructions.txt";
-//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/text_split/enwik9";
+    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/text_split/enwik9";
 //    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/full/bnc";
-    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/full/wik9";
+//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "corpus/full/wik9";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/bnc.txt";
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
     public static final String S_VECTOR_FILE              = S_OUT_DIR + "wiki9.bin";

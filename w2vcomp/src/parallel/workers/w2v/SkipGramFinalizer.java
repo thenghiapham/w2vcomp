@@ -15,11 +15,12 @@ public class SkipGramFinalizer implements ParameterFinalizer{
     @Override
     public void finish(ModelParameters finalParameters) {
         // TODO Auto-generated method stub
-        Vocab vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
-        vocab.loadVocab(TestConstants.S_VOCABULARY_FILE);
-        double[][] weights0 = ((SkipGramParameters) finalParameters).weights0;
-        RawSemanticSpace space = new RawSemanticSpace(vocab, weights0, false);
-        space.exportSpace(TestConstants.S_TEXT_VECTOR_FILE);
+        System.out.println("Didnot come here");
+//        Vocab vocab = new Vocab(RunningConstant.MIN_FREQUENCY);
+//        vocab.loadVocab(TestConstants.S_VOCABULARY_FILE);
+//        double[][] weights0 = ((SkipGramParameters) finalParameters).weights0;
+//        RawSemanticSpace space = new RawSemanticSpace(vocab, weights0, false);
+//        space.exportSpace(TestConstants.S_TEXT_VECTOR_FILE);
     }
 
 }

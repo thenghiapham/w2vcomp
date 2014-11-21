@@ -22,7 +22,7 @@ public class MTWordVectorLearning {
         //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
 //        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, false, 10, (float) 1e-3, TestConstants.S_MEN_FILE);
-        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(200, 5, true, 0, (float) 1e-3, TestConstants.S_MEN_FILE);
+        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(100, 5, true, 0, (float) 0, TestConstants.S_MEN_FILE);
         // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
         // 0);
         String trainDirPath = TestConstants.TRAIN_DIR;
@@ -59,6 +59,8 @@ public class MTWordVectorLearning {
         try {
             ArrayList<SentenceInputStream> inputStreams = new ArrayList<SentenceInputStream>();
             for (File trainFile: trainFiles) {
+                
+                System.out.println(trainFile.getAbsolutePath());
                 SentenceInputStream sentenceInputStream = new PlainSentenceInputStream(
                         new PushBackWordStream(trainFile.getAbsolutePath(), 100));
                 inputStreams.add(sentenceInputStream);

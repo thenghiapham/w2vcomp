@@ -94,7 +94,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
 //                System.out.println(wordCount);
 //                System.out.println(inputStream.getWordCount());
                 
-                if (wordCount - lastWordCount > 10000) {
+                if (wordCount - lastWordCount >= 100000) {
                     iteration++;
                     // if (wordCount - lastWordCount > 50) {
                     
