@@ -104,7 +104,7 @@ public abstract class Sentence2Vec {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
 //        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
-        compositionMatrices = CompositionMatrices.randomInitialize(constructionGroups, hiddenLayerSize);
+        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
         vocab.assignCode();
         
         // number of lines = frequency of end of line character?

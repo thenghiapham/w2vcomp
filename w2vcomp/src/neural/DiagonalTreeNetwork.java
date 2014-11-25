@@ -200,7 +200,7 @@ public class DiagonalTreeNetwork {
         // going through the nodes that have a projection layer or hidden layer 
         for (Tree node: layerMap.keySet()) {
             int height = node.getHeight();
-            
+            int width = node.getRightmostPosition() - node.getLeftmostPosition() + 1;
             if (!allLevel) {
                 if (outputLayerHeight != -1 && height != outputLayerHeight)
                     continue;
@@ -210,7 +210,8 @@ public class DiagonalTreeNetwork {
             }
             
             Layer layer = layerMap.get(node);
-            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
+            double coefficient = 1 / (double) width;
+//            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
             
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random

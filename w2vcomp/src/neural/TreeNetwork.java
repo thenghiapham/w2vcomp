@@ -197,7 +197,7 @@ public class TreeNetwork {
         // going through the nodes that have a projection layer or hidden layer 
         for (Tree node: layerMap.keySet()) {
             int height = node.getHeight();
-            
+            int width = node.getRightmostPosition() - node.getLeftmostPosition() + 1;
             if (!allLevel) {
                 if (outputLayerHeight != -1 && height != outputLayerHeight)
                     continue;
@@ -207,8 +207,8 @@ public class TreeNetwork {
             }
             
             Layer layer = layerMap.get(node);
-            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
-            
+//            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
+            double coefficient = 1 / (double) width;
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random
 //            int windowSize = maxWindowSize;
@@ -347,7 +347,7 @@ public class TreeNetwork {
         for (Layer layer: hiddenLayers) {
             hiddenGradients.add(layer.getGradient());
         }
-        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * 0.001);
+        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * 0.0001);
         
         // updating the hierarchical softmax or the negative sampling layer
         for (int i = 0; i < outputLayers.size(); i++) {

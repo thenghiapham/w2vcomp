@@ -126,7 +126,7 @@ public class MultiThreadSentence2Vec extends Sentence2Vec{
                             alpha = starting_alpha * 0.0001;
                         }
                         lastLineCount = trainedLines;
-                        if (iteration % 20 == 0) {
+                        if (iteration % 2 == 0) {
                             printStatistics();
                         }
                     }
