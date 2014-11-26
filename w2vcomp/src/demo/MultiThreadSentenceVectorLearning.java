@@ -21,9 +21,9 @@ import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 
 import vocab.Vocab;
-import word2vec.MultiThreadDiagonalSentence2Vec;
+//import word2vec.MultiThreadDiagonalSentence2Vec;
 import word2vec.MultiThreadSentence2Vec;
-import word2vec.MultiThreadWeightedSentence2Vec;
+//import word2vec.MultiThreadWeightedSentence2Vec;
 
 import demo.TestConstants;
 
@@ -35,7 +35,7 @@ public class MultiThreadSentenceVectorLearning {
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 4;
+        int phraseLevel = 7;
         boolean allLevel = true;
         boolean lexical = false;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;

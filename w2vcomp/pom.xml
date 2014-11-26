@@ -62,11 +62,30 @@
   		<artifactId>gral-core</artifactId>
   		<version>0.10</version>
   	</dependency>
+  	<dependency>
+        <groupId>edu.berkeley.compbio</groupId>
+        <artifactId>jlibsvm</artifactId>
+        <version>0.911</version>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
       <id>erichseifert.de</id>
       <url>http://mvn.erichseifert.de/maven2</url>
+    </repository>
+    <repository>
+        <id>dev.davidsoergel.com releases</id>
+        <url>http://dev.davidsoergel.com/nexus/content/repositories/releases</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>dev.davidsoergel.com snapshots</id>
+        <url>http://dev.davidsoergel.com/nexus/content/repositories/snapshots</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
     </repository>
   </repositories>
 </project>
