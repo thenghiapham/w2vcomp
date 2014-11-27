@@ -1,9 +1,13 @@
 package common;
 
 import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import space.CompositionSemanticSpace;
+import space.SMSemanticSpace;
 import tree.Tree;
 
 public class ParsedPhraseVectorPrinter {
@@ -11,6 +15,7 @@ public class ParsedPhraseVectorPrinter {
     String[][] surfacePhrasePairs;
     String[] parsedPhrases;
     String[] surfacePhrases;
+    double[] golds;
     public ParsedPhraseVectorPrinter(String dataset) {
         readDataset(dataset);
     }
@@ -21,7 +26,7 @@ public class ParsedPhraseVectorPrinter {
     }
     
     protected void convertRawData(ArrayList<String> data) {
-        double[] golds = new double[data.size()];
+        golds = new double[data.size()];
         parsedPhrasePairs = new String[data.size()][2];
         surfacePhrasePairs = new String[data.size()][2];
         HashSet<String> parsePhraseSet = new HashSet<>();
@@ -58,16 +63,38 @@ public class ParsedPhraseVectorPrinter {
         }
     }
     
+    protected void printVectors(String fileName, CompositionSemanticSpace space) {
+        SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrases, space.getComposedMatrix(parsedPhrases));
+        int vectorSize = phraseSpace.getVectorSize();
+        double[][][] vectors = new double[parsedPhrasePairs.length][2][vectorSize];
+        for (int i = 0; i < parsedPhrasePairs.length; i++) {
+            vectors[i][0] = phraseSpace.getVector(parsedPhrasePairs[i][0]).getMatrix().data;
+            vectors[i][1] = phraseSpace.getVector(parsedPhrasePairs[i][1]).getMatrix().data;
+        }
+    }
     
-    protected void printVector(BufferedWriter writer, double[] vectors, int featureIndex) {
+    protected void printVectors(String fileName, int vectorSize, double[][][] vectorPairs) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        for (int i = 0; i < golds.length; i++) {
+            writer.write("" + golds[i] + " ");
+            printVector(writer, vectorPairs[i][0], 1);
+            writer.write(" ");
+            printVector(writer, vectorPairs[i][1], 1 + vectorSize);
+            writer.write("\n");
+        }
+        
+    }
+    
+    protected void printVector(BufferedWriter writer, double[] vector, int featureIndex) {
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < vectors.length; i++) {
+        for (int i = 0; i < vector.length; i++) {
             buffer.append(i + featureIndex);
             buffer.append(":");
-            buffer.append(vectors[i]);
-            if (i != vectors.length - 1) {
+            buffer.append(vector[i]);
+            if (i != vector.length - 1) {
                 buffer.append(" ");
             }
         }
     }
 }
+
