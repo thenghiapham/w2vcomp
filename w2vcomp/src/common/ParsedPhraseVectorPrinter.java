@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import composition.BasicComposition;
 import space.CompositionSemanticSpace;
 import space.SMSemanticSpace;
+import space.SemanticSpace;
 import tree.Tree;
 
 public class ParsedPhraseVectorPrinter {
@@ -63,7 +65,18 @@ public class ParsedPhraseVectorPrinter {
         }
     }
     
-    protected void printVectors(String fileName, CompositionSemanticSpace space) {
+    protected void printVectors(String fileName, SemanticSpace space, BasicComposition compModel) throws IOException{
+        SemanticSpace phraseSpace = compModel.composeSpace(space, surfacePhrases);
+        int vectorSize = phraseSpace.getVectorSize();
+        double[][][] vectors = new double[surfacePhrasePairs.length][2][vectorSize];
+        for (int i = 0; i < surfacePhrasePairs.length; i++) {
+            vectors[i][0] = phraseSpace.getVector(surfacePhrasePairs[i][0]).getMatrix().data;
+            vectors[i][1] = phraseSpace.getVector(surfacePhrasePairs[i][1]).getMatrix().data;
+        }
+        printVectors(fileName, vectorSize, vectors);
+    }
+    
+    protected void printVectors(String fileName, CompositionSemanticSpace space) throws IOException{
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrases, space.getComposedMatrix(parsedPhrases));
         int vectorSize = phraseSpace.getVectorSize();
         double[][][] vectors = new double[parsedPhrasePairs.length][2][vectorSize];
@@ -71,6 +84,7 @@ public class ParsedPhraseVectorPrinter {
             vectors[i][0] = phraseSpace.getVector(parsedPhrasePairs[i][0]).getMatrix().data;
             vectors[i][1] = phraseSpace.getVector(parsedPhrasePairs[i][1]).getMatrix().data;
         }
+        printVectors(fileName, vectorSize, vectors);
     }
     
     protected void printVectors(String fileName, int vectorSize, double[][][] vectorPairs) throws IOException{
@@ -82,7 +96,6 @@ public class ParsedPhraseVectorPrinter {
             printVector(writer, vectorPairs[i][1], 1 + vectorSize);
             writer.write("\n");
         }
-        
     }
     
     protected void printVector(BufferedWriter writer, double[] vector, int featureIndex) {
