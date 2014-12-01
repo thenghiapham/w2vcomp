@@ -29,7 +29,8 @@ import tree.Tree;
 public class TreeNetwork {
     private static final Logger LOGGER = Logger.getLogger(TreeNetwork.class.getName());
     private static final double epsilon = 1e-4;
-    private static final double LEVEL_DECAY = 0.7;
+    private static final double matrixCoefficient = 0.001;
+//    private static final double LEVEL_DECAY = 0.7;
     
     protected Tree parseTree;
     
@@ -208,7 +209,8 @@ public class TreeNetwork {
             
             Layer layer = layerMap.get(node);
 //            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
-            double coefficient = 1 / (double) width;
+            double significant = 1 / (double) width;
+            double inputCoefficient = 1 / (double) width;
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random
 //            int windowSize = maxWindowSize;
@@ -229,7 +231,7 @@ public class TreeNetwork {
                     SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                     
                     ObjectiveFunction costFunction = outputBuilder.getCostFunction();
-                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, coefficient);
+                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, significant, inputCoefficient);
                     outputLayer.addInLayer(layer);
                     layer.addOutLayer(outputLayer);
                     
@@ -347,7 +349,7 @@ public class TreeNetwork {
         for (Layer layer: hiddenLayers) {
             hiddenGradients.add(layer.getGradient());
         }
-        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * 0.001);
+        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * matrixCoefficient);
         
         // updating the hierarchical softmax or the negative sampling layer
         for (int i = 0; i < outputLayers.size(); i++) {

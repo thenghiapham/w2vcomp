@@ -30,6 +30,7 @@ import tree.Tree;
 public class WeightedTreeNetwork {
     private static final Logger LOGGER = Logger.getLogger(WeightedTreeNetwork.class.getName());
     private static final double epsilon = 1e-4;
+    private static final double matrixCoefficient = 0.001;
 //    private static final double LEVEL_DECAY = 0.1;
     
     protected Tree parseTree;
@@ -212,9 +213,8 @@ public class WeightedTreeNetwork {
             
             Layer layer = layerMap.get(node);
             // TODO: change back?
-//            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
-//            double coefficient = 1;
-            double coefficient = 1 / (double) width;
+            double significant = 1 / (double) width;
+            double inputCoefficient = 1 / (double) width;
             
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random
@@ -236,7 +236,7 @@ public class WeightedTreeNetwork {
                     SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                     
                     ObjectiveFunction costFunction = outputBuilder.getCostFunction();
-                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, coefficient);
+                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, significant, inputCoefficient);
                     outputLayer.addInLayer(layer);
                     layer.addOutLayer(outputLayer);
                     
@@ -356,7 +356,7 @@ public class WeightedTreeNetwork {
         }
         
         //TODO: change learning rate back
-        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * 0.001);
+        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * matrixCoefficient);
         
         // updating the hierarchical softmax or the negative sampling layer
         for (int i = 0; i < outputLayers.size(); i++) {

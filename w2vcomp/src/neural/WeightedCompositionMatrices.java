@@ -168,6 +168,7 @@ public class WeightedCompositionMatrices extends CompositionMatrices{
             SimpleMatrix newMatrix = compositionMatrices[index].minus(delta);
 //            newMatrix = SimpleMatrixUtils.normalize(newMatrix, MAX_NORM);
             // TODO: remove scale
+            
             if (rand.nextFloat() <= 0.1) {
                 double sum = newMatrix.elementSum();
                 newMatrix = newMatrix.scale(2 / sum);

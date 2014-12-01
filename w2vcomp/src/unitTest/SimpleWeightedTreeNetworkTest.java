@@ -29,7 +29,7 @@ public class SimpleWeightedTreeNetworkTest {
     
     public ValueGradient computeGrad(SimpleMatrix input, SimpleMatrix softmaxWeight, SimpleMatrix output, ObjectiveFunction function) {
         ProjectionLayer pLayer = new ProjectionLayer(input);
-        OutputLayer oLayer = new OutputLayer(softmaxWeight, new Sigmoid(), output, function, 1);
+        OutputLayer oLayer = new OutputLayer(softmaxWeight, new Sigmoid(), output, function, 1, 1);
         pLayer.addOutLayer(oLayer);
         oLayer.addInLayer(pLayer);
         pLayer.forward();

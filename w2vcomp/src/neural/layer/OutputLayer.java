@@ -7,7 +7,6 @@ import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
 import common.exception.IllegalOperationException;
-import common.exception.ValueException;
 
 /**
  * This class represents an output layer (a network can have many output layers)
@@ -44,16 +43,19 @@ public class OutputLayer extends BasicLayer implements Layer{
     // output of the cost function
     protected double cost;
     
-    protected double coefficient;
+    protected double significant;
+    
+    protected double inputCoefficient;
     
     protected int[] weightVectorIndices;
     
-    public OutputLayer(SimpleMatrix weights, ActivationFunction activation, SimpleMatrix goldOutput, ObjectiveFunction costFunction, double coefficient) {
+    public OutputLayer(SimpleMatrix weights, ActivationFunction activation, SimpleMatrix goldOutput, ObjectiveFunction costFunction, double significant, double inputCoefficient) {
         this.inputWeights = weights;
         this.activation = activation;
         this.goldOutput = goldOutput;
         this.costFunction = costFunction;
-        this.coefficient = coefficient;
+        this.significant = significant;
+        this.inputCoefficient = inputCoefficient;
     }
     
     @Override
@@ -62,7 +64,7 @@ public class OutputLayer extends BasicLayer implements Layer{
         input = getInLayerInput();
 //        SimpleMatrixUtils.checkNaN(input);
 //        SimpleMatrixUtils.checkNaN(inputWeights);
-        tempZ = inputWeights.mult(input);
+        tempZ = inputWeights.mult(input).scale(inputCoefficient);
 //        try {
 //            SimpleMatrixUtils.checkNaN(tempZ);
 //        } catch (ValueException e) {
@@ -86,7 +88,7 @@ public class OutputLayer extends BasicLayer implements Layer{
         // Similar to hidden layer's backward
         // the difference is that here the error coming directly from the
         // objective function
-        SimpleMatrix outError = costFunction.derivative(output, goldOutput).scale(coefficient);
+        SimpleMatrix outError = costFunction.derivative(output, goldOutput).scale(significant);
         if (activation != null) {
             outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
         }
@@ -106,9 +108,9 @@ public class OutputLayer extends BasicLayer implements Layer{
 //            }
 //        }
 //        SimpleMatrixUtils.checkNaN(outError);
-        gradient = outError.mult(input.transpose());
+        gradient = outError.mult(input.transpose()).scale(inputCoefficient);
 //        SimpleMatrixUtils.checkNaN(gradient);
-        error = inputWeights.transpose().mult(outError);
+        error = inputWeights.transpose().mult(outError).scale(1 / inputCoefficient);
 //        SimpleMatrixUtils.checkNaN(error);
     }
 
@@ -122,7 +124,7 @@ public class OutputLayer extends BasicLayer implements Layer{
      * @return
      */
     public double getCost() {
-        return coefficient * costFunction.computeObjective(output, goldOutput);
+        return significant * costFunction.computeObjective(output, goldOutput);
     }
     
     @Override
