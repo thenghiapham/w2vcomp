@@ -64,7 +64,7 @@ public class MultiThreadWeightedSentence2Vec extends MultiThreadSentence2Vec{
         super.printStatistics();
         SimpleMatrix anMatrix = compositionMatrices.getCompositionMatrix("@NP JJ NN");
         System.out.println("an mat:" + anMatrix.get(0) + " " + anMatrix.get(1));
-        SimpleMatrix nnMatrix = compositionMatrices.getCompositionMatrix("NP NN NN");
+        SimpleMatrix nnMatrix = compositionMatrices.getCompositionMatrix("@NP NN NN");
         System.out.println("nn mat:" + nnMatrix.get(0) + " " + nnMatrix.get(1));
     }
 

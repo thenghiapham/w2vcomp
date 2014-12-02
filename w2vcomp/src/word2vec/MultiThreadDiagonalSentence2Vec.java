@@ -2,6 +2,8 @@ package word2vec;
 
 import java.util.HashMap;
 
+import org.ejml.simple.SimpleMatrix;
+
 import neural.DiagonalCompositionMatrices;
 import neural.DiagonalTreeNetwork;
 import neural.NegativeSamplingLearner;
@@ -55,6 +57,15 @@ public class MultiThreadDiagonalSentence2Vec extends MultiThreadSentence2Vec{
 //        if (random.nextDouble() <= 0.0001) {
 //            network.checkGradient();
 //        }
+    }
+    
+    @Override
+    protected void printStatistics() {
+        super.printStatistics();
+        SimpleMatrix anMatrix = compositionMatrices.getCompositionMatrix("@NP JJ NN");
+        System.out.println("an mat:" + anMatrix.normF());
+        SimpleMatrix nnMatrix = compositionMatrices.getCompositionMatrix("@NP NN NN");
+        System.out.println("nn mat:" + nnMatrix.normF());
     }
 
 }

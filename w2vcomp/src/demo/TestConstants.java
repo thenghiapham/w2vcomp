@@ -43,6 +43,9 @@ public class TestConstants {
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_bnc.voc";
     public static final String S_MODEL_FILE               = S_OUT_DIR + "skip_bnc.mdl";
     public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skip_bnc.ini";
+    
+    public static final String S_RTE_DIR                  = S_PROJECT_DIR + "rte/";
+    public static final String S_RTE_FILE                 = S_RTE_DIR + "";
   
     public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
 //  public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki_sentence.log";

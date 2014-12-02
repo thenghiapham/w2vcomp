@@ -65,24 +65,27 @@ public class ParsedPhraseVectorPrinter {
         }
     }
     
-    protected void printVectors(String fileName, SemanticSpace space, BasicComposition compModel) throws IOException{
+    public void printVectors(String fileName, SemanticSpace space, BasicComposition compModel) throws IOException{
         SemanticSpace phraseSpace = compModel.composeSpace(space, surfacePhrases);
-        int vectorSize = phraseSpace.getVectorSize();
-        double[][][] vectors = new double[surfacePhrasePairs.length][2][vectorSize];
-        for (int i = 0; i < surfacePhrasePairs.length; i++) {
-            vectors[i][0] = phraseSpace.getVector(surfacePhrasePairs[i][0]).getMatrix().data;
-            vectors[i][1] = phraseSpace.getVector(surfacePhrasePairs[i][1]).getMatrix().data;
-        }
-        printVectors(fileName, vectorSize, vectors);
+        printPhraseVectors(fileName, phraseSpace, true);
     }
     
-    protected void printVectors(String fileName, CompositionSemanticSpace space) throws IOException{
+    public void printVectors(String fileName, CompositionSemanticSpace space) throws IOException{
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrases, space.getComposedMatrix(parsedPhrases));
+        printPhraseVectors(fileName, phraseSpace, false);
+    }
+    
+    public void printPhraseVectors(String fileName, SemanticSpace phraseSpace, boolean surface) throws IOException{
         int vectorSize = phraseSpace.getVectorSize();
-        double[][][] vectors = new double[parsedPhrasePairs.length][2][vectorSize];
-        for (int i = 0; i < parsedPhrasePairs.length; i++) {
-            vectors[i][0] = phraseSpace.getVector(parsedPhrasePairs[i][0]).getMatrix().data;
-            vectors[i][1] = phraseSpace.getVector(parsedPhrasePairs[i][1]).getMatrix().data;
+        String[][] phrasePairs = null;
+        if (surface)
+            phrasePairs = surfacePhrasePairs;
+        else
+            phrasePairs = parsedPhrasePairs;
+        double[][][] vectors = new double[phrasePairs.length][2][vectorSize];
+        for (int i = 0; i < phrasePairs.length; i++) {
+            vectors[i][0] = phraseSpace.getVector(phrasePairs[i][0]).getMatrix().data;
+            vectors[i][1] = phraseSpace.getVector(phrasePairs[i][1]).getMatrix().data;
         }
         printVectors(fileName, vectorSize, vectors);
     }
@@ -108,6 +111,14 @@ public class ParsedPhraseVectorPrinter {
                 buffer.append(" ");
             }
         }
+    }
+    
+    public String[] getSurfacePhrases() {
+        return surfacePhrases;
+    }
+    
+    public String[] getParsedPhrases() {
+        return parsedPhrases;
     }
 }
 
