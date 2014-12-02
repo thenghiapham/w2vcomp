@@ -213,7 +213,8 @@ public class DiagonalTreeNetwork {
             
             Layer layer = layerMap.get(node);
 
-            double significant = 1 / (double) width;
+//            double significant = 1 / (double) width;
+            double significant = 1;
             double inputCoefficient = 1 / (double) width;
             
             int windowSize = random.nextInt(maxWindowSize) + 1;

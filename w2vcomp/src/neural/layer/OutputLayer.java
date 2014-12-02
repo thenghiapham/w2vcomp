@@ -110,7 +110,7 @@ public class OutputLayer extends BasicLayer implements Layer{
 //        SimpleMatrixUtils.checkNaN(outError);
         gradient = outError.mult(input.transpose()).scale(inputCoefficient);
 //        SimpleMatrixUtils.checkNaN(gradient);
-        error = inputWeights.transpose().mult(outError).scale(1 / inputCoefficient);
+        error = inputWeights.transpose().mult(outError).scale(inputCoefficient);
 //        SimpleMatrixUtils.checkNaN(error);
     }
 

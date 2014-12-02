@@ -22,7 +22,7 @@ public class NNCorrelation extends TwoWordPhraseCorrelation{
     protected String[] getParseComposeData() {
         String[] result = new String[composeData.length];
         for (int i = 0; i < result.length; i++) {
-            result[i] = "(@NP (NN " + composeData[i][0] + ") (NN " + composeData[i][1] + "))";
+            result[i] = "(NP (NN " + composeData[i][0] + ") (NN " + composeData[i][1] + "))";
 //            System.out.println(result[i]);
         }
         return result;

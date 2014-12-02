@@ -209,7 +209,8 @@ public class TreeNetwork {
             
             Layer layer = layerMap.get(node);
 //            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
-            double significant = 1 / (double) width;
+//            double significant = 1 / (double) width;
+            double significant = 1;
             double inputCoefficient = 1 / (double) width;
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random

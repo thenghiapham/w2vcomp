@@ -41,6 +41,7 @@ public class TestConstants {
     public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_bnc.bin";
     public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "skip_bnc.cmp";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_bnc.voc";
+    public static final String S_MODEL_FILE               = S_OUT_DIR + "skip_bnc.mdl";
     public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skip_bnc.ini";
   
     public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";

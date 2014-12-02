@@ -147,12 +147,23 @@ public class ParsedPhraseCorrelation{
         return parseCorrelation.evaluateSpaceSpearman(phraseSpace);
     }
     
+    public double evaluatePhraseSpacePearson(SemanticSpace surfaceSpace) {
+        return surfaceCorrelation.evaluateSpacePearson(surfaceSpace);
+    }
+    public double evaluatePhraseSpaceSpearman(SemanticSpace surfaceSpace) {
+        return surfaceCorrelation.evaluateSpaceSpearman(surfaceSpace);
+    }
+    
     public void setName(String name) {
         this.name = name;
     }
     
     public String getName() {
         return this.name;
+    }
+    
+    public String[] getSurfacePhrase() {
+        return surfacePhrase;
     }
     
     public static void main(String[] args) throws IOException {

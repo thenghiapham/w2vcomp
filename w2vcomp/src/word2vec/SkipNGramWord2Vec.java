@@ -23,7 +23,6 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
 
     public void trainSentence(int[] sentence) {
         // train with the sentence
-        double[] a1 = new double[projectionLayerSize];
         double[] a1error = new double[projectionLayerSize];
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
@@ -36,7 +35,6 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
                 continue;
 
             for (int i = 0; i < projectionLayerSize; i++) {
-                a1[i] = 0;
                 a1error[i] = 0;
             }
 

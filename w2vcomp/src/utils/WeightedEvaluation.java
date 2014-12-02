@@ -22,10 +22,10 @@ public class WeightedEvaluation {
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         
 //        System.out.println("men: " + men.evaluateSpacePearson(space));
-        System.out.println("an add: " + an.evaluateSpacePearson(space));
-        System.out.println("nn add: " + nn.evaluateSpacePearson(space));
-        System.out.println("vo add: " + vo.evaluateSpacePearson(space));
-        System.out.println("sick add: " + sick.evaluateSpacePearson(space));
+        System.out.println("an cmp: " + an.evaluateSpacePearson(space));
+        System.out.println("nn cmp: " + nn.evaluateSpacePearson(space));
+        System.out.println("vo cmp: " + vo.evaluateSpacePearson(space));
+        System.out.println("sick cmp: " + sick.evaluateSpacePearson(space));
         
     }
 }

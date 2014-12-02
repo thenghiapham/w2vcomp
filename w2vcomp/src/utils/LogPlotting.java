@@ -50,8 +50,8 @@ public class LogPlotting extends JFrame {
             String filePath = logDirPath + "/" + fileName;
             ArrayList<Double> men = IOUtils.readLog(filePath, "men");
             ArrayList<Double> sick = IOUtils.readLog(filePath, "SICK");
-            men = smooth(men, 100);
-            sick = smooth(sick, 200);
+            men = smooth(men, 10);
+            sick = smooth(sick, 40);
             data.add(men);
             labels.add("men");
             data.add(sick);

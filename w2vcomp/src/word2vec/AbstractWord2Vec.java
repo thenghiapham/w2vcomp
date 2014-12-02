@@ -249,7 +249,7 @@ public abstract class AbstractWord2Vec {
         try {
             BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile));
             double[][] matrix = IOUtils.readMatrix(inputStream, binary);
-            if (matrix.length != weights0.length || matrix[0].length != projectionLayerSize) {
+            if (matrix.length != vocab.getVocabSize() || matrix[0].length != projectionLayerSize) {
                 System.out.println("matrix size does not match");
             } else {
                 weights0 = matrix;
@@ -257,7 +257,7 @@ public abstract class AbstractWord2Vec {
             
             if (hierarchicalSoftmax) {
                 matrix = IOUtils.readMatrix(inputStream, binary);
-                if (matrix.length != weights1.length || matrix[0].length != projectionLayerSize) {
+                if (matrix.length != vocab.getVocabSize() -1 || matrix[0].length != projectionLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
                     weights1 = matrix;
@@ -265,7 +265,7 @@ public abstract class AbstractWord2Vec {
             }
             if (negativeSamples > 0) {
                 matrix = IOUtils.readMatrix(inputStream, binary);
-                if (matrix.length != negativeWeights1.length || matrix[0].length != projectionLayerSize) {
+                if (matrix.length != vocab.getVocabSize() || matrix[0].length != projectionLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
                     negativeWeights1 = matrix;

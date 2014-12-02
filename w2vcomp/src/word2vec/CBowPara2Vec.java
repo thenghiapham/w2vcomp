@@ -1,63 +1,56 @@
 package word2vec;
 
-import io.word.Phrase;
 import vocab.VocabEntry;
 
-/**
- * Concrete class for single threaded CBow
- * @author thenghiapham
- *
- */
-public class CBowWord2Vec extends SingleThreadWord2Vec {
-    public CBowWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
-        super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample);
-    }
-    
-    public CBowWord2Vec(int projectionLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, String menFile) {
-        super(projectionLayerSize, windowSize, hierarchicalSoftmax,
-                negativeSamples, subSample, menFile);
+public class CBowPara2Vec extends Paragraph2Vec{
+
+    public CBowPara2Vec(String networkFile, String vocabFile,
+            int projectionLayerSize, int windowSize,
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample,
+            int iterationNum) {
+        super(networkFile, vocabFile, projectionLayerSize, windowSize,
+                hierarchicalSoftmax, negativeSamples, subSample, iterationNum);
+        // TODO Auto-generated constructor stub
     }
 
-    public void trainSentence(int[] sentence) {
-        // train with the sentence
-        for (int wordPosition = 0; wordPosition < sentence.length; wordPosition++) {
+    @Override
+    protected void trainSentence(int sentenceIndex, int[] wordIndexArray) {
+        for (int wordPosition = 0; wordPosition < wordIndexArray.length; wordPosition++) {
             // random a number to decrease the window size
-             int leeway = rand.nextInt(windowSize);
-//            int leeway = 0;
-            trainWordAt(wordPosition, sentence, leeway);
+            int leeway = rand.nextInt(windowSize);
+            trainWordAt(sentenceIndex, wordPosition, wordIndexArray, leeway);
         }
     }
 
-    protected void trainWordAt(int wordPosition, int[] sentence, int leeway) {
-
-        int wordIndex = sentence[wordPosition];
+    private void trainWordAt(int sentenceIndex, int wordPosition, int[] wordIndexArray, int leeway) {
+        // TODO Auto-generated method stub
+        int wordIndex = wordIndexArray[wordPosition];
 
         // no way it will go here
         if (wordIndex == -1)
             return;
 
-        int sentenceLength = sentence.length;
+        int sentenceLength = wordIndexArray.length;
         double[] a1 = new double[projectionLayerSize];
         double[] a1error = new double[projectionLayerSize];
+        
+        int wordCount = 1;
         int iWordIndex = 0;
 
         for (int i = 0; i < projectionLayerSize; i++) {
-            a1[i] = 0;
+            a1[i] = paragraphVectors[sentenceIndex][i];
             a1error[i] = 0;
         }
 
         // sum all the vectors in the window
-
-        for (int i = leeway; i < windowSize * 2 + 1 - leeway; i++) {
-
+        // the -leeway doesn't make much sense
+        for (int i = leeway; i < windowSize ; i++) {
             if (i != windowSize) {
+                wordCount++;
                 int currentPos = wordPosition - windowSize + i;
                 if (currentPos < 0 || currentPos >= sentenceLength)
                     continue;
-                iWordIndex = sentence[currentPos];
+                iWordIndex = wordIndexArray[currentPos];
                 if (iWordIndex == -1) {
                     // System.out.println("shouldn't be here");
                     continue;
@@ -66,6 +59,10 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
                 for (int j = 0; j < projectionLayerSize; j++)
                     a1[j] += weights0[iWordIndex][j];
             }
+        }
+        
+        for (int j = 0; j < projectionLayerSize; j++) {
+            a1[j] /= wordCount;
         }
 
         if (hierarchicalSoftmax) {
@@ -88,10 +85,6 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
                 // Propagate errors output -> hidden
                 for (int i = 0; i < projectionLayerSize; i++) {
                     a1error[i] += gradient * weights1[iParentIndex][i];
-                }
-                // Learn weights hidden -> output
-                for (int i = 0; i < projectionLayerSize; i++) {
-                    weights1[iParentIndex][i] += gradient * a1[i];
                 }
             }
         }
@@ -127,31 +120,12 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
                 for (int i = 0; i < projectionLayerSize; i++) {
                     a1error[i] += gradient * negativeWeights1[target][i];
                 }
-                for (int i = 0; i < projectionLayerSize; i++) {
-                    negativeWeights1[target][i] += gradient * a1[i];
-                }
             }
         }
 
-        // hidden -> in
-        for (int i = leeway; i < windowSize * 2 + 1 - leeway; i++) {
-            if (i != windowSize) {
-                int iPos = wordPosition - windowSize + i;
-                if (iPos < 0 || iPos >= sentenceLength)
-                    continue;
-                iWordIndex = sentence[iPos];
-                if (iWordIndex == -1)
-                    continue;
-                for (int j = 0; j < projectionLayerSize; j++) {
-                    weights0[iWordIndex][j] += a1error[j];
-                }
-            }
+        for (int j = 0; j < projectionLayerSize; j++) {
+            paragraphVectors[sentenceIndex][j] += a1error[j] / wordCount;
         }
     }
 
-    @Override
-    public void trainSinglePhrase(Phrase phrase, int[] pseudoSentence) {
-        // TODO Auto-generated method stub
-        
-    }
 }
