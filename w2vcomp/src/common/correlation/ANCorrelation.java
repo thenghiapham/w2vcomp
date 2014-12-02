@@ -2,6 +2,8 @@ package common.correlation;
 
 import java.io.IOException;
 
+import org.ejml.simple.SimpleMatrix;
+
 import composition.WeightedAdditive;
 import demo.TestConstants;
 
@@ -20,7 +22,7 @@ public class ANCorrelation extends TwoWordPhraseCorrelation{
     protected String[] getParseComposeData() {
         String[] result = new String[composeData.length];
         for (int i = 0; i < result.length; i++) {
-            result[i] = "(@NP (JJ " + composeData[i][0] + ") (NN " + composeData[i][1] + "))";
+            result[i] = "(@NP (JJ " + composeData[i][0] + ") (@NP " + composeData[i][1] + "))";
 //            System.out.println(result[i]);
         }
         return result;
@@ -33,6 +35,8 @@ public class ANCorrelation extends TwoWordPhraseCorrelation{
 //        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace(TestConstants.S_COMPOSITION_FILE, true);
 //        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/tanh/bnc.cmp", true);
 //        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin");
+        SimpleMatrix vector = compSpace.getConstructionMatrix("@NP JJ @NP");
+        System.out.println(vector);
         RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
         WeightedAdditive add = new WeightedAdditive();
         ANCorrelation anCorrelation = new ANCorrelation(TestConstants.S_AN_FILE);

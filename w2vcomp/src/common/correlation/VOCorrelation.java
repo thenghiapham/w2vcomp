@@ -2,6 +2,8 @@ package common.correlation;
 
 import java.io.IOException;
 
+import org.ejml.simple.SimpleMatrix;
+
 import space.CompositionSemanticSpace;
 import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
@@ -32,6 +34,8 @@ public class VOCorrelation extends TwoWordPhraseCorrelation{
 //        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace(TestConstants.S_COMPOSITION_FILE, true);
         WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace(TestConstants.S_COMPOSITION_FILE, true);
         RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
+        SimpleMatrix vector = compSpace.getConstructionMatrix("@VP VB NP");
+        System.out.println(vector);
         WeightedAdditive add = new WeightedAdditive();
         VOCorrelation voCorrelation = new VOCorrelation(TestConstants.S_VO_FILE);
         System.out.println("vo add: " + voCorrelation.evaluateSpacePearson(space, add));

@@ -146,8 +146,6 @@ public class MultiThreadSentence2Vec extends Sentence2Vec{
         System.out.println("alpha: " + alpha);
 //        System.out.println(projectionMatrix.getMatrix().normF());
 //        System.out.println(compositionMatrices.getCompositionMatrix("NN").normF());
-//        System.out.println(compositionMatrices.getCompositionMatrix("NP JJ NN").normF());
-//        System.out.println(compositionMatrices.getCompositionMatrix("NP NN NN").normF());
 //        System.out.println(learningStrategy.getMatrix().normF());
         for (MenCorrelation men : wordCorrelations) {
             double correlation = men.evaluateSpacePearson(singleWordSpace);
@@ -164,6 +162,8 @@ public class MultiThreadSentence2Vec extends Sentence2Vec{
             LOGGER.log(Level.INFO, sentenceCorrelation.getName() + ": " + correlation);
             System.out.println(sentenceCorrelation.getName() + ": " + correlation);
         }
+        System.out.println("norm AN" + compositionMatrices.getCompositionMatrix("@NP JJ NN").normF());
+        System.out.println("norm NN" + compositionMatrices.getCompositionMatrix("@NP NN NN").normF());
     }
     
     protected double computeCost(ArrayList<Tree> parseTrees) {
