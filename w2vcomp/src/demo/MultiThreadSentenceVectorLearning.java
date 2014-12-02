@@ -36,7 +36,7 @@ public class MultiThreadSentenceVectorLearning {
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 5;
+        int phraseLevel = 8;
         boolean allLevel = true;
         boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
