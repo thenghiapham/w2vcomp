@@ -19,13 +19,13 @@ import common.IOUtils;
 import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
-
 import vocab.Vocab;
+import word2vec.MTSingleObjectSentence2Vec;
+import word2vec.MTWeightedSingleObjectSentence2Vec;
 import word2vec.MultiThreadDiagonalSentence2Vec;
 //import word2vec.MultiThreadDiagonalSentence2Vec;
 import word2vec.MultiThreadSentence2Vec;
 import word2vec.MultiThreadWeightedSentence2Vec;
-
 import demo.TestConstants;
 
 public class MultiThreadSentenceVectorLearning {
@@ -42,12 +42,15 @@ public class MultiThreadSentenceVectorLearning {
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
+        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
 //        MultiThreadWeightedSentence2Vec sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
-        MultiThreadDiagonalSentence2Vec sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
-                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                allLevel, lexical);
+//        MultiThreadDiagonalSentence2Vec sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
 //        MultiThreadSentence2Vec sentence2vec = new MultiThreadSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);

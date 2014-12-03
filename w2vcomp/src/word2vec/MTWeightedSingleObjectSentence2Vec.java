@@ -7,10 +7,8 @@ import org.ejml.simple.SimpleMatrix;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
 import neural.RawHierarchicalSoftmaxLearner;
-import neural.SingleObjTreeNetwork;
 import neural.SingleObjectWeightedTreeNetwork;
 import neural.WeightedCompositionMatrices;
-import neural.WeightedTreeNetwork;
 import neural.function.ActivationFunction;
 import neural.function.Sigmoid;
 import space.WeightedCompositionSemanticSpace;
@@ -72,7 +70,7 @@ public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2V
                     continue;
             }
             SingleObjectWeightedTreeNetwork network = SingleObjectWeightedTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
-                    projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
+                    projectionMatrix, (WeightedCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
             network.learn(alpha);
         }
     }
