@@ -1,25 +1,23 @@
 package word2vec;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import org.ejml.simple.SimpleMatrix;
 
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
 import neural.RawHierarchicalSoftmaxLearner;
-import neural.SingleObjectWeightedTreeNetwork;
-import neural.WeightedCompositionMatrices;
+import neural.SingleObjectDiagonalTreeNetwork;
+import neural.DiagonalCompositionMatrices;
 import neural.function.ActivationFunction;
 import neural.function.Sigmoid;
-import space.WeightedCompositionSemanticSpace;
+import space.DiagonalCompositionSemanticSpace;
 import space.ProjectionAdaptorSpace;
 import tree.Tree;
 
-public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2Vec{
+public class MTDiagonalSingleObjectSentence2Vec extends MTSingleObjectSentence2Vec{
 
-    public MTWeightedSingleObjectSentence2Vec(int hiddenLayerSize, int windowSize,
+    public MTDiagonalSingleObjectSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample,
             HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight,
             boolean allLevel, boolean lexical) {
@@ -36,12 +34,12 @@ public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2V
         } else {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
-        compositionMatrices = WeightedCompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+        compositionMatrices = DiagonalCompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
         vocab.assignCode();
         
         this.totalLines = vocab.getEntry(0).frequency;
         
-        space = new WeightedCompositionSemanticSpace(projectionMatrix, (WeightedCompositionMatrices) compositionMatrices, hiddenActivationFunction);
+        space = new DiagonalCompositionSemanticSpace(projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, hiddenActivationFunction);
         singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
     }
     
@@ -55,9 +53,7 @@ public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2V
         System.arraycopy(history, 0, historyPresentFuture, 0, history.length);
         System.arraycopy(sentence, 0, historyPresentFuture, history.length, sentence.length);
         System.arraycopy(future, 0, historyPresentFuture, history.length + sentence.length, future.length);
-        List<Tree> reversedNodes = parseTree.allNodes();
-        Collections.reverse(reversedNodes);
-        for (Tree subTree: reversedNodes) {
+        for (Tree subTree: parseTree.allNodes()) {
             int height = subTree.getHeight();
             if (height == 0) continue;
             if (!allLevel) {
@@ -73,8 +69,8 @@ public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2V
                 if (height > phraseHeight)
                     continue;
             }
-            SingleObjectWeightedTreeNetwork network = SingleObjectWeightedTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
-                    projectionMatrix, (WeightedCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
+            SingleObjectDiagonalTreeNetwork network = SingleObjectDiagonalTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
+                    projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
             network.learn(alpha);
         }
     }
