@@ -13,6 +13,7 @@ import common.IOUtils;
 import common.SimpleMatrixUtils;
 
 public class WeightedCompositionMatrices extends CompositionMatrices{
+    public static final double DEFAULT_WEIGHT_DECAY = 1e-1;
     protected Random rand = new Random();
 
     protected WeightedCompositionMatrices(HashMap<String, Integer> groupMap,
@@ -20,6 +21,7 @@ public class WeightedCompositionMatrices extends CompositionMatrices{
             SimpleMatrix[] compositionMatrices) {
         super(groupMap, constructionMap, compositionMatrices);
         // TODO Auto-generated constructor stub
+        weightDecay = DEFAULT_WEIGHT_DECAY;
     }
 
     /**

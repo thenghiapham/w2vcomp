@@ -11,14 +11,15 @@ import neural.layer.HiddenLayer;
 import neural.layer.Layer;
 import neural.layer.OutputLayer;
 import neural.layer.ProjectionLayer;
+import neural.layer.WeightedHiddenLayer;
 
 import org.ejml.simple.SimpleMatrix;
 
 import tree.Tree;
 
-public class SingleObjTreeNetwork extends TreeNetwork{
+public class SingleObjectWeightedTreeNetwork extends WeightedTreeNetwork{
 
-    protected SingleObjTreeNetwork(Tree parseTree) {
+    protected SingleObjectWeightedTreeNetwork(Tree parseTree) {
         super(parseTree);
         // TODO Auto-generated constructor stub
     }
@@ -26,12 +27,12 @@ public class SingleObjTreeNetwork extends TreeNetwork{
     // trees should already have updated height & width information
     // left position should be the length of history
     // concatenating concatenating 
-    public static SingleObjTreeNetwork createNetwork(Tree parseTree, Tree rootTree, 
+    public static SingleObjectWeightedTreeNetwork createNetwork(Tree parseTree, Tree rootTree, 
             String[] historyPresentFuture, ProjectionMatrix projectionBuilder, 
-            CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
+            WeightedCompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
             int maxWindowSize) {
-        SingleObjTreeNetwork network = new SingleObjTreeNetwork(parseTree);
+        SingleObjectWeightedTreeNetwork network = new SingleObjectWeightedTreeNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
         network.outputBuilder = outputBuilder;
@@ -86,7 +87,7 @@ public class SingleObjTreeNetwork extends TreeNetwork{
                         layer.addInLayer(childLayer);
                         childLayer.addOutLayer(layer);
                     }
-                    network.addHiddenLayer((HiddenLayer) layer, compositionIndex);
+                    network.addHiddenLayer((WeightedHiddenLayer) layer, compositionIndex);
                 }
             }
             if (layer != null) {

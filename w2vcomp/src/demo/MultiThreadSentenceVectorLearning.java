@@ -36,18 +36,18 @@ public class MultiThreadSentenceVectorLearning {
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 0;
-        int phraseLevel = 8;
+        int phraseLevel = 5;
         boolean allLevel = true;
         boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-        MultiThreadWeightedSentence2Vec sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
-                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                allLevel, lexical);
-//        MultiThreadDiagonalSentence2Vec sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
+//        MultiThreadWeightedSentence2Vec sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
+        MultiThreadDiagonalSentence2Vec sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
 //        MultiThreadSentence2Vec sentence2vec = new MultiThreadSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);

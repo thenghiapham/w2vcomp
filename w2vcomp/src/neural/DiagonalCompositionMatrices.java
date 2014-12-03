@@ -13,6 +13,7 @@ import common.IOUtils;
 import common.SimpleMatrixUtils;
 
 public class DiagonalCompositionMatrices extends CompositionMatrices{
+    public static final double DEFAULT_WEIGHT_DECAY = 1e-3;
     protected Random rand = new Random();
     protected int vectorSize;
     protected DiagonalCompositionMatrices(HashMap<String, Integer> groupMap,
@@ -22,6 +23,7 @@ public class DiagonalCompositionMatrices extends CompositionMatrices{
         vectorSize = compositionMatrices[0].numCols();
         System.out.println("vector Size:+++" + vectorSize);
         // TODO Auto-generated constructor stub
+        weightDecay = DEFAULT_WEIGHT_DECAY;
     }
 
     /**

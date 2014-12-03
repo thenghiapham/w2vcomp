@@ -22,7 +22,7 @@ public class TestConstants {
     
     public static final String S_PROJECT_DIR              = "/home/thenghiapham/work/project/mikolov/";
 //  public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
-    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions.txt";
+    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions1.txt";
 //  public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "tmp-constructions.txt";
 //  public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/wiki";
     public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/bnc";
