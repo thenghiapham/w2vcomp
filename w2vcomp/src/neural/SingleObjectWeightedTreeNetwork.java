@@ -7,7 +7,6 @@ import java.util.Random;
 
 import neural.function.ActivationFunction;
 import neural.function.ObjectiveFunction;
-import neural.layer.HiddenLayer;
 import neural.layer.Layer;
 import neural.layer.OutputLayer;
 import neural.layer.ProjectionLayer;
@@ -81,7 +80,7 @@ public class SingleObjectWeightedTreeNetwork extends WeightedTreeNetwork{
                     SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
                     int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
                     
-                    layer = new HiddenLayer(weights, hiddenLayerActivation);
+                    layer = new WeightedHiddenLayer(weights, hiddenLayerActivation);
                     for (Tree child: children) {
                         Layer childLayer = layerMap.get(child);
                         layer.addInLayer(childLayer);
