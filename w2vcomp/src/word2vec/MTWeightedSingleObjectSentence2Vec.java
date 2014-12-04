@@ -56,7 +56,7 @@ public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2V
         System.arraycopy(sentence, 0, historyPresentFuture, history.length, sentence.length);
         System.arraycopy(future, 0, historyPresentFuture, history.length + sentence.length, future.length);
         List<Tree> reversedNodes = parseTree.allNodes();
-        Collections.reverse(reversedNodes);
+//        Collections.reverse(reversedNodes);
         for (Tree subTree: reversedNodes) {
             int height = subTree.getHeight();
             if (height == 0) continue;

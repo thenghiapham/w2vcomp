@@ -137,6 +137,16 @@ public class Tree {
             child.initializeParent(this);
     }
     
+    public void leafToLowerCase() {
+        if (isTerminal()) {
+            this.rootLabel = this.rootLabel.toLowerCase();
+        } else {
+            for (Tree subTree: children) {
+                subTree.leafToLowerCase();
+            }
+        }
+    }
+    
     @Override
     public String toString() {
         return toPennTree();
