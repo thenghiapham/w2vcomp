@@ -38,11 +38,14 @@ public class MultiThreadSentenceVectorLearning {
         double subSampling = 0;
         int phraseLevel = 5;
         boolean allLevel = true;
-        boolean lexical = true;
+        boolean lexical = false;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+//        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
+        MTSingleObjectSentence2Vec sentence2vec = new MTSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
 //        MultiThreadWeightedSentence2Vec sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
@@ -59,6 +62,7 @@ public class MultiThreadSentenceVectorLearning {
         String compFile = TestConstants.S_COMPOSITION_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String logFile = TestConstants.S_LOG_FILE;
+        String skipMdlFile = TestConstants.S_INITIALIZATION_FILE.replace(".mdl", "" + hiddenLayerSize + ".mdl");
         LogUtils.setup(logFile);
         
         File trainDir = new File(trainDirPath);
@@ -82,7 +86,7 @@ public class MultiThreadSentenceVectorLearning {
         }
 
         sentence2vec.setVocab(vocab);
-        sentence2vec.initNetwork();
+        sentence2vec.initNetwork(skipMdlFile);
         MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
         men.setName("MEN");
         sentence2vec.addMenCorrelation(men);

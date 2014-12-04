@@ -1,8 +1,13 @@
 package word2vec;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
+
+import common.IOUtils;
 
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
@@ -41,6 +46,30 @@ public class MultiThreadWeightedSentence2Vec extends MultiThreadSentence2Vec{
         
         space = new WeightedCompositionSemanticSpace(projectionMatrix, (WeightedCompositionMatrices) compositionMatrices, hiddenActivationFunction);
         singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
+    }
+    
+    public void initNetwork(String wordModelFile) {
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(wordModelFile));
+            double[][] rawMatrix = IOUtils.readMatrix(inputStream, true);
+            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+            rawMatrix = IOUtils.readMatrix(inputStream, true);
+            if (hierarchicalSoftmax) {
+                learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+            } else {
+                learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
+            }
+            compositionMatrices = WeightedCompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+            vocab.assignCode();
+            
+            this.totalLines = vocab.getEntry(0).frequency;
+            inputStream.close();
+            space = new WeightedCompositionSemanticSpace(projectionMatrix, (WeightedCompositionMatrices) compositionMatrices, hiddenActivationFunction);
+            singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
     
     protected double computeCost(Tree parseTree) {

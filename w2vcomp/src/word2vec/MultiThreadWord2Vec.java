@@ -103,7 +103,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
                 
                 synchronized (this) {
                     wordCount = wordCount + newSentenceWordCount;
-                    if (wordCount - lastWordCount > 10000) {
+                    if (wordCount - lastWordCount >= 10000) {
                         lastWordCount = wordCount;
                         iteration++;
                         // update alpha

@@ -111,9 +111,9 @@ public abstract class Sentence2Vec {
         this.totalLines = vocab.getEntry(0).frequency;
     }
 
-    public void initNetwork(String initFile) {
-        loadWholeNetwork(initFile, true);
-    }
+//    public void initNetwork(String initFile) {
+//        loadWholeNetwork(initFile, true);
+//    }
     
     public void simpleInit(String initFile) {
         

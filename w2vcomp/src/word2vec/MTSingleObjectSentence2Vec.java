@@ -2,6 +2,8 @@ package word2vec;
 
 import io.sentence.TreeInputStream;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +11,17 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.ejml.simple.SimpleMatrix;
+
+import common.IOUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.TwoWordPhraseCorrelation;
 
+import neural.CompositionMatrices;
+import neural.NegativeSamplingLearner;
+import neural.ProjectionMatrix;
+import neural.RawHierarchicalSoftmaxLearner;
 import neural.SingleObjTreeNetwork;
 import neural.TreeNetwork;
 import neural.function.ActivationFunction;
@@ -54,6 +63,30 @@ public class MTSingleObjectSentence2Vec extends Sentence2Vec{
         super.initNetwork();
         space = new CompositionSemanticSpace(projectionMatrix, compositionMatrices, hiddenActivationFunction);
         singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
+    }
+    
+    public void initNetwork(String wordModelFile) {
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(wordModelFile));
+            double[][] rawMatrix = IOUtils.readMatrix(inputStream, true);
+            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+            rawMatrix = IOUtils.readMatrix(inputStream, true);
+            if (hierarchicalSoftmax) {
+                learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+            } else {
+                learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
+            }
+            compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+            vocab.assignCode();
+            
+            this.totalLines = vocab.getEntry(0).frequency;
+            inputStream.close();
+            space = new CompositionSemanticSpace(projectionMatrix, compositionMatrices, hiddenActivationFunction);
+            singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
     
     @Override

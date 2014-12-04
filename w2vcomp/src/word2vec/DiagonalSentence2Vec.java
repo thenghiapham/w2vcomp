@@ -1,6 +1,13 @@
 package word2vec;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
+
+import org.ejml.simple.SimpleMatrix;
+
+import common.IOUtils;
 
 import neural.DiagonalCompositionMatrices;
 import neural.DiagonalTreeNetwork;
@@ -39,6 +46,30 @@ public class DiagonalSentence2Vec extends SingleThreadedSentence2Vec{
         
         space = new DiagonalCompositionSemanticSpace(projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, hiddenActivationFunction);
         singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
+    }
+    
+    public void initNetwork(String wordModelFile) {
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(wordModelFile));
+            double[][] rawMatrix = IOUtils.readMatrix(inputStream, true);
+            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+            rawMatrix = IOUtils.readMatrix(inputStream, true);
+            if (hierarchicalSoftmax) {
+                learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+            } else {
+                learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
+            }
+            compositionMatrices = DiagonalCompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+            vocab.assignCode();
+            
+            this.totalLines = vocab.getEntry(0).frequency;
+            inputStream.close();
+            space = new DiagonalCompositionSemanticSpace(projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, hiddenActivationFunction);
+            singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
     
     protected double computeCost(Tree parseTree) {

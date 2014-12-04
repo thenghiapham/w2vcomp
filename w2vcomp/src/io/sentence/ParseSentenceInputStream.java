@@ -30,6 +30,7 @@ public class ParseSentenceInputStream implements SentenceInputStream{
             ArrayList<Integer> wordIndexList = new ArrayList<>();
             for (String word: words) {
                 int wordIndex = vocab.getWordIndex(word);
+                if (wordIndex != -1)
                     wordIndexList.add(wordIndex);
             }
             currentSentence = DataStructureUtils.intListToArray(wordIndexList);

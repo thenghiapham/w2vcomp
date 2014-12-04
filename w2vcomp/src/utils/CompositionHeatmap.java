@@ -11,8 +11,8 @@ import space.CompositionSemanticSpace;
 public class CompositionHeatmap {
     public static void main(String[] args) {
         String compSpaceFile = TestConstants.S_COMPOSITION_FILE;
-        String construction = "VP VB NP";
-//        String construction = "@NP JJ NN";
+//        String construction = "VP VB NP";
+        String construction = "@NP JJ NN";
 //        String construction = "NP JJ NN";
 //        String construction = "S NP VP";
         CompositionSemanticSpace space = CompositionSemanticSpace.loadCompositionSpace(compSpaceFile, true);

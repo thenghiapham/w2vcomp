@@ -26,23 +26,30 @@ public class TestConstants {
 //  public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "tmp-constructions.txt";
 //  public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/wiki";
     public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/bnc";
-    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "tmp_parsed/bnc.txt";
+//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "tmp_parsed/bnc";
+    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "tmp_parsed/bnc/bnc.txt";
     public static final int S_MIN_FREQUENCY               = 5;
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
 //  public static final String S_VECTOR_FILE              = S_OUT_DIR + "wwiki.bin";
 //  public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wwiki.cmp";
 //  public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wwiki.voc";
 //  public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wwiki.ini";
-//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wbnc.bin";
-//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wbnc.cmp";
-//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wbnc.voc";
-//    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wbnc.ini";
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wbnc.bin";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wbnc.cmp";
+    public static final String S_MODEL_FILE               = S_OUT_DIR + "wbnc.mdl";
+    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wbnc.voc";
+    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skipgram.mdl";
     
-    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_bnc.bin";
-    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "skip_bnc.cmp";
-    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_bnc.voc";
-    public static final String S_MODEL_FILE               = S_OUT_DIR + "skip_bnc.mdl";
-    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skip_bnc.ini";
+//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_bnc40.bin";
+//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "skip_bnc40.cmp";
+//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_bnc.voc";
+//    public static final String S_MODEL_FILE               = S_OUT_DIR + "skip_bnc40.mdl";
+    
+//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "cbow_bnc300.bin";
+//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "cbow_bnc300.cmp";
+//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "cbow_bnc300.voc";
+//    public static final String S_MODEL_FILE               = S_OUT_DIR + "cbow_bnc300.mdl";
+    
     
     public static final String S_RTE_DIR                  = S_PROJECT_DIR + "rte/";
     public static final String S_RTE_FILE                 = S_RTE_DIR + "";

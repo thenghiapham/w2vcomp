@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import vocab.Vocab;
 import word2vec.CBowWord2Vec;
+import word2vec.MultiThreadCBow;
 import word2vec.MultiThreadSkipGram;
 //import word2vec.CBowWord2Vec;
 
@@ -20,8 +21,8 @@ import demo.TestConstants;
 
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
-//        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(100, 5, true, 0, 0, TestConstants.S_MEN_FILE);
-        CBowWord2Vec word2vec = new CBowWord2Vec(300, 5, true, 0, 0, TestConstants.S_MEN_FILE);
+        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(40, 5, true, 0, 0, TestConstants.S_MEN_FILE);
+//        MultiThreadCBow word2vec = new MultiThreadCBow(300, 5, true, 0, 0, TestConstants.S_MEN_FILE);
         String trainDirPath = TestConstants.S_TRAIN_DIR;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;

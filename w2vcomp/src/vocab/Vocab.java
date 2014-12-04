@@ -208,7 +208,8 @@ public class Vocab {
 
         // restore the frequency of "new line"
         vocab.get(0).frequency = newLineFrequency;
-        trainWords = trainWords - Integer.MAX_VALUE + newLineFrequency;
+//        trainWords = trainWords - Integer.MAX_VALUE + newLineFrequency;
+        trainWords = trainWords - Integer.MAX_VALUE;
         System.out.println("read train words: " + trainWords);
     }
 
