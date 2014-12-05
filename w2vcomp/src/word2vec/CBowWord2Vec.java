@@ -50,7 +50,7 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
         }
 
         // sum all the vectors in the window
-
+        int wordCount = 0;
         for (int i = leeway; i < windowSize * 2 + 1 - leeway; i++) {
 
             if (i != windowSize) {
@@ -62,9 +62,18 @@ public class CBowWord2Vec extends SingleThreadWord2Vec {
                     // System.out.println("shouldn't be here");
                     continue;
                 }
+                wordCount++;
                 // stupid c here, use something else, say d,e
                 for (int j = 0; j < projectionLayerSize; j++)
                     a1[j] += weights0[iWordIndex][j];
+            }
+        }
+
+        if (wordCount == 0) {
+            return;
+        } else {
+            for (int j = 0; j < projectionLayerSize; j++) {
+                a1[j] /= wordCount;
             }
         }
 
