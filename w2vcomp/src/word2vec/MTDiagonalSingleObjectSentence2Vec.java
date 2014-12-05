@@ -100,7 +100,9 @@ public class MTDiagonalSingleObjectSentence2Vec extends MTSingleObjectSentence2V
             }
             SingleObjectDiagonalTreeNetwork network = SingleObjectDiagonalTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
                     projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
-            network.learn(alpha);
+            // TODO: fix here
+            if (network != null)
+                network.learn(alpha);
         }
     }
     

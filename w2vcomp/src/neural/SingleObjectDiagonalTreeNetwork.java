@@ -83,6 +83,8 @@ public class SingleObjectDiagonalTreeNetwork extends DiagonalTreeNetwork{
                     layer = new DiagonalHiddenLayer(weights, hiddenLayerActivation);
                     for (Tree child: children) {
                         Layer childLayer = layerMap.get(child);
+                        // TODO: fix here
+                        if (childLayer == null) return null;
                         layer.addInLayer(childLayer);
                         childLayer.addOutLayer(layer);
                     }

@@ -83,6 +83,8 @@ public class SingleObjectWeightedTreeNetwork extends WeightedTreeNetwork{
                     layer = new WeightedHiddenLayer(weights, hiddenLayerActivation);
                     for (Tree child: children) {
                         Layer childLayer = layerMap.get(child);
+                        // TODO: fix here
+                        if (childLayer == null) return null;
                         layer.addInLayer(childLayer);
                         childLayer.addOutLayer(layer);
                     }

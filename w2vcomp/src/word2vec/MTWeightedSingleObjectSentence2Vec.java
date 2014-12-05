@@ -105,7 +105,9 @@ public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2V
             }
             SingleObjectWeightedTreeNetwork network = SingleObjectWeightedTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
                     projectionMatrix, (WeightedCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
-            network.learn(alpha);
+            // TODO: fix here
+            if (network != null)
+                network.learn(alpha);
         }
     }
     

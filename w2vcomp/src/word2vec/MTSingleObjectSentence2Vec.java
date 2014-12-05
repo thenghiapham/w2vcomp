@@ -258,7 +258,9 @@ public class MTSingleObjectSentence2Vec extends Sentence2Vec{
             }
             SingleObjTreeNetwork network = SingleObjTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
                     projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
-            network.learn(alpha);
+            // TODO: fix here
+            if (network != null)
+                network.learn(alpha);
         }
     }
     
