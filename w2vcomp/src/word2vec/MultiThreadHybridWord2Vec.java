@@ -185,8 +185,11 @@ public class MultiThreadHybridWord2Vec extends MultiThreadWord2Vec {
             }
         }
 
-        for (int j = 0; j < projectionLayerSize; j++)
-            a1[j] /= wordCount;
+        if (wordCount != 0) {
+            for (int j = 0; j < projectionLayerSize; j++) {
+                a1[j] /= wordCount;
+            }
+        }
         
         if (hierarchicalSoftmax) {
             VocabEntry word = vocab.getEntry(wordIndex);
