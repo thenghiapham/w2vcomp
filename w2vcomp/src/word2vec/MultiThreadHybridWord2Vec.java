@@ -165,7 +165,8 @@ public class MultiThreadHybridWord2Vec extends MultiThreadWord2Vec {
         }
 
         // sum all the vectors in the window
-
+        
+        int wordCount = 0;
         for (int i = leeway; i < windowSize * 2 + 1 - leeway; i++) {
 
             if (i != windowSize) {
@@ -177,12 +178,16 @@ public class MultiThreadHybridWord2Vec extends MultiThreadWord2Vec {
                     // System.out.println("shouldn't be here");
                     continue;
                 }
+                wordCount++;
                 // stupid c here, use something else, say d,e
                 for (int j = 0; j < projectionLayerSize; j++)
                     a1[j] += weights0[iWordIndex][j];
             }
         }
 
+        for (int j = 0; j < projectionLayerSize; j++)
+            a1[j] /= wordCount;
+        
         if (hierarchicalSoftmax) {
             VocabEntry word = vocab.getEntry(wordIndex);
             for (int bit = 0; bit < word.code.length(); bit++) {
