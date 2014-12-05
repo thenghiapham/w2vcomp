@@ -13,17 +13,17 @@ import java.util.HashMap;
 
 import neural.function.ActivationFunction;
 import neural.function.IdentityFunction;
-
 import common.IOUtils;
 import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
-
 import vocab.Vocab;
-import word2vec.MultiThreadDiagonalSentence2Vec;
-import word2vec.MultiThreadSentence2Vec;
-import word2vec.MultiThreadWeightedSentence2Vec;
-
+import word2vec.MTDiagonalSingleObjectSentence2Vec;
+import word2vec.MTSingleObjectSentence2Vec;
+import word2vec.MTWeightedSingleObjectSentence2Vec;
+//import word2vec.MultiThreadDiagonalSentence2Vec;
+//import word2vec.MultiThreadSentence2Vec;
+//import word2vec.MultiThreadWeightedSentence2Vec;
 import demo.TestConstants;
 
 public class MassSentenceVectorLearning {
@@ -34,7 +34,7 @@ public class MassSentenceVectorLearning {
         String allLevelString = args[3];
         String lexicalString = args[4];
         
-        String outSuffix = compType + hiddenLayerString + "_" + levelString + "_" 
+        String outSuffix = "so_" + compType + hiddenLayerString + "_" + levelString + "_" 
                 + allLevelString.charAt(0) + lexicalString.charAt(0);
         
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
@@ -51,25 +51,25 @@ public class MassSentenceVectorLearning {
         
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-        MultiThreadSentence2Vec sentence2vec;
+        MTSingleObjectSentence2Vec sentence2vec;
         switch (compType) {
         case "w":
-            sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
+            sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
             break;
         case "d":
-            sentence2vec = new MultiThreadDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
+            sentence2vec = new MTDiagonalSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
             break;
         case "f":
-            sentence2vec = new MultiThreadSentence2Vec(hiddenLayerSize, windowSize, 
+            sentence2vec = new MTSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
             break;
         default:
-            sentence2vec = new MultiThreadWeightedSentence2Vec(hiddenLayerSize, windowSize, 
+            sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
                     hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                     allLevel, lexical);
             break;
@@ -78,7 +78,7 @@ public class MassSentenceVectorLearning {
         
         String outputFile = TestConstants.S_VECTOR_FILE.replace(".bin", outSuffix + ".bin");
         String compFile = TestConstants.S_COMPOSITION_FILE.replace(".cmp", outSuffix + ".cmp");
-        String vocabFile = TestConstants.S_VOCABULARY_FILE.replace(".voc", outSuffix + ".voc");
+        String vocabFile = TestConstants.S_VOCABULARY_FILE;//.replace(".voc", outSuffix + ".voc");
         LogUtils.setup(TestConstants.S_LOG_FILE.replace(".log", outSuffix + ".log"));
         
         String trainDirPath = TestConstants.S_TRAIN_DIR;
