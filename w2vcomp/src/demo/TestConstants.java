@@ -34,10 +34,10 @@ public class TestConstants {
 ////  public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wwiki.cmp";
 ////  public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wwiki.voc";
 ////  public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "wwiki.ini";
-//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wbnc.bin";
-//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wbnc.cmp";
-//    public static final String S_MODEL_FILE               = S_OUT_DIR + "wbnc.mdl";
-//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wbnc.voc";
+////    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wbnc.bin";
+////    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wbnc.cmp";
+////    public static final String S_MODEL_FILE               = S_OUT_DIR + "wbnc.mdl";
+////    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wbnc.voc";
 //    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skipgram.mdl";
 //    
 ////    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_bnc40.bin";
@@ -45,10 +45,10 @@ public class TestConstants {
 ////    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_bnc.voc";
 ////    public static final String S_MODEL_FILE               = S_OUT_DIR + "skip_bnc40.mdl";
 //    
-////    public static final String S_VECTOR_FILE              = S_OUT_DIR + "cbow_bnc300.bin";
-////    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "cbow_bnc300.cmp";
-////    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "cbow_bnc300.voc";
-////    public static final String S_MODEL_FILE               = S_OUT_DIR + "cbow_bnc300.mdl";
+//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "cbow_bnc300.bin";
+//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "cbow_bnc300.cmp";
+//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "cbow_bnc300.voc";
+//    public static final String S_MODEL_FILE               = S_OUT_DIR + "cbow_bnc300.mdl";
 //    
 //    
 //    public static final String S_RTE_DIR                  = S_PROJECT_DIR + "rte/";

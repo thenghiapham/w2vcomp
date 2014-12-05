@@ -12,6 +12,7 @@ import demo.TestConstants;
 
 public class AddEvaluation {
     public static void main(String[] args) {
+//        String vectorFile = TestConstants.S_VECTOR_FILE.replace(".bin", "_cbow.bin");
         String vectorFile = TestConstants.S_VECTOR_FILE;
         if (args.length > 0) {
             vectorFile = args[0];
