@@ -186,7 +186,7 @@ public class MultiThreadHybridWord2Vec extends MultiThreadWord2Vec {
         }
 
         if (wordCount == 0) {
-            return;
+//            return;
         } else {
             for (int j = 0; j < projectionLayerSize; j++) {
                 a1[j] /= wordCount;
