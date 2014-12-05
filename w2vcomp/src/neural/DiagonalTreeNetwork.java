@@ -30,7 +30,7 @@ import tree.Tree;
 public class DiagonalTreeNetwork {
     private static final Logger LOGGER = Logger.getLogger(DiagonalTreeNetwork.class.getName());
     private static final double epsilon = 1e-4;
-    private static final double matrixCoefficient = 0.001;
+    private static final double matrixCoefficient = 1;
 //    private static final double LEVEL_DECAY = 1;
     
     protected Tree parseTree;

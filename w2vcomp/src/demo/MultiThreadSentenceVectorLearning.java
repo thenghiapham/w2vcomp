@@ -11,8 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 import neural.function.ActivationFunction;
 import neural.function.IdentityFunction;
+import neural.function.Sigmoid;
+import neural.function.Tanh;
+import neural.layer.HiddenLayer;
 //import java.util.logging.Level;
 
 import common.IOUtils;
@@ -20,6 +24,7 @@ import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import vocab.Vocab;
+import word2vec.MTDiagonalSingleObjectSentence2Vec;
 import word2vec.MTSingleObjectSentence2Vec;
 import word2vec.MTWeightedSingleObjectSentence2Vec;
 import word2vec.MultiThreadDiagonalSentence2Vec;
@@ -40,9 +45,13 @@ public class MultiThreadSentenceVectorLearning {
         boolean allLevel = true;
         boolean lexical = false;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
-        ActivationFunction hiddenActivationFunction = new IdentityFunction();
+//        ActivationFunction hiddenActivationFunction = new IdentityFunction();
+        ActivationFunction hiddenActivationFunction = new Tanh();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+//        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
+        MTDiagonalSingleObjectSentence2Vec sentence2vec = new MTDiagonalSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
 //        MTSingleObjectSentence2Vec sentence2vec = new MTSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
@@ -86,7 +95,8 @@ public class MultiThreadSentenceVectorLearning {
         }
 
         sentence2vec.setVocab(vocab);
-        sentence2vec.initNetwork(skipMdlFile);
+        sentence2vec.initNetwork();
+//        sentence2vec.initNetwork(skipMdlFile);
         MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
         men.setName("MEN");
         sentence2vec.addMenCorrelation(men);

@@ -12,19 +12,14 @@ import space.SMSemanticSpace;
 import space.SemanticSpace;
 import tree.Tree;
 
-public class ParsedPhraseVectorPrinter {
+public class ParsedPhraseCosinePrinter {
     String[][] parsedPhrasePairs;
     String[][] surfacePhrasePairs;
     String[] parsedPhrases;
     String[] surfacePhrases;
     double[] golds;
     String[] features;
-    public ParsedPhraseVectorPrinter(String dataset) {
-        readDataset(dataset);
-        features = null;
-    }
-    
-    public ParsedPhraseVectorPrinter(String dataset, String featureFile) {
+    public ParsedPhraseCosinePrinter(String dataset, String featureFile) {
         readDataset(dataset);
         ArrayList<String> featureList = IOUtils.readFile(featureFile);
         features = new String[featureList.size()];
@@ -74,62 +69,47 @@ public class ParsedPhraseVectorPrinter {
         }
     }
     
-    public void printVectors(String fileName, SemanticSpace space, BasicComposition compModel) throws IOException{
+    public void printCosines(String fileName, SemanticSpace space, BasicComposition compModel) throws IOException{
         SemanticSpace phraseSpace = compModel.composeSpace(space, surfacePhrases);
-        printPhraseVectors(fileName, phraseSpace, true);
+        printPhraseCosines(fileName, phraseSpace, true);
     }
     
-    public void printVectors(String fileName, CompositionalSemanticSpace space) throws IOException{
+    public void printCosines(String fileName, CompositionalSemanticSpace space) throws IOException{
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrases, space.getComposedMatrix(parsedPhrases));
-        printPhraseVectors(fileName, phraseSpace, false);
+        printPhraseCosines(fileName, phraseSpace, false);
     }
     
-    public void printPhraseVectors(String fileName, SemanticSpace phraseSpace, boolean surface) throws IOException{
+    public void printPhraseCosines(String fileName, SemanticSpace phraseSpace, boolean surface) throws IOException{
         int vectorSize = phraseSpace.getVectorSize();
         String[][] phrasePairs = null;
         if (surface)
             phrasePairs = surfacePhrasePairs;
         else
             phrasePairs = parsedPhrasePairs;
-        double[][][] vectors = new double[phrasePairs.length][2][vectorSize];
+        double[] cosines = new double[phrasePairs.length];
         for (int i = 0; i < phrasePairs.length; i++) {
-            vectors[i][0] = SimpleMatrixUtils.normalize(phraseSpace.getVector(phrasePairs[i][0]),1).getMatrix().data;
-            vectors[i][1] = SimpleMatrixUtils.normalize(phraseSpace.getVector(phrasePairs[i][1]),1).getMatrix().data;
+            double[] vector1 = phraseSpace.getVector(phrasePairs[i][0]).getMatrix().data;
+            double[] vector2 = phraseSpace.getVector(phrasePairs[i][1]).getMatrix().data;
+            cosines[i] = MathUtils.cosine(vector1, vector2);
+            
         }
-        printVectors(fileName, vectorSize, vectors, features);
+        printCosines(fileName, vectorSize, cosines);
     }
     
-    protected void printVectors(String fileName, int vectorSize, double[][][] vectorPairs, String[] features) throws IOException{
+    protected void printCosines(String fileName, int vectorSize, double[] cosines) throws IOException{
         BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
         for (int i = 0; i < golds.length; i++) {
-            writer.write("" + golds[i] + " ");
-            printVector(writer, vectorPairs[i][0], 1);
-            writer.write(" ");
-            printVector(writer, vectorPairs[i][1], 1 + vectorSize);
-            if (features != null) {
-                String feature = features[i];
-                String[] elements = feature.split("( |\n)");
-                for (int j = 0; j < elements.length; j++) {
-                    writer.write(" " + (j+1 + vectorSize + vectorSize) + ":" + elements[j]);
-                }
+            writer.write("" + golds[i] + " 1:" + cosines[i]);
+            String feature = features[i];
+            String[] elements = feature.split("( |\n)");
+            for (int j = 0; j < elements.length; j++) {
+                writer.write(" " + (j+2) + ":" + elements[j]);
             }
             writer.write("\n");
         }
         writer.close();
     }
     
-    protected void printVector(BufferedWriter writer, double[] vector, int featureIndex) throws IOException {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < vector.length; i++) {
-            buffer.append(i + featureIndex);
-            buffer.append(":");
-            buffer.append(vector[i]);
-            if (i != vector.length - 1) {
-                buffer.append(" ");
-            }
-        }
-        writer.write(buffer.toString());
-    }
     
     public String[] getSurfacePhrases() {
         return surfacePhrases;

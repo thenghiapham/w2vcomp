@@ -28,7 +28,6 @@ public class MTDiagonalSingleObjectSentence2Vec extends MTSingleObjectSentence2V
             boolean allLevel, boolean lexical) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
                 subSample, constructionGroups, hiddenActivationFunction, phraseHeight, allLevel, lexical);
-        // TODO Auto-generated constructor stub
     }
     
     // call after learning or loading vocabulary

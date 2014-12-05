@@ -12,13 +12,14 @@ import demo.TestConstants;
 
 public class AddEvaluation {
     public static void main(String[] args) {
-//        String vectorFile = TestConstants.S_VECTOR_FILE.replace(".bin", "_cbow.bin");
-        String vectorFile = TestConstants.S_VECTOR_FILE;
+        String vectorFile = TestConstants.S_VECTOR_FILE.replace(".bin", "_cbow.bin");
+//        String vectorFile = TestConstants.S_VECTOR_FILE;
         if (args.length > 0) {
             vectorFile = args[0];
         }
         WeightedAdditive add = new WeightedAdditive();
         RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
+//        space.
         MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
         ANCorrelation an = new ANCorrelation(TestConstants.S_AN_FILE);
         NNCorrelation nn = new NNCorrelation(TestConstants.S_NN_FILE);
