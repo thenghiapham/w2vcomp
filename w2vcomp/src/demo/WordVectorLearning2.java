@@ -21,12 +21,13 @@ import demo.TestConstants;
 
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
-        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(40, 5, true, 0, 0, TestConstants.S_MEN_FILE);
-//        MultiThreadCBow word2vec = new MultiThreadCBow(300, 5, true, 0, 0, TestConstants.S_MEN_FILE);
+//        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(40, 5, true, 0, 0, TestConstants.S_MEN_FILE);
+        MultiThreadCBow word2vec = new MultiThreadCBow(300, 5, true, 0, 0, TestConstants.S_MEN_FILE);
+        String prefix = "cbow_";
         String trainDirPath = TestConstants.S_TRAIN_DIR;
-        String outputFile = TestConstants.S_VECTOR_FILE;
+        String outputFile = prefix + TestConstants.S_VECTOR_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
-        String modelFile = TestConstants.S_MODEL_FILE;
+        String modelFile = prefix + TestConstants.S_MODEL_FILE;
         System.out.println("Starting training using files in " + trainDirPath);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
