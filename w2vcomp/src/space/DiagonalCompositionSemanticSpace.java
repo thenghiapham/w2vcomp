@@ -41,7 +41,6 @@ public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSp
         System.out.println(functionString);
         ActivationFunction function = new IdentityFunction();
         if ("tanh".equals(functionString)) {
-            
             function = new Tanh();
         }
         return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices, function);

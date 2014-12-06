@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import common.ParsedPhraseCosinePrinter;
-import common.ParsedPhraseVectorPrinter;
 import composition.WeightedAdditive;
 
 import space.CompositionSemanticSpace;

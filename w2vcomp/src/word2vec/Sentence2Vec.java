@@ -21,7 +21,7 @@ import neural.LearningStrategy;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
 import neural.RawHierarchicalSoftmaxLearner;
-
+import neural.function.ActivationFunction;
 import vocab.Vocab;
 import vocab.VocabEntry;
 import common.IOUtils;
@@ -66,6 +66,7 @@ public abstract class Sentence2Vec {
     protected ProjectionMatrix      projectionMatrix;
     protected CompositionMatrices   compositionMatrices;
     protected LearningStrategy      learningStrategy;
+    protected ActivationFunction    hiddenActivationFunction;
     
     protected int phraseHeight;
     boolean allLevel;
@@ -73,7 +74,8 @@ public abstract class Sentence2Vec {
 
 
     public Sentence2Vec(int hiddenLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample,
+            ActivationFunction hiddenActivationFunction,
             HashMap<String, String> constructionGroups, int phraseHeight, 
             boolean allLevel, boolean lexical) {
         this.hiddenLayerSize = hiddenLayerSize;
@@ -85,6 +87,7 @@ public abstract class Sentence2Vec {
         this.allLevel = allLevel;
         this.lexical = lexical;
         this.constructionGroups = constructionGroups;
+        this.hiddenActivationFunction = hiddenActivationFunction;
 
         // TODO: setting alpha
         starting_alpha = DEFAULT_STARTING_ALPHA;
@@ -260,6 +263,7 @@ public abstract class Sentence2Vec {
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
             saveVector(outputStream, binary);
             compositionMatrices.saveConstructionMatrices(outputStream, binary);
+//            outputStream.write()
             outputStream.flush();
             outputStream.close();
         } catch (IOException e) {

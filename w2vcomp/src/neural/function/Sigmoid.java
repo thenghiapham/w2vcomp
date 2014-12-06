@@ -18,4 +18,10 @@ public class Sigmoid implements ActivationFunction {
         return sigmoid * (1 - sigmoid);
     }
 
+    @Override
+    public String getName() {
+        // TODO Auto-generated method stub
+        return "sigmoid";
+    }
+
 }

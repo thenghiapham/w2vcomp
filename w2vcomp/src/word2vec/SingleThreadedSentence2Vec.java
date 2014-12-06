@@ -35,7 +35,6 @@ import tree.Tree;
 public class SingleThreadedSentence2Vec extends Sentence2Vec{
     private static final Logger LOGGER = Logger.getLogger(SingleThreadedSentence2Vec.class.getName());
     Random random = new Random();
-    ActivationFunction hiddenActivationFunction;
     ArrayList<MenCorrelation> wordCorrelations;
     ArrayList<TwoWordPhraseCorrelation> phraseCorrelations;
     ArrayList<ParsedPhraseCorrelation> sentenceCorrelations;
@@ -47,9 +46,8 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
             HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight, boolean allLevel, boolean lexical) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, constructionGroups, phraseHeight, 
+                subSample, hiddenActivationFunction, constructionGroups, phraseHeight, 
                 allLevel, lexical);
-        this.hiddenActivationFunction = hiddenActivationFunction;
         wordCorrelations = new ArrayList<>();
         phraseCorrelations = new ArrayList<>();
         sentenceCorrelations = new ArrayList<>();
