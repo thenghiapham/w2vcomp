@@ -43,7 +43,7 @@ public class MultiThreadSentenceVectorLearning {
         double subSampling = 0;
         int phraseLevel = 5;
         boolean allLevel = true;
-        boolean lexical = false;
+        boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
 //        ActivationFunction hiddenActivationFunction = new IdentityFunction();
         ActivationFunction hiddenActivationFunction = new Tanh();
