@@ -38,8 +38,10 @@ public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSp
         ProjectionMatrix projectionMatrix = ProjectionMatrix.loadProjectionMatrix(inputStream, binary);
         DiagonalCompositionMatrices compositionMatrices = DiagonalCompositionMatrices.loadConstructionMatrices(inputStream, binary);
         String functionString = IOUtils.readWord(inputStream);
+        System.out.println(functionString);
         ActivationFunction function = new IdentityFunction();
         if ("tanh".equals(functionString)) {
+            
             function = new Tanh();
         }
         return new DiagonalCompositionSemanticSpace(projectionMatrix, compositionMatrices, function);
