@@ -13,14 +13,14 @@ import demo.TestConstants;
 
 public class SvmSentimentPrinter {
     public static void main(String[] args) throws IOException {
-        String datasetFile = TestConstants.S_RTE_FILE;
-        String rteFeatureFile = TestConstants.S_RTE_FEATURE_FILE;
+        String datasetFile = TestConstants.S_IMDB_FILE;
+        String goldFile = TestConstants.S_IMDB_LABEL_FILE;
         String datasetName = new File(datasetFile).getName();
-        String outDir = TestConstants.S_RTE_SVM_DIR;
+        String outDir = TestConstants.S_IMDB_SVM_DIR;
         String compFile = TestConstants.S_COMPOSITION_FILE;
         
         String vectorFile = TestConstants.S_VECTOR_FILE;
-        SingleParsedPhraseVectorPrinter printer = new SingleParsedPhraseVectorPrinter(datasetFile, rteFeatureFile);
+        SingleParsedPhraseVectorPrinter printer = new SingleParsedPhraseVectorPrinter(datasetFile, goldFile);
         printAdd(printer, vectorFile, outDir, datasetName);
         printWeighted(printer, compFile, outDir, datasetName);
     }
