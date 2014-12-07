@@ -58,7 +58,7 @@ public class TestConstants {
     
     public static final String S_IMDB_DIR                   = S_PROJECT_DIR + "imdb/";
     public static final String S_IMDB_FILE                 = S_IMDB_DIR + "normalized_text.parsed";
-    public static final String S_IMDB_LABEL_FILE           = S_IMDB_DIR + "sentence_sentiment.txt5";
+    public static final String S_IMDB_LABEL_FILE           = S_IMDB_DIR + "sentence_sentiment.txt2";
     public static final String S_IMDB_SVM_DIR              = S_IMDB_DIR + "svm/";
   
     public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
