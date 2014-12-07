@@ -88,7 +88,7 @@ public class SingleParsedPhraseVectorPrinter {
                 String feature = features[i];
                 String[] elements = feature.split("( |\n)");
                 for (int j = 0; j < elements.length; j++) {
-                    writer.write(" " + (j+1 + vectorSize + vectorSize) + ":" + elements[j]);
+                    writer.write(" " + (j+1 + vectorSize) + ":" + elements[j]);
                 }
             }
             writer.write("\n");
