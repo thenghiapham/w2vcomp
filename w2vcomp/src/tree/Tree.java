@@ -103,6 +103,8 @@ public class Tree {
         }
         else
             throw new ValueException("Parse error for (sub)tree 3: "+treeString);
+        if (tree != null)
+            tree.leafToLowerCase();
         return tree;
     }
     

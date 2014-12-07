@@ -45,8 +45,8 @@ public class MultiThreadSentenceVectorLearning {
         boolean allLevel = true;
         boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
-//        ActivationFunction hiddenActivationFunction = new IdentityFunction();
-        ActivationFunction hiddenActivationFunction = new Tanh();
+        ActivationFunction hiddenActivationFunction = new IdentityFunction();
+//        ActivationFunction hiddenActivationFunction = new Tanh();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
         MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
@@ -108,21 +108,21 @@ public class MultiThreadSentenceVectorLearning {
 //        ArrayList<Tree> validationTrees = IOUtils.readTree(TestConstants.S_VALIDATION_FILE);
 //        sentence2vec.setTestTrees(validationTrees);
         // single threaded instead of multithreading
-        System.out.println("Start training");
-        try {
-            
-            ArrayList<TreeInputStream> inputStreams = new ArrayList<TreeInputStream>();
-            for (File trainFile: trainFiles) {
-                TreeInputStream treeInputStream = new BasicTreeInputStream(trainFile);;
-                inputStreams.add(treeInputStream);
-            }
-            System.out.println(inputStreams.size());
-            sentence2vec.trainModel(inputStreams);
-//            sentence2vec.saveVector(outputFile, true);
-//            sentence2vec.saveCompositionNetwork(compFile, true);
-        } catch (IOException e) {
-            System.exit(1);
-        }
+//        System.out.println("Start training");
+//        try {
+//            
+//            ArrayList<TreeInputStream> inputStreams = new ArrayList<TreeInputStream>();
+//            for (File trainFile: trainFiles) {
+//                TreeInputStream treeInputStream = new BasicTreeInputStream(trainFile);;
+//                inputStreams.add(treeInputStream);
+//            }
+//            System.out.println(inputStreams.size());
+//            sentence2vec.trainModel(inputStreams);
+////            sentence2vec.saveVector(outputFile, true);
+////            sentence2vec.saveCompositionNetwork(compFile, true);
+//        } catch (IOException e) {
+//            System.exit(1);
+//        }
         
         System.out.println("train again");
         try {
