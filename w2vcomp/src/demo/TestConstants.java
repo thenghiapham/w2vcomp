@@ -29,6 +29,9 @@ public class TestConstants {
 //    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "tmp_parsed/bnc";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "tmp_parsed/bnc/bnc.txt";
     public static final int S_MIN_FREQUENCY               = 5;
+    public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
+//  public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki_sentence.log";
+    
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
 //  public static final String S_VECTOR_FILE              = S_OUT_DIR + "wwiki.bin";
 //  public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wwiki.cmp";
@@ -37,10 +40,12 @@ public class TestConstants {
     public static final String S_VECTOR_FILE              = S_OUT_DIR + "dbnc300t.bin";
     public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "dbnc300t.cmp";
     public static final String S_MODEL_FILE               = S_OUT_DIR + "dbnc300t.mdl";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "dbnc300t.log";
 //    public static final String S_VECTOR_FILE              = S_OUT_DIR + "wbnc300i.bin";
 //    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "wbnc300i.cmp";
 //    public static final String S_MODEL_FILE               = S_OUT_DIR + "wbnc300i.mdl";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wbnc.voc";
+    
     public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skipgram.mdl";
     
 //    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_bnc40.bin";
@@ -64,9 +69,7 @@ public class TestConstants {
     public static final String S_IMDB_LABEL_FILE           = S_IMDB_DIR + "sentence_sentiment.txt2";
     public static final String S_IMDB_SVM_DIR              = S_IMDB_DIR + "svm/";
   
-    public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
-//  public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki_sentence.log";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "bnc_sentence.log";
+
   
 //  public static final String S_LOG_DIR
     public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
