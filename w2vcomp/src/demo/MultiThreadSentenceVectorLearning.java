@@ -38,8 +38,8 @@ public class MultiThreadSentenceVectorLearning {
 //        LogUtils.logToConsole(Level.ALL);
         int hiddenLayerSize = 300;
         int windowSize = 5;
-        boolean hierarchialSoftmax = true;
-        int negativeSampling = 0;
+        boolean hierarchialSoftmax = false;
+        int negativeSampling = 20;
         double subSampling = 1e-3;
         int phraseLevel = 5;
         boolean allLevel = true;
