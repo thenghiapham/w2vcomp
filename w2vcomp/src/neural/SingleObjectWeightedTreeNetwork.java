@@ -14,7 +14,9 @@ import neural.layer.WeightedHiddenLayer;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.MathUtils;
 import tree.Tree;
+import vocab.Vocab;
 
 public class SingleObjectWeightedTreeNetwork extends WeightedTreeNetwork{
 
@@ -27,10 +29,10 @@ public class SingleObjectWeightedTreeNetwork extends WeightedTreeNetwork{
     // left position should be the length of history
     // concatenating concatenating 
     public static SingleObjectWeightedTreeNetwork createNetwork(Tree parseTree, Tree rootTree, 
-            String[] historyPresentFuture, ProjectionMatrix projectionBuilder, 
+            String[] historyPresentFuture, Vocab vocab, ProjectionMatrix projectionBuilder, 
             WeightedCompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
-            int maxWindowSize) {
+            int maxWindowSize, double subSample) {
         SingleObjectWeightedTreeNetwork network = new SingleObjectWeightedTreeNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
@@ -102,7 +104,7 @@ public class SingleObjectWeightedTreeNetwork extends WeightedTreeNetwork{
         
         // add the output layers to the suitable layers
         network.setLayerMap(layerMap);
-        network.addOutputLayers(rootTree, historyPresentFuture, outputBuilder, outputLayerActivation, maxWindowSize);
+        network.addOutputLayers(rootTree, historyPresentFuture, vocab, outputBuilder, outputLayerActivation, maxWindowSize, subSample);
         
         //TODO: remove
         network.treeMap = treeMap;
@@ -110,8 +112,8 @@ public class SingleObjectWeightedTreeNetwork extends WeightedTreeNetwork{
         return network;
     }
     
-    protected void addOutputLayers(Tree rootTree, String[] historyPresentFuture, LearningStrategy outputBuilder, 
-            ActivationFunction outputLayerActivation, int maxWindowSize) {
+    protected void addOutputLayers(Tree rootTree, String[] historyPresentFuture, Vocab vocab, LearningStrategy outputBuilder, 
+            ActivationFunction outputLayerActivation, int maxWindowSize, double subSample) {
 
         // get the 
         String[] sentence = historyPresentFuture;
@@ -135,6 +137,11 @@ public class SingleObjectWeightedTreeNetwork extends WeightedTreeNetwork{
                 
                 // adding the output layers to the hidden/projection layer 
                 // corresponding to the phrase 
+             // subSample
+                long frequency = vocab.getEntry(sentence[i]).frequency;
+                long totalCount = vocab.getTrainWords();
+                if (subSample >0 && !MathUtils.isSampled(frequency, totalCount, subSample)) continue;
+                
                 int[] indices = outputBuilder.getOutputIndices(sentence[i]);
                 if (indices == null) continue;
                 SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);

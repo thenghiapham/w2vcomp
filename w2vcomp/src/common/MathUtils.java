@@ -1,5 +1,7 @@
 package common;
 
+import java.util.Random;
+
 /**
  * This class contains a set of utility method for simple maths
  * (maybe should be replaced with utility method for SimpleMatrix class
@@ -7,6 +9,7 @@ package common;
  *
  */
 public class MathUtils {
+    private static Random rand = new Random();
     // TODO: use some linear algebra method
     
     /**
@@ -62,5 +65,16 @@ public class MathUtils {
      */
     public static double tanh(double x) {
         return 1 - (double) (2.0 / (1.0 + Math.exp(2 * x)));
+    }
+    
+    public static boolean isSampled(long count, long totalCount, double frequencyThreshold) {
+        double randomThreshold = (double) (Math.sqrt(count
+                / (frequencyThreshold * totalCount)) + 1)
+                * (frequencyThreshold * totalCount) / count;
+        if (randomThreshold >= rand.nextFloat()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

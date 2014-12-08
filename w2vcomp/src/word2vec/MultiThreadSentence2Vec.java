@@ -197,22 +197,22 @@ public class MultiThreadSentence2Vec extends Sentence2Vec{
         System.out.println("norm NN" + compositionMatrices.getCompositionMatrix("@NP NN NN").normF());
     }
     
-    protected double computeCost(ArrayList<Tree> parseTrees) {
-        double cost = 0;
-        for (Tree parseTree: parseTrees) {
-            cost += computeCost(parseTree);
-        }
-        return cost / (parseTrees.size() + 1);
-    }
+//    protected double computeCost(ArrayList<Tree> parseTrees) {
+//        double cost = 0;
+//        for (Tree parseTree: parseTrees) {
+//            cost += computeCost(parseTree);
+//        }
+//        return cost / (parseTrees.size() + 1);
+//    }
     
-    protected double computeCost(Tree parseTree) {
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-        return network.computeCost();
-    }
+//    protected double computeCost(Tree parseTree) {
+//        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+//        return network.computeCost();
+//    }
     
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+        TreeNetwork network = TreeNetwork.createNetwork(parseTree, vocab, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical, subSample);
         network.learn(alpha);
 //        if (random.nextDouble() <= 0.0001) {
 //            network.checkGradient();

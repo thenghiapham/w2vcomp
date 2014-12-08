@@ -97,8 +97,8 @@ public class MTDiagonalSingleObjectSentence2Vec extends MTSingleObjectSentence2V
                 if (height > phraseHeight)
                     continue;
             }
-            SingleObjectDiagonalTreeNetwork network = SingleObjectDiagonalTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
-                    projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
+            SingleObjectDiagonalTreeNetwork network = SingleObjectDiagonalTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture, vocab,
+                    projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, subSample);
             // TODO: fix here
             if (network != null)
                 network.learn(alpha);

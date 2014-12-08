@@ -216,18 +216,18 @@ public class MTSingleObjectSentence2Vec extends Sentence2Vec{
         System.out.println("norm NN" + compositionMatrices.getCompositionMatrix("@NP NN NN").normF());
     }
     
-    protected double computeCost(ArrayList<Tree> parseTrees) {
-        double cost = 0;
-        for (Tree parseTree: parseTrees) {
-            cost += computeCost(parseTree);
-        }
-        return cost / (parseTrees.size() + 1);
-    }
+//    protected double computeCost(ArrayList<Tree> parseTrees) {
+//        double cost = 0;
+//        for (Tree parseTree: parseTrees) {
+//            cost += computeCost(parseTree);
+//        }
+//        return cost / (parseTrees.size() + 1);
+//    }
     
-    protected double computeCost(Tree parseTree) {
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-        return network.computeCost();
-    }
+//    protected double computeCost(Tree parseTree) {
+//        TreeNetwork network = TreeNetwork.createNetwork(parseTree, vocab, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical, subSample);
+//        return network.computeCost();
+//    }
     
     protected void trainSentence(Tree parseTree, String[] history, String[] sentence, String[] future) {
         // TODO Auto-generated method stub
@@ -255,7 +255,7 @@ public class MTSingleObjectSentence2Vec extends Sentence2Vec{
                     continue;
             }
             SingleObjTreeNetwork network = SingleObjTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
-                    projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize);
+                    vocab, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, subSample);
             // TODO: fix here
             if (network != null)
                 network.learn(alpha);

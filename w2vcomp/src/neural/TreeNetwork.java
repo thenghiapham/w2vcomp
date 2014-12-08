@@ -1,5 +1,7 @@
 package neural;
 
+import io.sentence.SubSamplingSentenceInputStream;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,8 +18,10 @@ import neural.layer.ProjectionLayer;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.MathUtils;
 
 import tree.Tree;
+import vocab.Vocab;
 
 /**
  * TreeNetwork class
@@ -94,10 +98,10 @@ public class TreeNetwork {
      * TODO: add condition for adding surrounding context
      * (just a matter of adding previous & next sentence as Strings)
      */
-    public static TreeNetwork createNetwork(Tree parseTree, ProjectionMatrix projectionBuilder, 
+    public static TreeNetwork createNetwork(Tree parseTree, Vocab vocab, ProjectionMatrix projectionBuilder, 
             CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
-            int maxWindowSize, int outputLayerHeight, boolean allLevel, boolean lexical) {
+            int maxWindowSize, int outputLayerHeight, boolean allLevel, boolean lexical, double subSample) {
 //        LOGGER.log(Level.FINE, parseTree.toPennTree());
 //        System.out.println("parse tree: " + parseTree.toPennTree());
         // setting global references
@@ -180,7 +184,7 @@ public class TreeNetwork {
         
         // add the output layers to the suitable layers
         network.setLayerMap(layerMap);
-        network.addOutputLayers(outputBuilder, outputLayerActivation, maxWindowSize, outputLayerHeight, allLevel, lexical);
+        network.addOutputLayers(vocab, outputBuilder, outputLayerActivation, maxWindowSize, outputLayerHeight, allLevel, lexical, subSample);
         
         //TODO: remove
         network.treeMap = treeMap;
@@ -188,8 +192,8 @@ public class TreeNetwork {
         return network;
     }
     
-    protected void addOutputLayers(LearningStrategy outputBuilder, ActivationFunction outputLayerActivation, int maxWindowSize, 
-            int outputLayerHeight, boolean allLevel, boolean lexical) {
+    protected void addOutputLayers(Vocab vocab, LearningStrategy outputBuilder, ActivationFunction outputLayerActivation, int maxWindowSize, 
+            int outputLayerHeight, boolean allLevel, boolean lexical, double subSample) {
 
         // get the 
         String[] sentence = parseTree.getSurfaceWords();
@@ -224,6 +228,12 @@ public class TreeNetwork {
                     
                     // adding the output layers to the hidden/projection layer 
                     // corresponding to the phrase 
+                    
+                    // subSample
+                    long frequency = vocab.getEntry(sentence[i]).frequency;
+                    long totalCount = vocab.getTrainWords();
+                    if (subSample >0 && !MathUtils.isSampled(frequency, totalCount, subSample)) continue;
+                    
                     int[] indices = outputBuilder.getOutputIndices(sentence[i]);
 //                    IOUtils.printInts(indices);
 //                    System.out.println("****");
