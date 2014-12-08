@@ -18,7 +18,7 @@ public class NegativeSamplingLearner extends LearningStrategy{
     
     protected SimpleMatrix goldOutput;
     
-    protected Random rand;
+    protected Random rand = new Random();
     
     
     // TODO: random initialization
