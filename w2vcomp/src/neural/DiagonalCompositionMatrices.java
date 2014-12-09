@@ -179,10 +179,6 @@ public class DiagonalCompositionMatrices extends CompositionMatrices{
         protected void updateConstructionGroup(int index, SimpleMatrix delta) {
             SimpleMatrix newMatrix = compositionMatrices[index].minus(delta);
             
-            // regularize
-//            if (rand.nextFloat() <= 0.1) {
-//                newMatrix = regularize(newMatrix);
-//            }
             compositionMatrices[index] = newMatrix;
         }
 
