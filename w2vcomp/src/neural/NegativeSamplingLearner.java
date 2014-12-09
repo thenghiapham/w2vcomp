@@ -7,6 +7,8 @@ import neural.function.ObjectiveFunction;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.SimpleMatrixUtils;
+
 import vocab.Vocab;
 import word2vec.UniGram;
 
@@ -31,20 +33,20 @@ public class NegativeSamplingLearner extends LearningStrategy{
                         / outputLayerSize;
             }
         }
-        return new NegativeSamplingLearner(vocab, new SimpleMatrix(outVectors), noSamples);
+        return new NegativeSamplingLearner(vocab, outVectors, noSamples);
     }
     
     // TODO: initialize with zero
     public static NegativeSamplingLearner zeroInitialize(Vocab vocab, int noSamples, int outputLayerSize) {
-        return new NegativeSamplingLearner(vocab, new SimpleMatrix(vocab.getVocabSize(), outputLayerSize), noSamples);
+        return new NegativeSamplingLearner(vocab, new double[vocab.getVocabSize()][outputLayerSize], noSamples);
     }
     
  // TODO: initialize with saved matrix
-    public static NegativeSamplingLearner initializeFromMatrix(Vocab vocab,  int noSamples, SimpleMatrix saveMatrix) {
+    public static NegativeSamplingLearner initializeFromMatrix(Vocab vocab,  int noSamples, double[][] saveMatrix) {
         return new NegativeSamplingLearner(vocab, saveMatrix, noSamples);
     }
     
-    protected NegativeSamplingLearner(Vocab vocab, SimpleMatrix outVectors, int noSamples) {
+    protected NegativeSamplingLearner(Vocab vocab, double[][] outVectors, int noSamples) {
         super(outVectors);
         
         this.vocab = vocab;

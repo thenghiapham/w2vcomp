@@ -28,8 +28,9 @@ public class ProjectionMatrix {
     //       either: assign zero, don't update? 
     // for now, zero vector, don't use unknow word
     protected HashMap<String, Integer> dictionary;
-    protected SimpleMatrix vectors;
+    protected double[][] vectors;
     protected SimpleMatrix zeroVector;
+    int vectorSize;
     
     /**
      * protected constructors, forcing users to use the static methods to 
@@ -37,20 +38,22 @@ public class ProjectionMatrix {
      * @param vocab
      * @param vectors
      */
-    protected ProjectionMatrix(Vocab vocab, SimpleMatrix vectors) {
+    protected ProjectionMatrix(Vocab vocab, double[][] vectors) {
         this.dictionary = new HashMap<>();
         for (int i = 0; i < vocab.getVocabSize(); i++) {
             this.dictionary.put(vocab.getEntry(i).word, i);
         }
         this.vectors = vectors;
-        zeroVector = new SimpleMatrix(1, vectors.numCols());
+        vectorSize = vectors[0].length;
+        zeroVector = new SimpleMatrix(vectorSize, 1);
     }
     
     
-    protected ProjectionMatrix(HashMap<String, Integer> dictionary, SimpleMatrix vectors) {
+    protected ProjectionMatrix(HashMap<String, Integer> dictionary, double[][] vectors) {
         this.dictionary = dictionary;
         this.vectors = vectors;
-        zeroVector = new SimpleMatrix(1, vectors.numCols());
+        vectorSize = vectors[0].length;
+        zeroVector = new SimpleMatrix(vectorSize, 1);
     }
     
     /**
@@ -68,7 +71,7 @@ public class ProjectionMatrix {
                         / hiddenLayerSize;
             }
         }
-        return new ProjectionMatrix(vocab, new SimpleMatrix(outVectors));
+        return new ProjectionMatrix(vocab, outVectors);
     }
     
     /**
@@ -78,7 +81,7 @@ public class ProjectionMatrix {
      * @return
      */
     public static ProjectionMatrix zeroInitialize(Vocab vocab, int hiddenLayerSize) {
-        return new ProjectionMatrix(vocab, new SimpleMatrix(vocab.getVocabSize() + 1, hiddenLayerSize));
+        return new ProjectionMatrix(vocab, new double[vocab.getVocabSize() + 1][ hiddenLayerSize]);
     }
     
     /**
@@ -87,8 +90,8 @@ public class ProjectionMatrix {
      * @param saveMatrix
      * @return
      */
-    public static ProjectionMatrix initializeFromMatrix(Vocab vocab, SimpleMatrix saveMatrix) {
-        if (vocab.getVocabSize() != saveMatrix.numRows())
+    public static ProjectionMatrix initializeFromMatrix(Vocab vocab, double[][] saveMatrix) {
+        if (vocab.getVocabSize() != saveMatrix.length)
             throw new ValueException("the matrix should have one column for unknown word");
         return new ProjectionMatrix(vocab, saveMatrix);
     }
@@ -123,8 +126,8 @@ public class ProjectionMatrix {
         else if (wordIndex == -1)
             result = zeroVector;
         else
-            result = vectors.extractVector(true, wordIndex);
-        return result.transpose();
+            result = new SimpleMatrix(vectorSize, 1, true, vectors[wordIndex]);
+        return result;
     }
     
     /**
@@ -156,7 +159,6 @@ public class ProjectionMatrix {
             return;
         }
         
-        SimpleMatrix originalRow = vectors.extractVector(true, wordIndex);
         if (gradient == null) {
             throw new ValueException("Gradient cannot be null");
         } else {
@@ -166,8 +168,10 @@ public class ProjectionMatrix {
         // subtract the vector with the gradient
         // assign back the vector
         gradient = gradient.scale(learningRate);
-        SimpleMatrix newRow = originalRow.minus(gradient);
-        vectors.setRow(wordIndex, 0, newRow.getMatrix().getData());
+        double[] gradData = gradient.getMatrix().data;
+        for (int i = 0; i < vectorSize; i++) {
+            vectors[wordIndex][i] -= gradData[i];
+        }
     }
     
     
@@ -194,12 +198,12 @@ public class ProjectionMatrix {
         ByteBuffer buffer = ByteBuffer.wrap(rowData);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         HashMap<String, Integer> dictionary = new HashMap<>();
-        SimpleMatrix vectors = new SimpleMatrix(wordNumber, vectorSize);
+        double[][] vectors = new double[wordNumber][vectorSize];
         for (int i = 0; i < wordNumber; i++) {
             String word = IOUtils.readWord(inputStream);
             inputStream.read(rowData);
             for (int j = 0; j < vectorSize; j++) {
-                vectors.set(i, j, buffer.getFloat(j * 4));
+                vectors[i][j] = buffer.getFloat(j * 4);
             }
             dictionary.put(word, i);
             inputStream.read();
@@ -209,12 +213,12 @@ public class ProjectionMatrix {
     
     
     /**GET SET METHODS**/
-    public SimpleMatrix getMatrix() {
+    public double[][] getMatrix() {
         return vectors;
     }
     
     public int getVectorSize() {
-        return vectors.numCols();
+        return vectorSize;
     }
     
 }

@@ -15,6 +15,7 @@ import org.junit.Test;
 import tree.Tree;
 import vocab.Vocab;
 import common.SigmoidTable;
+import common.SimpleMatrixUtils;
 
 public class NetworkGradTest {
     SigmoidTable sigmoidTable;
@@ -37,9 +38,9 @@ public class NetworkGradTest {
         Vocab vocab = new Vocab();
         vocab.loadVocab("/home/pham/vocab.txt");
         vocab.assignCode();
-        ProjectionMatrix projectionBuilder = ProjectionMatrix.initializeFromMatrix(vocab, wordMatrix);
+        ProjectionMatrix projectionBuilder = ProjectionMatrix.initializeFromMatrix(vocab, SimpleMatrixUtils.to2DArray(wordMatrix));
         CompositionMatrices hiddenBuilder = CompositionMatrices.createSimple(compositionMatrix);
-        HierarchicalSoftmaxLearner outputBuilder = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, softmaxWeight);
+        HierarchicalSoftmaxLearner outputBuilder = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, SimpleMatrixUtils.to2DArray(softmaxWeight));
 //        String parseString = "(S (NP (JJ hot) (NN man) ) (VB eat))";
         String parseString = "(S (NP (NP (JJ hot) (NN man)) (NP (JJ hot) (NN man))) (VB man))";
 //        String parseString = "(NP (NP (JJ hot) (NN man)) (VB hot))";

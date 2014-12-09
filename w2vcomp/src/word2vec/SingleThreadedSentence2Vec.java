@@ -21,7 +21,7 @@ import common.correlation.TwoWordPhraseCorrelation;
 import neural.CompositionMatrices;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
-import neural.RawHierarchicalSoftmaxLearner;
+import neural.HierarchicalSoftmaxLearner;
 import neural.TreeNetwork;
 import neural.function.ActivationFunction;
 import neural.function.Sigmoid;
@@ -65,12 +65,12 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         try {
             BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(wordModelFile));
             double[][] rawMatrix = IOUtils.readMatrix(inputStream, true);
-            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, rawMatrix);
             rawMatrix = IOUtils.readMatrix(inputStream, true);
             if (hierarchicalSoftmax) {
-                learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+                learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, rawMatrix);
             } else {
-                learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
+                learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, rawMatrix);
             }
             compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
             vocab.assignCode();

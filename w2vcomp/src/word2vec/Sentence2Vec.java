@@ -20,7 +20,7 @@ import neural.CompositionMatrices;
 import neural.LearningStrategy;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
-import neural.RawHierarchicalSoftmaxLearner;
+import neural.HierarchicalSoftmaxLearner;
 import neural.function.ActivationFunction;
 import vocab.Vocab;
 import vocab.VocabEntry;
@@ -102,7 +102,7 @@ public abstract class Sentence2Vec {
     public void initNetwork() {
         projectionMatrix = ProjectionMatrix.randomInitialize(vocab, hiddenLayerSize);
         if (hierarchicalSoftmax) {
-            learningStrategy = RawHierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
+            learningStrategy = HierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
         } else {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
@@ -201,7 +201,7 @@ public abstract class Sentence2Vec {
             if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                 System.out.println("matrix size does not match");
             } else {
-                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, matrix);
             }
             
             if (hierarchicalSoftmax) {
@@ -209,14 +209,14 @@ public abstract class Sentence2Vec {
                 if (matrix.length != vocab.getVocabSize() -1 || matrix[0].length != hiddenLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
-                    learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                    learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, matrix);
                 }
             } else {
                 matrix = IOUtils.readMatrix(inputStream, binary);
                 if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
-                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, new SimpleMatrix(matrix));
+                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, matrix);
                 }
             }
             inputStream.close();
@@ -232,7 +232,7 @@ public abstract class Sentence2Vec {
             if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                 System.out.println("matrix size does not match");
             } else {
-                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, matrix);
             }
             
             if (hierarchicalSoftmax) {
@@ -241,7 +241,7 @@ public abstract class Sentence2Vec {
                     System.out.println("matrix size does not match");
                 } else {
                     System.out.println("here");
-                    learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                    learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, matrix);
                 }
             }
             if (negativeSamples > 0) {
@@ -249,7 +249,7 @@ public abstract class Sentence2Vec {
                 if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
-                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, new SimpleMatrix(matrix));
+                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, matrix);
                 }
             }
             inputStream.close();

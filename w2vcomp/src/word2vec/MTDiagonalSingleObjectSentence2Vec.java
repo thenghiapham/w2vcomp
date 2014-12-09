@@ -9,9 +9,9 @@ import org.ejml.simple.SimpleMatrix;
 
 import common.IOUtils;
 
+import neural.HierarchicalSoftmaxLearner;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
-import neural.RawHierarchicalSoftmaxLearner;
 import neural.SingleObjectDiagonalTreeNetwork;
 import neural.DiagonalCompositionMatrices;
 import neural.function.ActivationFunction;
@@ -34,7 +34,7 @@ public class MTDiagonalSingleObjectSentence2Vec extends MTSingleObjectSentence2V
     public void initNetwork() {
         projectionMatrix = ProjectionMatrix.randomInitialize(vocab, hiddenLayerSize);
         if (hierarchicalSoftmax) {
-            learningStrategy = RawHierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
+            learningStrategy = HierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
         } else {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
@@ -51,12 +51,12 @@ public class MTDiagonalSingleObjectSentence2Vec extends MTSingleObjectSentence2V
         try {
             BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(wordModelFile));
             double[][] rawMatrix = IOUtils.readMatrix(inputStream, true);
-            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, rawMatrix);
             rawMatrix = IOUtils.readMatrix(inputStream, true);
             if (hierarchicalSoftmax) {
-                learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(rawMatrix));
+                learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, rawMatrix);
             } else {
-                learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
+                learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, rawMatrix);
             }
             compositionMatrices = DiagonalCompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
             vocab.assignCode();
