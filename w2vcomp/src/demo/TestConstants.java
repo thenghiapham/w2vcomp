@@ -7,6 +7,7 @@ public class TestConstants {
     public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/text/wikiA.bin";
     public static final String VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/text/wikiA.voc";
     public static final String INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/text/wikiA.ini";
+    public static final String S_PROJECT_HOME_DIR      = "";
     
    
     
