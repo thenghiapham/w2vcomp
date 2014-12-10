@@ -68,6 +68,11 @@
         <version>6.2u5</version>
     </dependency>
     <dependency>
+        <groupId>org.zeromq</groupId>
+        <artifactId>jzmq</artifactId>
+        <version>3.1.0</version>
+    </dependency>
+    <dependency>
         <groupId>edu.berkeley.compbio</groupId>
         <artifactId>jlibsvm</artifactId>
         <version>0.911</version>

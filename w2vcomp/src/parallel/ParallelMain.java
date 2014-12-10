@@ -7,7 +7,7 @@ import parallel.workers.ParameterAggregatorWorker;
 import parallel.workers.ParameterEstimatorWorker;
 import parallel.workers.ParameterFinalizer;
 import parallel.workers.WorkersMonitor;
-import parallel.workers.example.ExampleFinalizer;
+import parallel.workers.w2v.SkipGramFinalizer;
 import demo.TestConstants;
 
 /**
@@ -38,7 +38,7 @@ public class ParallelMain {
                 resultsPort);
 
         // Spaceship launcher
-        final Launcher launcher = new ClusterLauncher(home_path);
+        final Launcher launcher = new MultiprocessLauncher(home_path);
 
         final ArrayList<String> proccess_ids = new ArrayList<String>();
         
@@ -90,7 +90,7 @@ public class ParallelMain {
 
         
         //Hardcoded class that knows what to do when the parameters are done computing
-        ParameterFinalizer finalizer = new ExampleFinalizer();
+        ParameterFinalizer finalizer = new SkipGramFinalizer();
         // Wait for the mission to be complete
         processMonitor.run(finalizer);
 
