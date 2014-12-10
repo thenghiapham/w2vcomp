@@ -82,7 +82,7 @@ public class MultiThreadSentenceVectorLearning {
         File[] trainFiles = trainDir.listFiles();
         
         boolean learnVocab = !(new File(vocabFile)).exists();
-        Vocab vocab = new Vocab(20);
+        Vocab vocab = new Vocab(TestConstants.S_MIN_FREQUENCY);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {
