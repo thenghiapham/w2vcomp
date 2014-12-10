@@ -19,7 +19,7 @@ public abstract class LearningStrategy {
     
     public SimpleMatrix getOutputWeights(int[] indices) {
         // TODO: transpose all?
-        double[][] weights = new double[indices.length][vectorSize];
+        double[][] weights = new double[indices.length][];
         for (int i = 0; i < indices.length; i++) {
             weights[i] = outputVectors[indices[i]];
         }
@@ -27,13 +27,13 @@ public abstract class LearningStrategy {
     }
     
     public void updateMatrix(int[] indices, SimpleMatrix gradients, double learningRate) {
-        gradients = gradients.scale(learningRate);
+//        gradients = gradients.scale(learningRate);
         
         double[] gradData = gradients.getMatrix().data;
         for (int i = 0; i < indices.length; i++) {
             int gradPos = i * vectorSize;
             for (int j = 0; j < vectorSize; j++)
-                outputVectors[indices[i]][j] -= gradData[gradPos + j];
+                outputVectors[indices[i]][j] -= gradData[gradPos + j] * learningRate;
         }
         
     }

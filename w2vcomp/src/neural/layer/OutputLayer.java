@@ -88,7 +88,7 @@ public class OutputLayer extends BasicLayer implements Layer{
         // Similar to hidden layer's backward
         // the difference is that here the error coming directly from the
         // objective function
-        SimpleMatrix outError = costFunction.derivative(output, goldOutput).scale(significant);
+        SimpleMatrix outError = costFunction.derivative(output, goldOutput).scale(significant * inputCoefficient);
         if (activation != null) {
             outError = outError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
         }
@@ -107,10 +107,9 @@ public class OutputLayer extends BasicLayer implements Layer{
 //                System.out.println(outError);
 //            }
 //        }
-//        SimpleMatrixUtils.checkNaN(outError);
-        gradient = outError.mult(input.transpose()).scale(inputCoefficient);
-//        SimpleMatrixUtils.checkNaN(gradient);
-        error = inputWeights.transpose().mult(outError).scale(inputCoefficient);
+        
+        gradient = outError.mult(input.transpose());
+        error = outError.transpose().mult(inputWeights).transpose();
 //        SimpleMatrixUtils.checkNaN(error);
     }
 
