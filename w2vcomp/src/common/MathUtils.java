@@ -1,6 +1,6 @@
 package common;
 
-import java.util.Arrays;
+import java.util.Random;
 
 /**
  * This class contains a set of utility method for simple maths
@@ -9,6 +9,7 @@ import java.util.Arrays;
  *
  */
 public class MathUtils {
+    private static Random rand = new Random();
     // TODO: use some linear algebra method
     
     /**
@@ -66,31 +67,14 @@ public class MathUtils {
         return 1 - (double) (2.0 / (1.0 + Math.exp(2 * x)));
     }
     
-    public static void minusInPlace(double[][] original, double[][] delta) {
-        for (int i=0; i < original.length; i++) {
-            for (int j = 0; j < original[i].length; j++) {
-                original[i][j] -= delta[i][j];
-            }
+    public static boolean isSampled(long count, long totalCount, double frequencyThreshold) {
+        double randomThreshold = (double) (Math.sqrt(count
+                / (frequencyThreshold * totalCount)) + 1)
+                * (frequencyThreshold * totalCount) / count;
+        if (randomThreshold >= rand.nextFloat()) {
+            return true;
+        } else {
+            return false;
         }
-    }
-    
-    public static void plusInPlace(double[][] original, double[][] delta, double scale) {
-        for (int i=0; i < original.length; i++) {
-            for (int j = 0; j < original[i].length; j++) {
-                original[i][j] += scale * delta[i][j];
-            }
-        }
-    }
-    
-    public static double[][] deepCopy(double[][] original) {
-        if (original == null) {
-            return null;
-        }
-
-        double[][] result = new double[original.length][];
-        for (int i = 0; i < original.length; i++) {
-            result[i] = Arrays.copyOf(original[i], original[i].length);
-        }
-        return result;
     }
 }

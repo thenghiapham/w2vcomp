@@ -103,6 +103,8 @@ public class Tree {
         }
         else
             throw new ValueException("Parse error for (sub)tree 3: "+treeString);
+        if (tree != null)
+            tree.leafToLowerCase();
         return tree;
     }
     
@@ -135,6 +137,16 @@ public class Tree {
         this.parent = parent;
         for (Tree child : getChildren())
             child.initializeParent(this);
+    }
+    
+    public void leafToLowerCase() {
+        if (isTerminal()) {
+            this.rootLabel = this.rootLabel.toLowerCase();
+        } else {
+            for (Tree subTree: children) {
+                subTree.leafToLowerCase();
+            }
+        }
     }
     
     @Override

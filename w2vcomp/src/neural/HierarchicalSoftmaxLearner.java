@@ -9,6 +9,8 @@ import neural.function.ObjectiveFunction;
 
 import org.ejml.simple.SimpleMatrix;
 
+import common.SimpleMatrixUtils;
+
 import vocab.Vocab;
 import vocab.VocabEntry;
 
@@ -16,7 +18,7 @@ public class HierarchicalSoftmaxLearner extends LearningStrategy{
     protected Vocab vocab;
     protected ObjectiveFunction costFunction;
     
-    protected HierarchicalSoftmaxLearner(Vocab vocab, SimpleMatrix outVectors) {
+    protected HierarchicalSoftmaxLearner(Vocab vocab, double[][] outVectors) {
         super(outVectors);
         this.vocab = vocab;
         costFunction = new HierarchicalSoftmaxObjective();
@@ -33,16 +35,16 @@ public class HierarchicalSoftmaxLearner extends LearningStrategy{
                         / outputLayerSize;
             }
         }
-        return new HierarchicalSoftmaxLearner(vocab, new SimpleMatrix(outVectors));
+        return new HierarchicalSoftmaxLearner(vocab, outVectors);
     }
     
     // TODO: initialize with zero
     public static HierarchicalSoftmaxLearner zeroInitialize(Vocab vocab, int outputLayerSize) {
-        return new HierarchicalSoftmaxLearner(vocab, new SimpleMatrix(vocab.getVocabSize() - 1, outputLayerSize));
+        return new HierarchicalSoftmaxLearner(vocab, new double[vocab.getVocabSize() - 1][ outputLayerSize]);
     }
     
     // TODO: initialize with saved matrix
-    public static HierarchicalSoftmaxLearner initializeFromMatrix(Vocab vocab, SimpleMatrix saveMatrix) {
+    public static HierarchicalSoftmaxLearner initializeFromMatrix(Vocab vocab, double[][] saveMatrix) {
         return new HierarchicalSoftmaxLearner(vocab, saveMatrix);
     }
     

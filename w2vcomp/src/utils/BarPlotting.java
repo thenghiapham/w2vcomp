@@ -7,12 +7,17 @@ import javax.swing.JFrame;
 import de.erichseifert.gral.data.DataSeries;
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.plots.BoxPlot;
-import de.erichseifert.gral.plots.XYPlot;
 import de.erichseifert.gral.ui.InteractivePanel;
 
 public class BarPlotting extends JFrame {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     public BarPlotting() {
         // Create data
+        @SuppressWarnings("unchecked")
         DataTable data = new DataTable(Double.class, Double.class);
 
         final int POINT_COUNT = 10;

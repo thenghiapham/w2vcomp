@@ -44,6 +44,10 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
         int newPosition = 0;
         for (int i = 0; i < unFilteredSentence.length; i++) {
             int vocabEntryIndex = unFilteredSentence[i];
+            if (vocabEntryIndex == -1) {
+                newPositions[i] = Integer.MIN_VALUE;
+                continue;
+            }
             VocabEntry entry = vocab.getEntry(vocabEntryIndex);
             long count = entry.frequency;
 

@@ -30,7 +30,8 @@ import tree.Tree;
 public class DiagonalTreeNetwork {
     private static final Logger LOGGER = Logger.getLogger(DiagonalTreeNetwork.class.getName());
     private static final double epsilon = 1e-4;
-    private static final double LEVEL_DECAY = 0.7;
+    private static final double matrixCoefficient = 0.1;
+//    private static final double LEVEL_DECAY = 1;
     
     protected Tree parseTree;
     
@@ -162,6 +163,8 @@ public class DiagonalTreeNetwork {
                         layer = new DiagonalHiddenLayer(weights, hiddenLayerActivation);
                         for (Tree child: children) {
                             Layer childLayer = layerMap.get(child);
+                            // TODO: fix here
+                            if (childLayer == null) return null;
                             layer.addInLayer(childLayer);
                             childLayer.addOutLayer(layer);
                         }
@@ -198,6 +201,7 @@ public class DiagonalTreeNetwork {
         // going through the nodes that have a projection layer or hidden layer 
         for (Tree node: layerMap.keySet()) {
             int height = node.getHeight();
+            int width = node.getRightmostPosition() - node.getLeftmostPosition() + 1;
             
             if (!allLevel) {
                 if (outputLayerHeight != -1 && height != outputLayerHeight)
@@ -208,7 +212,10 @@ public class DiagonalTreeNetwork {
             }
             
             Layer layer = layerMap.get(node);
-            double coefficient = Math.pow(LEVEL_DECAY, height - 1);
+
+//            double significant = 1 / (double) width;
+            double significant = 1;
+            double inputCoefficient = 1 / (double) width;
             
             int windowSize = random.nextInt(maxWindowSize) + 1;
             // TODO: turn back to random
@@ -230,7 +237,7 @@ public class DiagonalTreeNetwork {
                     SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                     
                     ObjectiveFunction costFunction = outputBuilder.getCostFunction();
-                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, coefficient);
+                    OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, significant, inputCoefficient);
                     outputLayer.addInLayer(layer);
                     layer.addOutLayer(outputLayer);
                     
@@ -348,7 +355,7 @@ public class DiagonalTreeNetwork {
         for (Layer layer: hiddenLayers) {
             hiddenGradients.add(layer.getGradient());
         }
-        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate);
+        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * matrixCoefficient);
         
         // updating the hierarchical softmax or the negative sampling layer
         for (int i = 0; i < outputLayers.size(); i++) {

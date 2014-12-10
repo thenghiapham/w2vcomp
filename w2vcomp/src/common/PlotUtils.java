@@ -52,7 +52,7 @@ public class PlotUtils {
     }
     
     public static Color randomColor() {
-        float r = RANDOM.nextFloat();
+        float r = (RANDOM.nextFloat() + 1) / 2;
         float g = RANDOM.nextFloat();
         float b = RANDOM.nextFloat();
         return new Color(r, g, b);

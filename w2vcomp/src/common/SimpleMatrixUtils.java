@@ -241,6 +241,7 @@ public class SimpleMatrixUtils {
         return Collections.min(dataAsList);
     }
     
+    // TODO: optimize this (plus for inplace?)
     public static SimpleMatrix rowNormalize(SimpleMatrix input) {
         int numCols = input.numCols();
         int numRows = input.numRows();

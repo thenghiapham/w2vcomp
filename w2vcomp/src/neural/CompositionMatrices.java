@@ -287,6 +287,7 @@ public class CompositionMatrices {
             SimpleMatrix gradient =  gradientMap.get(key);
             if (learningRate != 0) {
                 gradient = gradient.plus(compositionMatrices[key].scale(weightDecayTimes.get(key) * weightDecay));
+//                System.out.println("blah blah: " + weightDecay);
             }
             updateConstructionGroup(key, gradient.scale(learningRate));
         }

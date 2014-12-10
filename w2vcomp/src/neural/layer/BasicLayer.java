@@ -41,12 +41,20 @@ public abstract class BasicLayer implements Layer {
      * into the a single input matrix
      * @return
      */
-    protected SimpleMatrix getInLayerIntput() {
+    protected SimpleMatrix getInLayerInput() {
         ArrayList<SimpleMatrix> inputs = new ArrayList<>();
         for (Layer inLayer: inLayers) {
             inputs.add(inLayer.getOutput());
         }
         return SimpleMatrixUtils.concatenateVectors(inputs);
+    }
+    
+    protected ArrayList<SimpleMatrix> getInLayerInputs() {
+        ArrayList<SimpleMatrix> inputs = new ArrayList<>();
+        for (Layer inLayer: inLayers) {
+            inputs.add(inLayer.getOutput());
+        }
+        return inputs;
     }
     
     /**

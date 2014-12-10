@@ -42,7 +42,7 @@ public class HiddenLayer extends BasicLayer implements Layer{
          * - multiply with weight matrix with the input vector (z_i)
          * - apply activation function if exist (a_i)
          */
-        input = getInLayerIntput();
+        input = getInLayerInput();
         SimpleMatrixUtils.checkNaN(input);
         SimpleMatrixUtils.checkNaN(inputWeights);
         tempZ = inputWeights.mult(input);

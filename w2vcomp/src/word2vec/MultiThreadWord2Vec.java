@@ -58,12 +58,22 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
             }
         }
         
-        for (SentenceInputStream inputStream : inputStreams) {
+        TrainingThread[] threads = new TrainingThread[inputStreams.size()];
+        for (int i = 0; i < inputStreams.size(); i++) {
+            SentenceInputStream inputStream = inputStreams.get(i);
             if (subSample > 0) {
                 inputStream = new SubSamplingSentenceInputStream(inputStream, subSample);
             }
-            TrainingThread thread = new TrainingThread(inputStream);
-            thread.start();
+            threads[i] = new TrainingThread(inputStream);
+            threads[i].start();
+        }
+        try {
+            for (TrainingThread thread: threads) {
+                    thread.join();
+            }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         System.out.println("total word count: " + wordCount);
     }
@@ -72,6 +82,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         long oldWordCount = 0;
         try {
             while (true) {
+
                 // read the whole sentence sentence,
                 // the output would be the list of the word's indices in the
                 // dictionary
@@ -92,7 +103,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
                 
                 synchronized (this) {
                     wordCount = wordCount + newSentenceWordCount;
-                    if (wordCount - lastWordCount >= 100000) {
+                    if (wordCount - lastWordCount >= 10000) {
                         lastWordCount = wordCount;
                         iteration++;
                         // update alpha
@@ -107,7 +118,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
                             System.out.println("Trained: " + wordCount + " words");
                             System.out.println("Training rate: " + alpha);
                         }
-                        if (men != null && outputSpace != null && iteration %10 == 0) {
+                        if (men != null && outputSpace != null && iteration %100 == 0) {
                             System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
 //                            System.out.println("men neg: " + men.evaluateSpacePearson(negSpace));
                             printStatistics();
@@ -138,7 +149,6 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         }
         
         public void run() {
-            System.out.println("woo hoo");
             trainModelThread(inputStream);
         }
     }

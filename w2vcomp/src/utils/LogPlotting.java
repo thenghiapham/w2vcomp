@@ -18,7 +18,23 @@ public class LogPlotting extends JFrame {
      * 
      */
     private static final long serialVersionUID = 1L;
-
+    public ArrayList<Double> smooth(ArrayList<Double> input, int numAverage) {
+        ArrayList<Double> result= new ArrayList<Double>();
+        result.add(input.get(0));
+        int size = input.size();
+        for (int i = 1; i < size; i++) {
+            double sum = 0;
+            int num = 0;
+            for (int j = 1 - numAverage ; j < numAverage; j++) {
+                if (j + i <= 0) continue;
+                if (j + i >= size) break;
+                sum += input.get(i + j);
+                num++;
+            }
+            result.add(sum/num);
+        }
+        return result;
+    }
     public LogPlotting(String logDirPath) {
         
         ArrayList<ArrayList<Double>> data = new ArrayList<>();
@@ -29,13 +45,17 @@ public class LogPlotting extends JFrame {
         for (String fileName : fileNames) {
             
             System.out.println(fileName);
-            if (fileName.endsWith("lck") || !fileName.contains("log")) continue;
+            if (!fileName.endsWith("log") || !fileName.contains("bnc")) continue;
             
             String filePath = logDirPath + "/" + fileName;
-            String suffix = fileName.split("log")[fileName.split("log").length - 1];
             ArrayList<Double> men = IOUtils.readLog(filePath, "men");
+            ArrayList<Double> sick = IOUtils.readLog(filePath, "SICK");
+            men = smooth(men, 2);
+            sick = smooth(sick, 2);
             data.add(men);
-            labels.add(suffix);
+            labels.add("men");
+            data.add(sick);
+            labels.add("sick");
         }
         XYPlot plot = PlotUtils.createTimePlot(data, labels);
         

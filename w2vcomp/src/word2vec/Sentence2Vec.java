@@ -20,8 +20,8 @@ import neural.CompositionMatrices;
 import neural.LearningStrategy;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
-import neural.RawHierarchicalSoftmaxLearner;
-
+import neural.HierarchicalSoftmaxLearner;
+import neural.function.ActivationFunction;
 import vocab.Vocab;
 import vocab.VocabEntry;
 import common.IOUtils;
@@ -66,6 +66,7 @@ public abstract class Sentence2Vec {
     protected ProjectionMatrix      projectionMatrix;
     protected CompositionMatrices   compositionMatrices;
     protected LearningStrategy      learningStrategy;
+    protected ActivationFunction    hiddenActivationFunction;
     
     protected int phraseHeight;
     boolean allLevel;
@@ -73,7 +74,8 @@ public abstract class Sentence2Vec {
 
 
     public Sentence2Vec(int hiddenLayerSize, int windowSize,
-            boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
+            boolean hierarchicalSoftmax, int negativeSamples, double subSample,
+            ActivationFunction hiddenActivationFunction,
             HashMap<String, String> constructionGroups, int phraseHeight, 
             boolean allLevel, boolean lexical) {
         this.hiddenLayerSize = hiddenLayerSize;
@@ -85,6 +87,7 @@ public abstract class Sentence2Vec {
         this.allLevel = allLevel;
         this.lexical = lexical;
         this.constructionGroups = constructionGroups;
+        this.hiddenActivationFunction = hiddenActivationFunction;
 
         // TODO: setting alpha
         starting_alpha = DEFAULT_STARTING_ALPHA;
@@ -99,21 +102,21 @@ public abstract class Sentence2Vec {
     public void initNetwork() {
         projectionMatrix = ProjectionMatrix.randomInitialize(vocab, hiddenLayerSize);
         if (hierarchicalSoftmax) {
-            learningStrategy = RawHierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
+            learningStrategy = HierarchicalSoftmaxLearner.zeroInitialize(vocab, hiddenLayerSize);
         } else {
             learningStrategy = NegativeSamplingLearner.zeroInitialize(vocab, negativeSamples, hiddenLayerSize);
         }
 //        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
-        compositionMatrices = CompositionMatrices.randomInitialize(constructionGroups, hiddenLayerSize);
+        compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
         vocab.assignCode();
         
         // number of lines = frequency of end of line character?
         this.totalLines = vocab.getEntry(0).frequency;
     }
 
-    public void initNetwork(String initFile) {
-        loadWholeNetwork(initFile, true);
-    }
+//    public void initNetwork(String initFile) {
+//        loadWholeNetwork(initFile, true);
+//    }
     
     public void simpleInit(String initFile) {
         
@@ -198,7 +201,7 @@ public abstract class Sentence2Vec {
             if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                 System.out.println("matrix size does not match");
             } else {
-                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, matrix);
             }
             
             if (hierarchicalSoftmax) {
@@ -206,14 +209,14 @@ public abstract class Sentence2Vec {
                 if (matrix.length != vocab.getVocabSize() -1 || matrix[0].length != hiddenLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
-                    learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                    learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, matrix);
                 }
             } else {
                 matrix = IOUtils.readMatrix(inputStream, binary);
                 if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
-                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, new SimpleMatrix(matrix));
+                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, matrix);
                 }
             }
             inputStream.close();
@@ -229,7 +232,7 @@ public abstract class Sentence2Vec {
             if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                 System.out.println("matrix size does not match");
             } else {
-                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, matrix);
             }
             
             if (hierarchicalSoftmax) {
@@ -238,7 +241,7 @@ public abstract class Sentence2Vec {
                     System.out.println("matrix size does not match");
                 } else {
                     System.out.println("here");
-                    learningStrategy = RawHierarchicalSoftmaxLearner.initializeFromMatrix(vocab, new SimpleMatrix(matrix));
+                    learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, matrix);
                 }
             }
             if (negativeSamples > 0) {
@@ -246,7 +249,7 @@ public abstract class Sentence2Vec {
                 if (matrix.length != vocab.getVocabSize() || matrix[0].length != hiddenLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
-                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, new SimpleMatrix(matrix));
+                    learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, matrix);
                 }
             }
             inputStream.close();
@@ -260,6 +263,7 @@ public abstract class Sentence2Vec {
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
             saveVector(outputStream, binary);
             compositionMatrices.saveConstructionMatrices(outputStream, binary);
+//            outputStream.write()
             outputStream.flush();
             outputStream.close();
         } catch (IOException e) {

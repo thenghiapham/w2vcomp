@@ -8,6 +8,7 @@ import java.util.HashSet;
 import common.IOUtils;
 import composition.BasicComposition;
 import composition.WeightedAdditive;
+import demo.TestConstants;
 
 import space.CompositionSemanticSpace;
 import space.CompositionalSemanticSpace;
@@ -15,6 +16,7 @@ import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 import space.SMSemanticSpace;
 import space.SemanticSpace;
+import space.WeightedCompositionSemanticSpace;
 import tree.Tree;
 
 /**
@@ -145,6 +147,13 @@ public class ParsedPhraseCorrelation{
         return parseCorrelation.evaluateSpaceSpearman(phraseSpace);
     }
     
+    public double evaluatePhraseSpacePearson(SemanticSpace surfaceSpace) {
+        return surfaceCorrelation.evaluateSpacePearson(surfaceSpace);
+    }
+    public double evaluatePhraseSpaceSpearman(SemanticSpace surfaceSpace) {
+        return surfaceCorrelation.evaluateSpaceSpearman(surfaceSpace);
+    }
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -153,16 +162,22 @@ public class ParsedPhraseCorrelation{
         return this.name;
     }
     
+    public String[] getSurfacePhrase() {
+        return surfacePhrase;
+    }
+    
     public static void main(String[] args) throws IOException {
-        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
-//        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
+//        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+        WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace(TestConstants.S_COMPOSITION_FILE, true);
+//        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
+//        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
 //        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
 //        DiagonalCompositionSemanticSpace addSpace = DiagonalCompositionSemanticSpace.loadProjectionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.cmp", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc40.bin");
+        RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
         WeightedAdditive add = new WeightedAdditive();
-        ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation("/home/thenghiapham/work/project/mikolov/sick/postprocessed/SICK_train_trial.txt");
-        System.out.println("an add: " + sickCorrelation.evaluateSpacePearson(space, add));
-        System.out.println("an comp: " + sickCorrelation.evaluateSpacePearson(compSpace));
+        ParsedPhraseCorrelation sickCorrelation = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
+        System.out.println("sick add: " + sickCorrelation.evaluateSpacePearson(space, add));
+        System.out.println("sick comp: " + sickCorrelation.evaluateSpacePearson(compSpace));
 //        System.out.println("an add2: " + sickCorrelation.evaluateSpacePearson(addSpace));
     }
     

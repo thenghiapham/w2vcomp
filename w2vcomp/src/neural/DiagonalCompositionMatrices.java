@@ -13,12 +13,17 @@ import common.IOUtils;
 import common.SimpleMatrixUtils;
 
 public class DiagonalCompositionMatrices extends CompositionMatrices{
-
+    public static final double DEFAULT_WEIGHT_DECAY = 1e-3;
+    protected Random rand = new Random();
+    protected int vectorSize;
     protected DiagonalCompositionMatrices(HashMap<String, Integer> groupMap,
             HashMap<String, String> constructionMap,
             SimpleMatrix[] compositionMatrices) {
         super(groupMap, constructionMap, compositionMatrices);
+        vectorSize = compositionMatrices[0].numCols();
+        System.out.println("vector Size:+++" + vectorSize);
         // TODO Auto-generated constructor stub
+        weightDecay = DEFAULT_WEIGHT_DECAY;
     }
 
     /**
@@ -162,6 +167,19 @@ public class DiagonalCompositionMatrices extends CompositionMatrices{
                 compositionMatrices[i] = new SimpleMatrix(IOUtils.readMatrix(inputStream, binary));
             }
             return new DiagonalCompositionMatrices(groupMap, constructionMap, compositionMatrices);
+        }
+        
+        protected SimpleMatrix regularize(SimpleMatrix matrix) {
+            double norm2 = matrix.normF();
+            norm2 = norm2 * norm2;
+            matrix = matrix.scale(2 * vectorSize/ norm2);
+            return matrix;
+        }
+        
+        protected void updateConstructionGroup(int index, SimpleMatrix delta) {
+            SimpleMatrix newMatrix = compositionMatrices[index].minus(delta);
+            
+            compositionMatrices[index] = newMatrix;
         }
 
 }

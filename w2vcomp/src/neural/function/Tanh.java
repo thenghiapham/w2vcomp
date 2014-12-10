@@ -18,4 +18,10 @@ public class Tanh implements ActivationFunction {
         return 1 - (tanh * tanh);
     }
 
+    @Override
+    public String getName() {
+        // TODO Auto-generated method stub
+        return "tanh";
+    }
+
 }

@@ -2,13 +2,17 @@ package common.correlation;
 
 import java.io.IOException;
 
+import org.ejml.simple.SimpleMatrix;
+
 import composition.WeightedAdditive;
+import demo.TestConstants;
 
 //import demo.TestConstants;
 
 import space.CompositionSemanticSpace;
 import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
+import space.WeightedCompositionSemanticSpace;
 
 public class NNCorrelation extends TwoWordPhraseCorrelation{
 
@@ -28,10 +32,14 @@ public class NNCorrelation extends TwoWordPhraseCorrelation{
     
     public static void main(String[] args) throws IOException {
 //        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
-        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
-        NNCorrelation nnCorrelation = new NNCorrelation("/home/thenghiapham/work/dataset/lapata/nn_lemma.txt");
+//        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace(TestConstants.S_COMPOSITION_FILE, true);
+        WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace(TestConstants.S_COMPOSITION_FILE, true);
+        SimpleMatrix vector = compSpace.getConstructionMatrix("NP NN NN");
+        System.out.println(vector);
+//        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
+        NNCorrelation nnCorrelation = new NNCorrelation(TestConstants.S_NN_FILE);
 //        MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.bin");
+        RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);
         WeightedAdditive add = new WeightedAdditive();
         System.out.println("nn add: " + nnCorrelation.evaluateSpacePearson(space, add));
         System.out.println("nn comp: " + nnCorrelation.evaluateSpacePearson(compSpace));

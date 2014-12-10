@@ -15,4 +15,10 @@ public class IdentityFunction implements ActivationFunction {
         return 1;
     }
 
+    @Override
+    public String getName() {
+        // TODO Auto-generated method stub
+        return "identity";
+    }
+
 }

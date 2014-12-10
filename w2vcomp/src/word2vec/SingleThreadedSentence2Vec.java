@@ -2,6 +2,8 @@ package word2vec;
 
 import io.sentence.TreeInputStream;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +11,17 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.ejml.simple.SimpleMatrix;
+
+import common.IOUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.TwoWordPhraseCorrelation;
 
+import neural.CompositionMatrices;
+import neural.NegativeSamplingLearner;
+import neural.ProjectionMatrix;
+import neural.HierarchicalSoftmaxLearner;
 import neural.TreeNetwork;
 import neural.function.ActivationFunction;
 import neural.function.Sigmoid;
@@ -26,7 +35,6 @@ import tree.Tree;
 public class SingleThreadedSentence2Vec extends Sentence2Vec{
     private static final Logger LOGGER = Logger.getLogger(SingleThreadedSentence2Vec.class.getName());
     Random random = new Random();
-    ActivationFunction hiddenActivationFunction;
     ArrayList<MenCorrelation> wordCorrelations;
     ArrayList<TwoWordPhraseCorrelation> phraseCorrelations;
     ArrayList<ParsedPhraseCorrelation> sentenceCorrelations;
@@ -38,9 +46,8 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
             HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight, boolean allLevel, boolean lexical) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, constructionGroups, phraseHeight, 
+                subSample, hiddenActivationFunction, constructionGroups, phraseHeight, 
                 allLevel, lexical);
-        this.hiddenActivationFunction = hiddenActivationFunction;
         wordCorrelations = new ArrayList<>();
         phraseCorrelations = new ArrayList<>();
         sentenceCorrelations = new ArrayList<>();
@@ -52,6 +59,30 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         super.initNetwork();
         space = new CompositionSemanticSpace(projectionMatrix, compositionMatrices, hiddenActivationFunction);
         singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
+    }
+    
+    public void initNetwork(String wordModelFile) {
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(wordModelFile));
+            double[][] rawMatrix = IOUtils.readMatrix(inputStream, true);
+            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, rawMatrix);
+            rawMatrix = IOUtils.readMatrix(inputStream, true);
+            if (hierarchicalSoftmax) {
+                learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, rawMatrix);
+            } else {
+                learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, rawMatrix);
+            }
+            compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+            vocab.assignCode();
+            
+            this.totalLines = vocab.getEntry(0).frequency;
+            inputStream.close();
+            space = new CompositionSemanticSpace(projectionMatrix, compositionMatrices, hiddenActivationFunction);
+            singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
     
     @Override
@@ -146,22 +177,22 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
         }
     }
     
-    protected double computeCost(ArrayList<Tree> parseTrees) {
-        double cost = 0;
-        for (Tree parseTree: parseTrees) {
-            cost += computeCost(parseTree);
-        }
-        return cost / (parseTrees.size() + 1);
-    }
-    
-    protected double computeCost(Tree parseTree) {
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
-        return network.computeCost();
-    }
+//    protected double computeCost(ArrayList<Tree> parseTrees) {
+//        double cost = 0;
+//        for (Tree parseTree: parseTrees) {
+//            cost += computeCost(parseTree);
+//        }
+//        return cost / (parseTrees.size() + 1);
+//    }
+//    
+//    protected double computeCost(Tree parseTree) {
+//        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+//        return network.computeCost();
+//    }
     
     protected void trainSentence(Tree parseTree) {
         // TODO Auto-generated method stub
-        TreeNetwork network = TreeNetwork.createNetwork(parseTree, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical);
+        TreeNetwork network = TreeNetwork.createNetwork(parseTree, vocab, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, phraseHeight, allLevel, lexical, subSample);
         network.learn(alpha);
 //        if (random.nextDouble() <= 0.0001) {
 //            network.checkGradient();

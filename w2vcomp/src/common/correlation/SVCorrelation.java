@@ -7,9 +7,11 @@ import java.util.HashSet;
 import space.CompositionSemanticSpace;
 import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
+import space.WeightedCompositionSemanticSpace;
 
 import common.IOUtils;
 import composition.WeightedAdditive;
+import demo.TestConstants;
 
 public class SVCorrelation extends TwoWordPhraseCorrelation{
 
@@ -49,11 +51,13 @@ public class SVCorrelation extends TwoWordPhraseCorrelation{
     }
     
     public static void main(String[] args) throws IOException {
-        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+//        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.cmp", true);
+//        DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace(TestConstants.S_COMPOSITION_FILE, true);
+        WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/wbnc.cmp", true);
 //        CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace("/home/thenghiapham/work/project/mikolov/output/bnc.cmp", true);
-        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/dbnc.bin");
+        RawSemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/work/project/mikolov/output/bnc.bin");
         WeightedAdditive add = new WeightedAdditive();
-        SVCorrelation anCorrelation = new SVCorrelation("/home/thenghiapham/work/dataset/lapata/sv_lemma.txt");
+        SVCorrelation anCorrelation = new SVCorrelation(TestConstants.S_SV_FILE);
         System.out.println("an add: " + anCorrelation.evaluateSpacePearson(space, add));
         System.out.println("an comp: " + anCorrelation.evaluateSpacePearson(compSpace));
     }
