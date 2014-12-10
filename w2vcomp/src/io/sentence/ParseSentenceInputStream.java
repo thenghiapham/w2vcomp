@@ -22,6 +22,9 @@ public class ParseSentenceInputStream implements SentenceInputStream{
     public boolean readNextSentence(Vocab vocab) throws IOException {
         // TODO Auto-generated method stub
         Tree tree = inputStream.readTree();
+        while (tree == BasicTreeInputStream.NEXT_DOC_TREE) {
+            tree = inputStream.readTree();
+        }
         if (tree == null) {
             currentSentence = null;
             return false;

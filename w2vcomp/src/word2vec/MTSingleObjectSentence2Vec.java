@@ -1,5 +1,6 @@
 package word2vec;
 
+import io.sentence.BasicTreeInputStream;
 import io.sentence.TreeInputStream;
 
 import java.io.BufferedInputStream;
@@ -165,13 +166,13 @@ public class MTSingleObjectSentence2Vec extends Sentence2Vec{
                 }
                 
                 // TODO: do some smart thing about the document boundary
-                if (nextTree == null) {
+                if (nextTree == null || nextTree == BasicTreeInputStream.NEXT_DOC_TREE) {
                     future = new String[0];
                 } else {
                     future = nextTree.getSurfaceWords();
                 }
                 
-                if (currentTree != null) {
+                if (currentTree != null && currentTree != BasicTreeInputStream.NEXT_DOC_TREE) {
                     trainSentence(currentTree, history, sentence, future);
                 }
                 

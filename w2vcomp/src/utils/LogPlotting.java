@@ -45,13 +45,13 @@ public class LogPlotting extends JFrame {
         for (String fileName : fileNames) {
             
             System.out.println(fileName);
-            if (!fileName.endsWith("log") || !fileName.contains("bnc")) continue;
+            if (!fileName.endsWith("40is.log") || !fileName.startsWith("i_neg_wbnc")) continue;
             
             String filePath = logDirPath + "/" + fileName;
             ArrayList<Double> men = IOUtils.readLog(filePath, "men");
             ArrayList<Double> sick = IOUtils.readLog(filePath, "SICK");
-            men = smooth(men, 2);
-            sick = smooth(sick, 2);
+            men = smooth(men, 100);
+            sick = smooth(sick, 100);
             data.add(men);
             labels.add("men");
             data.add(sick);

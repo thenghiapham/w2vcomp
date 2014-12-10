@@ -1,5 +1,6 @@
 package io.word;
 
+import io.sentence.BasicTreeInputStream;
 import io.sentence.TreeInputStream;
 
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class TreeWordInputStream implements WordInputStream{
         if (endOfStream) return "";
         if (currentSentence == null || !currentSentence.hasNext()) {
             Tree tree = treeStream.readTree();
+            while (tree == BasicTreeInputStream.NEXT_DOC_TREE) {
+                tree = treeStream.readTree();
+            }
             
             if (tree == null) {
                 endOfStream = true;

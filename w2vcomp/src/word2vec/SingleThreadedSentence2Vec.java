@@ -1,5 +1,6 @@
 package word2vec;
 
+import io.sentence.BasicTreeInputStream;
 import io.sentence.TreeInputStream;
 
 import java.io.BufferedInputStream;
@@ -143,8 +144,9 @@ public class SingleThreadedSentence2Vec extends Sentence2Vec{
 //                        System.out.println("cost: " + computeCost(testTrees));
                     }
                 }
-                
-                trainSentence(parseTree);
+                if (parseTree != BasicTreeInputStream.NEXT_DOC_TREE) {
+                    trainSentence(parseTree);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

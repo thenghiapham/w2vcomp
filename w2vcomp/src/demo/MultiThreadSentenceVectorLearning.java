@@ -25,6 +25,7 @@ import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import vocab.Vocab;
 import word2vec.MTDiagonalSingleObjectSentence2Vec;
+import word2vec.MTIncrementalWeightedSentence2Vec;
 import word2vec.MTSingleObjectSentence2Vec;
 import word2vec.MTWeightedSingleObjectSentence2Vec;
 import word2vec.MultiThreadDiagonalSentence2Vec;
@@ -36,7 +37,7 @@ import demo.TestConstants;
 public class MultiThreadSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 300;
+        int hiddenLayerSize = 40;
         int windowSize = 5;
         boolean hierarchialSoftmax = false;
         int negativeSampling = 10;
@@ -64,6 +65,9 @@ public class MultiThreadSentenceVectorLearning {
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
 //        MultiThreadSentence2Vec sentence2vec = new MultiThreadSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
+//        MTIncrementalWeightedSentence2Vec sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
         String trainDirPath = TestConstants.S_TRAIN_DIR;

@@ -10,6 +10,7 @@ import common.exception.ValueException;
 import tree.Tree;
 
 public class BasicTreeInputStream implements TreeInputStream {
+    public static final Tree NEXT_DOC_TREE = Tree.fromPennTree("next_document");
     BufferedReader reader;
     long readLineNum;
     
@@ -29,7 +30,10 @@ public class BasicTreeInputStream implements TreeInputStream {
         String line = reader.readLine();
         while (line != null) {
             Tree tree = null;
-            if (!line.equals("") && !line.startsWith("<text id")) {
+            if (line.startsWith("<text id")) {
+                return NEXT_DOC_TREE;
+            }
+            if (!line.equals("")) {
                 try {
                     readLineNum++;
                     line = line.replaceAll("\\(\\)", "LRB)");
