@@ -95,6 +95,7 @@ public class TestConstants {
 //    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/bnc.txt";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "corpus/wiki.parse";
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
+    public static final String S_LOG_DIR                  = S_PROJECT_DIR  + "log/";
 //    public static final String S_VECTOR_FILE              = S_OUT_DIR + "bnc.bin";
 //    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "bnc.cmp";
 //    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc.voc";
@@ -104,6 +105,7 @@ public class TestConstants {
     public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "i_neg_wiki40is.cmp";
     public static final String S_MODEL_FILE               = S_OUT_DIR + "i_neg_wiki40is.mdl";
     public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "i_neg_wiki40is.ini";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "i_neg_wiki40is.log";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "neg_wiki40is.voc";
     
 //    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_wiki300_ss.bin";
@@ -111,8 +113,7 @@ public class TestConstants {
 //    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_wiki300_ss.voc";
 //    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skip_wiki300_ss.ini";
     
-    public static final String S_LOG_DIR                  = S_PROJECT_DIR  + "log/";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "bnc.log";
+    
 //    public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki.log";
     
 //    public static final int S_MIN_FREQUENCY               = 5;
