@@ -12,7 +12,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.ejml.simple.SimpleMatrix;
 
 import common.IOUtils;
 import common.correlation.MenCorrelation;
@@ -24,7 +23,6 @@ import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
 import neural.HierarchicalSoftmaxLearner;
 import neural.SingleObjTreeNetwork;
-import neural.TreeNetwork;
 import neural.function.ActivationFunction;
 import neural.function.Sigmoid;
 

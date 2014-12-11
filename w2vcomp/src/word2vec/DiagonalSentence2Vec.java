@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.ejml.simple.SimpleMatrix;
-
 import common.IOUtils;
 
 import neural.DiagonalCompositionMatrices;

@@ -25,6 +25,7 @@ import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import vocab.Vocab;
 import word2vec.MTDiagonalSingleObjectSentence2Vec;
+import word2vec.MTIncrementalDiagonalSentence2Vec;
 import word2vec.MTIncrementalWeightedSentence2Vec;
 import word2vec.MTSingleObjectSentence2Vec;
 import word2vec.MTWeightedSingleObjectSentence2Vec;
@@ -46,8 +47,8 @@ public class MultiThreadSentenceVectorLearning {
         boolean allLevel = true;
         boolean lexical = true;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
-//        ActivationFunction hiddenActivationFunction = new IdentityFunction();
-        ActivationFunction hiddenActivationFunction = new Tanh();
+        ActivationFunction hiddenActivationFunction = new IdentityFunction();
+//        ActivationFunction hiddenActivationFunction = new Tanh();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
 //        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
@@ -67,7 +68,10 @@ public class MultiThreadSentenceVectorLearning {
 //        MultiThreadSentence2Vec sentence2vec = new MultiThreadSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
-        MTIncrementalWeightedSentence2Vec sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
+//        MTIncrementalWeightedSentence2Vec sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
+        MTIncrementalDiagonalSentence2Vec sentence2vec = new MTIncrementalDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
         String trainDirPath = TestConstants.S_TRAIN_DIR;

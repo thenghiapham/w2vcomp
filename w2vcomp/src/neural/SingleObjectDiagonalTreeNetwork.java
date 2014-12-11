@@ -137,14 +137,14 @@ public class SingleObjectDiagonalTreeNetwork extends DiagonalTreeNetwork{
                 
                 // adding the output layers to the hidden/projection layer 
                 // corresponding to the phrase 
+                int[] indices = outputBuilder.getOutputIndices(sentence[i]);
+                if (indices == null) continue;
                 
                 // subSample
                 long frequency = vocab.getEntry(sentence[i]).frequency;
                 long totalCount = vocab.getTrainWords();
                 if (subSample >0 && !MathUtils.isSampled(frequency, totalCount, subSample)) continue;
                 
-                int[] indices = outputBuilder.getOutputIndices(sentence[i]);
-                if (indices == null) continue;
                 SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
                 SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                 

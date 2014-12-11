@@ -3,7 +3,6 @@ package word2vec;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import neural.IncrementalWeightedTreeNetwork;
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
 import neural.HierarchicalSoftmaxLearner;
-import neural.SingleObjectWeightedTreeNetwork;
 import neural.WeightedCompositionMatrices;
 import neural.function.ActivationFunction;
 import neural.function.Sigmoid;

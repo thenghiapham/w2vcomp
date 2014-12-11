@@ -13,8 +13,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.ejml.simple.SimpleMatrix;
-
 import neural.CompositionMatrices;
 //import neural.HierarchicalSoftmaxLearner;
 import neural.LearningStrategy;
