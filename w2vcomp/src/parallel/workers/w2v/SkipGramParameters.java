@@ -60,8 +60,8 @@ public class SkipGramParameters implements ModelParameters {
         for (int i = 0; i < weights0.length; i++) {
             if (updatesCount0[i] >= updateThreshold) {
                 words_ids0.add(i);
-                for (int j = 0; j < weights0[0].length; j++)
-                    deltaWeights0[i][j] = weights0[i][j]
+                for (int j = 0; j < weights0[i].length; j++)
+                    deltaWeights0[words_ids0.size()-1][j] = weights0[i][j]
                             - oldParams.weights0[i][j];
             }
         }
@@ -69,8 +69,8 @@ public class SkipGramParameters implements ModelParameters {
         for (int i = 0; i < weights1.length; i++) {
             if (updatesCount1[i] >= updateThreshold) {
                 words_ids1.add(i);
-                for (int j = 0; j < weights1[0].length; j++)
-                    deltaWeights1[i][j] = weights1[i][j]
+                for (int j = 0; j < weights1[i].length; j++)
+                    deltaWeights1[words_ids1.size()-1][j] = weights1[i][j]
                             - oldParams.weights1[i][j];
             }
         }

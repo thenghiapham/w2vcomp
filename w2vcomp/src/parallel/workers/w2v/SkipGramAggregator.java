@@ -111,7 +111,7 @@ public class SkipGramAggregator implements ParameterAggregator {
         }
         System.out.println("new vector: " + modelParams.weights0[2][0] + " "
                 + modelParams.weights0[2][1]);
-        return modelParams;
+        return deltaParams;
     }
 
     @Override
