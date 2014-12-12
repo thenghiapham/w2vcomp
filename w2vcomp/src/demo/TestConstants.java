@@ -101,11 +101,11 @@ public class TestConstants {
 //    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc.voc";
 //    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "bnc.ini";
     
-    public static final String S_VECTOR_FILE              = S_OUT_DIR + "i_neg_dwiki300ts.bin";
-    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "i_neg_dwiki300ts.cmp";
-    public static final String S_MODEL_FILE               = S_OUT_DIR + "i_neg_dwiki300ts.mdl";
-    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "i_neg_dwiki300ts.ini";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "i_neg_dwiki300ts.log";
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "i_dwiki100is.bin";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "i_dwiki100is.cmp";
+    public static final String S_MODEL_FILE               = S_OUT_DIR + "i_dwiki100is.mdl";
+    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "i_dwiki100is.ini";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "i_dwiki100is.log";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "neg_wiki40is.voc";
     
 //    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_wiki300_ss.bin";
