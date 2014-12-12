@@ -66,8 +66,8 @@ public class ParameterEstimatorWorker implements Launchable  {
     }
 
     public static void main(String[] args) {
-        Integer worker_id = Integer.parseInt(args[0]);
-        File home_path = new File(args[1]);
+        File home_path = new File(args[0]);
+        Integer worker_id = Integer.parseInt(args[1]);
         String monitorHostname = args[2];
         int aggregatorPort = Integer.parseInt(args[3]);
         String trainingFile = args[4];

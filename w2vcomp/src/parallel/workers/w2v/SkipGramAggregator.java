@@ -118,9 +118,14 @@ public class SkipGramAggregator implements ParameterAggregator {
     }
 
     @Override
-    public ModelParameters getFinalParameters(Integer source) {
-        to_update.remove(source);
+    public ModelParameters getFinalParameters() {
         return modelParams;
+    }
+
+    @Override
+    public void finalizeWorker(Integer source) {
+        //Remove worker
+        to_update.remove(source);
     }
 
 }

@@ -63,7 +63,7 @@ public class ParameterAggregatorWorker implements Launchable {
             switch (msg.getType()) {
             case "INIT":
                 res = new ParameterMessage(0, "INIT_REPLY",
-                        parameterAggregator.getInitParameters());
+                        parameterAggregator.getInitParameters(msg.getSource()));
                 n_workers += 1;
                 aggParamsResponder.send(SerializationUtils.serialize(res), 0);
                 break;
@@ -74,6 +74,7 @@ public class ParameterAggregatorWorker implements Launchable {
                 aggParamsResponder.send(SerializationUtils.serialize(res), 0);
                 break;
             case "END":
+                parameterAggregator.finalizeWorker(msg.getSource());
                 res = new ParameterMessage(0, "END_REPLY", null);
                 n_workers -= 1;
                 // We are done!
