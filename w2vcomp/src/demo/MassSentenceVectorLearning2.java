@@ -76,7 +76,7 @@ public class MassSentenceVectorLearning2 {
         String outputFile = TestConstants.S_VECTOR_FILE.replaceAll("wiki", infix).replaceAll("size", suffix);;
         String compFile = TestConstants.S_COMPOSITION_FILE.replaceAll("wiki", infix).replaceAll("size", suffix);
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
-        String logFile = TestConstants.S_LOG_FILE;
+        String logFile = TestConstants.S_LOG_FILE.replaceAll("wiki", infix).replaceAll("size", suffix);;
         LogUtils.setup(logFile);
         
         File trainDir = new File(trainDirPath);
