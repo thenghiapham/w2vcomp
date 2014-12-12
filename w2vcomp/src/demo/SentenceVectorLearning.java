@@ -27,7 +27,7 @@ import demo.TestConstants;
 public class SentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 100;
+        int hiddenLayerSize = 300;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
