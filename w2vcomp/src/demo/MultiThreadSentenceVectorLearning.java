@@ -14,9 +14,6 @@ import java.util.HashMap;
 
 import neural.function.ActivationFunction;
 import neural.function.IdentityFunction;
-import neural.function.Sigmoid;
-import neural.function.Tanh;
-import neural.layer.HiddenLayer;
 //import java.util.logging.Level;
 
 import common.IOUtils;
@@ -24,15 +21,9 @@ import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import vocab.Vocab;
-import word2vec.MTDiagonalSingleObjectSentence2Vec;
-import word2vec.MTIncrementalDiagonalSentence2Vec;
 import word2vec.MTIncrementalWeightedSentence2Vec;
-import word2vec.MTSingleObjectSentence2Vec;
-import word2vec.MTWeightedSingleObjectSentence2Vec;
-import word2vec.MultiThreadDiagonalSentence2Vec;
 //import word2vec.MultiThreadDiagonalSentence2Vec;
 //import word2vec.MultiThreadSentence2Vec;
-import word2vec.MultiThreadWeightedSentence2Vec;
 import demo.TestConstants;
 
 public class MultiThreadSentenceVectorLearning {
@@ -79,7 +70,7 @@ public class MultiThreadSentenceVectorLearning {
         String compFile = TestConstants.S_COMPOSITION_FILE;
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String logFile = TestConstants.S_LOG_FILE;
-        String skipMdlFile = TestConstants.S_INITIALIZATION_FILE.replace(".mdl", "" + hiddenLayerSize + ".mdl");
+//        String skipMdlFile = TestConstants.S_INITIALIZATION_FILE.replace(".mdl", "" + hiddenLayerSize + ".mdl");
         LogUtils.setup(logFile);
         
         File trainDir = new File(trainDirPath);
