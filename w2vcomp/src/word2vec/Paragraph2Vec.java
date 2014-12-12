@@ -20,12 +20,18 @@ public abstract class Paragraph2Vec extends AbstractWord2Vec{
                 subSample);
         vocab = new Vocab();
         vocab.loadVocab(vocabFile);
-        vocab.assignCode();
+        
         loadNetwork(networkFile, true);
         this.iterationNum = iterationNum;
     }
 
     public void trainParagraphVector(String[] sentences) {
+        if (hierarchicalSoftmax) {
+            vocab.assignCode();
+        }
+        if (negativeSamples > 0) {
+            unigram = new UniGram(vocab);
+        }
         int sentenceNum = sentences.length;
         paragraphVectors = new double[sentenceNum][projectionLayerSize];
         this.alpha = DEFAULT_STARTING_ALPHA;
