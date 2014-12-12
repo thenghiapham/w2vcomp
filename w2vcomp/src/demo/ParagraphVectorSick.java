@@ -8,8 +8,11 @@ import common.correlation.ParsedPhraseCorrelation;
 
 public class ParagraphVectorSick {
     public static void main(String[] args) {
-        String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String modelFile = TestConstants.S_MODEL_FILE;
+        if (args.length > 0) {
+            modelFile = args[0];
+        }
+        String vocabFile = TestConstants.S_VOCABULARY_FILE;
         String sickFile  = TestConstants.S_SICK_FILE;
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(sickFile);
         String[] sentences = sick.getSurfacePhrase();
