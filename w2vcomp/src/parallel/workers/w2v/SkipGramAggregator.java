@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.collections15.map.HashedMap;
+
 import common.MathUtils;
 
 import demo.TestConstants;
@@ -56,6 +58,7 @@ public class SkipGramAggregator implements ParameterAggregator {
         // Since it contains all the words in the vocabulary, we don't specify
         // the list of present words
         modelParams = new SkipGramParameters(starting_alpha, weights0, weights1);
+        to_update = new HashedMap<>();
     }
 
     public void buildVocab(Vocab vocab, String vocabFile) {
