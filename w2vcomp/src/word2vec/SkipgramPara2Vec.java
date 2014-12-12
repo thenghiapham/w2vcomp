@@ -14,6 +14,7 @@ public class SkipgramPara2Vec extends Paragraph2Vec{
 
     @Override
     protected void trainSentence(int sentenceIndex, int[] wordIndexArray) {
+        System.out.println("or here");
         double[] a1error = new double[projectionLayerSize];
         for (int wordPosition = 0; wordPosition < wordIndexArray.length; wordPosition++) {
 
@@ -62,6 +63,7 @@ public class SkipgramPara2Vec extends Paragraph2Vec{
 
             // NEGATIVE SAMPLING
             if (negativeSamples > 0) {
+                System.out.println("go here");
                 for (int l = 0; l < negativeSamples + 1; l++) {
                     int target;
                     int label;
