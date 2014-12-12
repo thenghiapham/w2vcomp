@@ -38,7 +38,7 @@ import demo.TestConstants;
 public class MultiThreadSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 300;
+        int hiddenLayerSize = 40;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
