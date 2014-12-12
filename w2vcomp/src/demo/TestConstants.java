@@ -108,6 +108,10 @@ public class TestConstants {
     public static final String S_LOG_FILE                 = S_LOG_DIR + "i_hs_wiki_size.log";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "neg_wiki40is.voc";
     
+    public static final String S_WORD_VECTOR_FILE         = S_OUT_DIR + "hs_skip_wiki_size.bin";
+    public static final String S_WORD_MODEL_FILE          = S_OUT_DIR + "hs_skip_wiki_size.mdl";
+    public static final String S_WORD_LOG_FILE            = S_LOG_DIR + "hs_skip_wiki_size.log";
+    
 //    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_wiki300_ss.bin";
 //    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "skip_wiki300_ss.cmp";
 //    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_wiki300_ss.voc";
