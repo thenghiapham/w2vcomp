@@ -95,15 +95,18 @@ public class MessageBroker implements Runnable {
                 aggregator_requests += 1;
                 System.out.println("Total aggregator requests: "
                         + aggregator_requests);
+                long msgSize = 0;
                 while (true) {
                     // receive message
                     message = paramEstimatorsSocket.recv(0);
+                    msgSize += message.length;
                     more = paramEstimatorsSocket.hasReceiveMore();
 
                     // Broker it
                     paramsAggregatorSocket
                             .send(message, more ? ZMQ.SNDMORE : 0);
                     if (!more) {
+                        System.out.println("Forwarded " + msgSize + " bytes");
                         break;
                     }
                 }
@@ -113,13 +116,16 @@ public class MessageBroker implements Runnable {
                 aggregator_requests -= 1;
                 System.out.println("Total aggregator requests: "
                         + aggregator_requests);
+                long msgSize = 0;
                 while (true) {
                     // receive message
                     message = paramsAggregatorSocket.recv(0);
+                    msgSize += message.length;
                     more = paramsAggregatorSocket.hasReceiveMore();
                     // Broker it
                     paramEstimatorsSocket.send(message, more ? ZMQ.SNDMORE : 0);
                     if (!more) {
+                        System.out.println("Forwarded " + msgSize + " bytes");
                         break;
                     }
                 }

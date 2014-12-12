@@ -14,7 +14,7 @@ public class ExampleAggregator implements ParameterAggregator {
     }
 
     @Override
-    public ModelParameters aggregate(ModelParameters _content) {
+    public ModelParameters aggregate(Integer source, ModelParameters _content) {
         ExampleModelParameters content = 
                 (ExampleModelParameters) _content;
         params.setValue(params.getValue() + content.getValue());
@@ -22,12 +22,12 @@ public class ExampleAggregator implements ParameterAggregator {
     }
 
     @Override
-    public ModelParameters getInitParameters() {
+    public ModelParameters getInitParameters(Integer source) {
         return params;
     }
     
     @Override
-    public ModelParameters getFinalParameters() {
+    public ModelParameters getFinalParameters(Integer source) {
         return params;
     }
 

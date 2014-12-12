@@ -1,14 +1,70 @@
 package demo;
 
 public class TestConstants {
-    
+
+
+    /*
+     * Threaded word2vec
     public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/text/wikiA_sample.txt";
     public static final String TRAIN_DIR               = "/home/thenghiapham/work/project/mikolov/text/tmp";
     public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/text/wikiA.bin";
     public static final String VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/text/wikiA.voc";
     public static final String INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/text/wikiA.ini";
+    */
     
-   
+
+    public static final String S_PROJECT_HOME_DIR         = "/home/german.kruszewski/projects/compomik";
+    public static final String S_PROJECT_DIR              = "/home/german.kruszewski/projects/compomik/data/";
+    public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "constructions/selected-constructions.txt";
+    public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "parse/bnc/bnc.txt";
+    public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "dbnc.bin";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "dbnc.cmp";
+    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc.voc";
+    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "bnc.ini";
+    public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "sentence.log";
+    
+
+//    public static final String S_LOG_DIR
+    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
+    
+    public static final String S_SICK_FILE                = S_PROJECT_DIR + "sick/parsed/SICK_train_trial.txt";
+    public static final String S_VALIDATION_FILE          = S_PROJECT_DIR + "tmp_parsed/test_bnc.txt";
+    public static final String S_TRAIN_DIR                = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/corpus/split/bnc/";//S_PROJECT_DIR + "parse/bnc/";
+    
+/*
+
+    // on the cluster
+    public static final String PATH                     = "/mnt/cimec-storage-sata/users/marco.baroni/share/ukwac-maltparsing/data/";
+    public static final String GZIP_TRAIN_FILES         = PATH
+                                                                + "bnc.xml.gz;"
+                                                                + PATH
+                                                                + "ukwac1.xml.gz;"
+                                                                + PATH
+                                                                + "ukwac2.xml.gz;"
+                                                                + PATH
+                                                                + "ukwac3.xml.gz;"
+                                                                + PATH
+                                                                + "ukwac4.xml.gz;"
+                                                                + PATH
+                                                                + "ukwac5.xml.gz;"
+                                                                + PATH
+                                                                + "wikipedia-1.xml.gz;"
+                                                                + PATH
+                                                                + "wikipedia-2.xml.gz;"
+                                                                + PATH
+                                                                + "wikipedia-3.xml.gz;"
+                                                                + PATH
+                                                                + "wikipedia-4.xml.gz";
+    public static final String OUT_PATH                 = "/home/pham/work/project/mikolov/output/";
+    public static final String GZIP_VECTOR_FILE         = OUT_PATH
+                                                                + "testVector.bin";
+    public static final String GZIP_VOCABULARY_FILE     = OUT_PATH
+                                                                + "testVector.voc";
+    public static final String GZIP_INITIALIZATION_FILE = OUT_PATH
+                                                                + "testVector.ini";
+    
     
     public static final String CCG_MEN_FILE             = "/home/thenghiapham/work/project/mikolov/men/subMen.txt";
     public static final String CCG_AN_FILE              = "/home/thenghiapham/work/dataset/lapata/nn_lemmapos.txt";
@@ -128,6 +184,23 @@ public class TestConstants {
 //    public static final String S_SV_FILE                  = S_PROJECT_DIR + "lapata/sv_lemma.txt";
 //    public static final String S_SICK_FILE                = S_PROJECT_DIR + "sick/parsed/SICK_train_trial.txt";
     
+
+//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "skip_wiki300_ss.bin";
+//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "skip_wiki300_ss.cmp";
+//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "skip_wiki300_ss.voc";
+//    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skip_wiki300_ss.ini";
+    
+    public static final String S_LOG_DIR                  = S_PROJECT_DIR  + "log/";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "bnc.log";
+//    public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki.log";
+  
+    public static final String S_MEN_FILE                 = S_PROJECT_DIR + "men/MEN_dataset_lemma.txt";
+    public static final String S_AN_FILE                  = S_PROJECT_DIR + "lapata/an_lemma.txt";
+    public static final String S_NN_FILE                  = S_PROJECT_DIR + "lapata/nn_lemma.txt";
+    public static final String S_VO_FILE                  = S_PROJECT_DIR + "lapata/vo_lemma.txt";
+    public static final String S_SV_FILE                  = S_PROJECT_DIR + "lapata/sv_lemma.txt";
+    public static final String S_SICK_FILE                = S_PROJECT_DIR + "sick/parsed/SICK_train_trial.txt";
+    */
 }
 
 

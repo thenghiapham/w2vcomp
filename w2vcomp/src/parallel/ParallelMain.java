@@ -19,51 +19,50 @@ public class ParallelMain {
 
     public static void main(String[] args) {
 
-        /*Configuration constants (to move somewhere else)*/
+        /* Configuration constants (to move somewhere else) */
         File home_path = new File(TestConstants.S_PROJECT_HOME_DIR);
 
         int aggregatorPort = 5556;
         int estimatorPort = 5557;
         int resultsPort = 5558;
 
-        
         String trainDirPath = TestConstants.S_TRAIN_DIR;
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
 
-        
         // Create the DeathStar
-        WorkersMonitor processMonitor = new WorkersMonitor(
-                aggregatorPort, estimatorPort,
-                resultsPort);
+        WorkersMonitor processMonitor = new WorkersMonitor(aggregatorPort,
+                estimatorPort, resultsPort);
 
         // Spaceship launcher
-        final Launcher launcher = new MultiprocessLauncher(home_path);
+        final Launcher launcher = new ClusterLauncher(home_path);
 
         final ArrayList<String> proccess_ids = new ArrayList<String>();
-        
+
         try {
             launcher.init();
 
             // Launch a StarDestroyer
             // (Create a job that will centralize the parameters)
             ParameterAggregatorWorker aggregatorJob = new ParameterAggregatorWorker(
-                    home_path, processMonitor.getHostname(),
-                    aggregatorPort, resultsPort);
+                    home_path, processMonitor.getHostname(), aggregatorPort,
+                    resultsPort);
             String id = launcher.launch(aggregatorJob);
             proccess_ids.add(id);
 
             // Launch TIE Fighters
             // (Run parallel parameter-estimating jobs on each training file)
+            Integer worker_id = 1;
             for (File trainingFile : trainFiles) {
                 ParameterEstimatorWorker estimatorJob = new ParameterEstimatorWorker(
-                        home_path, processMonitor.getHostname(),
+                        worker_id, home_path, processMonitor.getHostname(),
                         estimatorPort, trainingFile.getAbsolutePath());
                 id = launcher.launch(estimatorJob);
                 proccess_ids.add(id);
+                worker_id++;
             }
-            
-            //If we go away(Ctrl-C), all the rest of the jobs go down with us
+
+            // If we go away(Ctrl-C), all the rest of the jobs go down with us
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     System.out.println("Killing zombie workers...");
@@ -88,12 +87,11 @@ public class ParallelMain {
             System.out.println("Error: " + e.getMessage());
         }
 
-        
-        //Hardcoded class that knows what to do when the parameters are done computing
+        // Hardcoded class that knows what to do when the parameters are done
+        // computing
         ParameterFinalizer finalizer = new SkipGramFinalizer();
         // Wait for the mission to be complete
         processMonitor.run(finalizer);
-
 
     }
 }

@@ -11,7 +11,7 @@ public class ExampleEstimator implements ParameterEstimator {
     }
 
     @Override
-    public void run(ModelParameters _init, ParameterMessager parameterMessager) {
+    public void run(Integer worker_id, ModelParameters _init, ParameterMessager parameterMessager) {
         
         // model initalization 
         ModelParameters init = (ExampleModelParameters) _init;
@@ -22,7 +22,7 @@ public class ExampleEstimator implements ParameterEstimator {
         for (int request_nbr = 0; request_nbr < 10; request_nbr++) {
             aggregated.setValue("" + request_nbr);
             aggregated = (ExampleModelParameters) parameterMessager
-                    .sendUpdate(aggregated).getContent();
+                    .sendUpdate(worker_id, aggregated).getContent();
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {

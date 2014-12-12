@@ -10,12 +10,14 @@ public class ParameterMessage implements Serializable {
     
     private String type;
     private ModelParameters content;
+    private Integer source;
     
     
-    public ParameterMessage(String type, ModelParameters content) {
+    public ParameterMessage(Integer source, String type, ModelParameters content) {
         super();
         this.setType(type);
         this.setContent(content);
+        this.setSource(source);
     }
 
     public String getType() {
@@ -33,7 +35,13 @@ public class ParameterMessage implements Serializable {
     public void setContent(ModelParameters content) {
         this.content = content;
     }
-    
-    
 
+    public Integer getSource() {
+        return source;
+    }
+
+    public void setSource(Integer source) {
+        this.source = source;
+    }
+    
 }

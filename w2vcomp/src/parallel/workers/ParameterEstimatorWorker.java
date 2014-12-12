@@ -25,9 +25,11 @@ public class ParameterEstimatorWorker implements Launchable  {
     private String training_file;
     private String hostname;
     private int    aggregatorPort;
+    private Integer worker_id;
 
-    public ParameterEstimatorWorker(File home_path, String hostname,
+    public ParameterEstimatorWorker(Integer worker_id, File home_path, String hostname,
             int aggregatorPort, String training_file) {
+        this.worker_id = worker_id;
         this.hostname = hostname;
         this.aggregatorPort = aggregatorPort;
         this.training_file = training_file;
@@ -43,13 +45,13 @@ public class ParameterEstimatorWorker implements Launchable  {
         
         System.out.println("Getting initial parameters");
         ModelParameters initParameters =
-                parameterMessager.sendInit().getContent();
+                parameterMessager.sendInit(worker_id).getContent();
         
         System.out.println("Running estimation");
-        estimator.run(initParameters, parameterMessager);
+        estimator.run(worker_id, initParameters, parameterMessager);
 
         System.out.println("Estimation done");
-        parameterMessager.sendEnd();
+        parameterMessager.sendEnd(worker_id);
         
         // We never get here but clean up anyhow
         aggParamsRequester.close();
@@ -59,18 +61,19 @@ public class ParameterEstimatorWorker implements Launchable  {
 
     @Override
     public String[] getArgs() {
-        return new String[] { hostname,
+        return new String[] { worker_id.toString(), hostname,
                 new Integer(aggregatorPort).toString(), training_file };
     }
 
     public static void main(String[] args) {
-        File home_path = new File(args[0]);
-        String monitorHostname = args[1];
-        int aggregatorPort = Integer.parseInt(args[2]);
-        String trainingFile = args[3];
+        Integer worker_id = Integer.parseInt(args[0]);
+        File home_path = new File(args[1]);
+        String monitorHostname = args[2];
+        int aggregatorPort = Integer.parseInt(args[3]);
+        String trainingFile = args[4];
 
-        ParameterEstimatorWorker paramEst = new ParameterEstimatorWorker(home_path,
-                monitorHostname, aggregatorPort, trainingFile);
+        ParameterEstimatorWorker paramEst = new ParameterEstimatorWorker(worker_id,
+                home_path, monitorHostname, aggregatorPort, trainingFile);
         System.out.println("Train file: " + trainingFile);
         try {
             SentenceInputStream sentenceInputStream = new PlainSentenceInputStream(

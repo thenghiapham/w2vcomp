@@ -1,6 +1,7 @@
 package common;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -95,7 +96,17 @@ public class MathUtils {
         }
     }
     
+    public static void plusInPlace(double[][] original, double[][] delta,
+            double scale, List<Integer> delta_to_original) {
+        for (int i=0; i < delta.length; i++) {
+            for (int j = 0; j < delta[i].length; j++) {
+                original[delta_to_original.get(i)][j] += scale * delta[i][j];
+            }
+        }
+    }
+    
     public static double[][] deepCopy(double[][] original) {
+        //FIXME: clone could reduce time in half: http://www.javapractices.com/topic/TopicAction.do?Id=3
         if (original == null) {
             return null;
         }
@@ -106,4 +117,5 @@ public class MathUtils {
         }
         return result;
     }
+
 }

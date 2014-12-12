@@ -8,7 +8,6 @@ import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import parallel.comm.ParameterMessage;
-import parallel.workers.count.LineNumAggregator;
 import parallel.workers.w2v.SkipGramAggregator;
 import utils.SerializationUtils;
 
@@ -63,19 +62,19 @@ public class ParameterAggregatorWorker implements Launchable {
             Serializable res;
             switch (msg.getType()) {
             case "INIT":
-                res = new ParameterMessage("INIT_REPLY",
+                res = new ParameterMessage(0, "INIT_REPLY",
                         parameterAggregator.getInitParameters());
                 n_workers += 1;
                 aggParamsResponder.send(SerializationUtils.serialize(res), 0);
                 break;
             case "UPDATE":
-                ModelParameters aggregated = parameterAggregator.aggregate(msg
+                ModelParameters aggregated = parameterAggregator.aggregate(msg.getSource(), msg
                         .getContent());
-                res = new ParameterMessage("UPDATE_REPLY", aggregated);
+                res = new ParameterMessage(0, "UPDATE_REPLY", aggregated);
                 aggParamsResponder.send(SerializationUtils.serialize(res), 0);
                 break;
             case "END":
-                res = new ParameterMessage("END_REPLY", null);
+                res = new ParameterMessage(0, "END_REPLY", null);
                 n_workers -= 1;
                 // We are done!
                 if (n_workers == 0)
@@ -93,8 +92,10 @@ public class ParameterAggregatorWorker implements Launchable {
         ModelParameters result = parameterAggregator.getFinalParameters();
         byte[] serialized_results = SerializationUtils.serialize(result);
         System.out.println("Sending results (" + serialized_results.length + " bytes)");
-        monitorResponder.send(serialized_results, 0);
-        System.out.println("results sent");
+        if (monitorResponder.send(serialized_results, 0) )
+            System.out.println("results sent");
+        else
+            System.out.println("FAILED to send results");
 
         System.out.println("closing");
         monitorResponder.close();

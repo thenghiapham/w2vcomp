@@ -15,8 +15,8 @@ public class ParameterMessager {
         this.socket = socket;
     }
     
-    private ParameterMessage sendMessage(String type, ModelParameters content) {
-        Serializable msg = new ParameterMessage(type, content);
+    private ParameterMessage sendMessage(Integer source, String type, ModelParameters content) {
+        Serializable msg = new ParameterMessage(source, type, content);
         socket.send(SerializationUtils.serialize(msg), 0);
         ParameterMessage reply = (ParameterMessage) SerializationUtils
                 .deserialize(socket.recv());
@@ -24,16 +24,16 @@ public class ParameterMessager {
         
     }
     
-    public ParameterMessage sendUpdate(ModelParameters content) {
-        return sendMessage("UPDATE", content);
+    public ParameterMessage sendUpdate(Integer source, ModelParameters content) {
+        return sendMessage(source, "UPDATE", content);
     }
     
-    public ParameterMessage sendInit() {
-        return sendMessage("INIT", null);
+    public ParameterMessage sendInit(Integer source) {
+        return sendMessage(source, "INIT", null);
     }
     
-    public ParameterMessage sendEnd() {
-        return sendMessage("END", null);
+    public ParameterMessage sendEnd(Integer source) {
+        return sendMessage(source, "END", null);
     }
     
 }
