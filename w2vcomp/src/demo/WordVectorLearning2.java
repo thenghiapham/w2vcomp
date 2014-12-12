@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import common.LogUtils;
+
 import vocab.Vocab;
 import word2vec.CBowWord2Vec;
 import word2vec.MultiThreadCBow;
@@ -35,7 +37,11 @@ public class WordVectorLearning2 {
         boolean learnVocab = !(new File(vocabFile)).exists();
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
-        Vocab vocab = new Vocab(5);
+        String logFile = TestConstants.S_LOG_FILE;
+        LogUtils.setup(logFile);
+        
+        Vocab vocab = new Vocab(TestConstants.S_MIN_FREQUENCY);
+        
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {
