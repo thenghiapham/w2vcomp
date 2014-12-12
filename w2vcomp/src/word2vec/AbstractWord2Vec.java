@@ -265,6 +265,8 @@ public abstract class AbstractWord2Vec {
             }
             if (negativeSamples > 0) {
                 matrix = IOUtils.readMatrix(inputStream, binary);
+                System.out.println("matrix size: " + matrix.length + " " + matrix[0].length);
+                System.out.println("expect size: " + vocab.getVocabSize() + " " + projectionLayerSize);
                 if (matrix.length != vocab.getVocabSize() || matrix[0].length != projectionLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
