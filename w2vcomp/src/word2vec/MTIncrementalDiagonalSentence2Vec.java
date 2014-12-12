@@ -20,7 +20,7 @@ import space.DiagonalCompositionSemanticSpace;
 import space.ProjectionAdaptorSpace;
 import tree.Tree;
 
-public class MTIncrementalDiagonalSentence2Vec extends MTSingleObjectSentence2Vec{
+public class MTIncrementalDiagonalSentence2Vec extends MTIncrementalSentence2Vec{
 
     public MTIncrementalDiagonalSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample,

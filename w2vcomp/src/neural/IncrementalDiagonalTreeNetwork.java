@@ -126,7 +126,7 @@ public class IncrementalDiagonalTreeNetwork extends DiagonalTreeNetwork{
 //        double significant = 1 / (double) width;
         double significant = 1;
         double inputCoefficient = 1 / (double) width;
-        int windowSize = random.nextInt(maxWindowSize + height) + 1;
+        int windowSize = random.nextInt(maxWindowSize + height - 1) + 1;
 //            int windowSize = maxWindowSize;
         
         // get the left and right position of the phrase

@@ -20,7 +20,7 @@ import space.WeightedCompositionSemanticSpace;
 import space.ProjectionAdaptorSpace;
 import tree.Tree;
 
-public class MTIncrementalWeightedSentence2Vec extends MTSingleObjectSentence2Vec{
+public class MTIncrementalWeightedSentence2Vec extends MTIncrementalSentence2Vec{
 
     public MTIncrementalWeightedSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample,
