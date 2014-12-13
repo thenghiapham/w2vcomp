@@ -24,7 +24,7 @@ public class LineNumAggregator implements ParameterAggregator {
 
 
     @Override
-    public ModelParameters getFinalParameters() {
+    public void finalize() {
         // TODO Auto-generated method stub
         return getInitParameters();
     }

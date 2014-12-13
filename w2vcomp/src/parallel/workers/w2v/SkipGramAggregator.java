@@ -7,15 +7,13 @@ import io.word.WordInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.collections15.map.HashedMap;
-
 import common.MathUtils;
-
 import demo.TestConstants;
 import parallel.workers.ModelParameters;
 import parallel.workers.ParameterAggregator;
@@ -27,7 +25,7 @@ public class SkipGramAggregator implements ParameterAggregator {
     long                       wordCount = 0;
     // Set of matrix entries that have to be updated
     // on each of the proccesses
-    Map<Integer, Set<Integer>> to_update;
+    Map<Integer, Set<Integer>> to_update0, to_update1;
     // Model parameters
     SkipGramParameters         modelParams;
 
@@ -58,7 +56,8 @@ public class SkipGramAggregator implements ParameterAggregator {
         // Since it contains all the words in the vocabulary, we don't specify
         // the list of present words
         modelParams = new SkipGramParameters(starting_alpha, weights0, weights1);
-        to_update = new HashedMap<>();
+        to_update0 = new HashMap<Integer, Set<Integer>>();
+        to_update1 = new HashMap<Integer, Set<Integer>>();
     }
 
     public void buildVocab(Vocab vocab, String vocabFile) {
@@ -94,41 +93,61 @@ public class SkipGramAggregator implements ParameterAggregator {
 
     @Override
     public ModelParameters aggregate(Integer source, ModelParameters content) {
-        System.out.println("old vector: " + modelParams.weights0[2][0] + " "
-                + modelParams.weights0[2][1]);
+        
         SkipGramParametersDelta deltaParams = (SkipGramParametersDelta) content;
-        System.out.println("delta vector: " + deltaParams.weights0[2][0] + " "
-                + deltaParams.weights0[2][1]);
-        MathUtils.plusInPlace(modelParams.weights0, deltaParams.weights0,
-                1 / 3.0, deltaParams.words_ids0);
-        MathUtils.plusInPlace(modelParams.weights1, deltaParams.weights1,
-                1 / 3.0, deltaParams.words_ids1);
+        System.out.println("old vector: " + modelParams.getWeights0()[deltaParams.getWordsIds0().get(0)][0] + " "
+                + modelParams.getWeights0()[deltaParams.getWordsIds0().get(0)][1]);
+        System.out.println("delta vector: " + deltaParams.getWeights0()[0][0] + " "
+                + deltaParams.getWeights0()[0][1]);
+        MathUtils.plusInPlace(modelParams.getWeights0(), deltaParams.getWeights0(),
+                1 / 3.0, deltaParams.getWordsIds0());
+        MathUtils.plusInPlace(modelParams.getWeights1(), deltaParams.getWeights1(),
+                1 / 3.0, deltaParams.getWordsIds1());
         wordCount += deltaParams.wordCount;
-        modelParams.alpha = starting_alpha
-                * (1 - (double) wordCount / (trainWords + 1));
-        if (modelParams.alpha < starting_alpha * 0.0001) {
-            modelParams.alpha = starting_alpha * 0.0001;
+        modelParams.setAlpha(starting_alpha
+                * (1 - (double) wordCount / (trainWords + 1)));
+        if (modelParams.getAlpha() < starting_alpha * 0.0001) {
+            modelParams.setAlpha(starting_alpha * 0.0001);
         }
-        System.out.println("new vector: " + modelParams.weights0[2][0] + " "
-                + modelParams.weights0[2][1]);
-        return deltaParams;
+        
+        System.out.println("new vector: " + modelParams.getWeights0()[deltaParams.getWordsIds0().get(0)][0] + " "
+                + modelParams.getWeights0()[deltaParams.getWordsIds0().get(0)][1]);
+        
+        //Annotate for all workers that these rows have been modified
+        for(Map.Entry<Integer, Set<Integer>> worker_to_update: to_update0.entrySet()){
+            worker_to_update.getValue().addAll(deltaParams.getWordsIds0());
+        }
+        for(Map.Entry<Integer, Set<Integer>> worker_to_update: to_update1.entrySet()){
+            worker_to_update.getValue().addAll(deltaParams.getWordsIds1());
+        }
+        //Prepare parameters to send back
+        SkipGramParametersSubset newParams = modelParams.getSubset(to_update0.get(source), to_update1.get(source));
+
+        //Reset the modified rows record for this worker since we are sending them now
+        to_update0.get(source).clear();
+        to_update1.get(source).clear();
+        
+        return newParams;
     }
 
     @Override
     public ModelParameters getInitParameters(Integer source) {
-        to_update.put(source, new HashSet<Integer>());
+        to_update0.put(source, new HashSet<Integer>());
+        to_update1.put(source, new HashSet<Integer>());
         return modelParams;
     }
 
     @Override
-    public ModelParameters getFinalParameters() {
-        return modelParams;
+    public void finalize() {
+        SkipGramFinalizer finalizer = new SkipGramFinalizer();
+        finalizer.finish(modelParams);
     }
 
     @Override
     public void finalizeWorker(Integer source) {
         //Remove worker
-        to_update.remove(source);
+        to_update0.remove(source);
+        to_update1.remove(source);
     }
 
 }

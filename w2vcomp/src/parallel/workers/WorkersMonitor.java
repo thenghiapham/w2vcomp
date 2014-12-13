@@ -47,7 +47,7 @@ public class WorkersMonitor  {
         this.hostname = hostname;
     }
 
-    public void run(ParameterFinalizer finalizer) {
+    public void run() {
         final MessageBroker messageBroker = new MessageBroker(
                 aggregatorPort, estimatorsPort);
         final Thread proxy = new Thread(messageBroker);
@@ -61,12 +61,12 @@ public class WorkersMonitor  {
         resultReqSocket.bind("tcp://*:" + resultsPort);
         resultReqSocket.send("You are in command now, Admiral Piett", 0);
 
-        System.out.println("Wating for result at port " + resultsPort + "...");
-        byte[] final_result = resultReqSocket.recv();
-        System.out.println("Result received");
+        System.out.println("Wating for finalization call at port " + resultsPort + "...");
+        byte[] final_msg = resultReqSocket.recv();
+        System.out.println("Finalization call received");
 
-        ModelParameters finalParameters = (ModelParameters) SerializationUtils.deserialize(final_result);
-        finalizer.finish(finalParameters);
+        String finalMsg = (String) SerializationUtils.deserialize(final_msg);
+        System.out.println("Final Message: " + finalMsg);
                 
         System.out.println("Stopping message broker");
         messageBroker.stop(context);

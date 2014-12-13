@@ -48,26 +48,26 @@ public class ParameterUpdatePoller {
             resampleBatchSize();
             if (rand.nextFloat() <= 0.999) {
                 RawSemanticSpace space = new RawSemanticSpace(vocab,
-                        modelParams.weights0, false);
+                        modelParams.getWeights0(), false);
                 System.out.println(men.evaluateSpacePearson(space));
             }
-            System.out.println("vector: " + modelParams.weights0[2][0] + " "
-                    + modelParams.weights0[2][1]);
+            System.out.println("vector: " + modelParams.getWeights0()[2][0] + " "
+                    + modelParams.getWeights0()[2][1]);
 
             // Construct difference
             SkipGramParametersDelta deltaParams = modelParams.getDelta(
                     oldParams, wordCount - oldWordCount, updateThreshold);
             // Send and receive updated difference
-            deltaParams = (SkipGramParametersDelta) parameterMessager
+            SkipGramParametersSubset newParams = (SkipGramParametersSubset) parameterMessager
                     .sendUpdate(worker_id, deltaParams).getContent();
             // apply the difference
-            modelParams.applyDelta(deltaParams);
+            modelParams.setSubset(newParams);
             oldParams = new SkipGramParameters(modelParams);
             oldWordCount = wordCount;
             System.out.println("wordCount: " + wordCount);
             if (rand.nextFloat() <= 0.999) {
                 RawSemanticSpace space = new RawSemanticSpace(vocab,
-                        modelParams.weights0, false);
+                        modelParams.getWeights0(), false);
                 System.out.println(men.evaluateSpacePearson(space));
             }
             return true;

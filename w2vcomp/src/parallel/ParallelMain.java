@@ -87,11 +87,8 @@ public class ParallelMain {
             System.out.println("Error: " + e.getMessage());
         }
 
-        // Hardcoded class that knows what to do when the parameters are done
-        // computing
-        ParameterFinalizer finalizer = new SkipGramFinalizer();
         // Wait for the mission to be complete
-        processMonitor.run(finalizer);
+        processMonitor.run();
 
     }
 }

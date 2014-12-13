@@ -137,8 +137,8 @@ public class SkipGramEstimator implements ParameterEstimator{
                             int iParentIndex = word.ancestors[bit];
                             // Propagate hidden -> output
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                z2 += modelParams.weights0[iWordIndex][j]
-                                        * modelParams.weights1[iParentIndex][j];
+                                z2 += modelParams.getWeights0()[iWordIndex][j]
+                                        * modelParams.getWeights1()[iParentIndex][j];
                             }
 
                             double a2 = sigmoidTable.getSigmoid(z2);
@@ -147,17 +147,17 @@ public class SkipGramEstimator implements ParameterEstimator{
                             // 'g' is the gradient multiplied by the learning
                             // rate
                             double gradient = (double) ((1 - (word.code
-                                    .charAt(bit) - 48) - a2) * modelParams.alpha);
+                                    .charAt(bit) - 48) - a2) * modelParams.getAlpha());
                             // Propagate errors output -> hidden
                             for (int j = 0; j < projectionLayerSize; j++) {
                                 a1error[j] += gradient
-                                        * modelParams.weights1[iParentIndex][j];
+                                        * modelParams.getWeights1()[iParentIndex][j];
                             }
                             // Learn weights hidden -> output
                             modelParams.updatesCount1[iParentIndex]++;
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                modelParams.weights1[iParentIndex][j] += gradient
-                                        * modelParams.weights0[iWordIndex][j];
+                                modelParams.getWeights1()[iParentIndex][j] += gradient
+                                        * modelParams.getWeights0()[iWordIndex][j];
                             }
                         }
                     } else if (negativeSamples > 0) {
@@ -181,26 +181,26 @@ public class SkipGramEstimator implements ParameterEstimator{
                             double z2 = 0;
                             double gradient;
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                z2 += modelParams.weights0[iWordIndex][j]
-                                        * modelParams.weights1[target][j];
+                                z2 += modelParams.getWeights0()[iWordIndex][j]
+                                        * modelParams.getWeights1()[target][j];
                             }
                             double a2 = sigmoidTable.getSigmoid(z2);
-                            gradient = (double) ((label - a2) * modelParams.alpha);
+                            gradient = (double) ((label - a2) * modelParams.getAlpha());
                             for (int j = 0; j < projectionLayerSize; j++) {
                                 a1error[j] += gradient
-                                        * modelParams.weights1[target][j];
+                                        * modelParams.getWeights1()[target][j];
                             }
                             modelParams.updatesCount1[target]++;
                             for (int j = 0; j < projectionLayerSize; j++) {
-                                modelParams.weights1[target][j] += gradient
-                                        * modelParams.weights0[iWordIndex][j];
+                                modelParams.getWeights1()[target][j] += gradient
+                                        * modelParams.getWeights0()[iWordIndex][j];
                             }
                         }
                     }
                     modelParams.updatesCount0[iWordIndex]++;
                     // Learn weights input -> hidden
                     for (int j = 0; j < projectionLayerSize; j++) {
-                        modelParams.weights0[iWordIndex][j] += a1error[j];
+                        modelParams.getWeights0()[iWordIndex][j] += a1error[j];
                     }
                 }
 

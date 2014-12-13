@@ -42,7 +42,7 @@ public class ParameterAggregatorWorker implements Launchable {
         aggParamsResponder.connect("tcp://" + monitorHostname + ":"
                 + estimatorsPort);
 
-        System.out.println("Conneting to Darth Vader at "+ "tcp://" + monitorHostname + ":" + monitorPort);
+        System.out.println("Conneting to Lord Vader at "+ "tcp://" + monitorHostname + ":" + monitorPort);
         Socket monitorResponder = context.socket(ZMQ.REP);
         monitorResponder
                 .connect("tcp://" + monitorHostname + ":" + monitorPort);
@@ -89,11 +89,11 @@ public class ParameterAggregatorWorker implements Launchable {
         // Send reply back to client
         aggParamsResponder.close();
 
-        // Sir, we found the rebels
-        ModelParameters result = parameterAggregator.getFinalParameters();
-        byte[] serialized_results = SerializationUtils.serialize(result);
-        System.out.println("Sending results (" + serialized_results.length + " bytes)");
-        if (monitorResponder.send(serialized_results, 0) )
+        //Save results or whatever
+        parameterAggregator.finalize();
+        byte[] serialized_msg = SerializationUtils.serialize("Sir, we found the rebels");
+        System.out.println("Sending results (" + serialized_msg.length + " bytes)");
+        if (monitorResponder.send(serialized_msg, 0) )
             System.out.println("results sent");
         else
             System.out.println("FAILED to send results");
