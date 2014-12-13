@@ -18,12 +18,22 @@ public class SvmCosinePrinter {
         String rteFeatureFile = TestConstants.S_RTE_FEATURE_FILE;
         String datasetName = new File(datasetFile).getName();
         String outDir = TestConstants.S_RTE_SVM_DIR;
-        String compFile = TestConstants.S_COMPOSITION_FILE;
-        
-        String vectorFile = TestConstants.S_VECTOR_FILE;
         ParsedPhraseCosinePrinter printer = new ParsedPhraseCosinePrinter(datasetFile, rteFeatureFile);
-        printAdd(printer, vectorFile, outDir, datasetName);
-        printWeighted(printer, compFile, outDir, datasetName);
+        if (args.length == 1) {
+            String vectorFile = args[0];
+            printAdd(printer, vectorFile, outDir, datasetName);
+                
+        } else if (args.length == 2) {
+            String compFile = args[0];
+            String compType = args[1];
+            if ("w".equals(compType)) {
+                printWeighted(printer, compFile, outDir, datasetName);
+            } else if ("d".equals(compType)) {
+                printDiagonal(printer, compFile, outDir, datasetName);
+            } else if ("f".equals(compType)) {
+                printFull(printer, compFile, outDir, datasetName);
+            }
+        }
     }
     
     public static void printAdd(ParsedPhraseCosinePrinter printer, String vectorFile, String outDir, String suffix) throws IOException {
