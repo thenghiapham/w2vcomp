@@ -106,7 +106,7 @@ public class MessageBroker implements Runnable {
                     paramsAggregatorSocket
                             .send(message, more ? ZMQ.SNDMORE : 0);
                     if (!more) {
-                        System.out.println("Forwarded " + msgSize + " bytes");
+                        System.out.println("Forwarded " + String.format("%,d",msgSize) + " bytes");
                         break;
                     }
                 }
@@ -125,7 +125,7 @@ public class MessageBroker implements Runnable {
                     // Broker it
                     paramEstimatorsSocket.send(message, more ? ZMQ.SNDMORE : 0);
                     if (!more) {
-                        System.out.println("Forwarded " + msgSize + " bytes");
+                        System.out.println("Forwarded " + String.format("%,d",msgSize) + " bytes");
                         break;
                     }
                 }

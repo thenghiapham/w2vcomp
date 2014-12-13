@@ -95,8 +95,10 @@ public class MenCorrelation {
 	    double[] predicts = new double[golds.length];
 	    for (int i = 0; i < golds.length; i++) {
 	        predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
-//	        System.out.println(wordPairs[i][0]);
-//	        System.out.println(wordPairs[i][1]);
+	        //System.out.println(wordPairs[i][0]);
+	        //System.out.println(wordPairs[i][1]);
+	        //System.out.println(predicts[i]);
+	        //System.out.println(golds[i]);
 	    }
 	    return pearson.correlation(golds, predicts);
 	}
