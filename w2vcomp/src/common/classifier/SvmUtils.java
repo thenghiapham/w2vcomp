@@ -147,6 +147,7 @@ public class SvmUtils {
         bestParameters.put("-c", (double) bestC);
         bestParameters.put("-p", bestP);
         bestParameters.put("-g", bestG);
+        System.out.println("best Acc: " + bestAcc);
         return bestParameters;
     }
     
@@ -299,12 +300,13 @@ public class SvmUtils {
         parameters.put("-s", 0.0);
         parameters.put("-t", 2.0);
         parameters.put("-d", 2.0);
-        double sumAcc = 0;
-        for (int i = 0; i < 10; i++) {
-            double acc = utils.computeAccWithCross(trainFile, parameters, 5);
-            sumAcc += acc;
-        }
-        System.out.println("cross acc: " + sumAcc/10);
+//        double sumAcc = 0;
+//        for (int i = 0; i < 10; i++) {
+//            double acc = utils.computeAccWithCross(trainFile, parameters, 5);
+//            sumAcc += acc;
+//        }
+//        System.out.println("cross acc: " + sumAcc/10);
+        utils.findBestParameters(trainFile);
     }
 }
 
