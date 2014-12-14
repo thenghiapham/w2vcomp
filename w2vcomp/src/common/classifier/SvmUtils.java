@@ -174,11 +174,9 @@ public class SvmUtils {
     }
     
     public static void main(String[] args) throws IOException{
+        String trainFile = args[0];
         String svmDir = "/home/thenghiapham/Downloads/libsvm-3.20";
         SvmUtils utils = new SvmUtils(svmDir);
-        
-        String trainFile = "/home/thenghiapham/work/project/mikolov/rte/svm/addSICK_train_trial.txt";
-        
         HashMap<String, Double> parameters = new HashMap<String, Double>();
         parameters.put("-s", 0.0);
         parameters.put("-t", 2.0);
