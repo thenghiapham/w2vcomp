@@ -46,6 +46,7 @@ public class SvmCosinePrinter {
     public static void printAdd(ParsedPhraseCosinePrinter printer, String vectorFile, String outDir, String suffix) throws IOException {
         RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
         String outFilePath = outDir + "add" + suffix;
+        System.out.println("out file: " + outFilePath);
         printer.printCosines(outFilePath, space, new WeightedAdditive());
     }
     
@@ -57,24 +58,28 @@ public class SvmCosinePrinter {
         double[][] sentenceVector = p2v.getParagraphVectors();
         RawSemanticSpace space = new RawSemanticSpace(sentences, sentenceVector);
         String outFilePath = outDir + "para" + suffix;
+        System.out.println("out file: " + outFilePath);
         printer.printCosines(outFilePath, space, new WeightedAdditive());
     }
     
     public static void printWeighted(ParsedPhraseCosinePrinter printer, String compFile, String outDir, String suffix) throws IOException {
         WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace(compFile, true);
         String outFilePath = outDir + "weighted" + suffix;
+        System.out.println("out file: " + outFilePath);
         printer.printCosines(outFilePath, compSpace);
     }
     
     public static void printDiagonal(ParsedPhraseCosinePrinter printer, String compFile, String outDir, String suffix) throws IOException {
         DiagonalCompositionSemanticSpace compSpace = DiagonalCompositionSemanticSpace.loadCompositionSpace(compFile, true);
         String outFilePath = outDir + "diagonal" + suffix;
+        System.out.println("out file: " + outFilePath);
         printer.printCosines(outFilePath, compSpace);
     }
     
     public static void printFull(ParsedPhraseCosinePrinter printer, String compFile, String outDir, String suffix) throws IOException {
         CompositionSemanticSpace compSpace = CompositionSemanticSpace.loadCompositionSpace(compFile, true);
         String outFilePath = outDir + "full" + suffix;
+        System.out.println("out file: " + outFilePath);
         printer.printCosines(outFilePath, compSpace);
     }
 }
