@@ -80,6 +80,8 @@ public class SvmUtils {
                 printToStream(folds[i], lines, trainWriter);
             }
         }
+        trainWriter.close();
+        testWriter.close();
     }
     
     public HashMap<String, Double> findBestParameters(String trainFile) throws IOException {
@@ -151,6 +153,9 @@ public class SvmUtils {
     public double computeAccWithCross(String trainFile, HashMap<String, Double> parameters, int numFold) {
         ArrayList<String> lines = IOUtils.readFile(trainFile);
         int[][] folds = getFolds(lines.size(), numFold);
+        for (int i = 0; i < folds.length; i++) {
+            System.out.println("fold " + i + " has: " + folds[i].length);
+        }
         double sumAcc = 0;
         for (int i = 0; i < numFold; i++) {
             try {
