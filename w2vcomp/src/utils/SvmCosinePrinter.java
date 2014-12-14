@@ -52,7 +52,7 @@ public class SvmCosinePrinter {
     
     public static void printParagraph(ParsedPhraseCosinePrinter printer, String modelFile, String vocabFile, 
             int vectorSize, boolean hs, int negSample, double subSample, String outDir, String suffix) throws IOException {
-        Paragraph2Vec p2v = new SkipgramPara2Vec(modelFile, vocabFile, vectorSize, 5, hs, negSample, subSample, 100);
+        Paragraph2Vec p2v = new SkipgramPara2Vec(modelFile, vocabFile, vectorSize, 5, hs, negSample, 0, 20);
         String[] sentences = printer.getSurfacePhrases();
         p2v.trainParagraphVector(sentences);
         double[][] sentenceVector = p2v.getParagraphVectors();
