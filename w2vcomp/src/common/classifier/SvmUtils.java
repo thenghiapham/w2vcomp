@@ -82,6 +82,72 @@ public class SvmUtils {
         }
     }
     
+    public HashMap<String, Double> findBestParameters(String trainFile) throws IOException {
+        int[] dValues = {2, 3};
+        int[] cValues = {1, 20};
+        double[] pValues = {.5, .1};
+        double[] gValues = {.01, .001};
+        HashMap<String, Double> currentParameters = new HashMap<String, Double>();
+        HashMap<String, Double> bestParameters = new HashMap<String, Double>();
+        int bestT = 0;
+        int bestD = 0;
+        int bestC = 0;
+        double bestP = 0;
+        double bestG = 0;
+        double bestAcc = 0;
+        int t = 1;
+        currentParameters.put("-s", 0.0);
+        currentParameters.put("-t", (double) t);
+        for (int d: dValues) {
+            currentParameters.put("-d",(double) d);
+            for (int c: cValues) {
+                currentParameters.put("-c",(double) c);
+                for (double p: pValues) {
+                    currentParameters.put("-p",(double) p);
+                    for (double g: gValues) {
+                        currentParameters.put("-g",(double) g);
+                        double acc = trainCrossvalidation(trainFile, currentParameters, 10);
+                        if (acc > bestAcc) {
+                            bestAcc = acc;
+                            bestT = t;
+                            bestD = d;
+                            bestC = c;
+                            bestP = p;
+                            bestG = g;
+                        }
+                    }
+                }
+            }
+        }
+        t = 3;
+        int d = 1;
+        currentParameters.put("-t",(double) t);
+        currentParameters.put("-d",(double) d);
+        for (int c: cValues) {
+            currentParameters.put("-c",(double) c);
+            for (double p: pValues) {
+                currentParameters.put("-p",(double) p);
+                for (double g: gValues) {
+                    currentParameters.put("-g",(double) g);
+                    double acc = trainCrossvalidation(trainFile, currentParameters, 10);
+                    if (acc > bestAcc) {
+                        bestAcc = acc;
+                        bestT = t;
+                        bestC = c;
+                        bestP = p;
+                        bestG = g;
+                    }
+                }
+            }
+        }
+        bestParameters.put("-t", (double) bestT);
+        bestParameters.put("-d", (double) bestD);
+        bestParameters.put("-c", (double) bestC);
+        bestParameters.put("-p", bestP);
+        bestParameters.put("-g", bestG);
+        return bestParameters;
+    }
+    
     public double computeAccWithCross(String trainFile, HashMap<String, Double> parameters, int numFold) {
         ArrayList<String> lines = IOUtils.readFile(trainFile);
         int[][] folds = getFolds(lines.size(), numFold);
@@ -100,6 +166,53 @@ public class SvmUtils {
             }
         }
         return sumAcc/lines.size();
+    }
+    
+    public double trainCrossvalidation(String trainFile, HashMap<String, Double> parameters, int numFold) throws IOException{
+        Runtime rt = Runtime.getRuntime();
+        ArrayList<String> commandList = new ArrayList<String>();
+        commandList.add(svmDir + "/svm-train");
+        for (int i = 0; i < options.length; i++) {
+            String option = options[i];
+            if (parameters.containsKey(option)) {
+                commandList.add(option);
+                if (intOption[i]) {
+                    commandList.add("" + Math.round(parameters.get(option)));
+                } else {
+                    commandList.add("" + parameters.get(option));
+                }
+            }
+        }
+        commandList.add("-v");
+        commandList.add("" + numFold);
+        commandList.add(trainFile);
+        String[] commands = new String[commandList.size()];
+        commands = commandList.toArray(commands);
+        Process proc = rt.exec(commands);
+
+        BufferedReader stdInput = new BufferedReader(new 
+             InputStreamReader(proc.getInputStream()));
+        
+        String s = null;
+        double accuracy = -1.0;
+        while ((s = stdInput.readLine()) != null) {
+            if (s.startsWith("Accuracy")) {
+                String accuracyString = s.split(" ")[2];
+                accuracy = Double.parseDouble(accuracyString.substring(0, accuracyString.length() - 1));
+            }
+        }
+        if (accuracy >= 0) {
+            return accuracy;
+        }
+        BufferedReader stdError = new BufferedReader(new 
+                InputStreamReader(proc.getErrorStream()));
+
+        // read any errors from the attempted command
+        System.out.println("Here is the standard error of the command (if any):\n");
+        while ((s = stdError.readLine()) != null) {
+            System.out.println(s);
+        }
+        throw new UnimplementedException("");
     }
     
     public void train(String trainFile, String modelFile, HashMap<String, Double> parameters) throws IOException{
@@ -185,3 +298,4 @@ public class SvmUtils {
         System.out.println("cross acc: " + acc);
     }
 }
+
