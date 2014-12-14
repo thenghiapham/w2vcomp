@@ -59,7 +59,7 @@ public class SvmCosinePrinter {
         RawSemanticSpace space = new RawSemanticSpace(sentences, sentenceVector);
         String outFilePath = outDir + "para" + suffix;
         System.out.println("out file: " + outFilePath);
-        printer.printCosines(outFilePath, space, new WeightedAdditive());
+        printer.printCosines(outFilePath, space);
     }
     
     public static void printWeighted(ParsedPhraseCosinePrinter printer, String compFile, String outDir, String suffix) throws IOException {

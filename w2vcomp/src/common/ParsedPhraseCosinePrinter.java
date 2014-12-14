@@ -74,6 +74,10 @@ public class ParsedPhraseCosinePrinter {
         printPhraseCosines(fileName, phraseSpace, true);
     }
     
+    public void printCosines(String fileName, SemanticSpace phraseSpace) throws IOException{
+        printPhraseCosines(fileName, phraseSpace, true);
+    }
+    
     public void printCosines(String fileName, CompositionalSemanticSpace space) throws IOException{
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrases, space.getComposedMatrix(parsedPhrases));
         printPhraseCosines(fileName, phraseSpace, false);
