@@ -202,7 +202,7 @@ public class SvmUtils {
         String s = null;
         double accuracy = -1.0;
         while ((s = stdInput.readLine()) != null) {
-            if (s.startsWith("Accuracy")) {
+            if (s.startsWith("Cross Validation")) {
                 String accuracyString = s.split(" ")[4];
                 accuracy = Double.parseDouble(accuracyString.substring(0, accuracyString.length() - 1));
             }
