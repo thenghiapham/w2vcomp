@@ -299,8 +299,12 @@ public class SvmUtils {
         parameters.put("-s", 0.0);
         parameters.put("-t", 2.0);
         parameters.put("-d", 2.0);
-        double acc = utils.computeAccWithCross(trainFile, parameters, 5);
-        System.out.println("cross acc: " + acc);
+        double sumAcc = 0;
+        for (int i = 0; i < 10; i++) {
+            double acc = utils.computeAccWithCross(trainFile, parameters, 5);
+            sumAcc += acc;
+        }
+        System.out.println("cross acc: " + sumAcc/10);
     }
 }
 
