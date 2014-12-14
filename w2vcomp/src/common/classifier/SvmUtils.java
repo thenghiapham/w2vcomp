@@ -29,7 +29,8 @@ public class SvmUtils {
         double accuracy = -1.0;
         while ((s = stdInput.readLine()) != null) {
             if (s.startsWith("Accuracy")) {
-                accuracy = Double.parseDouble(s.split(" ")[2]);
+                String accuracyString = s.split(" ")[2];
+                accuracy = Double.parseDouble(accuracyString.substring(0, accuracyString.length() - 1));
             }
         }
         if (accuracy >= 0) {
