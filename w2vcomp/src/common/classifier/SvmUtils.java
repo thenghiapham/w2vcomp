@@ -1,12 +1,16 @@
 package common.classifier;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
+import common.IOUtils;
 import common.exception.UnimplementedException;
 
 public class SvmUtils {
@@ -15,6 +19,87 @@ public class SvmUtils {
     boolean[] intOption = {true, true, true, true, false, false, true};
     public SvmUtils(String svmDir) {
         this.svmDir = svmDir;
+    }
+    
+    public static void shuffleArray(int[] ar)
+    {
+        Random rnd = new Random();
+        for (int i = ar.length - 1; i > 0; i--)
+        {
+            int index = rnd.nextInt(i + 1);
+            // Simple swap
+            int a = ar[index];
+            ar[index] = ar[i];
+            ar[i] = a;
+        }
+    }
+    
+    public int[] range(int size) {
+        int[] result = new int[size];
+        for (int i = 0; i < size; i++) {
+            result[i] = i;
+        }
+        return result;
+    }
+    
+    public int[][] splitFold(int[] indices, int numFold) {
+        int[][] result = new int[numFold][];
+        int length = indices.length;
+        int div = length / numFold;
+        int mod = length % numFold;
+        for (int i = 0; i < numFold; i++) {
+            int foldLength = div + ((i<mod)?1:0);
+            int start = (i<=mod)?(i* (div+1)):(i*div + mod);
+            result[i] = new int[foldLength];
+            System.arraycopy(indices, start, result[i], 0, foldLength);
+        }
+        return result;
+    }
+
+    public int[][] getFolds(int datasize, int numFold) {
+        int[] indices = range(datasize);
+        shuffleArray(indices);
+        int[][] splits = splitFold(indices, numFold);
+        return splits;
+    }
+    
+    public void printToStream(int[] indices, ArrayList<String> lines, BufferedWriter writer) throws IOException{
+        for (int index: indices) {
+            writer.write(lines.get(index));
+            writer.write("\n");
+        }
+    }
+    
+    public void printFile(int[][] folds, int foldIndex, ArrayList<String> lines, String foldTrainFile, String foldTestFile) throws IOException{
+        BufferedWriter trainWriter = new BufferedWriter(new FileWriter(foldTrainFile));
+        BufferedWriter testWriter = new BufferedWriter(new FileWriter(foldTestFile));
+        for (int i = 0; i < folds.length; i++) {
+            if (i == foldIndex) {
+                printToStream(folds[i], lines, testWriter);
+            } else {
+                printToStream(folds[i], lines, trainWriter);
+            }
+        }
+    }
+    
+    public double computeAccWithCross(String trainFile, HashMap<String, Double> parameters, int numFold) {
+        ArrayList<String> lines = IOUtils.readFile(trainFile);
+        int[][] folds = getFolds(lines.size(), numFold);
+        double sumAcc = 0;
+        for (int i = 0; i < numFold; i++) {
+            try {
+                String foldTrainFile = File.createTempFile("train",".txt").getAbsolutePath();
+                String foldTestFile = File.createTempFile("test",".txt").getAbsolutePath();
+                String foldModelFile = File.createTempFile("model",".txt").getAbsolutePath();
+                printFile(folds,i, lines, foldTrainFile, foldTestFile);
+                train(foldTrainFile, foldModelFile, parameters);
+                double accurracy = accuracy(foldTestFile, foldModelFile, null);
+                sumAcc += accurracy * folds[i].length;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sumAcc/lines.size();
     }
     
     public void train(String trainFile, String modelFile, HashMap<String, Double> parameters) throws IOException{
@@ -49,7 +134,6 @@ public class SvmUtils {
         BufferedReader stdError = new BufferedReader(new 
                 InputStreamReader(proc.getErrorStream()));
 
-        System.out.println("Error:");
         while ((s = stdError.readLine()) != null) {
             System.out.println(s);
         }
@@ -93,14 +177,13 @@ public class SvmUtils {
         String svmDir = "/home/thenghiapham/Downloads/libsvm-3.20";
         SvmUtils utils = new SvmUtils(svmDir);
         
-        String trainFile = "/home/thenghiapham/work/project/mikolov/imdb/svm/train.txt";
-        String testFile = "/home/thenghiapham/work/project/mikolov/imdb/svm/test.txt";
-        String modelFile = "/home/thenghiapham/Downloads/libsvm-3.20/add.mdl";
+        String trainFile = "/home/thenghiapham/work/project/mikolov/rte/svm/addSICK_train_trial.txt";
+        
         HashMap<String, Double> parameters = new HashMap<String, Double>();
         parameters.put("-s", 0.0);
         parameters.put("-t", 2.0);
         parameters.put("-d", 2.0);
-        utils.train(trainFile, modelFile, parameters);
-        System.out.println(utils.accuracy(testFile, modelFile, null));
+        double acc = utils.computeAccWithCross(trainFile, parameters, 5);
+        System.out.println("cross acc: " + acc);
     }
 }
