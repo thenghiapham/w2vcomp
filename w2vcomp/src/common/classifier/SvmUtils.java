@@ -19,7 +19,7 @@ public class SvmUtils {
             File temp = File.createTempFile("temp-file-name", ".tmp");
             outFile = temp.getAbsolutePath();
         }
-        String[] commands = {svmDir + "/svm-predict","-s", "0",testFile, modelFile, outFile};
+        String[] commands = {svmDir + "/svm-predict",testFile, modelFile, outFile};
         Process proc = rt.exec(commands);
 
         BufferedReader stdInput = new BufferedReader(new 
