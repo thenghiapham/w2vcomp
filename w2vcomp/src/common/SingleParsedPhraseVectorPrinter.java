@@ -59,6 +59,10 @@ public class SingleParsedPhraseVectorPrinter {
         printPhraseVectors(fileName, phraseSpace, true);
     }
     
+    public void printVectors(String fileName, SemanticSpace phraseSpace) throws IOException{
+        printPhraseVectors(fileName, phraseSpace, true);
+    }
+    
     public void printVectors(String fileName, CompositionalSemanticSpace space) throws IOException{
         SMSemanticSpace phraseSpace = new SMSemanticSpace(parsedPhrases, space.getComposedMatrix(parsedPhrases));
         printPhraseVectors(fileName, phraseSpace, false);
