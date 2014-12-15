@@ -76,6 +76,7 @@ public class DiagonalCompositionSemanticSpace implements CompositionalSemanticSp
         SimpleDiagonalTreeNetwork network = SimpleDiagonalTreeNetwork.createComposingNetwork(parseTree, 
                 projectionMatrix, compositionMatrices, hiddenActivationFunction);
         SimpleMatrix topVector = network.compose();
+        topVector = topVector.scale(1.0 / parseTree.getWidth());
         return topVector;
     }
     
