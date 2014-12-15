@@ -75,7 +75,7 @@ public class WeightedCompositionSemanticSpace implements CompositionalSemanticSp
         SimpleWeightedTreeNetwork network = SimpleWeightedTreeNetwork.createComposingNetwork(parseTree, 
                 projectionMatrix, compositionMatrices, hiddenActivationFunction);
         SimpleMatrix topVector = network.compose();
-        topVector = topVector.scale(1.0 / parseTree.getWidth());
+//        topVector = topVector.scale(1.0 / parseTree.getWidth());
         return topVector;
     }
     
