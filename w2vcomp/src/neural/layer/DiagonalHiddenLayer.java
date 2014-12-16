@@ -46,7 +46,7 @@ public class DiagonalHiddenLayer extends BasicLayer implements Layer{
         SimpleMatrixUtils.checkNaN(input);
         SimpleMatrixUtils.checkNaN(inputWeights);
         tempZ = inputWeights.elementMult(input);
-        tempZ = SimpleMatrixUtils.sumSplit(tempZ);
+        tempZ = SimpleMatrixUtils.sumSplit(tempZ,2);
         try {
             SimpleMatrixUtils.checkNaN(tempZ);
         } catch (ValueException e) {
@@ -75,7 +75,7 @@ public class DiagonalHiddenLayer extends BasicLayer implements Layer{
             parentError = parentError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
             SimpleMatrixUtils.checkNaN(parentError);
         }
-        parentError = SimpleMatrixUtils.duplicateRows(parentError);
+        parentError = SimpleMatrixUtils.duplicateRows(parentError,2);
         gradient = parentError.elementMult(input);
         SimpleMatrixUtils.checkNaN(gradient);
         error = inputWeights.elementMult(parentError);

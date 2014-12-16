@@ -18,7 +18,7 @@ import common.exception.ValueException;
  * @author thenghiapham
  *
  */
-public class HiddenLayer extends BasicLayer implements Layer{
+public class NewDiagonalLayer extends BasicLayer implements Layer{
     
     protected SimpleMatrix inputWeights;
     protected ActivationFunction activation;
@@ -29,8 +29,11 @@ public class HiddenLayer extends BasicLayer implements Layer{
     protected SimpleMatrix error;
     protected SimpleMatrix gradient;
     
+//    public static void paddOne(SimpleMatrix input) {
+//        
+//    }
     
-    public HiddenLayer(SimpleMatrix weights, ActivationFunction activation) {
+    public NewDiagonalLayer(SimpleMatrix weights, ActivationFunction activation) {
         this.inputWeights = weights;
         this.activation = activation;
     }
@@ -43,21 +46,18 @@ public class HiddenLayer extends BasicLayer implements Layer{
          * - apply activation function if exist (a_i)
          */
         input = getInLayerInput();
-//        SimpleMatrixUtils.checkNaN(input);
-//        SimpleMatrixUtils.checkNaN(inputWeights);
-//        tempZ = inputWeights.mult(input);
-//        try {
-//            SimpleMatrixUtils.checkNaN(tempZ);
-//        } catch (ValueException e) {
-//            System.out.println("input " + input);
-//            System.out.println("inputWeights " + inputWeights);
-//        }
-//        SimpleMatrixUtils.checkNaN(tempZ);
+        input = SimpleMatrixUtils.paddOne2ColumnVector(input, input.numRows() / 2);
+        tempZ = inputWeights.elementMult(input);
+        tempZ = SimpleMatrixUtils.sumSplit(tempZ, 3);
+        try {
+        } catch (ValueException e) {
+            System.out.println("input " + input);
+            System.out.println("inputWeights " + inputWeights);
+        }
         if (activation != null) 
             output = SimpleMatrixUtils.applyActivationFunction(tempZ,activation);
         else
             output = tempZ;
-//        SimpleMatrixUtils.checkNaN(output);
     }
     
     @Override
@@ -69,15 +69,14 @@ public class HiddenLayer extends BasicLayer implements Layer{
          */
         
         SimpleMatrix parentError = getOutLayerError();
+//        System.out.println("out error: " + parentError.numRows());
         if (parentError == null) return;
         if (activation != null) {
             parentError = parentError.elementMult(SimpleMatrixUtils.applyDerivative(tempZ, activation));
-//            SimpleMatrixUtils.checkNaN(parentError);
         }
-        gradient = parentError.mult(input.transpose());
-//        SimpleMatrixUtils.checkNaN(gradient);
-        error = inputWeights.transpose().mult(parentError);
-//        SimpleMatrixUtils.checkNaN(error);
+        parentError = SimpleMatrixUtils.duplicateRows(parentError, 3);
+        gradient = parentError.elementMult(input);
+        error = inputWeights.elementMult(parentError);
     }
     
     @Override
@@ -85,8 +84,8 @@ public class HiddenLayer extends BasicLayer implements Layer{
         // TODO: not that great
         if (error == null) return null;
         if (inLayers.size() == 0) return null;
-        if (child == inLayers.get(0)) return SimpleMatrixUtils.extractPartialVector(error, 2, 0);
-        else if (child == inLayers.get(1)) return SimpleMatrixUtils.extractPartialVector(error, 2, 1);
+        if (child == inLayers.get(0)) return SimpleMatrixUtils.extractPartialVector(error, 3, 0);
+        else if (child == inLayers.get(1)) return SimpleMatrixUtils.extractPartialVector(error, 3, 1);
         else return null;
     }
     

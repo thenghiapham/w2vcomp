@@ -304,24 +304,43 @@ public class SimpleMatrixUtils {
         return result;
     }
     
-    public static SimpleMatrix sumSplit(SimpleMatrix input) {
+    public static SimpleMatrix paddOne2ColumnVector(SimpleMatrix input, int numOne) {
         double[] rawData = input.getMatrix().data;
         int length = rawData.length;
-        int halfLength = length / 2;
-        double[] resultData = new double[halfLength];
-        for (int i = 0; i < halfLength; i++) {
-            resultData[i] = rawData[i] + rawData[i + halfLength];
+        int newLength = length + numOne;
+        SimpleMatrix result = new SimpleMatrix(newLength, 1);
+        double[] resultData = result.getMatrix().data;
+        for (int i = 0; i < newLength; i++) {
+            System.arraycopy(rawData, 0, resultData, 0, length);
         }
-        return new SimpleMatrix(halfLength, 1, true, resultData);
+        for (int i = 0; i < numOne; i++) {
+            resultData[length + i] = 1;
+        }
+        return result;
     }
     
-    public static SimpleMatrix duplicateRows(SimpleMatrix input) {
+    public static SimpleMatrix sumSplit(SimpleMatrix input, int numSplit) {
+        
         double[] rawData = input.getMatrix().data;
         int length = rawData.length;
-        int newLength = length * 2;
-        double[] resultData = new double[newLength];
-        System.arraycopy(rawData, 0, resultData, 0, length);
-        System.arraycopy(rawData, 0, resultData, length, length);
-        return new SimpleMatrix(input.numRows() * 2, input.numCols(), true, resultData);
+        int newLength = length / numSplit;
+        SimpleMatrix result = new SimpleMatrix(newLength, 1);
+        double[] resultData = result.getMatrix().data;
+        for (int i = 0; i < newLength; i++) {
+            for (int j = 0; j < numSplit; j++)
+            resultData[i] += rawData[i + j*newLength];
+        }
+        return result;
+    }
+    
+    public static SimpleMatrix duplicateRows(SimpleMatrix input, int numDup) {
+        double[] rawData = input.getMatrix().data;
+        int length = rawData.length;
+        SimpleMatrix result = new SimpleMatrix(input.numRows() * numDup, input.numCols());
+        double[] resultData = result.getMatrix().data;
+        for (int i = 0; i < numDup; i++) {
+            System.arraycopy(rawData, 0, resultData, i * length, length);
+        }
+        return result;
     }
 }
