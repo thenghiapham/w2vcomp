@@ -1,12 +1,11 @@
 package utils;
 
 import space.DiagonalCompositionSemanticSpace;
-
+import space.NewDiagonalCompositionSemanticSpace;
 import common.correlation.ANCorrelation;
 import common.correlation.NNCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.VOCorrelation;
-
 import demo.TestConstants;
 
 public class DiagonalEvaluation {
@@ -15,7 +14,8 @@ public class DiagonalEvaluation {
         if (args.length > 0) {
             compFile = args[0];
         }
-        DiagonalCompositionSemanticSpace space = DiagonalCompositionSemanticSpace.loadCompositionSpace(compFile, true);
+//        DiagonalCompositionSemanticSpace space = DiagonalCompositionSemanticSpace.loadCompositionSpace(compFile, true);
+        NewDiagonalCompositionSemanticSpace space = NewDiagonalCompositionSemanticSpace.loadCompositionSpace(compFile, true);
         ANCorrelation an = new ANCorrelation(TestConstants.S_AN_FILE);
         NNCorrelation nn = new NNCorrelation(TestConstants.S_NN_FILE);
         VOCorrelation vo = new VOCorrelation(TestConstants.S_VO_FILE);
