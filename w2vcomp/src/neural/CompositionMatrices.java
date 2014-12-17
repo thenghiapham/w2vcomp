@@ -280,9 +280,10 @@ public class CompositionMatrices {
             }
         }
         for (Integer key : gradientMap.keySet()) {
-            // TODO: blah
+
+            // TODO: change it back
             // don't update default matrices
-            if (key == 0) continue;
+//            if (key == 0) continue;
             
             SimpleMatrix gradient =  gradientMap.get(key);
             if (learningRate != 0) {

@@ -14,7 +14,6 @@ import tree.Tree;
 import neural.NewDiagonalCompositionMatrices;
 import neural.NewSimpleDiagonalNetwork;
 import neural.ProjectionMatrix;
-import neural.SimpleDiagonalTreeNetwork;
 import neural.function.ActivationFunction;
 import neural.function.IdentityFunction;
 import neural.function.Tanh;
