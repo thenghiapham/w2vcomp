@@ -8,7 +8,7 @@ public class LineNumFinalizer implements ParameterFinalizer{
     @Override
     public void finish(ModelParameters finalParameters) {
         System.out.println("Total number of lines:"
-                + finalParameters.getValue());
+                + ((LineNumParameters) finalParameters).getValue());
     }
 
 }

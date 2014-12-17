@@ -26,7 +26,7 @@ public class LineNumEstimator implements ParameterEstimator {
         }
     }
     @Override
-    public void run(ModelParameters init, ParameterMessager parameterMessager) {
+    public void run(Integer worker_id, ModelParameters init, ParameterMessager parameterMessager) {
         // TODO Auto-generated method stub
         long numLine = 0;
         LineNumParameters parameters = new LineNumParameters();
@@ -38,14 +38,14 @@ public class LineNumEstimator implements ParameterEstimator {
                 numLine += 1;
                 if (numLine % 10000 == 0) {
                     parameters.setValue(new Long(10000));
-                    parameterMessager.sendUpdate(parameters);
+                    parameterMessager.sendUpdate(worker_id, parameters);
                     System.out.println("numLine: " + numLine);
                 }
 //                tree = inputStream.readTree();
                 line = reader.readLine();
             }
             parameters.setValue(new Long(numLine % 10000));
-            parameterMessager.sendUpdate(parameters);
+            parameterMessager.sendUpdate(worker_id, parameters);
             System.out.println("numLine: " + numLine);
 //            parameterMessager.sendEnd();
         } catch (IOException e) {

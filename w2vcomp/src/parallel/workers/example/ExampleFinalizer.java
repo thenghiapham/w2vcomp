@@ -8,7 +8,7 @@ public class ExampleFinalizer implements ParameterFinalizer {
     @Override
     public void finish(ModelParameters finalParameters) {
         System.out.println("Final result:"
-                + finalParameters.getValue());
+                + ((ExampleModelParameters) finalParameters).getValue());
     }
 
 }

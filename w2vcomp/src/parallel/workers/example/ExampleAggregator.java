@@ -10,14 +10,14 @@ public class ExampleAggregator implements ParameterAggregator {
     public ExampleAggregator() {
         params = new ExampleModelParameters();
         // Initialization
-        params.setValue("");
+        ((ExampleModelParameters) params).setValue("");
     }
 
     @Override
     public ModelParameters aggregate(Integer source, ModelParameters _content) {
         ExampleModelParameters content = 
                 (ExampleModelParameters) _content;
-        params.setValue(params.getValue() + content.getValue());
+        ((ExampleModelParameters) params).setValue(((ExampleModelParameters) params).getValue() + content.getValue());
         return params;
     }
 
@@ -26,9 +26,15 @@ public class ExampleAggregator implements ParameterAggregator {
         return params;
     }
     
+
+    public void finalize() {
+    
+    }
+    
     @Override
-    public ModelParameters getFinalParameters(Integer source) {
-        return params;
+    public void finalizeWorker(Integer source) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
