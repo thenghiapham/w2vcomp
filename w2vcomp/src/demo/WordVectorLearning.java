@@ -20,7 +20,7 @@ public class WordVectorLearning {
 //        CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, true, 0, (float) 0);
         //CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, false, 10, (float) 1e-3);
         //SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(200, 5, true, 0, (float) 1e-3);
-        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(100, 5, true, 0, (float) 0, TestConstants.S_MEN_FILE);
+        SkipNGramWord2Vec word2vec = new SkipNGramWord2Vec(40, 5, true, 0, (float) 1e-3, TestConstants.S_MEN_FILE);
 //        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(200, 5, false, 10, (float) 1e-3, TestConstants.S_MEN_FILE);
         // CBowWord2Vec word2vec = new SimpleWord2Vec(200, 5, false, 10, (float)
         // 0);
@@ -30,7 +30,7 @@ public class WordVectorLearning {
         System.out.println("Starting training using file " + trainFile);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
-        Vocab vocab = new Vocab(500);
+        Vocab vocab = new Vocab(5);
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {
