@@ -138,21 +138,27 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
                 // adding the output layers to the hidden/projection layer 
                 // corresponding to the phrase 
              // subSample
+                int[] indices = null;
+                if (width == 1) {
+                    indices = outputBuilder.getOutputIndices(sentence[i]);
+                } else {
+                    indices = inOutputBuilder.getOutputIndices(sentence[i]);
+                }
+                if (indices == null) continue;
+                
                 long frequency = vocab.getEntry(sentence[i]).frequency;
                 long totalCount = vocab.getTrainWords();
                 if (subSample >0 && !MathUtils.isSampled(frequency, totalCount, subSample)) continue;
                 
-                int[] indices = null;
+                
                 SimpleMatrix weightMatrix = null;
                 SimpleMatrix goldMatrix = null;
                 if (width == 1) {
                     indices = outputBuilder.getOutputIndices(sentence[i]);
-                    if (indices == null) continue;
                     weightMatrix = outputBuilder.getOutputWeights(indices);
                     goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                 } else {
                     indices = inOutputBuilder.getOutputIndices(sentence[i]);
-                    if (indices == null) continue;
                     weightMatrix = inOutputBuilder.getOutputWeights(indices);
                     goldMatrix = inOutputBuilder.getGoldOutput(sentence[i]);
                 }
