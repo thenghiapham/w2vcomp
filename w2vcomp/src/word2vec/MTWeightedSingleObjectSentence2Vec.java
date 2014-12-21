@@ -3,13 +3,13 @@ package word2vec;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.IOUtils;
-
 import neural.NegativeSamplingLearner;
 import neural.ProjectionMatrix;
 import neural.HierarchicalSoftmaxLearner;
@@ -85,7 +85,9 @@ public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2V
         System.arraycopy(sentence, 0, historyPresentFuture, history.length, sentence.length);
         System.arraycopy(future, 0, historyPresentFuture, history.length + sentence.length, future.length);
         List<Tree> reversedNodes = parseTree.allNodes();
+        // TODO: change this
 //        Collections.reverse(reversedNodes);
+        Collections.shuffle(reversedNodes);
         for (Tree subTree: reversedNodes) {
             int height = subTree.getHeight();
             if (height == 0) continue;
