@@ -7,33 +7,34 @@ import java.util.Random;
 
 import neural.function.ActivationFunction;
 import neural.function.ObjectiveFunction;
-import neural.layer.HiddenLayer;
-import neural.layer.Layer;
 import neural.layer.OutputLayer;
+import neural.layer.WeightedHiddenLayer;
+import neural.layer.Layer;
 import neural.layer.ProjectionLayer;
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.MathUtils;
+import common.exception.UnimplementedException;
 import tree.Tree;
 import vocab.Vocab;
 
-public class SingleObjTreeNetwork extends TreeNetwork{
-    
-    protected SingleObjTreeNetwork(Tree parseTree) {
+public class InnerWeightedNetwork extends WeightedTreeNetwork{
+
+    protected InnerWeightedNetwork(Tree parseTree) {
         super(parseTree);
         // TODO Auto-generated constructor stub
     }
     
-    public static SingleObjTreeNetwork createNetwork(Tree parseTree, Tree rootTree, 
+    public static InnerWeightedNetwork createNetwork(Tree parseTree, Tree rootTree, 
             String[] historyPresentFuture, Vocab vocab, ProjectionMatrix projectionBuilder, 
-            CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder, 
+            WeightedCompositionMatrices hiddenBuilder, LearningStrategy outOutputBuilder, LearningStrategy inOutputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
             int maxWindowSize, double subSample) {
-        SingleObjTreeNetwork network = new SingleObjTreeNetwork(parseTree);
+        InnerWeightedNetwork network = new InnerWeightedNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
-        network.outputBuilder = outputBuilder;
+//        network.outputBuilder = inOutputBuilder;
         
         
         HashMap<Tree, Layer> layerMap = new HashMap<>();
@@ -79,7 +80,7 @@ public class SingleObjTreeNetwork extends TreeNetwork{
                     SimpleMatrix weights = hiddenBuilder.getCompositionMatrix(construction);
                     int compositionIndex = hiddenBuilder.getConstructionIndex(construction);
                     
-                    layer = new HiddenLayer(weights, hiddenLayerActivation);
+                    layer = new WeightedHiddenLayer(weights, hiddenLayerActivation);
                     for (Tree child: children) {
                         Layer childLayer = layerMap.get(child);
                         // TODO: fix here
@@ -87,7 +88,7 @@ public class SingleObjTreeNetwork extends TreeNetwork{
                         layer.addInLayer(childLayer);
                         childLayer.addOutLayer(layer);
                     }
-                    network.addHiddenLayer((HiddenLayer) layer, compositionIndex);
+                    network.addHiddenLayer((WeightedHiddenLayer) layer, compositionIndex);
                 }
             }
             if (layer != null) {
@@ -101,7 +102,7 @@ public class SingleObjTreeNetwork extends TreeNetwork{
         
         // add the output layers to the suitable layers
         network.setLayerMap(layerMap);
-        network.addOutputLayers(rootTree, historyPresentFuture, vocab, outputBuilder, outputLayerActivation, maxWindowSize, subSample);
+        network.addOutputLayers(rootTree, historyPresentFuture, vocab, outOutputBuilder, inOutputBuilder, outputLayerActivation, maxWindowSize, subSample);
         
         //TODO: remove
         network.treeMap = treeMap;
@@ -109,10 +110,8 @@ public class SingleObjTreeNetwork extends TreeNetwork{
         return network;
     }
     
-    // trees should already have updated height & width information
-    // left position should be the length of history
-    // concatenating concatenating 
-    protected void addOutputLayers(Tree rootTree, String[] historyPresentFuture, Vocab vocab, LearningStrategy outputBuilder, 
+    protected void addOutputLayers(Tree rootTree, String[] historyPresentFuture, Vocab vocab, 
+            LearningStrategy outOutputBuilder, LearningStrategy inOutputBuilder,
             ActivationFunction outputLayerActivation, int maxWindowSize, double subSample) {
 
         // get the 
@@ -137,16 +136,25 @@ public class SingleObjTreeNetwork extends TreeNetwork{
                 
                 // adding the output layers to the hidden/projection layer 
                 // corresponding to the phrase 
-                int[] indices = outputBuilder.getOutputIndices(sentence[i]);
-                if (indices == null) continue;
-                
-                // subSample
+             // subSample
                 long frequency = vocab.getEntry(sentence[i]).frequency;
                 long totalCount = vocab.getTrainWords();
                 if (subSample >0 && !MathUtils.isSampled(frequency, totalCount, subSample)) continue;
                 
-                SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
-                SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
+                int[] indices = null;
+                SimpleMatrix weightMatrix = null;
+                SimpleMatrix goldMatrix = null;
+                if (width == 1) {
+                    indices = outOutputBuilder.getOutputIndices(sentence[i]);
+                    if (indices == null) continue;
+                    weightMatrix = outOutputBuilder.getOutputWeights(indices);
+                    goldMatrix = outOutputBuilder.getGoldOutput(sentence[i]);
+                } else {
+                    indices = inOutputBuilder.getOutputIndices(sentence[i]);
+                    if (indices == null) continue;
+                    weightMatrix = inOutputBuilder.getOutputWeights(indices);
+                    goldMatrix = inOutputBuilder.getGoldOutput(sentence[i]);
+                }
                 
                 ObjectiveFunction costFunction = outputBuilder.getCostFunction();
                 OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, significant, inputCoefficient);
@@ -158,5 +166,4 @@ public class SingleObjTreeNetwork extends TreeNetwork{
             
         }
     }
-    
 }

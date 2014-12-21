@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 import neural.function.ActivationFunction;
 import neural.function.IdentityFunction;
 import neural.function.Tanh;
@@ -25,6 +24,7 @@ import vocab.Vocab;
 import word2vec.MTDiagonalSingleObjectSentence2Vec;
 import word2vec.MTIncrementalWeightedSentence2Vec;
 import word2vec.MTNewDiagonalSOSentence2Vec;
+import word2vec.MTWeightedInnerWord2Vec;
 import word2vec.MTWeightedSingleObjectSentence2Vec;
 //import word2vec.MultiThreadDiagonalSentence2Vec;
 //import word2vec.MultiThreadSentence2Vec;
@@ -46,7 +46,11 @@ public class MultiThreadSentenceVectorLearning {
 //        ActivationFunction hiddenActivationFunction = new Tanh();
 //        HashMap<String, String> constructionGroups = new HashMap<String, String>();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+//        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
+        
+        MTWeightedInnerWord2Vec sentence2vec = new MTWeightedInnerWord2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
         
