@@ -47,7 +47,7 @@ public class TestConstants {
     public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_neg_irwubnc300ts.cmp";
     public static final String S_MODEL_FILE               = S_OUT_DIR + "s_neg_irwubnc300ts.mdl";
     public static final String S_LOG_FILE                 = S_LOG_DIR + "s_neg_irwubnc300ts.log";
-    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc_upper.voc";
+    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc_lower.voc";
     
     public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skipgram.mdl";
 //    public static final int S_MIN_FREQUENCY               = 10;
