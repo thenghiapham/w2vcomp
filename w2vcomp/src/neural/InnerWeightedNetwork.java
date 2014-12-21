@@ -156,7 +156,7 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
                     goldMatrix = inOutputBuilder.getGoldOutput(sentence[i]);
                 }
                 
-                ObjectiveFunction costFunction = outputBuilder.getCostFunction();
+                ObjectiveFunction costFunction = outOutputBuilder.getCostFunction();
                 OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, significant, inputCoefficient);
                 outputLayer.addInLayer(layer);
                 layer.addOutLayer(outputLayer);
