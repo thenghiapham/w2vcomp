@@ -44,8 +44,8 @@ public class MultiThreadSentenceVectorLearning {
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
 //        ActivationFunction hiddenActivationFunction = new Tanh();
-        HashMap<String, String> constructionGroups = new HashMap<String, String>();
-//        HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
+//        HashMap<String, String> constructionGroups = new HashMap<String, String>();
+        HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
         MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
