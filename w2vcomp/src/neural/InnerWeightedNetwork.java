@@ -193,7 +193,8 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
         //TODO: change learning rate back
         hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * matrixCoefficient);
         
-        if (this.parseTree.getWidth() == 1) {
+        int width = parseTree.getRightmostPosition() - parseTree.getLeftmostPosition() + 1;
+        if (width == 1) {
             // updating the hierarchical softmax or the negative sampling layer
             for (int i = 0; i < outputLayers.size(); i++) {
                 outputBuilder.updateMatrix(outVectorIndices.get(i), 
