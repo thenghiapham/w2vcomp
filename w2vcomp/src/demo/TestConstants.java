@@ -2,6 +2,8 @@ package demo;
 
 public class TestConstants {
     
+    public static final boolean LOWER_CASE = true;
+    
     public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/text/wikiA_sample.txt";
     public static final String TRAIN_DIR               = "/home/thenghiapham/work/project/mikolov/text/tmp";
     public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/text/wikiA.bin";

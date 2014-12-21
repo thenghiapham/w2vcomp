@@ -42,12 +42,13 @@ public class MultiThreadSentenceVectorLearning {
         boolean allLevel = true;
         boolean lexical = false;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
-//        ActivationFunction hiddenActivationFunction = new IdentityFunction();
-        ActivationFunction hiddenActivationFunction = new Tanh();
-        HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
-//        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
-//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-//                allLevel, lexical);
+        ActivationFunction hiddenActivationFunction = new IdentityFunction();
+//        ActivationFunction hiddenActivationFunction = new Tanh();
+        HashMap<String, String> constructionGroups = new HashMap<String, String>();
+//        HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(constructionFile);
+        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
         
 //        MTDiagonalSingleObjectSentence2Vec sentence2vec = new MTDiagonalSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
@@ -70,9 +71,9 @@ public class MultiThreadSentenceVectorLearning {
 //        MTIncrementalDiagonalSentence2Vec sentence2vec = new MTIncrementalDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
-        MTNewDiagonalSOSentence2Vec sentence2vec = new MTNewDiagonalSOSentence2Vec(hiddenLayerSize, windowSize, 
-                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                allLevel, lexical);
+//        MTNewDiagonalSOSentence2Vec sentence2vec = new MTNewDiagonalSOSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
         String trainDirPath = TestConstants.S_TRAIN_DIR;
         String outputFile = TestConstants.S_VECTOR_FILE;
         String compFile = TestConstants.S_COMPOSITION_FILE;
