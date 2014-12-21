@@ -20,7 +20,8 @@ import tree.Tree;
 import vocab.Vocab;
 
 public class InnerWeightedNetwork extends WeightedTreeNetwork{
-
+    private static final double matrixCoefficient = 0.001;
+    protected LearningStrategy inOutputBuilder;
     protected InnerWeightedNetwork(Tree parseTree) {
         super(parseTree);
         // TODO Auto-generated constructor stub
@@ -34,7 +35,8 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
         InnerWeightedNetwork network = new InnerWeightedNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
-//        network.outputBuilder = inOutputBuilder;
+        network.outputBuilder = outOutputBuilder;
+        network.inOutputBuilder = inOutputBuilder;
         
         
         HashMap<Tree, Layer> layerMap = new HashMap<>();
@@ -102,7 +104,7 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
         
         // add the output layers to the suitable layers
         network.setLayerMap(layerMap);
-        network.addOutputLayers(rootTree, historyPresentFuture, vocab, outOutputBuilder, inOutputBuilder, outputLayerActivation, maxWindowSize, subSample);
+        network.addOutputLayers(rootTree, historyPresentFuture, vocab, outputLayerActivation, maxWindowSize, subSample);
         
         //TODO: remove
         network.treeMap = treeMap;
@@ -111,7 +113,6 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
     }
     
     protected void addOutputLayers(Tree rootTree, String[] historyPresentFuture, Vocab vocab, 
-            LearningStrategy outOutputBuilder, LearningStrategy inOutputBuilder,
             ActivationFunction outputLayerActivation, int maxWindowSize, double subSample) {
 
         // get the 
@@ -145,10 +146,10 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
                 SimpleMatrix weightMatrix = null;
                 SimpleMatrix goldMatrix = null;
                 if (width == 1) {
-                    indices = outOutputBuilder.getOutputIndices(sentence[i]);
+                    indices = outputBuilder.getOutputIndices(sentence[i]);
                     if (indices == null) continue;
-                    weightMatrix = outOutputBuilder.getOutputWeights(indices);
-                    goldMatrix = outOutputBuilder.getGoldOutput(sentence[i]);
+                    weightMatrix = outputBuilder.getOutputWeights(indices);
+                    goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                 } else {
                     indices = inOutputBuilder.getOutputIndices(sentence[i]);
                     if (indices == null) continue;
@@ -156,7 +157,7 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
                     goldMatrix = inOutputBuilder.getGoldOutput(sentence[i]);
                 }
                 
-                ObjectiveFunction costFunction = outOutputBuilder.getCostFunction();
+                ObjectiveFunction costFunction = outputBuilder.getCostFunction();
                 OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, significant, inputCoefficient);
                 outputLayer.addInLayer(layer);
                 layer.addOutLayer(outputLayer);
@@ -164,6 +165,46 @@ public class InnerWeightedNetwork extends WeightedTreeNetwork{
                 addOutputLayer(outputLayer, indices);
             }
             
+        }
+    }
+    
+    @Override
+    public void update(double learningRate) {
+        
+        // updating the projection matrix
+        for (int i = 0; i < projectionLayers.size(); i++) {
+            int wordIndex = inputVectorIndices.get(i);
+            SimpleMatrix gradient = projectionLayers.get(i).getGradient();
+            if (gradient == null) {
+//                System.out.println(" empty " + treeMap.get(projectionLayers.get(i)).toPennTree());
+                //LOGGER.log(Level.FINE, treeMap.get(projectionLayers.get(i)).toPennTree());
+                continue;
+            }
+            projectionBuilder.updateVector(wordIndex, 
+                    gradient, learningRate);
+        }
+        
+        // updating the compositionMatrices
+        ArrayList<SimpleMatrix> hiddenGradients = new ArrayList<>();
+        for (Layer layer: hiddenLayers) {
+            hiddenGradients.add(layer.getGradient());
+        }
+        
+        //TODO: change learning rate back
+        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * matrixCoefficient);
+        
+        if (this.parseTree.getWidth() == 1) {
+            // updating the hierarchical softmax or the negative sampling layer
+            for (int i = 0; i < outputLayers.size(); i++) {
+                outputBuilder.updateMatrix(outVectorIndices.get(i), 
+                        outputLayers.get(i).getGradient(), learningRate);
+            }
+        } else {
+         // updating the hierarchical softmax or the negative sampling layer
+            for (int i = 0; i < outputLayers.size(); i++) {
+                inOutputBuilder.updateMatrix(outVectorIndices.get(i), 
+                        outputLayers.get(i).getGradient(), learningRate);
+            }
         }
     }
 }

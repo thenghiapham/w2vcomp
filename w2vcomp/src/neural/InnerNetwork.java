@@ -20,7 +20,8 @@ import tree.Tree;
 import vocab.Vocab;
 
 public class InnerNetwork extends SingleObjTreeNetwork {
-//    protected LearningStrategy inOutputBuilder;
+    private static final double matrixCoefficient = 0.01;
+    protected LearningStrategy inOutputBuilder;
     
     protected InnerNetwork(Tree parseTree) {
         super(parseTree);
@@ -35,8 +36,8 @@ public class InnerNetwork extends SingleObjTreeNetwork {
         InnerNetwork network = new InnerNetwork(parseTree);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
-//        network.outputBuilder = inOutputBuilder;
-//        network.inOutputBuilder = inOutputBuilder;
+        network.outputBuilder = outOutputBuilder;
+        network.inOutputBuilder = inOutputBuilder;
         
         
         HashMap<Tree, Layer> layerMap = new HashMap<>();
@@ -104,7 +105,7 @@ public class InnerNetwork extends SingleObjTreeNetwork {
         
         // add the output layers to the suitable layers
         network.setLayerMap(layerMap);
-        network.addOutputLayers(rootTree, historyPresentFuture, vocab, outOutputBuilder, inOutputBuilder, outputLayerActivation, maxWindowSize, subSample);
+        network.addOutputLayers(rootTree, historyPresentFuture, vocab, outputLayerActivation, maxWindowSize, subSample);
         
         //TODO: remove
         network.treeMap = treeMap;
@@ -113,7 +114,6 @@ public class InnerNetwork extends SingleObjTreeNetwork {
     }
     
     protected void addOutputLayers(Tree rootTree, String[] historyPresentFuture, Vocab vocab, 
-            LearningStrategy outOutputBuilder, LearningStrategy inOutputBuilder,
             ActivationFunction outputLayerActivation, int maxWindowSize, double subSample) {
 
         // get the 
@@ -147,10 +147,10 @@ public class InnerNetwork extends SingleObjTreeNetwork {
                 SimpleMatrix weightMatrix = null;
                 SimpleMatrix goldMatrix = null;
                 if (width == 1) {
-                    indices = outOutputBuilder.getOutputIndices(sentence[i]);
+                    indices = outputBuilder.getOutputIndices(sentence[i]);
                     if (indices == null) continue;
-                    weightMatrix = outOutputBuilder.getOutputWeights(indices);
-                    goldMatrix = outOutputBuilder.getGoldOutput(sentence[i]);
+                    weightMatrix = outputBuilder.getOutputWeights(indices);
+                    goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
                 } else {
                     indices = inOutputBuilder.getOutputIndices(sentence[i]);
                     if (indices == null) continue;
@@ -175,5 +175,43 @@ public class InnerNetwork extends SingleObjTreeNetwork {
             int maxWindowSize, double subSample) {
         throw new UnimplementedException("Not valid");
         
+    }
+    
+    @Override
+    public void update(double learningRate) {
+        
+        // updating the projection matrix
+        for (int i = 0; i < projectionLayers.size(); i++) {
+            int wordIndex = inputVectorIndices.get(i);
+            SimpleMatrix gradient = projectionLayers.get(i).getGradient();
+            if (gradient == null) {
+//                System.out.println(" empty " + treeMap.get(projectionLayers.get(i)).toPennTree());
+                //LOGGER.log(Level.FINE, treeMap.get(projectionLayers.get(i)).toPennTree());
+                continue;
+            }
+            projectionBuilder.updateVector(wordIndex, 
+                    gradient, learningRate);
+        }
+        
+        // updating the compositionMatrices
+        ArrayList<SimpleMatrix> hiddenGradients = new ArrayList<>();
+        for (Layer layer: hiddenLayers) {
+            hiddenGradients.add(layer.getGradient());
+        }
+        hiddenBuilder.updateMatrices(compositionMatrixIndices, hiddenGradients, learningRate * matrixCoefficient);
+        
+        if (this.parseTree.getWidth() == 1) {
+            // updating the hierarchical softmax or the negative sampling layer
+            for (int i = 0; i < outputLayers.size(); i++) {
+                outputBuilder.updateMatrix(outVectorIndices.get(i), 
+                        outputLayers.get(i).getGradient(), learningRate);
+            }
+        } else {
+         // updating the hierarchical softmax or the negative sampling layer
+            for (int i = 0; i < outputLayers.size(); i++) {
+                inOutputBuilder.updateMatrix(outVectorIndices.get(i), 
+                        outputLayers.get(i).getGradient(), learningRate);
+            }
+        }
     }
 }
