@@ -43,10 +43,10 @@ public class TestConstants {
 //    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "dbnc300t.cmp";
 //    public static final String S_MODEL_FILE               = S_OUT_DIR + "dbnc300t.mdl";
 //    public static final String S_LOG_FILE                 = S_LOG_DIR + "dbnc300t.log";
-    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_neg_irwubnc300ts.bin";
-    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_neg_irwubnc300ts.cmp";
-    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_neg_irwubnc300ts.mdl";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_neg_irwubnc300ts.log";
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_neg_rdubnc40ts.bin";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_neg_rdubnc40ts.cmp";
+    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_neg_rdubnc40ts.mdl";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_neg_rdubnc40ts.log";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc_lower.voc";
     
     public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skipgram.mdl";

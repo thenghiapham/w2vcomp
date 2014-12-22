@@ -33,14 +33,14 @@ import demo.TestConstants;
 public class MultiThreadSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
 //        LogUtils.logToConsole(Level.ALL);
-        int hiddenLayerSize = 300;
+        int hiddenLayerSize = 40;
         int windowSize = 5;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 1e-3;
         int phraseLevel = 6;
         boolean allLevel = true;
-        boolean lexical = true;
+        boolean lexical = false;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
 //        ActivationFunction hiddenActivationFunction = new Tanh();
@@ -50,13 +50,13 @@ public class MultiThreadSentenceVectorLearning {
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
         
-        MTWeightedInnerWord2Vec sentence2vec = new MTWeightedInnerWord2Vec(hiddenLayerSize, windowSize, 
-                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                allLevel, lexical);
-        
-//        MTDiagonalSingleObjectSentence2Vec sentence2vec = new MTDiagonalSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+//        MTWeightedInnerWord2Vec sentence2vec = new MTWeightedInnerWord2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
+        
+        MTDiagonalSingleObjectSentence2Vec sentence2vec = new MTDiagonalSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
 //        MTSingleObjectSentence2Vec sentence2vec = new MTSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
