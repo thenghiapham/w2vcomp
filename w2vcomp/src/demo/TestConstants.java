@@ -5,21 +5,11 @@ public class TestConstants {
     public static final boolean LOWER_CASE = true;
     
     public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/mikolov/text/wikiA_sample.txt";
-    public static final String TRAIN_DIR               = "/home/thenghiapham/work/project/mikolov/text/tmp";
+    public static final String TRAIN_DIR                = "/home/thenghiapham/work/project/mikolov/text/tmp";
     public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/mikolov/text/wikiA.bin";
     public static final String VOCABULARY_FILE          = "/home/thenghiapham/work/project/mikolov/text/wikiA.voc";
     public static final String INITIALIZATION_FILE      = "/home/thenghiapham/work/project/mikolov/text/wikiA.ini";
-    
-   
-    
-    public static final String CCG_MEN_FILE             = "/home/thenghiapham/work/project/mikolov/men/subMen.txt";
-    public static final String CCG_AN_FILE              = "/home/thenghiapham/work/dataset/lapata/nn_lemmapos.txt";
-    public static final String CCG_TRAIN_FILE           = "/home/thenghiapham/work/project/mikolov/ccg_text/wikiA.txt";
-    public static final String CCG_VECTOR_FILE          = "/home/thenghiapham/work/project/mikolov/output/phrase1.bin";
-    public static final String CCG_VOCABULARY_FILE      = "/home/thenghiapham/work/project/mikolov/output/phrase1.voc";
-    public static final String CCG_INITIALIZATION_FILE  = "/home/thenghiapham/work/project/mikolov/output/phrase1.ini";
-    public static final String CCG_MATRIX_FILE          = "/home/thenghiapham/work/project/mikolov/output/phrase1.comp.mat";
-    
+    public static final String MATRIX_FILE              = "/home/thenghiapham/work/project/mikolov/text/wikiA.ini";
     
     
     public static final String S_PROJECT_DIR              = "/home/thenghiapham/work/project/mikolov/";

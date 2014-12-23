@@ -5,7 +5,6 @@ import common.correlation.ANCorrelation;
 import common.correlation.MenCorrelation;
 import common.correlation.NNCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
-import common.correlation.SVCorrelation;
 import common.correlation.VOCorrelation;
 import composition.WeightedAdditive;
 import demo.TestConstants;

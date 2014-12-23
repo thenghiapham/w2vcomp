@@ -28,13 +28,12 @@ public class PhraseVectorLearning {
         double subSampling = 0;
         // TODO: checking subSampling with phrase
 //        AbstractWord2Vec word2vec = new NeuralLanguageModel(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
-        AbstractWord2Vec word2vec = new SkipGramPhrase2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE, TestConstants.CCG_AN_FILE);
+        AbstractWord2Vec word2vec = new SkipGramPhrase2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.S_MEN_FILE, TestConstants.S_AN_FILE);
 //        AbstractWord2Vec word2vec = new CBowWord2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE);
 //        AbstractWord2Vec word2vec = new SkipNGramWord2Vec(hiddenLayerSize, windowSize, hierarchialSoftmax, negativeSampling, subSampling, TestConstants.CCG_MEN_FILE);
-        String trainFile = TestConstants.CCG_TRAIN_FILE;
-        String outputFile = TestConstants.CCG_VECTOR_FILE;
-        String vocabFile = TestConstants.CCG_VOCABULARY_FILE;
-//        String initFile = TestConstants.CCG_INITIALIZATION_FILE;
+        String trainFile = TestConstants.TRAIN_FILE;
+        String outputFile = TestConstants.VECTOR_FILE;
+        String vocabFile = TestConstants.VOCABULARY_FILE;
         System.out.println("Starting training using file " + trainFile);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
@@ -64,9 +63,9 @@ public class PhraseVectorLearning {
             word2vec.saveVector(outputFile, true);
             if (word2vec instanceof SkipGramPhrase2Vec || word2vec instanceof NeuralLanguageModel) {
                 if (word2vec instanceof SkipGramPhrase2Vec)
-                    ((SkipGramPhrase2Vec) word2vec).saveMatrix(TestConstants.CCG_MATRIX_FILE, false);
+                    ((SkipGramPhrase2Vec) word2vec).saveMatrix(TestConstants.MATRIX_FILE, false);
                 else
-                    ((NeuralLanguageModel) word2vec).saveMatrix(TestConstants.CCG_MATRIX_FILE, false);
+                    ((NeuralLanguageModel) word2vec).saveMatrix(TestConstants.MATRIX_FILE, false);
             }
 //            word2vec.saveNetwork(initFile, true);
         } catch (IOException e) {
