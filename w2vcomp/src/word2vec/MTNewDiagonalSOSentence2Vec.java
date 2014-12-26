@@ -3,12 +3,13 @@ package word2vec;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.IOUtils;
-
 import neural.HierarchicalSoftmaxLearner;
 import neural.NegativeSamplingLearner;
 import neural.NewDiagonalSOTreeNetwork;
@@ -81,7 +82,9 @@ public class MTNewDiagonalSOSentence2Vec extends MTSingleObjectSentence2Vec{
         System.arraycopy(history, 0, historyPresentFuture, 0, history.length);
         System.arraycopy(sentence, 0, historyPresentFuture, history.length, sentence.length);
         System.arraycopy(future, 0, historyPresentFuture, history.length + sentence.length, future.length);
-        for (Tree subTree: parseTree.allNodes()) {
+        ArrayList<Tree> nodeList = parseTree.allNodes();
+//        Collections.shuffle(nodeList);
+        for (Tree subTree: nodeList) {
             int height = subTree.getHeight();
             if (height == 0) continue;
             if (!allLevel) {
