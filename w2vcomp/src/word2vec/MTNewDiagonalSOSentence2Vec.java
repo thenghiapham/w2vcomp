@@ -83,7 +83,7 @@ public class MTNewDiagonalSOSentence2Vec extends MTSingleObjectSentence2Vec{
         System.arraycopy(sentence, 0, historyPresentFuture, history.length, sentence.length);
         System.arraycopy(future, 0, historyPresentFuture, history.length + sentence.length, future.length);
         ArrayList<Tree> nodeList = parseTree.allNodes();
-//        Collections.shuffle(nodeList);
+        Collections.shuffle(nodeList);
         for (Tree subTree: nodeList) {
             int height = subTree.getHeight();
             if (height == 0) continue;
