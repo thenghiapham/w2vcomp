@@ -119,11 +119,11 @@ public class TestConstants {
 //    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "s_hs_rdubnc40ts.ini";
 //    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_hs_rdubnc40ts.log";
 //    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "s_hs_rdubnc40ts.voc";
-    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_hs_wlwiki40is.bin";
-    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_hs_wlwiki40is.cmp";
-    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_hs_wlwiki40is.mdl";
-    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "s_hs_wlwiki40is.ini";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_hs_wlwiki40is.log";
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_hs_dlwiki40is.bin";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_hs_dlwiki40is.cmp";
+    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_hs_dlwiki40is.mdl";
+    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "s_hs_dlwiki40is.ini";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_hs_dlwiki40is.log";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wiki_lower.voc";
     
     public static final String S_WORD_VECTOR_FILE         = S_OUT_DIR + "hs_skip_bnc_size.bin";
