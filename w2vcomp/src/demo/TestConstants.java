@@ -119,11 +119,11 @@ public class TestConstants {
 //    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "s_hs_rdubnc40ts.ini";
 //    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_hs_rdubnc40ts.log";
 //    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "s_hs_rdubnc40ts.voc";
-    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_hs_dlwiki40ts_wo_lex.bin";
-    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_hs_dlwiki40ts_wo_lex.cmp";
-    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_hs_dlwiki40ts_wo_lex.mdl";
-    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "s_hs_dlwiki40ts_wo_lex.ini";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_hs_dlwiki40ts_wo_lex.log";
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_neg_wlwiki40is_wo_lex.bin";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_neg_wlwiki40is_wo_lex.cmp";
+    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_neg_wlwiki40is_wo_lex.mdl";
+    public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "s_neg_wlwiki40is_wo_lex.ini";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_neg_wlwiki40is_wo_lex.log";
     public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wiki_lower.voc";
     
     public static final String S_WORD_VECTOR_FILE         = S_OUT_DIR + "hs_skip_bnc_size.bin";
