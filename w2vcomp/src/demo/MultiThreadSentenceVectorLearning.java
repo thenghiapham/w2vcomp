@@ -22,10 +22,12 @@ import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import vocab.Vocab;
 import word2vec.MTDiagonalSingleObjectSentence2Vec;
+import word2vec.MTIncrementalSentence2Vec;
 import word2vec.MTIncrementalWeightedSentence2Vec;
 import word2vec.MTNewDiagonalSOSentence2Vec;
 import word2vec.MTWeightedInnerWord2Vec;
 import word2vec.MTWeightedSingleObjectSentence2Vec;
+import word2vec.MultiThreadSentence2Vec;
 //import word2vec.MultiThreadDiagonalSentence2Vec;
 //import word2vec.MultiThreadSentence2Vec;
 import demo.TestConstants;
@@ -49,9 +51,9 @@ public class MultiThreadSentenceVectorLearning {
 //        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
-        MTIncrementalWeightedSentence2Vec sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
-                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                allLevel, lexical);
+//        MTIncrementalWeightedSentence2Vec sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
         
         
 //        MTWeightedInnerWord2Vec sentence2vec = new MTWeightedInnerWord2Vec(hiddenLayerSize, windowSize, 
@@ -76,6 +78,9 @@ public class MultiThreadSentenceVectorLearning {
 //        MTIncrementalWeightedSentence2Vec sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
+        MTIncrementalSentence2Vec sentence2vec = new MTIncrementalSentence2Vec(hiddenLayerSize, windowSize, 
+                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                allLevel, lexical);
 //        MTIncrementalDiagonalSentence2Vec sentence2vec = new MTIncrementalDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);

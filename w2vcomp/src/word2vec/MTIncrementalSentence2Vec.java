@@ -7,6 +7,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
@@ -234,7 +235,9 @@ public class MTIncrementalSentence2Vec extends Sentence2Vec{
         System.arraycopy(history, 0, historyPresentFuture, 0, history.length);
         System.arraycopy(sentence, 0, historyPresentFuture, history.length, sentence.length);
         System.arraycopy(future, 0, historyPresentFuture, history.length + sentence.length, future.length);
-        for (Tree subTree: parseTree.allNodes()) {
+        ArrayList<Tree> reversedNodes = parseTree.allNodes();
+        Collections.shuffle(reversedNodes);
+        for (Tree subTree: reversedNodes) {
             int height = subTree.getHeight();
             if (height == 0) continue;
             if (!allLevel) {

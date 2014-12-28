@@ -45,7 +45,7 @@ public class HiddenLayer extends BasicLayer implements Layer{
         input = getInLayerInput();
 //        SimpleMatrixUtils.checkNaN(input);
 //        SimpleMatrixUtils.checkNaN(inputWeights);
-//        tempZ = inputWeights.mult(input);
+        tempZ = inputWeights.mult(input);
 //        try {
 //            SimpleMatrixUtils.checkNaN(tempZ);
 //        } catch (ValueException e) {

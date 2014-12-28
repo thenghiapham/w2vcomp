@@ -45,7 +45,7 @@ public class LogPlotting extends JFrame {
         for (String fileName : fileNames) {
             
             System.out.println(fileName);
-            if (!fileName.endsWith(".log") || !fileName.startsWith("s_neg_iwlwiki40is_wo_lex")) continue;
+            if (!fileName.endsWith(".log") || !fileName.startsWith("s_neg_iwlwiki40is_wo_lex.log")) continue;
             
             String filePath = logDirPath + "/" + fileName;
             ArrayList<Double> men = IOUtils.readLog(filePath, "men");
