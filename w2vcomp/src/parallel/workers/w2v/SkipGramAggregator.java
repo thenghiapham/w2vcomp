@@ -29,7 +29,7 @@ public class SkipGramAggregator implements ParameterAggregator {
     // Model parameters
     SkipGramParameters         modelParams;
 
-    public SkipGramAggregator() {
+    public SkipGramAggregator(int iteration) {
         starting_alpha = 0.025;
         wordCount = 0;
         Vocab vocab = new Vocab(RunningConstant.MIN_FREQUENCY);

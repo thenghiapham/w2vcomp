@@ -117,12 +117,13 @@ public class ParameterAggregatorWorker implements Launchable {
         String monitorHostname = args[1];
         int estimatorsPort = Integer.parseInt(args[2]);
         int monitorPort = Integer.parseInt(args[3]);
+        int iteration = Integer.parseInt(args[4]);
 
         ParameterAggregatorWorker paramAgg = new ParameterAggregatorWorker(
                 home_path, monitorHostname, estimatorsPort, monitorPort);
 
         //Hardcoded task to run
-        ParameterAggregator parameterAggregator = new SkipGramAggregator();
+        ParameterAggregator parameterAggregator = new SkipGramAggregator(iteration);
 
         paramAgg.run(parameterAggregator);
     }

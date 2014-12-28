@@ -5,9 +5,7 @@ import java.util.ArrayList;
 
 import parallel.workers.ParameterAggregatorWorker;
 import parallel.workers.ParameterEstimatorWorker;
-import parallel.workers.ParameterFinalizer;
 import parallel.workers.WorkersMonitor;
-import parallel.workers.w2v.SkipGramFinalizer;
 import demo.TestConstants;
 
 /**
@@ -29,6 +27,7 @@ public class ParallelMain {
         String trainDirPath = TestConstants.S_TRAIN_DIR;
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
+        int iteration = 2;
 
         // Create the DeathStar
         WorkersMonitor processMonitor = new WorkersMonitor(aggregatorPort,
