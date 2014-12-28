@@ -76,7 +76,10 @@ public class MTIncrementalWeightedSentence2Vec extends MTIncrementalSentence2Vec
     
 
     protected void trainSentence(Tree parseTree, String[] history, String[] sentence, String[] future) {
-        // TODO Auto-generated method stub
+        // TODO: remove history for random wiki
+        history = new String[0];
+        future = new String[0];
+        
         parseTree.updatePosition(history.length);
         parseTree.updateHeight();
         

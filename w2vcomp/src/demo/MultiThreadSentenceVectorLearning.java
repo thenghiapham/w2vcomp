@@ -40,7 +40,7 @@ public class MultiThreadSentenceVectorLearning {
         double subSampling = 1e-3;
         int phraseLevel = 6;
         boolean allLevel = true;
-        boolean lexical = true;
+        boolean lexical = false;
         String constructionFile = TestConstants.S_CONSTRUCTION_FILE;
         ActivationFunction hiddenActivationFunction = new IdentityFunction();
 //        ActivationFunction hiddenActivationFunction = new Tanh();
@@ -49,13 +49,14 @@ public class MultiThreadSentenceVectorLearning {
 //        MTWeightedSingleObjectSentence2Vec sentence2vec = new MTWeightedSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
 //                allLevel, lexical);
-//        MTIncrementalWeightedSentence2Vec sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
-//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-//                allLevel, lexical);
-        
-        MTWeightedInnerWord2Vec sentence2vec = new MTWeightedInnerWord2Vec(hiddenLayerSize, windowSize, 
+        MTIncrementalWeightedSentence2Vec sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                 allLevel, lexical);
+        
+        
+//        MTWeightedInnerWord2Vec sentence2vec = new MTWeightedInnerWord2Vec(hiddenLayerSize, windowSize, 
+//                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+//                allLevel, lexical);
         
 //        MTDiagonalSingleObjectSentence2Vec sentence2vec = new MTDiagonalSingleObjectSentence2Vec(hiddenLayerSize, windowSize, 
 //                hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 

@@ -76,7 +76,10 @@ public class MTWeightedSingleObjectSentence2Vec extends MTSingleObjectSentence2V
     
 
     protected void trainSentence(Tree parseTree, String[] history, String[] sentence, String[] future) {
-        // TODO Auto-generated method stub
+        // TODO remove history and future to test
+        history = new String[0];
+        sentence = new String[0];
+        
         parseTree.updatePosition(history.length);
         parseTree.updateHeight();
         
