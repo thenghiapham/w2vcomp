@@ -41,7 +41,7 @@ public class WordVectorLearning2 {
         boolean learnVocab = !(new File(vocabFile)).exists();
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
-        String logFile = TestConstants.S_WORD_LOG_FILE.replaceAll("size", "" + hiddenSize);;
+        String logFile = TestConstants.S_WORD_LOG_FILE.replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
         LogUtils.setup(logFile);
         
         Vocab vocab = new Vocab(TestConstants.S_MIN_FREQUENCY);
