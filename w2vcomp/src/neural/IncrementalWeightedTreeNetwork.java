@@ -19,7 +19,7 @@ import tree.Tree;
 import vocab.Vocab;
 
 public class IncrementalWeightedTreeNetwork extends WeightedTreeNetwork{
-
+    public static final int INCREASE_STEP = 2;
     protected IncrementalWeightedTreeNetwork(Tree parseTree) {
         super(parseTree);
         // TODO Auto-generated constructor stub
@@ -126,7 +126,7 @@ public class IncrementalWeightedTreeNetwork extends WeightedTreeNetwork{
 //        double significant = 1 / (double) width;
         double significant = 1;
         double inputCoefficient = 1 / (double) width;
-        int windowSize = random.nextInt(maxWindowSize + height -1) + 1;
+        int windowSize = random.nextInt(maxWindowSize + (INCREASE_STEP * height) -1) + 1;
 //            int windowSize = maxWindowSize;
         
         // get the left and right position of the phrase
