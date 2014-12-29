@@ -7,6 +7,7 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
+import demo.TestConstants;
 import parallel.comm.ParameterMessage;
 import parallel.workers.w2v.SkipGramAggregator;
 import utils.SerializationUtils;
@@ -24,12 +25,18 @@ public class ParameterAggregatorWorker implements Launchable {
     private String monitorHostname;
     private int    estimatorsPort;
     private int    monitorPort;
+    private int    iteration;
+    private int    iterationNum;
 
     public ParameterAggregatorWorker(File home_path, String monitorHostname,
-            int estimatorsPort, int monitorPort) {
+            int estimatorsPort, int monitorPort
+            , int iteration, int iterationNum
+            ) {
         this.monitorHostname = monitorHostname;
         this.estimatorsPort = estimatorsPort;
         this.monitorPort = monitorPort;
+        this.iteration = iteration;
+        this.iterationNum = iterationNum;
 
     }
 
@@ -109,7 +116,7 @@ public class ParameterAggregatorWorker implements Launchable {
     public String[] getArgs() {
         return new String[] { monitorHostname,
                 new Integer(estimatorsPort).toString(),
-                new Integer(monitorPort).toString()};
+                new Integer(monitorPort).toString(), "" + iteration, "" + iterationNum};
     }
 
     public static void main(String[] args) {
@@ -118,12 +125,15 @@ public class ParameterAggregatorWorker implements Launchable {
         int estimatorsPort = Integer.parseInt(args[2]);
         int monitorPort = Integer.parseInt(args[3]);
         int iteration = Integer.parseInt(args[4]);
+        int iterationNum = Integer.parseInt(args[5]);
 
         ParameterAggregatorWorker paramAgg = new ParameterAggregatorWorker(
-                home_path, monitorHostname, estimatorsPort, monitorPort);
+                home_path, monitorHostname, estimatorsPort, monitorPort
+                , iteration, iterationNum
+                );
 
         //Hardcoded task to run
-        ParameterAggregator parameterAggregator = new SkipGramAggregator(iteration);
+        ParameterAggregator parameterAggregator = new SkipGramAggregator(iteration, iterationNum, TestConstants.S_WORD_MODEL_FILE);
 
         paramAgg.run(parameterAggregator);
     }
