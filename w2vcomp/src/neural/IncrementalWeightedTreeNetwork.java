@@ -19,7 +19,7 @@ import tree.Tree;
 import vocab.Vocab;
 
 public class IncrementalWeightedTreeNetwork extends WeightedTreeNetwork{
-    public static final int INCREASE_STEP = 2;
+    public static final int INCREASE_STEP = 4;
     protected IncrementalWeightedTreeNetwork(Tree parseTree) {
         super(parseTree);
         // TODO Auto-generated constructor stub
