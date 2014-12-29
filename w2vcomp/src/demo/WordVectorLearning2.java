@@ -33,9 +33,9 @@ public class WordVectorLearning2 {
 //        MultiThreadHybridWord2Vec word2vec = new MultiThreadHybridWord2Vec(100, 5, true, 0, 0, TestConstants.S_MEN_FILE);
         String suffix = "";
         String trainDirPath = TestConstants.S_TRAIN_DIR;
-        String outputFile = TestConstants.S_WORD_VECTOR_FILE.replace(".bin", suffix + ".bin").replaceAll("size", "" + hiddenSize);
+        String outputFile = TestConstants.S_WORD_VECTOR_FILE.replace(".bin", suffix + ".bin").replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
         String vocabFile = TestConstants.S_VOCABULARY_FILE;
-        String modelFile = TestConstants.S_WORD_MODEL_FILE.replace(".mdl", suffix + ".mdl").replaceAll("size", "" + hiddenSize);
+        String modelFile = TestConstants.S_WORD_MODEL_FILE.replace(".mdl", suffix + ".mdl").replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
         System.out.println("Starting training using files in " + trainDirPath);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
