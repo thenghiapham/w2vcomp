@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import common.LogUtils;
 
 import vocab.Vocab;
-import word2vec.CBowWord2Vec;
-import word2vec.MultiThreadCBow;
-import word2vec.MultiThreadHybridWord2Vec;
+//import word2vec.CBowWord2Vec;
+//import word2vec.MultiThreadCBow;
+//import word2vec.MultiThreadHybridWord2Vec;
 import word2vec.MultiThreadSkipGram;
 //import word2vec.CBowWord2Vec;
 
@@ -25,7 +25,7 @@ import demo.TestConstants;
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
         int hiddenSize = Integer.parseInt(args[0]);
-        int windowSize = 5;
+        int windowSize = Integer.parseInt(args[1]);
         boolean hierarchicalSoftmax = false;
         int negativeSamples = 10;
         MultiThreadSkipGram word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
