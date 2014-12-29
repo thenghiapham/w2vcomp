@@ -25,7 +25,10 @@ import demo.TestConstants;
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
         int hiddenSize = Integer.parseInt(args[0]);
-        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(hiddenSize, 5, true, 0, 1e-3, TestConstants.S_MEN_FILE);
+        int windowSize = 5;
+        boolean hierarchicalSoftmax = false;
+        int negativeSamples = 10;
+        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
 //        MultiThreadCBow word2vec = new MultiThreadCBow(100, 5, true, 0, 1e-3, TestConstants.S_MEN_FILE);
 //        MultiThreadHybridWord2Vec word2vec = new MultiThreadHybridWord2Vec(100, 5, true, 0, 0, TestConstants.S_MEN_FILE);
         String suffix = "";
