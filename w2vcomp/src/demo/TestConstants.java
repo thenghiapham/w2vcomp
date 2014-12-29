@@ -22,7 +22,8 @@ public class TestConstants {
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "tmp_parsed/bnc/bnc.txt";
 //    public static final int S_MIN_FREQUENCY               = 5;
     public static final int S_MIN_FREQUENCY               = 100;
-    public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
+//    public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
+    public static final String S_LOG_DIR                  = "/home/pham/work/project/compomik/log/";
 //  public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki_sentence.log";
     
     public static final String S_OUT_DIR                  = S_PROJECT_DIR + "output/";
