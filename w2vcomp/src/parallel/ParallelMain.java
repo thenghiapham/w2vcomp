@@ -35,11 +35,12 @@ public class ParallelMain {
 
         // Spaceship launcher
         final Launcher launcher = new ClusterLauncher(home_path);
-
         final ArrayList<String> proccess_ids = new ArrayList<String>();
+        launcher.init();
+        Integer worker_id = 1;
         for (int i = 0; i < iterationNum; i++) {
             try {
-                launcher.init();
+                
     
                 // Launch a StarDestroyer
                 // (Create a job that will centralize the parameters)
@@ -51,7 +52,7 @@ public class ParallelMain {
     
                 // Launch TIE Fighters
                 // (Run parallel parameter-estimating jobs on each training file)
-                Integer worker_id = 1;
+                
                 for (File trainingFile : trainFiles) {
                     ParameterEstimatorWorker estimatorJob = new ParameterEstimatorWorker(
                             worker_id, home_path, processMonitor.getHostname(),
