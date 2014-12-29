@@ -57,7 +57,7 @@ public class SkipGramAggregator implements ParameterAggregator {
         int projectionLayerSize = RunningConstant.VECTOR_SIZE;
         double[][] weights0 = null;
         double[][] weights1 = null;
-        if (iterationNum == 0) {
+        if (iteration == 0) {
             weights0 = new double[vocabSize][projectionLayerSize];
             Random rand = new Random();
             for (int i = 0; i < vocab.getVocabSize(); i++) {
