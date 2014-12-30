@@ -31,6 +31,7 @@ public class MassSentenceVectorLearning2 {
 //        LogUtils.logToConsole(Level.ALL);
         int hiddenLayerSize = Integer.parseInt(args[0]);
         int windowSize = 5;
+        int incrementalStep = 1;
         boolean hierarchialSoftmax = true;
         int negativeSampling = 0;
         double subSampling = 1e-3;
@@ -52,22 +53,22 @@ public class MassSentenceVectorLearning2 {
         case "w":
             sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                allLevel, lexical);
+                allLevel, lexical,incrementalStep);
             break;
         case "d":
             sentence2vec = new MTIncrementalDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                allLevel, lexical);
+                allLevel, lexical,incrementalStep);
             break;
         case "f":
             sentence2vec = new MTIncrementalSentence2Vec(hiddenLayerSize, windowSize, 
                 hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                allLevel, lexical);
+                allLevel, lexical,incrementalStep);
             break;
         default:
             sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
                     hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
-                    allLevel, lexical);
+                    allLevel, lexical,incrementalStep);
             break;
         }
         String suffix = "" + hiddenLayerSize + activation.charAt(0) + "s";

@@ -40,13 +40,15 @@ public class MTIncrementalSentence2Vec extends Sentence2Vec{
     SemanticSpace singleWordSpace;
     ArrayList<Tree> testTrees;
     long lastLineCount;
+    protected int incrementalStep;
 
     public MTIncrementalSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
-            HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight, boolean allLevel, boolean lexical) {
+            HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight, boolean allLevel, boolean lexical, int incrementalStep) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
                 subSample, hiddenActivationFunction, constructionGroups, phraseHeight, 
                 allLevel, lexical);
+        this.incrementalStep = incrementalStep;
         wordCorrelations = new ArrayList<>();
         phraseCorrelations = new ArrayList<>();
         sentenceCorrelations = new ArrayList<>();

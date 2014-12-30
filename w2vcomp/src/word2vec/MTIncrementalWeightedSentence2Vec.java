@@ -26,9 +26,9 @@ public class MTIncrementalWeightedSentence2Vec extends MTIncrementalSentence2Vec
     public MTIncrementalWeightedSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample,
             HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight,
-            boolean allLevel, boolean lexical) {
+            boolean allLevel, boolean lexical, int incrementalStep) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, constructionGroups, hiddenActivationFunction, phraseHeight, allLevel, lexical);
+                subSample, constructionGroups, hiddenActivationFunction, phraseHeight, allLevel, lexical, incrementalStep);
         // TODO Auto-generated constructor stub
     }
     
@@ -107,7 +107,7 @@ public class MTIncrementalWeightedSentence2Vec extends MTIncrementalSentence2Vec
             }
             IncrementalWeightedTreeNetwork network = IncrementalWeightedTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
                     vocab, projectionMatrix, (WeightedCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, 
-                    new Sigmoid(), windowSize, subSample);
+                    new Sigmoid(), windowSize, subSample, incrementalStep);
             // TODO: fix here
             if (network != null)
                 network.learn(alpha);

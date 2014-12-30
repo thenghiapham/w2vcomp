@@ -25,9 +25,9 @@ public class MTIncrementalDiagonalSentence2Vec extends MTIncrementalSentence2Vec
     public MTIncrementalDiagonalSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample,
             HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight,
-            boolean allLevel, boolean lexical) {
+            boolean allLevel, boolean lexical, int incrementalStep) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
-                subSample, constructionGroups, hiddenActivationFunction, phraseHeight, allLevel, lexical);
+                subSample, constructionGroups, hiddenActivationFunction, phraseHeight, allLevel, lexical, incrementalStep);
         // TODO Auto-generated constructor stub
     }
     

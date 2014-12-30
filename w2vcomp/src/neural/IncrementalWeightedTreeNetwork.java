@@ -15,13 +15,16 @@ import neural.layer.WeightedHiddenLayer;
 import org.ejml.simple.SimpleMatrix;
 
 import common.MathUtils;
+import edu.stanford.nlp.stats.IntCounter;
 import tree.Tree;
 import vocab.Vocab;
 
 public class IncrementalWeightedTreeNetwork extends WeightedTreeNetwork{
-    public static final int INCREASE_STEP = 4;
-    protected IncrementalWeightedTreeNetwork(Tree parseTree) {
+//    public static final int INCREASE_STEP = 4;
+    protected int incrementalStep;
+    protected IncrementalWeightedTreeNetwork(Tree parseTree, int incrementalStep) {
         super(parseTree);
+        this.incrementalStep = incrementalStep; 
         // TODO Auto-generated constructor stub
     }
     
@@ -32,8 +35,8 @@ public class IncrementalWeightedTreeNetwork extends WeightedTreeNetwork{
             String[] historyPresentFuture, Vocab vocab, ProjectionMatrix projectionBuilder, 
             WeightedCompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
-            int maxWindowSize, double subSample) {
-        IncrementalWeightedTreeNetwork network = new IncrementalWeightedTreeNetwork(parseTree);
+            int maxWindowSize, double subSample, int incrementalStep) {
+        IncrementalWeightedTreeNetwork network = new IncrementalWeightedTreeNetwork(parseTree, incrementalStep);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
         network.outputBuilder = outputBuilder;
@@ -126,7 +129,7 @@ public class IncrementalWeightedTreeNetwork extends WeightedTreeNetwork{
 //        double significant = 1 / (double) width;
         double significant = 1;
         double inputCoefficient = 1 / (double) width;
-        int windowSize = random.nextInt(maxWindowSize + (INCREASE_STEP * height) -1) + 1;
+        int windowSize = random.nextInt(maxWindowSize + (incrementalStep * height) -1) + 1;
 //            int windowSize = maxWindowSize;
         
         // get the left and right position of the phrase
