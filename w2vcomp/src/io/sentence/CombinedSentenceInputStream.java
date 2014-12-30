@@ -12,6 +12,7 @@ public class CombinedSentenceInputStream implements SentenceInputStream {
     protected Iterator<SentenceInputStream> streamIterator;
     protected SentenceInputStream           currentInputStream;
     long                                    wordCount = 0;
+    boolean crossStream = false;
 
     public CombinedSentenceInputStream(List<SentenceInputStream> inputStreams) {
         streamIterator = inputStreams.iterator();
@@ -24,6 +25,7 @@ public class CombinedSentenceInputStream implements SentenceInputStream {
 
     @Override
     public boolean readNextSentence(Vocab vocab) throws IOException {
+        crossStream = false;
         if (currentInputStream == null)
             return false;
         while (true) {
@@ -36,6 +38,7 @@ public class CombinedSentenceInputStream implements SentenceInputStream {
             boolean hasNextStream = false;
             while (streamIterator.hasNext()) {
                 currentInputStream = streamIterator.next();
+                crossStream = true;
                 if (currentInputStream == null) {
                     continue;
                 } else {
@@ -72,6 +75,15 @@ public class CombinedSentenceInputStream implements SentenceInputStream {
             return wordCount;
         else
             return wordCount + currentInputStream.getWordCount();
+    }
+
+    @Override
+    public boolean crossDocBoundary() {
+        // TODO Auto-generated method stub
+        if (currentInputStream != null)
+            return currentInputStream.crossDocBoundary() || crossStream ;
+        else
+            return crossStream;
     }
 
 }

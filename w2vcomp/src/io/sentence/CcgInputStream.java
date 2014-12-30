@@ -167,5 +167,11 @@ public class CcgInputStream implements WordInputStream, SentenceInputStream {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public boolean crossDocBoundary() {
+        // TODO Auto-generated method stub
+        return false;
+    }
     
 }

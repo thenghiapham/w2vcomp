@@ -15,15 +15,18 @@ public class ParseSentenceInputStream implements SentenceInputStream{
     int[] currentSentence;
     Phrase[] emptyList = new Phrase[0];
     long wordCount = 0;
+    boolean nextDoc = false;
     public ParseSentenceInputStream(TreeInputStream inputStream) {
         this.inputStream = inputStream;
     }
     @Override
     public boolean readNextSentence(Vocab vocab) throws IOException {
+        nextDoc = false;
         // TODO Auto-generated method stub
         Tree tree = inputStream.readTree();
         while (tree == BasicTreeInputStream.NEXT_DOC_TREE) {
             tree = inputStream.readTree();
+            nextDoc = true;
         }
         if (tree == null) {
             currentSentence = null;
@@ -57,6 +60,11 @@ public class ParseSentenceInputStream implements SentenceInputStream{
     public long getWordCount() {
         // TODO Auto-generated method stub
         return wordCount;
+    }
+    @Override
+    public boolean crossDocBoundary() {
+        // TODO Auto-generated method stub
+        return nextDoc;
     }
     
 }

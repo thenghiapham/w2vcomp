@@ -74,4 +74,10 @@ public class PlainSentenceInputStream implements SentenceInputStream {
     public long getWordCount() {
         return wordCount;
     }
+
+    @Override
+    public boolean crossDocBoundary() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

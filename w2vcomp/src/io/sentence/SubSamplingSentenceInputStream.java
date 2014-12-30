@@ -138,4 +138,10 @@ public class SubSamplingSentenceInputStream implements SentenceInputStream {
         return inputStream.getWordCount();
     }
 
+    @Override
+    public boolean crossDocBoundary() {
+        // TODO Auto-generated method stub
+        return inputStream.crossDocBoundary();
+    }
+
 }
