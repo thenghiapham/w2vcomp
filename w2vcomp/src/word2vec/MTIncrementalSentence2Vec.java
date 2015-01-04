@@ -44,7 +44,9 @@ public class MTIncrementalSentence2Vec extends Sentence2Vec{
 
     public MTIncrementalSentence2Vec(int hiddenLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample, 
-            HashMap<String, String> constructionGroups, ActivationFunction hiddenActivationFunction, int phraseHeight, boolean allLevel, boolean lexical, int incrementalStep) {
+            HashMap<String, String> constructionGroups, 
+            ActivationFunction hiddenActivationFunction, int phraseHeight, 
+            boolean allLevel, boolean lexical, int incrementalStep) {
         super(hiddenLayerSize, windowSize, hierarchicalSoftmax, negativeSamples,
                 subSample, hiddenActivationFunction, constructionGroups, phraseHeight, 
                 allLevel, lexical);
@@ -58,27 +60,34 @@ public class MTIncrementalSentence2Vec extends Sentence2Vec{
     @Override
     public void initNetwork() {
         super.initNetwork();
-        space = new CompositionSemanticSpace(projectionMatrix, compositionMatrices, hiddenActivationFunction);
+        space = new CompositionSemanticSpace(projectionMatrix, 
+                compositionMatrices, hiddenActivationFunction);
         singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
     }
     
     public void initNetwork(String wordModelFile) {
         try {
-            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(wordModelFile));
+            BufferedInputStream inputStream = new BufferedInputStream(
+                    new FileInputStream(wordModelFile));
             double[][] rawMatrix = IOUtils.readMatrix(inputStream, true);
-            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, rawMatrix);
+            projectionMatrix = ProjectionMatrix.initializeFromMatrix(vocab, 
+                    rawMatrix);
             rawMatrix = IOUtils.readMatrix(inputStream, true);
             if (hierarchicalSoftmax) {
-                learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(vocab, rawMatrix);
+                learningStrategy = HierarchicalSoftmaxLearner.initializeFromMatrix(
+                        vocab, rawMatrix);
             } else {
-                learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, negativeSamples, rawMatrix);
+                learningStrategy = NegativeSamplingLearner.initializeFromMatrix(vocab, 
+                        negativeSamples, rawMatrix);
             }
-            compositionMatrices = CompositionMatrices.identityInitialize(constructionGroups, hiddenLayerSize);
+            compositionMatrices = CompositionMatrices.identityInitialize(
+                    constructionGroups, hiddenLayerSize);
             vocab.assignCode();
             
             this.totalLines = vocab.getEntry(0).frequency;
             inputStream.close();
-            space = new CompositionSemanticSpace(projectionMatrix, compositionMatrices, hiddenActivationFunction);
+            space = new CompositionSemanticSpace(projectionMatrix, 
+                    compositionMatrices, hiddenActivationFunction);
             singleWordSpace = new ProjectionAdaptorSpace(projectionMatrix);
         } catch (IOException e) {
             e.printStackTrace();
@@ -255,8 +264,11 @@ public class MTIncrementalSentence2Vec extends Sentence2Vec{
                 if (height > phraseHeight)
                     continue;
             }
-            IncrementalTreeNetwork network = IncrementalTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
-                    vocab, projectionMatrix, compositionMatrices, learningStrategy, hiddenActivationFunction, new Sigmoid(), windowSize, subSample);
+            IncrementalTreeNetwork network = IncrementalTreeNetwork.createNetwork(
+                    subTree, parseTree, historyPresentFuture, vocab, 
+                    projectionMatrix, compositionMatrices, learningStrategy, 
+                    hiddenActivationFunction, new Sigmoid(), windowSize, 
+                    subSample, incrementalStep);
             // TODO: fix here
             if (network != null)
                 network.learn(alpha);

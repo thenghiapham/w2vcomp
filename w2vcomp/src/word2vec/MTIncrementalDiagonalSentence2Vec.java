@@ -103,7 +103,7 @@ public class MTIncrementalDiagonalSentence2Vec extends MTIncrementalSentence2Vec
             }
             IncrementalDiagonalTreeNetwork network = IncrementalDiagonalTreeNetwork.createNetwork(subTree, parseTree, historyPresentFuture,
                     vocab, projectionMatrix, (DiagonalCompositionMatrices) compositionMatrices, learningStrategy, hiddenActivationFunction, 
-                    new Sigmoid(), windowSize, subSample);
+                    new Sigmoid(), windowSize, subSample, incrementalStep);
             // TODO: fix here
             if (network != null)
                 network.learn(alpha);

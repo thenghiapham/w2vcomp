@@ -15,7 +15,6 @@ import neural.layer.WeightedHiddenLayer;
 import org.ejml.simple.SimpleMatrix;
 
 import common.MathUtils;
-import edu.stanford.nlp.stats.IntCounter;
 import tree.Tree;
 import vocab.Vocab;
 

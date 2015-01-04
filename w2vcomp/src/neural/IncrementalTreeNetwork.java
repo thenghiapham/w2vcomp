@@ -7,22 +7,23 @@ import java.util.Random;
 
 import neural.function.ActivationFunction;
 import neural.function.ObjectiveFunction;
-import neural.layer.HiddenLayer;
 import neural.layer.Layer;
 import neural.layer.OutputLayer;
 import neural.layer.ProjectionLayer;
+import neural.layer.HiddenLayer;
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.MathUtils;
-
 import tree.Tree;
 import vocab.Vocab;
 
 public class IncrementalTreeNetwork extends TreeNetwork{
-
-    protected IncrementalTreeNetwork(Tree parseTree) {
+//    public static final int INCREASE_STEP = 4;
+    protected int incrementalStep;
+    protected IncrementalTreeNetwork(Tree parseTree, int incrementalStep) {
         super(parseTree);
+        this.incrementalStep = incrementalStep; 
         // TODO Auto-generated constructor stub
     }
     
@@ -33,8 +34,8 @@ public class IncrementalTreeNetwork extends TreeNetwork{
             String[] historyPresentFuture, Vocab vocab, ProjectionMatrix projectionBuilder, 
             CompositionMatrices hiddenBuilder, LearningStrategy outputBuilder,
             ActivationFunction hiddenLayerActivation, ActivationFunction outputLayerActivation,
-            int maxWindowSize, double subSample) {
-        IncrementalTreeNetwork network = new IncrementalTreeNetwork(parseTree);
+            int maxWindowSize, double subSample, int incrementalStep) {
+        IncrementalTreeNetwork network = new IncrementalTreeNetwork(parseTree, incrementalStep);
         network.projectionBuilder = projectionBuilder;
         network.hiddenBuilder = hiddenBuilder;
         network.outputBuilder = outputBuilder;
@@ -122,12 +123,12 @@ public class IncrementalTreeNetwork extends TreeNetwork{
         
         Tree node = parseTree;
         int width = node.getRightmostPosition() - node.getLeftmostPosition() + 1;
-        int height = node.getHeight();
+        int height = parseTree.getHeight();
         Layer layer = layerMap.get(node);
 //        double significant = 1 / (double) width;
         double significant = 1;
         double inputCoefficient = 1 / (double) width;
-        int windowSize = random.nextInt(maxWindowSize + height - 1) + 1;
+        int windowSize = random.nextInt(maxWindowSize + (incrementalStep * height) -1) + 1;
 //            int windowSize = maxWindowSize;
         
         // get the left and right position of the phrase
@@ -138,14 +139,15 @@ public class IncrementalTreeNetwork extends TreeNetwork{
                 
                 // adding the output layers to the hidden/projection layer 
                 // corresponding to the phrase 
-             
+                
+                
                 int[] indices = outputBuilder.getOutputIndices(sentence[i]);
                 if (indices == null) continue;
-                // subSample
+                
+                // subSample (not check null)
                 long frequency = vocab.getEntry(sentence[i]).frequency;
                 long totalCount = vocab.getTrainWords();
                 if (subSample >0 && !MathUtils.isSampled(frequency, totalCount, subSample)) continue;
-                
                 
                 SimpleMatrix weightMatrix = outputBuilder.getOutputWeights(indices);
                 SimpleMatrix goldMatrix = outputBuilder.getGoldOutput(sentence[i]);
