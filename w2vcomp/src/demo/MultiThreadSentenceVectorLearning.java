@@ -22,9 +22,9 @@ import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import vocab.Vocab;
 import word2vec.MTIncrementalDiagonalSentence2Vec;
+import word2vec.MTIncrementalNewDiagonalSentence2Vec;
 import word2vec.MTIncrementalSentence2Vec;
 import word2vec.MTIncrementalWeightedSentence2Vec;
-import word2vec.MTNewDiagonalSOSentence2Vec;
 import demo.TestConstants;
 
 public class MultiThreadSentenceVectorLearning {
@@ -67,6 +67,10 @@ public class MultiThreadSentenceVectorLearning {
                     hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                     allLevel, lexical, incrementalStep);
             break;
+        case "nd":
+            sentence2vec = new MTIncrementalNewDiagonalSentence2Vec(hiddenLayerSize, windowSize, 
+                    hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                    allLevel, lexical, incrementalStep);
         case "f":
             sentence2vec = new MTIncrementalSentence2Vec(hiddenLayerSize, windowSize, 
                   hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
