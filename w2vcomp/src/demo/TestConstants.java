@@ -16,12 +16,12 @@ public class TestConstants {
 //  public static final String S_PROJECT_DIR              = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/";
     public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "selected-constructions1.txt";
 //  public static final String S_CONSTRUCTION_FILE        = S_PROJECT_DIR + "tmp-constructions.txt";
-  public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/wiki";
-//    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/bnc";
+//  public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/wiki";
+    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "split_parse/bnc";
 //    public static final String S_TRAIN_DIR                = S_PROJECT_DIR + "tmp_parsed/bnc";
     public static final String S_TRAIN_FILE               = S_PROJECT_DIR + "tmp_parsed/bnc/bnc.txt";
-//    public static final int S_MIN_FREQUENCY               = 5;
-    public static final int S_MIN_FREQUENCY               = 100;
+    public static final int S_MIN_FREQUENCY               = 5;
+//    public static final int S_MIN_FREQUENCY               = 100;
     public static final String S_LOG_DIR                  = S_PROJECT_DIR + "log/";
 //    public static final String S_LOG_DIR                  = "/home/pham/work/project/compomik/log/";
 //  public static final String S_LOG_FILE                 = S_LOG_DIR + "wiki_sentence.log";
@@ -41,11 +41,17 @@ public class TestConstants {
 //    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_neg_rdubnc40ts.log";
 //    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc_lower_1.voc";
     
-    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_neg_istep_type_lwiki_size_window_function_wo_lex.bin";
-    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_neg_istep_type_lwiki_size_window_function_wo_lex.cmp";
-    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_neg_istep_type_lwiki_size_window_function_wo_lex.mdl";
-    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_neg_istep_type_lwiki_size_window_function_wo_lex.log";
-    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wiki_lower.voc";
+//    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_neg_istep_type_lwiki_size_window_function_wo_lex.bin";
+//    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_neg_istep_type_lwiki_size_window_function_wo_lex.cmp";
+//    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_neg_istep_type_lwiki_size_window_function_wo_lex.mdl";
+//    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_neg_istep_type_lwiki_size_window_function_wo_lex.log";
+//    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "wiki_lower.voc";
+    
+    public static final String S_VECTOR_FILE              = S_OUT_DIR + "s_neg_istep_type_lbnc_size_window_function_wo_lex.bin";
+    public static final String S_COMPOSITION_FILE         = S_OUT_DIR + "s_neg_istep_type_lbnc_size_window_function_wo_lex.cmp";
+    public static final String S_MODEL_FILE               = S_OUT_DIR + "s_neg_istep_type_lbnc_size_window_function_wo_lex.mdl";
+    public static final String S_LOG_FILE                 = S_LOG_DIR + "s_neg_istep_type_lbnc_size_window_function_wo_lex.log";
+    public static final String S_VOCABULARY_FILE          = S_OUT_DIR + "bnc_lower.voc";
     
     public static final String S_INITIALIZATION_FILE      = S_OUT_DIR + "skipgram.mdl";
 //    public static final int S_MIN_FREQUENCY               = 10;
