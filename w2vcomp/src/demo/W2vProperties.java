@@ -27,6 +27,20 @@ public class W2vProperties{
         
         String sOutputName = properties.getProperty("SOutputFileTemplate");
         String sOutputFilePath = outputDir + "/" + sOutputName;
+        properties.setProperty("SOutputFile", sOutputFilePath);
+        String sLogFilePath = logDir + "/" + sOutputName;
+        properties.setProperty("SLogFile", sLogFilePath);
+        
+        String vocabFileName = properties.getProperty("VocabFileName");
+        String vocabFile = outputDir + "/" + vocabFileName;
+        properties.setProperty("VocabFile", vocabFile);
+        
+        String wordVectorFileName = properties.getProperty("WordVectorFileName");
+        String wordVectorFilePath = outputDir + "/" + wordVectorFileName;
+        properties.setProperty("WordVectorFile", wordVectorFilePath);
+        String wordLogFilePath = logDir + "/" + wordVectorFileName;
+        properties.setProperty("WordLogFile", wordLogFilePath);
+        
     }
     
 }
