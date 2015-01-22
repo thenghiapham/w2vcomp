@@ -82,7 +82,7 @@ public class TestConstants {
     public static final String S_RTE_DIR                  = S_PROJECT_DIR + "rte/";
     public static final String S_RTE_FILE                 = S_RTE_DIR + "SICK_train_trial.txt";
     public static final String S_RTE_FEATURE_FILE         = S_RTE_DIR + "feature/SICK_train_trial.txt";
-    public static final String S_RTE_SVM_DIR              = S_PROJECT_DIR + "rte/svm/";
+    public static final String S_RTE_SVM_DIR              = S_RTE_DIR + "svm/";
     
     public static final String S_IMDB_DIR                   = S_PROJECT_DIR + "imdb/";
     public static final String S_IMDB_FILE                 = S_IMDB_DIR + "normalized_text.parsed";
