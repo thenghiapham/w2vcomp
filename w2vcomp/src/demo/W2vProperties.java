@@ -1,5 +1,6 @@
 package demo;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
@@ -10,7 +11,10 @@ public class W2vProperties{
         
 
         properties = new Properties();
-        properties.load(new FileReader(configFile));
+        BufferedReader reader = new BufferedReader(new FileReader(configFile));
+        properties.load(reader);
+        reader.close();
+        
         
         // PROJECT DIR        
         String projectDir = properties.getProperty("ProjectDir");
