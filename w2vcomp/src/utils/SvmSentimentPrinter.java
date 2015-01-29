@@ -16,6 +16,7 @@ import demo.TestConstants;
 
 public class SvmSentimentPrinter {
     public static void main(String[] args) throws IOException {
+        System.out.println("Hello");
         String datasetFile = TestConstants.S_IMDB_FILE;
         String goldFile = TestConstants.S_IMDB_LABEL_FILE;
         String datasetName = new File(datasetFile).getName();
@@ -34,6 +35,7 @@ public class SvmSentimentPrinter {
         } else if ("f".equals(compType)) {
             printFull(printer, compFile, outDir, datasetName);
         } else if ("a".equals(compType)) {
+            System.out.println("Hello");
             printAdd(printer, vectorFile, outDir, datasetName);
         } else if ("p".equals(compType)) {
             String vocabFile = args[2];
@@ -54,7 +56,7 @@ public class SvmSentimentPrinter {
     
     public static void printParagraph(SingleParsedPhraseVectorPrinter printer, String modelFile, String vocabFile, 
             int vectorSize, boolean hs, int negSample, double subSample, String outDir, String suffix) throws IOException {
-        Paragraph2Vec p2v = new SkipgramPara2Vec(modelFile, vocabFile, vectorSize, 5, hs, negSample, 0, 20);
+        Paragraph2Vec p2v = new SkipgramPara2Vec(modelFile, vocabFile, vectorSize, 10, hs, negSample, subSample, 20);
         String[] sentences = printer.getSurfacePhrases();
         p2v.trainParagraphVector(sentences);
         double[][] sentenceVector = p2v.getParagraphVectors();

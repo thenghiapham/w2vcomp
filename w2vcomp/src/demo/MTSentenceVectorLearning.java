@@ -92,7 +92,7 @@ public class MTSentenceVectorLearning {
         String logFile = properties.getProperty("SLogFile").replace("istep", ""+incrementalStep)
                 .replace("size", ""+hiddenLayerSize)
                 .replace("window", ""+windowSize).replace("function", function)
-                .replace("type", type);
+                .replace("type", type).replace(".bin", ".log");;
         LogUtils.setup(logFile);
         
         File trainDir = new File(trainDirPath);
