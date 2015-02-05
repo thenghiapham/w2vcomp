@@ -1,12 +1,12 @@
 package utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import org.ejml.simple.SimpleMatrix;
 
 import common.IOUtils;
 import demo.TestConstants;
-
 import space.WeightedCompositionSemanticSpace;
 
 public class PrintWeight {
@@ -24,8 +24,11 @@ public class PrintWeight {
                 String[] elements = line.split("( |\t)");
                 if (elements.length < 4) continue;
                 String construction = elements[1] + " " +elements[2] + " " +elements[3];
+                String group = elements[0];
                 SimpleMatrix vector = space.getConstructionMatrix(construction);
-                System.out.println(construction + ":    " + vector.get(0) + " " + + vector.get(1));
+                System.out.print(group + "\t" + construction + ":   ");
+                DecimalFormat format = new DecimalFormat("#.000");
+                System.out.print(format.format(vector.get(0)) + " " + format.format(vector.get(1)));
             }
             
             
