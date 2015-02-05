@@ -28,7 +28,7 @@ public class PrintWeight {
                 SimpleMatrix vector = space.getConstructionMatrix(construction);
                 System.out.print(group + "\t" + construction + ":   ");
                 DecimalFormat format = new DecimalFormat("#.000");
-                System.out.print(format.format(vector.get(0)) + " " + format.format(vector.get(1)));
+                System.out.println(format.format(vector.get(0)) + " " + format.format(vector.get(1)));
             }
             
             
