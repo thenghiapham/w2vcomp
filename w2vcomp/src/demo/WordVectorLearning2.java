@@ -12,23 +12,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import common.LogUtils;
-
 import vocab.Vocab;
+import word2vec.MultiThreadCBow;
 //import word2vec.CBowWord2Vec;
 //import word2vec.MultiThreadCBow;
 //import word2vec.MultiThreadHybridWord2Vec;
 import word2vec.MultiThreadSkipGram;
 //import word2vec.CBowWord2Vec;
 
+import word2vec.MultiThreadWord2Vec;
 import demo.TestConstants;
 
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
         int hiddenSize = Integer.parseInt(args[0]);
         int windowSize = Integer.parseInt(args[1]);
+        boolean cbow = Boolean.parseBoolean(args[2]);
         boolean hierarchicalSoftmax = false;
         int negativeSamples = 10;
-        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
+        
+//        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
+        MultiThreadWord2Vec word2vec;
+        if (cbow)
+            word2vec = new MultiThreadCBow(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
+        else
+            word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
 //        MultiThreadCBow word2vec = new MultiThreadCBow(100, 5, true, 0, 1e-3, TestConstants.S_MEN_FILE);
 //        MultiThreadHybridWord2Vec word2vec = new MultiThreadHybridWord2Vec(100, 5, true, 0, 0, TestConstants.S_MEN_FILE);
         String suffix = "";
@@ -42,6 +50,11 @@ public class WordVectorLearning2 {
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
         String logFile = TestConstants.S_WORD_LOG_FILE.replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
+        if (cbow) {
+            outputFile = outputFile.replaceAll("skip", "cbow");
+            modelFile = modelFile.replaceAll("skip", "cbow");
+            logFile = logFile.replaceAll("skip", "cbow");
+        }
         LogUtils.setup(logFile);
         
         Vocab vocab = new Vocab(TestConstants.S_MIN_FREQUENCY);
