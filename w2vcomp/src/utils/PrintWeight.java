@@ -12,7 +12,7 @@ import space.WeightedCompositionSemanticSpace;
 
 public class PrintWeight {
     public static void main(String[] args) {
-            String compSpaceFile = "/home/thenghiapham/work/project/mikolov/output/s_neg_4_w_lwiki_300_10_i_wo_lex.cmp";
+            String compSpaceFile = "/home/thenghiapham/work/project/mikolov/output/s_neg_4_w_new_lwiki_300_10_i_wo_lex.cmp";
     //        String construction = "VP VB NP";
     //        String construction = "NP NN NN";
     //        String construction = "NP NN NN";
