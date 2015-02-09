@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.ejml.simple.SimpleMatrix;
 
 import common.IOUtils;
+import common.SimpleMatrixUtils;
 import demo.TestConstants;
 import space.WeightedCompositionSemanticSpace;
 
@@ -26,6 +27,8 @@ public class PrintWeight {
                 String construction = elements[1] + " " +elements[2] + " " +elements[3];
                 String group = elements[0];
                 SimpleMatrix vector = space.getConstructionMatrix(construction);
+                double sumRow = SimpleMatrixUtils.sumRow(vector).get(0);
+                vector = vector.scale(2 / sumRow);
                 System.out.print(group + "\t" + construction + ":   ");
                 DecimalFormat format = new DecimalFormat("#.000");
                 System.out.println(format.format(vector.get(0)) + " " + format.format(vector.get(1)));
