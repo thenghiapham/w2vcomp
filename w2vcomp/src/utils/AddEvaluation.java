@@ -21,6 +21,7 @@ public class AddEvaluation {
         RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
 //        space.
         MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
+        MenCorrelation simLex = new MenCorrelation(TestConstants.SIMLEX);
         ANCorrelation an = new ANCorrelation(TestConstants.S_AN_FILE);
         NNCorrelation nn = new NNCorrelation(TestConstants.S_NN_FILE);
 //        SVCorrelation sv = new SVCorrelation(TestConstants.S_SV_FILE);
@@ -28,6 +29,7 @@ public class AddEvaluation {
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         
         System.out.println("men: " + men.evaluateSpacePearson(space));
+        System.out.println("lex: " + simLex.evaluateSpacePearson(space));
         System.out.println("an add: " + an.evaluateSpacePearson(space, add));
         System.out.println("nn add: " + nn.evaluateSpacePearson(space, add));
 //        System.out.println("sv add: " + sv.evaluateSpacePearson(space, add));

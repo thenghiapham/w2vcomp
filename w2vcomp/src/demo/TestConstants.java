@@ -102,7 +102,7 @@ public class TestConstants {
     public static final String S_NN_FILE                  = S_DATASET_DIR + "nn_lemma.txt";
     public static final String S_VO_FILE                  = S_DATASET_DIR + "vo_lemma.txt";
     public static final String S_SV_FILE                  = S_DATASET_DIR + "sv_lemma.txt";
-    
+    public static final String SIMLEX                     = "/home/thenghiapham/work/dataset/simlex";    
     public static final String S_VALIDATION_FILE          = S_PROJECT_DIR + "tmp_parsed/test_bnc.txt";
     
     
