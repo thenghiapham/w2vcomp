@@ -196,7 +196,7 @@ public class RawSemanticSpace implements SemanticSpace{
     public SimpleMatrix getVector(String word) {
         Integer index = word2Index.get(word);
         if (index == null) {
-            System.out.println(word);
+//            System.out.println(word);
             return null;
         } else {
             return new SimpleMatrix(1, vectorSize, true, vectors[index]);

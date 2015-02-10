@@ -22,6 +22,9 @@ public class AddEvaluation {
 //        space.
         MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
         MenCorrelation simLex = new MenCorrelation(TestConstants.SIMLEX);
+        MenCorrelation wordSim = new MenCorrelation(TestConstants.WORD_SIM);
+        MenCorrelation wordSimR = new MenCorrelation(TestConstants.WORD_SIM_RELATED);
+        MenCorrelation wordSimS = new MenCorrelation(TestConstants.WORD_SIM_SIM);
         ANCorrelation an = new ANCorrelation(TestConstants.S_AN_FILE);
         NNCorrelation nn = new NNCorrelation(TestConstants.S_NN_FILE);
 //        SVCorrelation sv = new SVCorrelation(TestConstants.S_SV_FILE);
@@ -30,6 +33,10 @@ public class AddEvaluation {
         
         System.out.println("men: " + men.evaluateSpacePearson(space));
         System.out.println("lex: " + simLex.evaluateSpacePearson(space));
+        System.out.println("ws: " + wordSim.evaluateSpacePearson(space));
+        System.out.println("wsr: " + wordSimR.evaluateSpacePearson(space));
+        System.out.println("wss: " + wordSimS.evaluateSpacePearson(space));
+        
         System.out.println("an add: " + an.evaluateSpacePearson(space, add));
         System.out.println("nn add: " + nn.evaluateSpacePearson(space, add));
 //        System.out.println("sv add: " + sv.evaluateSpacePearson(space, add));
