@@ -3,6 +3,7 @@ package space;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -94,13 +95,13 @@ public class WeightedCompositionSemanticSpace implements CompositionalSemanticSp
     }
     
 public String getComposedLengthString(String parseString) {
-        
+        DecimalFormat format = new DecimalFormat("#.000");
         Tree parseTree = Tree.fromPennTree(parseString);
         ArrayList<WordWeight> wordWeights = getWordWeightLengths(parseTree);
         StringBuffer buffer = new StringBuffer();
         for (WordWeight wordWeight: wordWeights) {
             buffer.append(" + ");
-            buffer.append(wordWeight.weight);
+            buffer.append(format.format(wordWeight.weight));
             buffer.append(" * ");
             buffer.append(wordWeight.word);
         }

@@ -20,10 +20,10 @@ public class SentenceWordWeightPrinter {
     
     public static void printWeighted(ParsedPhraseCosinePrinter printer, String compFile, String outDir, String suffix) throws IOException {
         WeightedCompositionSemanticSpace compSpace = WeightedCompositionSemanticSpace.loadCompositionSpace(compFile, true);
-        String outFilePath = outDir + "weighted_weigth" + suffix;
+        String outFilePath = outDir + "weighted_weight" + suffix;
         System.out.println("out file: " + outFilePath);
         printer.printWordWeights(outFilePath, compSpace);
-        outFilePath = outDir + "weighted_weigth_length" + suffix;
+        outFilePath = outDir + "weighted_weight_length" + suffix;
         System.out.println("out file: " + outFilePath);
         printer.printWordWeightLengths(outFilePath, compSpace);
     }
