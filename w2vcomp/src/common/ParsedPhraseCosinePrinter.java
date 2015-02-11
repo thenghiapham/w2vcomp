@@ -3,11 +3,15 @@ package common;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.ejml.simple.SimpleMatrix;
+
 import composition.BasicComposition;
 import space.CompositionalSemanticSpace;
+import space.RawSemanticSpace;
 import space.SMSemanticSpace;
 import space.SemanticSpace;
 import space.WeightedCompositionSemanticSpace;
@@ -96,6 +100,28 @@ public class ParsedPhraseCosinePrinter {
         String[] weightedLengthSentences = new String[parsedPhrases.length];
         for (int i = 0; i < parsedPhrases.length; i++) {
             weightedLengthSentences[i] = space.getComposedLengthString(parsedPhrases[i]);
+        }
+        printString(fileName, weightedLengthSentences);
+    }
+    
+    public void printWordWeightLengths(String fileName, RawSemanticSpace space) throws IOException{
+        DecimalFormat format = new DecimalFormat("#.000");
+        String[] weightedLengthSentences = new String[surfacePhrases.length];
+        for (int i = 0; i < surfacePhrases.length; i++) {
+            StringBuffer buffer = new StringBuffer();
+            String[] words = surfacePhrases[i].toLowerCase().split(" ");
+            for (String word: words) {
+                buffer.append(" + ");
+                SimpleMatrix vector = space.getVector(word);
+                double length = 0;
+                if (vector != null) {
+                    length = vector.normF();
+                }
+                buffer.append(format.format(length));
+                buffer.append(" * ");
+                buffer.append(word);
+            }
+            weightedLengthSentences[i] = buffer.substring(3).toString();
         }
         printString(fileName, weightedLengthSentences);
     }
