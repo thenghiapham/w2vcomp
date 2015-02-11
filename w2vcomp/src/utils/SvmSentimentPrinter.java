@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import common.SingleParsedPhraseVectorPrinter;
-import common.SingleParsedPhraseVectorPrinter;
 import composition.WeightedAdditive;
 import space.CompositionSemanticSpace;
 import space.DiagonalCompositionSemanticSpace;

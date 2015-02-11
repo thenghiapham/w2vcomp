@@ -10,6 +10,7 @@ import composition.BasicComposition;
 import space.CompositionalSemanticSpace;
 import space.SMSemanticSpace;
 import space.SemanticSpace;
+import space.WeightedCompositionSemanticSpace;
 import tree.Tree;
 
 public class ParsedPhraseCosinePrinter {
@@ -83,6 +84,22 @@ public class ParsedPhraseCosinePrinter {
         printPhraseCosines(fileName, phraseSpace, false);
     }
     
+    public void printWordWeights(String fileName, WeightedCompositionSemanticSpace space) throws IOException{
+        String[] weightedSentences = new String[parsedPhrases.length];
+        for (int i = 0; i < parsedPhrases.length; i++) {
+            weightedSentences[i] = space.getComposedString(parsedPhrases[i]);
+        }
+        printString(fileName, weightedSentences);
+    }
+    
+    public void printWordWeightLengths(String fileName, WeightedCompositionSemanticSpace space) throws IOException{
+        String[] weightedLengthSentences = new String[parsedPhrases.length];
+        for (int i = 0; i < parsedPhrases.length; i++) {
+            weightedLengthSentences[i] = space.getComposedLengthString(parsedPhrases[i]);
+        }
+        printString(fileName, weightedLengthSentences);
+    }
+    
     public void printPhraseCosines(String fileName, SemanticSpace phraseSpace, boolean surface) throws IOException{
         int vectorSize = phraseSpace.getVectorSize();
         String[][] phrasePairs = null;
@@ -109,6 +126,15 @@ public class ParsedPhraseCosinePrinter {
             for (int j = 0; j < elements.length; j++) {
                 writer.write(" " + (j+2) + ":" + elements[j]);
             }
+            writer.write("\n");
+        }
+        writer.close();
+    }
+    
+    protected void printString(String fileName, String[] weightedSentences) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        for (int i = 0; i < golds.length; i++) {
+            writer.write(weightedSentences[i]);
             writer.write("\n");
         }
         writer.close();
