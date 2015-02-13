@@ -120,5 +120,21 @@ public class SingleParsedPhraseVectorPrinter {
     public String[] getParsedPhrases() {
         return parsedPhrases;
     }
+    
+    public void printSurfaceString(String outputFile) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+        for (String phrase: surfacePhrases) {
+            writer.write(phrase + "\n");
+        }
+        writer.close();
+    }
+    
+    public static void main(String[] args) throws IOException{
+        String parseFile = args[0];
+        String labelFile = args[1];
+        String phraseFile = args[2];
+        SingleParsedPhraseVectorPrinter printer = new SingleParsedPhraseVectorPrinter(parseFile, labelFile);
+        printer.printSurfaceString(phraseFile);
+    }
 }
 

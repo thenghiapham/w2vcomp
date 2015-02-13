@@ -24,7 +24,7 @@ public class PrintLength {
             BufferedReader reader = new BufferedReader(new FileReader(dataset));
             String line = reader.readLine();
             while (line != null) {
-                String[] elements = line.split(" ");
+                String[] elements = line.split("( |\t)");
                 for (String word: elements) {
                     if (word.length() >= 1) {
                         words.add(word);
