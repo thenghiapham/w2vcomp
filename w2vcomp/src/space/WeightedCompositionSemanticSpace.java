@@ -80,6 +80,17 @@ public class WeightedCompositionSemanticSpace implements CompositionalSemanticSp
         return topVector;
     }
     
+    private void normalize(ArrayList<WordWeight> wordWeights) {
+        double sumWeights = 0;
+        for (WordWeight wordWeight: wordWeights) {
+            sumWeights += wordWeight.weight;
+        }
+        if (sumWeights == 0) return;
+        for (WordWeight wordWeight: wordWeights) {
+            wordWeight.weight /= sumWeights;
+        }
+    }
+    
     public String getComposedString(String parseString) {
         
         Tree parseTree = Tree.fromPennTree(parseString);
@@ -94,7 +105,8 @@ public class WeightedCompositionSemanticSpace implements CompositionalSemanticSp
         return buffer.toString().substring(3);
     }
     
-public String getComposedLengthString(String parseString) {
+    
+    public String getComposedLengthString(String parseString) {
         DecimalFormat format = new DecimalFormat("#.000");
         Tree parseTree = Tree.fromPennTree(parseString);
         ArrayList<WordWeight> wordWeights = getWordWeightLengths(parseTree);

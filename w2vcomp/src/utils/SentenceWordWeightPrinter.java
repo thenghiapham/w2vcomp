@@ -22,7 +22,7 @@ public class SentenceWordWeightPrinter {
         case "w":
             printWeighted(printer, compFile, outDir, datasetName);
             break;
-        case "add":
+        case "a":
             printAdd(printer, vectorFile, outDir, datasetName);
             break;
         default:
