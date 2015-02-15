@@ -21,10 +21,12 @@ import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import vocab.Vocab;
+import word2vec.MTIncrementalAddSentence2Vec;
 import word2vec.MTIncrementalDiagonalSentence2Vec;
 import word2vec.MTIncrementalNewDiagonalSentence2Vec;
 import word2vec.MTIncrementalSentence2Vec;
 import word2vec.MTIncrementalWeightedSentence2Vec;
+import word2vec.Sentence2Vec;
 
 public class MTSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
@@ -54,8 +56,12 @@ public class MTSentenceVectorLearning {
             hiddenActivationFunction = new IdentityFunction();
         }
 
-        MTIncrementalSentence2Vec sentence2vec = null;
+        Sentence2Vec sentence2vec = null;
         switch (type) {
+        case "a":
+            sentence2vec = new MTIncrementalAddSentence2Vec(hiddenLayerSize, windowSize, 
+                    hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
+                    allLevel, lexical, incrementalStep);
         case "w":
             sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
                   hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
@@ -119,11 +125,18 @@ public class MTSentenceVectorLearning {
         sentence2vec.initNetwork();
         MenCorrelation men = new MenCorrelation(properties.getProperty("MenFile"));
         men.setName("MEN");
-        sentence2vec.addMenCorrelation(men);
+        
         
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(properties.getProperty("SickFile"));
         sick.setName("SICK");
-        sentence2vec.addSentenceCorrelation(sick);
+        
+        if (type.equals("a")) {
+            ((MTIncrementalAddSentence2Vec) sentence2vec).addMenCorrelation(men);
+            ((MTIncrementalAddSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
+        } else {
+            ((MTIncrementalSentence2Vec) sentence2vec).addMenCorrelation(men);
+            ((MTIncrementalSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
+        }
         
         
         System.out.println("train again");
