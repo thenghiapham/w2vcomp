@@ -63,7 +63,7 @@ public class IncrementalRawAddTreeNetwork {
             String word = surfaceWords[i];
             int wordIndex = vocab.getWordIndex(word);
             if (wordIndex == -1) continue;
-            
+            network.inputVectorIndices.add(wordIndex);
             count ++;
             for (int j = 0; j < hiddenLayerSize; j++) {
                 projectLayer[j] += weights0[wordIndex][j];
@@ -97,7 +97,6 @@ public class IncrementalRawAddTreeNetwork {
         
         for (int i = node.getLeftmostPosition() - windowSize; i <= node.getRightmostPosition() + windowSize; i++) {
             if ((i >= 0 && i < sentence.length && (i < node.getLeftmostPosition() || i > node.getRightmostPosition()))) {
-                System.out.println("Enter loop");
                 // adding the output layers to the hidden/projection layer 
                 // corresponding to the phrase 
                 // HIERARCHICAL SOFTMAX
@@ -147,7 +146,6 @@ public class IncrementalRawAddTreeNetwork {
 
                 // NEGATIVE SAMPLING
                 if (negativeSamples > 0) {
-                    System.out.println("Enter neg here");
                     for (int l = 0; l < negativeSamples + 1; l++) {
                         int target;
                         int label;
@@ -196,8 +194,6 @@ public class IncrementalRawAddTreeNetwork {
             for (int j = 0; j < hiddenLayerSize; j++) {
                 weights0[wordIndex][j] += a1error[j];
             }
-            System.out.println(weights0[wordIndex][0]);
-            System.out.println("Update here");
         }
     }
 }
