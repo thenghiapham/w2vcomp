@@ -71,6 +71,7 @@ public class IncrementalRawAddTreeNetwork {
         }
         network.count = count;
         if (count == 0) return;
+        System.out.println("Enter here");
         for (int j = 0; j < hiddenLayerSize; j++) {
             projectLayer[j] /= count;
         }
@@ -196,6 +197,8 @@ public class IncrementalRawAddTreeNetwork {
             for (int j = 0; j < hiddenLayerSize; j++) {
                 weights0[wordIndex][j] += a1error[j];
             }
+            System.out.println(weights0[wordIndex][0]);
+            System.out.println("Update here");
         }
     }
 }
