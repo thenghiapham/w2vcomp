@@ -69,9 +69,10 @@ public class IncrementalAddTreeNetwork {
                 sumMatrix = sumMatrix.plus(matrix);
         }
         network.count = count;
-        if (sumMatrix == null) return null;
+        if (sumMatrix == null || count == 0) return null;
         sumMatrix = sumMatrix.scale(1.0 / count);
         network.projectionLayer = new ProjectionLayer(sumMatrix);
+        
         network.addOutputLayers(rootTree, historyPresentFuture, vocab, outputBuilder, outputLayerActivation, maxWindowSize, subSample);
         
         return network;
@@ -117,6 +118,9 @@ public class IncrementalAddTreeNetwork {
                 ObjectiveFunction costFunction = outputBuilder.getCostFunction();
                 OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, significant, inputCoefficient);
                 outputLayer.addInLayer(projectionLayer);
+                if (projectionLayer == null) {
+                    System.out.println("Why?");
+                }
                 projectionLayer.addOutLayer(outputLayer);
                 
                 addOutputLayer(outputLayer, indices);
