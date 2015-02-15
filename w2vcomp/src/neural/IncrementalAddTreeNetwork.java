@@ -140,7 +140,7 @@ public class IncrementalAddTreeNetwork {
             layer.backward();
         }
         projectionLayer.backward();
-        
+        update(alpha);
     }
     
     /**
