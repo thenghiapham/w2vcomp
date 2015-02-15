@@ -62,6 +62,7 @@ public class MTSentenceVectorLearning {
             sentence2vec = new MTIncrementalAddSentence2Vec(hiddenLayerSize, windowSize, 
                     hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                     allLevel, lexical, incrementalStep);
+            break;
         case "w":
             sentence2vec = new MTIncrementalWeightedSentence2Vec(hiddenLayerSize, windowSize, 
                   hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
