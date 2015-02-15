@@ -24,6 +24,7 @@ import vocab.Vocab;
 import word2vec.MTIncrementalAddSentence2Vec;
 import word2vec.MTIncrementalDiagonalSentence2Vec;
 import word2vec.MTIncrementalNewDiagonalSentence2Vec;
+import word2vec.MTIncrementalRawAddSentence2Vec;
 import word2vec.MTIncrementalSentence2Vec;
 import word2vec.MTIncrementalWeightedSentence2Vec;
 import word2vec.Sentence2Vec;
@@ -59,7 +60,7 @@ public class MTSentenceVectorLearning {
         Sentence2Vec sentence2vec = null;
         switch (type) {
         case "a":
-            sentence2vec = new MTIncrementalAddSentence2Vec(hiddenLayerSize, windowSize, 
+            sentence2vec = new MTIncrementalRawAddSentence2Vec(hiddenLayerSize, windowSize, 
                     hierarchialSoftmax, negativeSampling, subSampling, constructionGroups, hiddenActivationFunction, phraseLevel, 
                     allLevel, lexical, incrementalStep);
             break;
@@ -132,8 +133,8 @@ public class MTSentenceVectorLearning {
         sick.setName("SICK");
         
         if (type.equals("a")) {
-            ((MTIncrementalAddSentence2Vec) sentence2vec).addMenCorrelation(men);
-            ((MTIncrementalAddSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
+            ((MTIncrementalRawAddSentence2Vec) sentence2vec).addMenCorrelation(men);
+            ((MTIncrementalRawAddSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
         } else {
             ((MTIncrementalSentence2Vec) sentence2vec).addMenCorrelation(men);
             ((MTIncrementalSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
