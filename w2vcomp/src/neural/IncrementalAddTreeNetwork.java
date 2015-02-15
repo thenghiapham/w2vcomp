@@ -54,7 +54,6 @@ public class IncrementalAddTreeNetwork {
         network.outputBuilder = outputBuilder;
         
         String[] surfaceWords = parseTree.getSurfaceWords();
-        network.addOutputLayers(rootTree, historyPresentFuture, vocab, outputBuilder, outputLayerActivation, maxWindowSize, subSample);
         
         //TODO: remove
         int count = 0;
@@ -118,9 +117,7 @@ public class IncrementalAddTreeNetwork {
                 ObjectiveFunction costFunction = outputBuilder.getCostFunction();
                 OutputLayer outputLayer = new OutputLayer(weightMatrix, outputLayerActivation, goldMatrix, costFunction, significant, inputCoefficient);
                 outputLayer.addInLayer(projectionLayer);
-                if (projectionLayer == null) {
-                    System.out.println("Why?");
-                }
+                
                 projectionLayer.addOutLayer(outputLayer);
                 
                 addOutputLayer(outputLayer, indices);
