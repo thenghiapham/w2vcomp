@@ -153,7 +153,6 @@ public class ProjectionMatrix {
      */
     protected void updateVector(int wordIndex, SimpleMatrix gradient, 
             double learningRate) {
-
         if (wordIndex == -1) {
             // don't update the zero vector
             return;

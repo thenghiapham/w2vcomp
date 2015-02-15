@@ -158,6 +158,7 @@ public class IncrementalAddTreeNetwork {
             }
             projectionBuilder.updateVector(wordIndex, 
                     projectGrad, learningRate / count);
+            System.out.println("count: " + count);
         }
         
         // updating the hierarchical softmax or the negative sampling layer
