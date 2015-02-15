@@ -194,6 +194,7 @@ public class IncrementalRawAddTreeNetwork {
             for (int j = 0; j < hiddenLayerSize; j++) {
                 weights0[wordIndex][j] += a1error[j];
             }
+            System.out.println("update here");
         }
     }
 }
