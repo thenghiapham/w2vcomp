@@ -179,10 +179,10 @@ public class IncrementalRawAddTreeNetwork {
                             negativeWeights1[target][j] += gradient
                                     * projectLayer[j];
                         }
-                        for (int j = 0; j < hiddenLayerSize; j++) {
-                            System.out.print(negativeWeights1[target][j]);
-                            System.out.println();
-                        }
+//                        for (int j = 0; j < hiddenLayerSize; j++) {
+//                            System.out.print(negativeWeights1[target][j]);
+//                            System.out.println();
+//                        }
                     }
                 }
                 
@@ -198,13 +198,13 @@ public class IncrementalRawAddTreeNetwork {
             for (int j = 0; j < hiddenLayerSize; j++) {
                 weights0[wordIndex][j] += a1error[j];
             }
-            System.out.println("weight 0");
-            for (int j = 0; j < hiddenLayerSize; j++) {
-                
-                System.out.print(weights0[wordIndex][j]);
-                System.out.println();
-            }
-            if (rand.nextInt(1000) < 2) System.exit(1);
+//            System.out.println("weight 0");
+//            for (int j = 0; j < hiddenLayerSize; j++) {
+//                
+//                System.out.print(weights0[wordIndex][j]);
+//                System.out.println();
+//            }
+//            if (rand.nextInt(1000) < 2) System.exit(1);
         }
         
     }
