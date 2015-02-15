@@ -86,13 +86,10 @@ public class IncrementalAddTreeNetwork {
         Random random = new Random();
         
         Tree node = parseTree;
-        int width = node.getRightmostPosition() - node.getLeftmostPosition() + 1;
         int height = parseTree.getHeight();
-//        double significant = 1 / (double) width;
         double significant = 1;
-        double inputCoefficient = 1 / (double) width;
+        double inputCoefficient = 1;// / (double) width;
         int windowSize = random.nextInt(maxWindowSize + (incrementalStep * height) -1) + 1;
-//            int windowSize = maxWindowSize;
         
         // get the left and right position of the phrase
         // pick k words to the left and k words to the right to train the phrase 
