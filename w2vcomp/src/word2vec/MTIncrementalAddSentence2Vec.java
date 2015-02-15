@@ -24,6 +24,7 @@ import neural.ProjectionMatrix;
 import neural.HierarchicalSoftmaxLearner;
 import neural.function.ActivationFunction;
 import neural.function.Sigmoid;
+import space.ProjectionAdaptorSpace;
 import space.RawSemanticSpace;
 import space.SemanticSpace;
 import tree.Tree;
@@ -57,7 +58,7 @@ public class MTIncrementalAddSentence2Vec extends Sentence2Vec{
     @Override
     public void initNetwork() {
         super.initNetwork();
-        space = new RawSemanticSpace(vocab, projectionMatrix.getMatrix(), false);
+        space = new ProjectionAdaptorSpace(projectionMatrix);
     }
     
     public void initNetwork(String wordModelFile) {
