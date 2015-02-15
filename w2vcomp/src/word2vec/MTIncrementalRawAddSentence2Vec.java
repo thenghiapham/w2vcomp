@@ -86,6 +86,7 @@ public class MTIncrementalRawAddSentence2Vec extends Sentence2Vec{
         initBare();
         randomInitProjectionMatrices();
         space = new RawSemanticSpace(vocab, weights0, false);
+        this.totalLines = vocab.getEntry(0).frequency;
     }
     
     @Override

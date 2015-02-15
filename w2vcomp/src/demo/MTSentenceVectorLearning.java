@@ -21,7 +21,6 @@ import common.LogUtils;
 import common.correlation.MenCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
 import vocab.Vocab;
-import word2vec.MTIncrementalAddSentence2Vec;
 import word2vec.MTIncrementalDiagonalSentence2Vec;
 import word2vec.MTIncrementalNewDiagonalSentence2Vec;
 import word2vec.MTIncrementalRawAddSentence2Vec;
