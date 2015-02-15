@@ -202,8 +202,8 @@ public class IncrementalRawAddTreeNetwork {
                 System.out.print(weights0[wordIndex][j]);
                 System.out.println();
             }
-            
+            if (rand.nextInt(1000) < 2) System.exit(1);
         }
-        if (rand.nextInt(1000) < 2) System.exit(1);
+        
     }
 }
