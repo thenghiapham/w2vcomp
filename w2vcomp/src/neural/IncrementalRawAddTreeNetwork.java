@@ -56,7 +56,8 @@ public class IncrementalRawAddTreeNetwork {
         
         //TODO: remove
         int count = 0;
-        int hiddenLayerSize = weights0[0].length;
+        network.hiddenLayerSize = weights0[0].length;
+        int hiddenLayerSize = network.hiddenLayerSize;
         double[] projectLayer = new double[hiddenLayerSize];
         for (int i = 0; i < surfaceWords.length; i++) {
             String word = surfaceWords[i];
@@ -197,8 +198,9 @@ public class IncrementalRawAddTreeNetwork {
             for (int j = 0; j < hiddenLayerSize; j++) {
                 weights0[wordIndex][j] += a1error[j];
             }
+            System.out.println("weight 0");
             for (int j = 0; j < hiddenLayerSize; j++) {
-                System.out.println("weight 0");
+                
                 System.out.print(weights0[wordIndex][j]);
                 System.out.println();
             }
