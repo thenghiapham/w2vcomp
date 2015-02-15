@@ -61,6 +61,7 @@ public class IncrementalAddTreeNetwork {
         for (int i = 0; i < surfaceWords.length; i++) {
             SimpleMatrix matrix = projectionBuilder.getVector(surfaceWords[i]);
             if (matrix == null) continue;
+            network.inputVectorIndices.add(projectionBuilder.getWordIndex(surfaceWords[i]));
             count ++;
             if (sumMatrix == null) 
                 sumMatrix = matrix;
@@ -158,7 +159,6 @@ public class IncrementalAddTreeNetwork {
             }
             projectionBuilder.updateVector(wordIndex, 
                     projectGrad, learningRate / count);
-            System.out.println("count: " + count);
         }
         
         // updating the hierarchical softmax or the negative sampling layer
