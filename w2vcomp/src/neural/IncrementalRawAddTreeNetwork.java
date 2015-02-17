@@ -140,7 +140,7 @@ public class IncrementalRawAddTreeNetwork {
                             // Learn weights hidden -> output
                             for (int j = 0; j < hiddenLayerSize; j++) {
                                 weights1[iParentIndex][j] += gradient
-                                        * projectLayer[j];
+                                        * projectLayer[j] / count;
                             }
                         }
                         
@@ -183,7 +183,7 @@ public class IncrementalRawAddTreeNetwork {
                             }
                             for (int j = 0; j < hiddenLayerSize; j++) {
                                 negativeWeights1[target][j] += gradient
-                                        * projectLayer[j];
+                                        * projectLayer[j] / count;
                             }
                         }
                         
