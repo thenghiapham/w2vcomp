@@ -17,6 +17,9 @@ public class WordAnology {
         //String vectorFile = TestConstants.GZIP_VECTOR_FILE;
 //        String vectorFile = TestConstants.VECTOR_FILE;
         String vectorFile = TestConstants.S_VECTOR_FILE;
+        if (args.length > 0) {
+            vectorFile = args[0];
+        }
         RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
         System.out.println("Enter 3 words or EXIT to exit");
         try {
