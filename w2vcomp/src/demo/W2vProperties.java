@@ -52,6 +52,7 @@ public class W2vProperties{
         String wordVectorFileName = properties.getProperty("WordVectorFileName");
         String wordVectorFilePath = outputDir + "/" + wordVectorFileName;
         properties.setProperty("WordVectorFile", wordVectorFilePath);
+        properties.setProperty("WordModelFile", wordVectorFilePath.replace(".bin", ".mdl"));
         String wordLogFilePath = logDir + "/" + wordVectorFileName;
         properties.setProperty("WordLogFile", wordLogFilePath);
         

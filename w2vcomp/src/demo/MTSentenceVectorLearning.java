@@ -14,7 +14,6 @@ import java.util.HashMap;
 import neural.function.ActivationFunction;
 import neural.function.IdentityFunction;
 import neural.function.Tanh;
-//import java.util.logging.Level;
 
 import common.IOUtils;
 import common.LogUtils;

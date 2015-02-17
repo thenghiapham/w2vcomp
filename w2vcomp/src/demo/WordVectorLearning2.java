@@ -25,31 +25,35 @@ import demo.TestConstants;
 
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
-        int hiddenSize = Integer.parseInt(args[0]);
-        int windowSize = Integer.parseInt(args[1]);
-        boolean cbow = Boolean.parseBoolean(args[2]);
+        String configFile = args[0];
+        int hiddenSize = Integer.parseInt(args[1]);
+        int windowSize = Integer.parseInt(args[2]);
+        boolean cbow = Boolean.parseBoolean(args[3]);
         boolean hierarchicalSoftmax = false;
         int negativeSamples = 10;
         
-//        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
+        W2vProperties properties = new W2vProperties(configFile);
+        
+        boolean hierarchialSoftmax = Boolean.parseBoolean(properties.getProperty("HierarchialSoftmax"));
+        int negativeSampling = Integer.parseInt(properties.getProperty("NegativeSampling"));
+        double subSampling = Double.parseDouble(properties.getProperty("SubSampling"));
+        
         MultiThreadWord2Vec word2vec;
         if (cbow)
-            word2vec = new MultiThreadCBow(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
+            word2vec = new MultiThreadCBow(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, properties.getProperty("MenFile"));
         else
-            word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, TestConstants.S_MEN_FILE);
-//        MultiThreadCBow word2vec = new MultiThreadCBow(100, 5, true, 0, 1e-3, TestConstants.S_MEN_FILE);
-//        MultiThreadHybridWord2Vec word2vec = new MultiThreadHybridWord2Vec(100, 5, true, 0, 0, TestConstants.S_MEN_FILE);
+            word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, properties.getProperty("MenFile"));
         String suffix = "";
-        String trainDirPath = TestConstants.S_TRAIN_DIR;
-        String outputFile = TestConstants.S_WORD_VECTOR_FILE.replace(".bin", suffix + ".bin").replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
-        String vocabFile = TestConstants.S_VOCABULARY_FILE;
-        String modelFile = TestConstants.S_WORD_MODEL_FILE.replace(".mdl", suffix + ".mdl").replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
+        String trainDirPath = properties.getProperty("STrainDir");
+        String outputFile = properties.getProperty("WordVectorFile").replace(".bin", suffix + ".bin").replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
+        String vocabFile = properties.getProperty("VocabFile");
+        String modelFile = properties.getProperty("WordModelFile").replace(".mdl", suffix + ".mdl").replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
         System.out.println("Starting training using files in " + trainDirPath);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
-        String logFile = TestConstants.S_WORD_LOG_FILE.replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
+        String logFile = properties.getProperty("WordLogFile").replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
         if (cbow) {
             outputFile = outputFile.replaceAll("skip", "cbow");
             modelFile = modelFile.replaceAll("skip", "cbow");
@@ -57,7 +61,7 @@ public class WordVectorLearning2 {
         }
         LogUtils.setup(logFile);
         
-        Vocab vocab = new Vocab(TestConstants.S_MIN_FREQUENCY);
+        Vocab vocab = new Vocab(new Integer(properties.getProperty("MinFrequency")));
         
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
