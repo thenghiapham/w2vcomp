@@ -14,14 +14,9 @@ import java.util.ArrayList;
 import common.LogUtils;
 import vocab.Vocab;
 import word2vec.MultiThreadCBow;
-//import word2vec.CBowWord2Vec;
-//import word2vec.MultiThreadCBow;
-//import word2vec.MultiThreadHybridWord2Vec;
 import word2vec.MultiThreadSkipGram;
-//import word2vec.CBowWord2Vec;
 
 import word2vec.MultiThreadWord2Vec;
-import demo.TestConstants;
 
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
@@ -29,20 +24,17 @@ public class WordVectorLearning2 {
         int hiddenSize = Integer.parseInt(args[1]);
         int windowSize = Integer.parseInt(args[2]);
         boolean cbow = Boolean.parseBoolean(args[3]);
-        boolean hierarchicalSoftmax = false;
-        int negativeSamples = 10;
         
         W2vProperties properties = new W2vProperties(configFile);
-        
-        boolean hierarchialSoftmax = Boolean.parseBoolean(properties.getProperty("HierarchialSoftmax"));
-        int negativeSampling = Integer.parseInt(properties.getProperty("NegativeSampling"));
+        boolean hierarchicalSoftmax = Boolean.parseBoolean(properties.getProperty("HierarchialSoftmax"));
+        int negativeSamples = Integer.parseInt(properties.getProperty("NegativeSampling"));
         double subSampling = Double.parseDouble(properties.getProperty("SubSampling"));
         
         MultiThreadWord2Vec word2vec;
         if (cbow)
-            word2vec = new MultiThreadCBow(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, properties.getProperty("MenFile"));
+            word2vec = new MultiThreadCBow(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, subSampling, properties.getProperty("MenFile"));
         else
-            word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, 1e-3, properties.getProperty("MenFile"));
+            word2vec = new MultiThreadSkipGram(hiddenSize, windowSize, hierarchicalSoftmax, negativeSamples, subSampling, properties.getProperty("MenFile"));
         String suffix = "";
         String trainDirPath = properties.getProperty("STrainDir");
         String outputFile = properties.getProperty("WordVectorFile").replace(".bin", suffix + ".bin").replaceAll("size", "" + hiddenSize).replace("ws", "" + windowSize);
