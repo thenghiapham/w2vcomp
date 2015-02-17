@@ -117,30 +117,35 @@ public class IncrementalRawAddTreeNetwork {
                         double z2 = 0;
                         int iParentIndex = contextEntry.ancestors[bit];
                         // Propagate hidden -> output
-                        for (int j = 0; j < hiddenLayerSize; j++) {
-                            z2 += projectLayer[j]
-                                    * weights1[iParentIndex][j];
+                        double gradient = 0;
+                        synchronized (weights1[iParentIndex]) {
+                            for (int j = 0; j < hiddenLayerSize; j++) {
+                                z2 += projectLayer[j]
+                                        * weights1[iParentIndex][j];
+                            }
+                            double a2 = sigmoidTable.getSigmoid(z2);
+                            if (a2 == 0 || a2 == 1)
+                                continue;
+                            // 'g' is the gradient multiplied by the learning
+                            // rate
+                            // not alpha yet
+                            // TODO: put alpha here?
+                            gradient = (double) ((1 - (contextEntry.code
+                                    .charAt(bit) - 48) - a2) * alpha);
+                            // Propagate errors output -> hidden
+                            for (int j = 0; j < hiddenLayerSize; j++) {
+                                a1error[j] += gradient
+                                        * weights1[iParentIndex][j];
+                            }
+                            // Learn weights hidden -> output
+                            for (int j = 0; j < hiddenLayerSize; j++) {
+                                weights1[iParentIndex][j] += gradient
+                                        * projectLayer[j];
+                            }
                         }
+                        
 
-                        double a2 = sigmoidTable.getSigmoid(z2);
-                        if (a2 == 0 || a2 == 1)
-                            continue;
-                        // 'g' is the gradient multiplied by the learning
-                        // rate
-                        // not alpha yet
-                        // TODO: put alpha here?
-                        double gradient = (double) ((1 - (contextEntry.code
-                                .charAt(bit) - 48) - a2) * alpha);
-                        // Propagate errors output -> hidden
-                        for (int j = 0; j < hiddenLayerSize; j++) {
-                            a1error[j] += gradient
-                                    * weights1[iParentIndex][j];
-                        }
-                        // Learn weights hidden -> output
-                        for (int j = 0; j < hiddenLayerSize; j++) {
-                            weights1[iParentIndex][j] += gradient
-                                    * projectLayer[j];
-                        }
+                        
                     }
                 }
 
@@ -165,24 +170,23 @@ public class IncrementalRawAddTreeNetwork {
                         }
                         double z2 = 0;
                         double gradient;
-                        for (int j = 0; j < hiddenLayerSize; j++) {
-                            z2 += projectLayer[j]
-                                    * negativeWeights1[target][j];
+                        synchronized (negativeWeights1[target]) {
+                            for (int j = 0; j < hiddenLayerSize; j++) {
+                                z2 += projectLayer[j]
+                                        * negativeWeights1[target][j];
+                            }
+                            double a2 = sigmoidTable.getSigmoid(z2);
+                            gradient = (double) ((label - a2) * alpha);
+                            for (int j = 0; j < hiddenLayerSize; j++) {
+                                a1error[j] += gradient
+                                        * negativeWeights1[target][j];
+                            }
+                            for (int j = 0; j < hiddenLayerSize; j++) {
+                                negativeWeights1[target][j] += gradient
+                                        * projectLayer[j];
+                            }
                         }
-                        double a2 = sigmoidTable.getSigmoid(z2);
-                        gradient = (double) ((label - a2) * alpha);
-                        for (int j = 0; j < hiddenLayerSize; j++) {
-                            a1error[j] += gradient
-                                    * negativeWeights1[target][j];
-                        }
-                        for (int j = 0; j < hiddenLayerSize; j++) {
-                            negativeWeights1[target][j] += gradient
-                                    * projectLayer[j];
-                        }
-//                        for (int j = 0; j < hiddenLayerSize; j++) {
-//                            System.out.print(negativeWeights1[target][j]);
-//                            System.out.println();
-//                        }
+                        
                     }
                 }
                 
@@ -195,16 +199,12 @@ public class IncrementalRawAddTreeNetwork {
         }
         for (int i = 0; i < inputVectorIndices.size(); i++) {
             int wordIndex = inputVectorIndices.get(i);
-            for (int j = 0; j < hiddenLayerSize; j++) {
-                weights0[wordIndex][j] += a1error[j];
+            synchronized (weights0[wordIndex]) {
+                for (int j = 0; j < hiddenLayerSize; j++) {
+                    weights0[wordIndex][j] += a1error[j];
+                }
             }
-//            System.out.println("weight 0");
-//            for (int j = 0; j < hiddenLayerSize; j++) {
-//                
-//                System.out.print(weights0[wordIndex][j]);
-//                System.out.println();
-//            }
-//            if (rand.nextInt(1000) < 2) System.exit(1);
+            
         }
         
     }
