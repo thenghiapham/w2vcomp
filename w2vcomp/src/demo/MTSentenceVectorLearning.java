@@ -38,14 +38,16 @@ public class MTSentenceVectorLearning {
         String type = args[4];
         String function = args[5];
         
-        boolean hierarchialSoftmax = false;
-        int negativeSampling = 10;
-        double subSampling = 1e-3;
-        int phraseLevel = 6;
-        boolean allLevel = true;
-        boolean lexical = false;
         
         W2vProperties properties = new W2vProperties(configFile);
+        
+        boolean hierarchialSoftmax = Boolean.parseBoolean(properties.getProperty("HierarchialSoftmax"));
+        int negativeSampling = Integer.parseInt(properties.getProperty("NegativeSampling"));
+        double subSampling = Double.parseDouble(properties.getProperty("SubSampling"));
+        int phraseLevel = Integer.parseInt(properties.getProperty("PhraseLevel"));
+        boolean allLevel = Boolean.parseBoolean(properties.getProperty("AllLevel"));;
+        boolean lexical = Boolean.parseBoolean(properties.getProperty("Lexical"));;
+        
 //      HashMap<String, String> constructionGroups = new HashMap<String, String>();
         HashMap<String, String> constructionGroups = IOUtils.readConstructionGroup(properties.getProperty("ConstructionFile"));
         
