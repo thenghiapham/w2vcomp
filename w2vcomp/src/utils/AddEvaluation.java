@@ -18,8 +18,11 @@ public class AddEvaluation {
             vectorFile = args[0];
         }
         WeightedAdditive add = new WeightedAdditive();
-        RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
-//        space.
+        RawSemanticSpace space = null;
+        if (vectorFile.endsWith("bin"))
+            space = RawSemanticSpace.readSpace(vectorFile);
+        else
+            space = RawSemanticSpace.importSpace(vectorFile);
         MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
         MenCorrelation simLex = new MenCorrelation(TestConstants.SIMLEX);
         MenCorrelation wordSim = new MenCorrelation(TestConstants.WORD_SIM);
