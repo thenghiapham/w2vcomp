@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
-import org.ejml.simple.SimpleMatrix;
 
 import space.RawSemanticSpace;
 import space.SemanticSpace;
