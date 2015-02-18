@@ -109,13 +109,14 @@ public class ParsedDataShuffler {
     
     
     public static void main(String[] args) throws IOException{
+        // terrible bugs here in the the server
         String inputDir = args[0];
         String outputFile = args[1];
         String bncPath = inputDir + "/" + "bnc";
-//        String wikiPath = inputDir + "/" + "wiki";
-//        String ukwacPath = inputDir + "/" + "ukwac";
-//        String[] subDirs = {bncPath, wikiPath, ukwacPath};
-        String[] subDirs = {bncPath};
+        String wikiPath = inputDir + "/" + "wiki";
+        String ukwacPath = inputDir + "/" + "ukwac";
+        String[] subDirs = {bncPath, wikiPath, ukwacPath};
+//        String[] subDirs = {bncPath};
         shuffleFile(subDirs, outputFile);
     }
 }
