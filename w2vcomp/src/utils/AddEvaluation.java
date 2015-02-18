@@ -24,6 +24,7 @@ public class AddEvaluation {
         else
             space = RawSemanticSpace.importSpace(vectorFile);
         MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
+        MenCorrelation menTest = new MenCorrelation(TestConstants.S_MEN_TEST_FILE);
         MenCorrelation simLex = new MenCorrelation(TestConstants.SIMLEX);
         MenCorrelation wordSim = new MenCorrelation(TestConstants.WORD_SIM);
         MenCorrelation wordSimR = new MenCorrelation(TestConstants.WORD_SIM_RELATED);
@@ -35,6 +36,7 @@ public class AddEvaluation {
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         
         System.out.println("men: " + men.evaluateSpacePearson(space));
+        System.out.println("men test: " + menTest.evaluateSpacePearson(space));
         System.out.println("lex: " + simLex.evaluateSpacePearson(space));
         System.out.println("ws: " + wordSim.evaluateSpacePearson(space));
         System.out.println("wsr: " + wordSimR.evaluateSpacePearson(space));
