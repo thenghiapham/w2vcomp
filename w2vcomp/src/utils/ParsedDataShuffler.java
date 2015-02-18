@@ -14,9 +14,7 @@ import java.util.List;
 public class ParsedDataShuffler {
     public static HashMap<String, Integer> list2Dict(File[] files) {
         HashMap<String, Integer> result = new HashMap<String, Integer>();
-        System.out.println("result is null" + (result == null));
         for (int i = 0; i < files.length; i++) {
-            System.out.println("files["+ i + "] is null" + (files[i] == null));
             result.put(files[i].getAbsolutePath(), i);
         }
         return result;
@@ -36,6 +34,7 @@ public class ParsedDataShuffler {
         count = 0;
         for (int i = 0; i < dirPaths.length; i++) {
             System.arraycopy(fileLists[i], 0, result, count, fileLists[i].length);
+            count += fileLists[i].length;
         }
         return result;
     }
