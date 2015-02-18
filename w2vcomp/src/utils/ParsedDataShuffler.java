@@ -27,6 +27,7 @@ public class ParsedDataShuffler {
             String dirPath = dirPaths[i];
             File dir = new File(dirPath);
             fileLists[i] = dir.listFiles();
+            Arrays.sort(fileLists[i]);
             count += fileLists[i].length;
         }
         File[] result = new File[count];
