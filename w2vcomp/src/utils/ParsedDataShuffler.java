@@ -112,9 +112,9 @@ public class ParsedDataShuffler {
         // terrible bugs here in the the server
         String inputDir = args[0];
         String outputFile = args[1];
-        String bncPath = inputDir + "/" + "bnc";
-        String wikiPath = inputDir + "/" + "wiki";
-        String ukwacPath = inputDir + "/" + "ukwac";
+        String bncPath = inputDir + "/" + "parsed_bnc";
+        String wikiPath = inputDir + "/" + "parsed_wiki";
+        String ukwacPath = inputDir + "/" + "parsed_ukwac";
         String[] subDirs = {bncPath, wikiPath, ukwacPath};
 //        String[] subDirs = {bncPath};
         shuffleFile(subDirs, outputFile);
