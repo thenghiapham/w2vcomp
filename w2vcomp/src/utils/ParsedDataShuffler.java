@@ -65,7 +65,9 @@ public class ParsedDataShuffler {
             
             int index = f2index.get(file.getAbsolutePath());
             boolean endDoc = false;
+            int count = 0;
             while (!endDoc) {
+                
                 index++;
                 if (index == files.length) {
                     endDoc = true;
@@ -78,23 +80,29 @@ public class ParsedDataShuffler {
                             endDoc = true;
                             break;
                         }
+                        count++;
                         writer.write(line + "\n");
                         line = reader.readLine();
                     }
                     reader.close();
                 }
             }
+            System.out.println("write: " + count + " lines more");
         }
     }
     
     public static String seekFirstDoc(BufferedReader reader) throws IOException{
         String line = reader.readLine();
+        int count = 0;
         while (line != null) {
             if (line.startsWith("<text id")) {
+                System.out.println("skipping " + count + " lines");
                 return line;
             }
+            count++;
             line = reader.readLine();
         }
+        System.out.println("skipping " + count + " lines");
         return null;
     }
     
