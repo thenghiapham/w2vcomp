@@ -14,7 +14,9 @@ import java.util.List;
 public class ParsedDataShuffler {
     public static HashMap<String, Integer> list2Dict(File[] files) {
         HashMap<String, Integer> result = new HashMap<String, Integer>();
+        System.out.println("result is null" + (result == null));
         for (int i = 0; i < files.length; i++) {
+            System.out.println("files["+ i + "] is null" + (files[i] == null));
             result.put(files[i].getAbsolutePath(), i);
         }
         return result;
@@ -112,9 +114,9 @@ public class ParsedDataShuffler {
         // terrible bugs here in the the server
         String inputDir = args[0];
         String outputFile = args[1];
-        String bncPath = inputDir + "/" + "parsed_bnc";
-        String wikiPath = inputDir + "/" + "parsed_wiki";
-        String ukwacPath = inputDir + "/" + "parsed_ukwac";
+        String bncPath = inputDir + "/parsed_bnc";
+        String wikiPath = inputDir + "/parsed_wiki";
+        String ukwacPath = inputDir + "/parsed_ukwac";
         String[] subDirs = {bncPath, wikiPath, ukwacPath};
 //        String[] subDirs = {bncPath};
         shuffleFile(subDirs, outputFile);
