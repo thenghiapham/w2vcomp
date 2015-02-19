@@ -35,7 +35,7 @@ public class BasicTreeInputStream implements TreeInputStream {
             }
             if (!line.equals("")) {
                 try {
-                    readLineNum++;
+                    
                     line = line.replaceAll("\\(\\)", "LRB)");
                     line = line.replaceAll(" \\)", " RRB");
                     if (!(line.length() <= 20 || line.length() >= 1000)) {
@@ -45,7 +45,11 @@ public class BasicTreeInputStream implements TreeInputStream {
                 } catch (ValueException e) {
                     tree = null;
                 }
-                if (tree != null) return tree;
+                if (tree != null) {
+                    // TODO check again, before readline is up there
+                    readLineNum++;
+                    return tree;
+                }
             }
             line = reader.readLine();
         }
