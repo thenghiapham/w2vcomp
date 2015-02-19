@@ -61,7 +61,6 @@ public class ParsedDataShuffler {
             String line = textId;
             while (line != null) {
                 writer.write(line + "\n");
-                System.out.println(line);
                 line = reader.readLine();
             }
             reader.close();
