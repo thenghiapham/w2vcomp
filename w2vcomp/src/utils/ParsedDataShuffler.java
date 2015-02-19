@@ -42,13 +42,14 @@ public class ParsedDataShuffler {
     public static void shuffleFile(String[] dirPaths, String outputFile) throws IOException {
         File[] files = getFileList(dirPaths);
         HashMap<String, Integer> file2Index = list2Dict(files);
-        List<File> fileList = Arrays.asList(files);
+        List<File> fileList = Arrays.asList(files.clone());
         Collections.shuffle(fileList);
         
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
         for (File file: fileList) {
-            printFile(file, file2Index, files, writer);
             System.out.println(file.getAbsolutePath());
+            printFile(file, file2Index, files, writer);
+            
         }
         writer.flush();
         writer.close();
@@ -65,6 +66,7 @@ public class ParsedDataShuffler {
                 writer.write(line + "\n");
                 line = reader.readLine();
             }
+//            writer.flush();
             reader.close();
             
             int index = f2index.get(file.getAbsolutePath());
@@ -88,11 +90,13 @@ public class ParsedDataShuffler {
                         writer.write(line + "\n");
                         line = reader.readLine();
                     }
+//                    writer.flush();
                     reader.close();
                 }
             }
             System.out.println("write: " + count + " lines more");
         }
+        
     }
     
     public static String seekFirstDoc(BufferedReader reader) throws IOException{
@@ -118,8 +122,8 @@ public class ParsedDataShuffler {
         String bncPath = inputDir + "/parsed_bnc";
         String wikiPath = inputDir + "/parsed_wiki";
         String ukwacPath = inputDir + "/parsed_ukwac";
-//        String[] subDirs = {bncPath, wikiPath, ukwacPath};
-        String[] subDirs = {bncPath};
+        String[] subDirs = {bncPath, wikiPath, ukwacPath};
+//        String[] subDirs = {bncPath};
         shuffleFile(subDirs, outputFile);
     }
 }
