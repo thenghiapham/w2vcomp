@@ -30,7 +30,7 @@ public class Toefl {
         for (int i = 0; i < 80; i++) {
             String[] tuple = dataset[i];
             for (int j = 0; j < 6; j++) {
-                System.out.print(tuple[i] + " ");
+                System.out.print(tuple[j] + " ");
             }
             System.out.println();
             for (int j = 1; j < 5; j++) {
