@@ -116,8 +116,8 @@ public class ParsedDataShuffler {
         String bncPath = inputDir + "/parsed_bnc";
         String wikiPath = inputDir + "/parsed_wiki";
         String ukwacPath = inputDir + "/parsed_ukwac";
-        String[] subDirs = {bncPath, wikiPath, ukwacPath};
-//        String[] subDirs = {bncPath};
+//        String[] subDirs = {bncPath, wikiPath, ukwacPath};
+        String[] subDirs = {bncPath};
         shuffleFile(subDirs, outputFile);
     }
 }
