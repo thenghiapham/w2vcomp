@@ -9,8 +9,6 @@ import demo.TestConstants;
 
 //import demo.TestConstants;
 
-import space.CompositionSemanticSpace;
-import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 import space.WeightedCompositionSemanticSpace;
 

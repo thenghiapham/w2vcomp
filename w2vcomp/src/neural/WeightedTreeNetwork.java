@@ -31,7 +31,7 @@ public class WeightedTreeNetwork {
     private static final Logger LOGGER = Logger.getLogger(WeightedTreeNetwork.class.getName());
     private static final double epsilon = 1e-4;
     private static final double matrixCoefficient = 0.001;
-    private static final double LEVEL_DECAY = 0.1;
+//    private static final double LEVEL_DECAY = 0.1;
     
     protected Tree parseTree;
     

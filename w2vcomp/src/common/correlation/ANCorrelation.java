@@ -7,8 +7,6 @@ import org.ejml.simple.SimpleMatrix;
 import composition.WeightedAdditive;
 import demo.TestConstants;
 
-import space.CompositionSemanticSpace;
-import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 import space.WeightedCompositionSemanticSpace;
 

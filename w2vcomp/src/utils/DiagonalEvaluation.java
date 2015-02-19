@@ -1,6 +1,6 @@
 package utils;
 
-import space.DiagonalCompositionSemanticSpace;
+//import space.DiagonalCompositionSemanticSpace;
 import space.NewDiagonalCompositionSemanticSpace;
 import common.correlation.ANCorrelation;
 import common.correlation.NNCorrelation;

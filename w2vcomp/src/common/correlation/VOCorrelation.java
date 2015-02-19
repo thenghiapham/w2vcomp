@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import org.ejml.simple.SimpleMatrix;
 
-import space.CompositionSemanticSpace;
-import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 import space.WeightedCompositionSemanticSpace;
 

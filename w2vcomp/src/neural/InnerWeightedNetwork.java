@@ -15,7 +15,6 @@ import neural.layer.ProjectionLayer;
 import org.ejml.simple.SimpleMatrix;
 
 import common.MathUtils;
-import common.exception.UnimplementedException;
 import tree.Tree;
 import vocab.Vocab;
 

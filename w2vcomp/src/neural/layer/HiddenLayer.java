@@ -5,7 +5,6 @@ import neural.function.ActivationFunction;
 import org.ejml.simple.SimpleMatrix;
 
 import common.SimpleMatrixUtils;
-import common.exception.ValueException;
 
 /**
  * HiddenLayer:

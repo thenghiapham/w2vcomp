@@ -80,16 +80,16 @@ public class WeightedCompositionSemanticSpace implements CompositionalSemanticSp
         return topVector;
     }
     
-    private void normalize(ArrayList<WordWeight> wordWeights) {
-        double sumWeights = 0;
-        for (WordWeight wordWeight: wordWeights) {
-            sumWeights += wordWeight.weight;
-        }
-        if (sumWeights == 0) return;
-        for (WordWeight wordWeight: wordWeights) {
-            wordWeight.weight /= sumWeights;
-        }
-    }
+//    private void normalize(ArrayList<WordWeight> wordWeights) {
+//        double sumWeights = 0;
+//        for (WordWeight wordWeight: wordWeights) {
+//            sumWeights += wordWeight.weight;
+//        }
+//        if (sumWeights == 0) return;
+//        for (WordWeight wordWeight: wordWeights) {
+//            wordWeight.weight /= sumWeights;
+//        }
+//    }
     
     public String getComposedString(String parseString) {
         

@@ -10,9 +10,7 @@ import composition.BasicComposition;
 import composition.WeightedAdditive;
 import demo.TestConstants;
 
-import space.CompositionSemanticSpace;
 import space.CompositionalSemanticSpace;
-import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 import space.SMSemanticSpace;
 import space.SemanticSpace;

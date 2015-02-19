@@ -7,8 +7,6 @@ import neural.function.ObjectiveFunction;
 
 import org.ejml.simple.SimpleMatrix;
 
-import common.SimpleMatrixUtils;
-
 import vocab.Vocab;
 import word2vec.UniGram;
 

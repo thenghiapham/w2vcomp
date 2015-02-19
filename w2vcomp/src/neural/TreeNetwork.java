@@ -1,7 +1,5 @@
 package neural;
 
-import io.sentence.SubSamplingSentenceInputStream;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

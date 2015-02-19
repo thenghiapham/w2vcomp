@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import vocab.Vocab;
-import word2vec.MultiThreadSkipGram;
 //import word2vec.CBowWord2Vec;
 import word2vec.SkipNGramWord2Vec;
 

@@ -3,7 +3,6 @@ package common.correlation;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import space.DiagonalCompositionSemanticSpace;
 import space.RawSemanticSpace;
 import space.WeightedCompositionSemanticSpace;
 

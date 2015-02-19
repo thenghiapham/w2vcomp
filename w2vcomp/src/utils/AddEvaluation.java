@@ -7,6 +7,7 @@ import common.correlation.ANCorrelation;
 import common.correlation.MenCorrelation;
 import common.correlation.NNCorrelation;
 import common.correlation.ParsedPhraseCorrelation;
+import common.correlation.PhraseCorrelation;
 import common.correlation.VOCorrelation;
 import composition.WeightedAdditive;
 import demo.TestConstants;
@@ -44,6 +45,7 @@ public class AddEvaluation {
         NNCorrelation nn = new NNCorrelation(TestConstants.S_NN_FILE);
 //        SVCorrelation sv = new SVCorrelation(TestConstants.S_SV_FILE);
         VOCorrelation vo = new VOCorrelation(TestConstants.S_VO_FILE);
+        PhraseCorrelation onwn1 = new PhraseCorrelation(TestConstants.S_ONWN1_FILE);
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         
         System.out.println("men: " + men.evaluateSpacePearson(space));
@@ -64,6 +66,7 @@ public class AddEvaluation {
         System.out.println("nn add: " + nn.evaluateSpacePearson(space, add));
 //        System.out.println("sv add: " + sv.evaluateSpacePearson(space, add));
         System.out.println("vo add: " + vo.evaluateSpacePearson(space, add));
+        System.out.println("onwn1 add: " + onwn1.evaluateSpacePearson(space, add));
         System.out.println("sick add: " + sick.evaluateSpacePearson(space, add));
         
     }
