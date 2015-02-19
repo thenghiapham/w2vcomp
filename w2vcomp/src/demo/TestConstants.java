@@ -99,6 +99,7 @@ public class TestConstants {
   
     public static final String S_SICK_FILE                = S_PROJECT_DIR + "sick/postprocessed/SICK_train_trial.txt";
     public static final String S_ONWN1_FILE               = "/home/thenghiapham/work/dataset/processed_sts/STS.all.surprise.OnWN.txt";
+    public static final String S_ONWN2_FILE               = "/home/thenghiapham/work/dataset/processed_sts/STS.all.OnWN.txt";
     public static final String S_DATASET_DIR              = "/home/thenghiapham/work/dataset/lapata/";
     public static final String S_AN_FILE                  = S_DATASET_DIR + "an_lemma.txt";
     public static final String S_NN_FILE                  = S_DATASET_DIR + "nn_lemma.txt";

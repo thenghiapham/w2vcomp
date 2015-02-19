@@ -46,6 +46,7 @@ public class AddEvaluation {
 //        SVCorrelation sv = new SVCorrelation(TestConstants.S_SV_FILE);
         VOCorrelation vo = new VOCorrelation(TestConstants.S_VO_FILE);
         PhraseCorrelation onwn1 = new PhraseCorrelation(TestConstants.S_ONWN1_FILE);
+        PhraseCorrelation onwn2 = new PhraseCorrelation(TestConstants.S_ONWN2_FILE);
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         
         System.out.println("men: " + men.evaluateSpacePearson(space));
@@ -67,6 +68,7 @@ public class AddEvaluation {
 //        System.out.println("sv add: " + sv.evaluateSpacePearson(space, add));
         System.out.println("vo add: " + vo.evaluateSpacePearson(space, add));
         System.out.println("onwn1 add: " + onwn1.evaluateSpacePearson(space, add));
+        System.out.println("onwn2 add: " + onwn2.evaluateSpacePearson(space, add));
         System.out.println("sick add: " + sick.evaluateSpacePearson(space, add));
         
     }
