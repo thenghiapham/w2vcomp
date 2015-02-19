@@ -61,6 +61,7 @@ public class ParsedDataShuffler {
             String line = textId;
             while (line != null) {
                 writer.write(line + "\n");
+                System.out.println(line);
                 line = reader.readLine();
             }
             reader.close();
@@ -91,6 +92,8 @@ public class ParsedDataShuffler {
             }
             System.out.println("write: " + count + " lines more");
         }
+        writer.flush();
+        writer.close();
     }
     
     public static String seekFirstDoc(BufferedReader reader) throws IOException{
