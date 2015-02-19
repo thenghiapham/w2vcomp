@@ -50,6 +50,8 @@ public class ParsedDataShuffler {
             printFile(file, file2Index, files, writer);
             System.out.println(file.getAbsolutePath());
         }
+        writer.flush();
+        writer.close();
     }
     
     public static void printFile(File file, HashMap<String, Integer> f2index, 
@@ -91,8 +93,6 @@ public class ParsedDataShuffler {
             }
             System.out.println("write: " + count + " lines more");
         }
-        writer.flush();
-        writer.close();
     }
     
     public static String seekFirstDoc(BufferedReader reader) throws IOException{
