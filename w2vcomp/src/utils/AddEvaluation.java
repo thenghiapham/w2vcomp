@@ -1,5 +1,7 @@
 package utils;
 
+import java.io.File;
+
 import space.RawSemanticSpace;
 import common.correlation.ANCorrelation;
 import common.correlation.MenCorrelation;
@@ -19,10 +21,19 @@ public class AddEvaluation {
         }
         WeightedAdditive add = new WeightedAdditive();
         RawSemanticSpace space = null;
-        if (vectorFile.endsWith("bin"))
+        if (vectorFile.endsWith("bin")) {
+            String exportFile = vectorFile.replace(".bin", ".txt");
             space = RawSemanticSpace.readSpace(vectorFile);
-        else
+            if (!(new File(exportFile)).exists()) {
+                space.exportSpace(exportFile);
+            }
+        } else {
+            String exportFile = vectorFile.replace(".txt", ".bin");
             space = RawSemanticSpace.importSpace(vectorFile);
+            if (!(new File(exportFile)).exists()) {
+                space.saveSpace(exportFile);
+            }
+        }
         MenCorrelation men = new MenCorrelation(TestConstants.S_MEN_FILE);
         MenCorrelation menTest = new MenCorrelation(TestConstants.S_MEN_TEST_FILE);
         MenCorrelation simLex = new MenCorrelation(TestConstants.SIMLEX);

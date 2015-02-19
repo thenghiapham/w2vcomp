@@ -3,15 +3,18 @@ package space;
 import io.word.WordFilter;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +25,7 @@ import java.util.List;
 import org.ejml.simple.SimpleMatrix;
 
 import vocab.Vocab;
-
+import vocab.VocabEntry;
 import common.DataStructureUtils;
 import common.exception.ValueException;
 
@@ -177,7 +180,7 @@ public class RawSemanticSpace implements SemanticSpace{
         return buffer.toString();
     }
 
-    public void readSpace(InputStream inputStream) throws IOException {
+    private void readSpace(InputStream inputStream) throws IOException {
         byte[] rowData = new byte[vectorSize * 4];
         ByteBuffer buffer = ByteBuffer.wrap(rowData);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -190,6 +193,35 @@ public class RawSemanticSpace implements SemanticSpace{
             }
             word2Index.put(word, i);
             inputStream.read();
+        }
+    }
+    
+    public void saveSpace(String outputFile) {
+        int vocabSize = words.length;
+
+        try {
+            BufferedOutputStream os = new BufferedOutputStream(
+                    new FileOutputStream(outputFile));
+            String firstLine = "" + vocabSize + " " + vectorSize
+                    + "\n";
+            os.write(firstLine.getBytes(Charset.forName("UTF-8")));
+            // save vectors
+            for (int i = 0; i < vocabSize; i++) {
+                String word = words[i];
+                os.write((word + " ").getBytes("UTF-8"));
+                ByteBuffer buffer = ByteBuffer
+                        .allocate(4 * vectorSize);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                for (int j = 0; j < vectorSize; j++) {
+                    buffer.putFloat((float) vectors[i][j]);
+                }
+                os.write(buffer.array());
+                os.write("\n".getBytes());
+            }
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
