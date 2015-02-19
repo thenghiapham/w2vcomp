@@ -11,7 +11,7 @@ public class Toefl {
     public Toefl(String datasetFile) throws IOException{
         dataset = new String[80][6];
         BufferedReader reader = new BufferedReader(new FileReader(datasetFile));
-        for (int i = 0; i < 80; i++) {
+        for (int i = 0; i < 80 * 4; i++) {
             String line = reader.readLine();
             String[] elements = line.split("( |\t)");
             if (elements.length != 4) System.out.println(line + "???");
