@@ -11,10 +11,10 @@ public class WordEvaluation {
     public static String[][] getDatasetInfo() {
         String d = "/mnt/povobackup/clic/georgiana.dinu/IP/eval/";
         String[][] datasets = {{"men", d + "MEN_dataset_lemma_form_full", "sim"},
-//                {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
-//                {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
-//                {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
-//                {"rg", d + "rubenstein-goodeneough.txt", "sim"},
+                {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
+                {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
+                {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
+                {"rg", d + "rubenstein-goodeneough.txt", "sim"},
                 {"tfl", d + "toefl-test-set.txt", "tfl"},
                 {"mcrae", d + "mcrae-dataset.txt", "selpref"},
                 {"up", d + "up-dataset.txt", "selpref"},
