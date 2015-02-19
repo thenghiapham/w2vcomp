@@ -54,7 +54,6 @@ public abstract class BasicComposition {
         int vectorSize = inputSpace.getVectorSize();
         SimpleMatrix composedMatrix = new SimpleMatrix(phraseNum, vectorSize);
         for (int i = 0; i < phraseNum; i++) {
-            System.out.println(phrases[i]);
             String[] words = phrases[i].split(" ");
             SimpleMatrix composedVector = inputSpace.getVector(words[0]);
             for (int j = 1; j < words.length; j++) {
