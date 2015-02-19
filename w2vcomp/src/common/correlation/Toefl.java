@@ -13,7 +13,8 @@ public class Toefl {
         BufferedReader reader = new BufferedReader(new FileReader(datasetFile));
         for (int i = 0; i < 80; i++) {
             String line = reader.readLine();
-            String[] elements = line.split("( |\t)+");
+            String[] elements = line.split("( |\t)");
+            if (elements.length != 4) System.out.println(line + "???");
             if (i % 4 == 0) {
                 dataset[i / 4][0] = elements[1];
             }
