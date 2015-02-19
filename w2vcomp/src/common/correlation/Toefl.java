@@ -14,7 +14,7 @@ public class Toefl {
         for (int i = 0; i < 80 * 4; i++) {
             String line = reader.readLine();
             String[] elements = line.split("( |\t)");
-            if (elements.length != 4) System.out.println(line + "???");
+//            if (elements.length != 4) System.out.println(line + "???");
             if (i % 4 == 0) {
                 dataset[i / 4][0] = elements[1];
             }
@@ -30,25 +30,26 @@ public class Toefl {
         int wrongNum = 0;
         for (int i = 0; i < 80; i++) {
             String[] tuple = dataset[i];
-            for (int j = 0; j < 6; j++) {
-                System.out.print(tuple[j] + " ");
-            }
-            System.out.println();
-            for (int j = 1; j < 5; j++) {
-                System.out.print(space.getSim(tuple[0], tuple[j]));
-            }
-            System.out.println();
+//            for (int j = 0; j < 6; j++) {
+//                System.out.print(tuple[j] + " ");
+//            }
+//            System.out.println();
+//            for (int j = 1; j < 5; j++) {
+//                System.out.print(space.getSim(tuple[0], tuple[j]));
+//            }
+//            System.out.println();
             
             double maxSim = space.getSim(tuple[0], tuple[5]);
             for (int j = 1; j < 5; j++) {
                 double sim = space.getSim(tuple[0], tuple[j]);
                 if (sim > maxSim) {
-                    System.out.println("wrong");
+//                    System.out.println("wrong");
                     wrongNum++;
                     break;
                 }
-                System.out.println("correct");
+                
             }
+//            System.out.println("correct");
         }
         return (80 - wrongNum) / 80.0;
     }
