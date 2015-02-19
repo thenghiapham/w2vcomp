@@ -1,9 +1,10 @@
 package utils;
 
 import java.io.File;
+import java.io.IOException;
 
 import common.correlation.MenCorrelation;
-
+import common.correlation.Toefl;
 import space.RawSemanticSpace;
 
 public class WordEvaluation {
@@ -24,7 +25,7 @@ public class WordEvaluation {
         return datasets;
     }
                         
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException{
         String spaceDir = args[0];
         File[] files = (new File(spaceDir)).listFiles();
         String[][] datasets = getDatasetInfo();
@@ -36,15 +37,19 @@ public class WordEvaluation {
         }
     }
 
-    public static void process(RawSemanticSpace space, String[][] datasets) {
+    public static void process(RawSemanticSpace space, String[][] datasets) throws IOException{
         for (String[] datasetInfo: datasets) {
             String name = datasetInfo[0];
             String path = datasetInfo[1];
             String type = datasetInfo[2];
-            MenCorrelation men = new MenCorrelation(path);
+            
             if (type.equals("sim")) {
+                MenCorrelation men = new MenCorrelation(path);
                 System.out.println(name + ": " + men.evaluateSpacePearson(space) 
                         + " " + men.evaluateSpaceSpearman(space));
+            } else if (type.equals("tfl")){
+                Toefl toefl = new Toefl(path);
+                System.out.println(name + ": " + toefl.evaluation(space));
             }
         }
     }
