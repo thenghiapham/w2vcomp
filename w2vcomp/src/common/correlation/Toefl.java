@@ -21,7 +21,7 @@ public class Toefl {
             if (elements[3].equals("TRUE")) {
                 dataset[i / 4][5] = elements[2];
             }
-            dataset[i / 4][(i % 4) + 1] = elements[3];
+            dataset[i / 4][(i % 4) + 1] = elements[2];
         }
         reader.close();     
     }
