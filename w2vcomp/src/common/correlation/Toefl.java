@@ -29,15 +29,27 @@ public class Toefl {
         int wrongNum = 0;
         for (int i = 0; i < 80; i++) {
             String[] tuple = dataset[i];
+            for (int j = 0; j < 6; j++) {
+                System.out.print(tuple[i] + " ");
+            }
+            System.out.println();
+            for (int j = 1; j < 5; j++) {
+                System.out.print(space.getSim(tuple[0], tuple[j]));
+            }
+            System.out.println();
+            
             double maxSim = space.getSim(tuple[0], tuple[5]);
             for (int j = 1; j < 5; j++) {
                 double sim = space.getSim(tuple[0], tuple[j]);
                 if (sim > maxSim) {
+                    System.out.println("wrong");
                     wrongNum++;
                     break;
                 }
+                System.out.println("correct");
             }
         }
         return (80 - wrongNum) / 80.0;
     }
+    
 }
