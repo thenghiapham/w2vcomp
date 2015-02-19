@@ -35,12 +35,19 @@ public class AddEvaluation {
         VOCorrelation vo = new VOCorrelation(TestConstants.S_VO_FILE);
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
         
-        System.out.println("men: " + men.evaluateSpaceSpearman(space));
-        System.out.println("men test: " + menTest.evaluateSpaceSpearman(space));
-        System.out.println("lex: " + simLex.evaluateSpaceSpearman(space));
-        System.out.println("ws: " + wordSim.evaluateSpaceSpearman(space));
-        System.out.println("wsr: " + wordSimR.evaluateSpaceSpearman(space));
-        System.out.println("wss: " + wordSimS.evaluateSpaceSpearman(space));
+        System.out.println("men: " + men.evaluateSpacePearson(space));
+        System.out.println("men test: " + menTest.evaluateSpacePearson(space));
+        System.out.println("lex: " + simLex.evaluateSpacePearson(space));
+        System.out.println("ws: " + wordSim.evaluateSpacePearson(space));
+        System.out.println("wsr: " + wordSimR.evaluateSpacePearson(space));
+        System.out.println("wss: " + wordSimS.evaluateSpacePearson(space));
+        
+//        System.out.println("men: " + men.evaluateSpaceSpearman(space));
+//        System.out.println("men test: " + menTest.evaluateSpaceSpearman(space));
+//        System.out.println("lex: " + simLex.evaluateSpaceSpearman(space));
+//        System.out.println("ws: " + wordSim.evaluateSpaceSpearman(space));
+//        System.out.println("wsr: " + wordSimR.evaluateSpaceSpearman(space));
+//        System.out.println("wss: " + wordSimS.evaluateSpaceSpearman(space));
         
         System.out.println("an add: " + an.evaluateSpacePearson(space, add));
         System.out.println("nn add: " + nn.evaluateSpacePearson(space, add));
