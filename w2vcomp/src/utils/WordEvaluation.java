@@ -1,0 +1,51 @@
+package utils;
+
+import java.io.File;
+
+import common.correlation.MenCorrelation;
+
+import space.RawSemanticSpace;
+
+public class WordEvaluation {
+    public static String[][] getDatasetInfo() {
+        String d = "/mnt/povobackup/clic/georgiana.dinu/IP/eval/";
+        String[][] datasets = {{"men", d + "MEN_dataset_lemma_form_full", "sim"},
+                {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
+                {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
+                {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
+                {"rg", d + "rubenstein-goodeneough.txt", "sim"},
+                {"tfl", d + "toefl-test-set.txt", "tfl"},
+                {"mcrae", d + "mcrae-dataset.txt", "selpref"},
+                {"up", d + "up-dataset.txt", "selpref"},
+                {"aamp", d + "aamp-gold-standard.txt", "clst"},
+                {"battig", d + "battig-gold-standard.txt", "clst"},
+                {"esslli", d + "esslli-gold-standard.txt", "clst"}
+                };
+        return datasets;
+    }
+                        
+    public static void main(String args[]) {
+        String spaceDir = args[0];
+        File[] files = (new File(spaceDir)).listFiles();
+        String[][] datasets = getDatasetInfo();
+        for (File file: files) {
+            if (!file.getName().endsWith("bin")) continue;
+            RawSemanticSpace space = RawSemanticSpace.readSpace(file.getAbsolutePath());
+            System.out.println(file.getName());
+            process(space, datasets);
+        }
+    }
+
+    public static void process(RawSemanticSpace space, String[][] datasets) {
+        for (String[] datasetInfo: datasets) {
+            String name = datasetInfo[0];
+            String path = datasetInfo[1];
+            String type = datasetInfo[2];
+            MenCorrelation men = new MenCorrelation(path);
+            if (type.equals("sim")) {
+                System.out.println(name + ": " + men.evaluateSpacePearson(space) 
+                        + " " + men.evaluateSpaceSpearman(space));
+            }
+        }
+    }
+}

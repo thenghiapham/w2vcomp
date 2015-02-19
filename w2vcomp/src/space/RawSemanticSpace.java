@@ -25,7 +25,6 @@ import java.util.List;
 import org.ejml.simple.SimpleMatrix;
 
 import vocab.Vocab;
-import vocab.VocabEntry;
 import common.DataStructureUtils;
 import common.exception.ValueException;
 
@@ -228,7 +227,6 @@ public class RawSemanticSpace implements SemanticSpace{
     public SimpleMatrix getVector(String word) {
         Integer index = word2Index.get(word);
         if (index == null) {
-//            System.out.println(word);
             return null;
         } else {
             return new SimpleMatrix(1, vectorSize, true, vectors[index]);
