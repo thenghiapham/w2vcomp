@@ -70,7 +70,7 @@ public class FeatureNorm {
         
         double[] sims = cosine(pairs, newSpace, space);
         correlations[0] = (new PearsonsCorrelation()).correlation(gold, sims);
-        correlations[0] = (new SpearmansCorrelation()).correlation(gold, sims);
+        correlations[1] = (new SpearmansCorrelation()).correlation(gold, sims);
         return correlations;
     }
     
