@@ -3,6 +3,7 @@ package utils;
 import java.io.File;
 import java.io.IOException;
 
+import common.correlation.FeatureNorm;
 import common.correlation.MenCorrelation;
 import common.correlation.Toefl;
 import space.RawSemanticSpace;
@@ -50,6 +51,10 @@ public class WordEvaluation {
             } else if (type.equals("tfl")){
                 Toefl toefl = new Toefl(path);
                 System.out.println(name + ": " + toefl.evaluation(space));
+            } else if (type.equals("selpref")) {
+                FeatureNorm fnorm = new FeatureNorm(path);
+                double[] correlation = fnorm.evaluate(space);
+                System.out.println(name + ": " + correlation[0] + " " + correlation[1]);
             }
         }
     }
