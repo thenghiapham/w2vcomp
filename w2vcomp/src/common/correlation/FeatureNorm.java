@@ -82,10 +82,15 @@ public class FeatureNorm {
         double[] sims = new double[pairs.length];
         for (int i = 0; i < pairs.length; i++) {
             String[] pair = pairs[i];
-            System.out.println(pair[0] + " " + pair[1]);
+//            System.out.println(pair[0] + " " + pair[1]);
             SimpleMatrix v1 = space1.getVector(pair[0]);
             SimpleMatrix v2 = space2.getVector(pair[1]);
-            sims[i] = SimpleMatrixUtils.cosine(v1, v2);
+            if (v1 == null || v2 == null) {
+                sims[i] = 0;
+            } else {
+                sims[i] = SimpleMatrixUtils.cosine(v1, v2);
+            }
+            
         }
         return sims;
     }
