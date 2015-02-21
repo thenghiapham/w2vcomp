@@ -316,7 +316,7 @@ public class SMSemanticSpace implements SemanticSpace {
         return new SMSemanticSpace(newWordList, SimpleMatrixUtils.getRows(vectors, DataStructureUtils.intListToArray(newRows)));
     
     }
-
+    
     public int getVectorSize() {
         return vectorSize;
     }

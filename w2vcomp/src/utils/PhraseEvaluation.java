@@ -50,7 +50,7 @@ public class PhraseEvaluation {
                 System.out.println(name + ": " + pc.evaluateSpacePearson(space, add) 
                         + " " + pc.evaluateSpaceSpearman(space, add));
             } else if (type.equals("svm-cos")) {
-            
+                
             } else if (type.equals("svm-vec")) {
                 
             }

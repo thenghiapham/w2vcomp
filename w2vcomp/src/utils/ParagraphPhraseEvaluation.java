@@ -6,7 +6,6 @@ import java.io.IOException;
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.PhraseCorrelation;
 import space.RawSemanticSpace;
-import space.SemanticSpace;
 import word2vec.Paragraph2Vec;
 import word2vec.SkipgramPara2Vec;
 
@@ -31,7 +30,7 @@ public class ParagraphPhraseEvaluation {
         String vocabFile = modelDir + "/bwu_lower.voc";
         for (File file: files) {
             if (!file.getName().endsWith("mdl")) continue;
-            Paragraph2Vec p2v = new SkipgramPara2Vec(file.getAbsolutePath(), vocabFile, 300, 5, false, 10, 1e-5, 100);
+            Paragraph2Vec p2v = new SkipgramPara2Vec(file.getAbsolutePath(), vocabFile, 400, 5, false, 10, 1e-5, 100);
             System.out.println(file.getName());
             process(p2v, datasets);
         }
