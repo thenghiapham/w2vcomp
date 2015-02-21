@@ -3,6 +3,8 @@ package utils;
 import java.io.File;
 import java.io.IOException;
 
+import common.classifier.SvmCrossValidation;
+import common.correlation.CosineFeatureExtractor;
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.PhraseCorrelation;
 import space.RawSemanticSpace;
@@ -10,11 +12,12 @@ import word2vec.Paragraph2Vec;
 import word2vec.SkipgramPara2Vec;
 
 public class ParagraphPhraseEvaluation {
+    public static final String SVM_DIR = "/home/thenghia.pham/libsvm-3.20";
     public static String[][] getDatasetInfo() {
         String d = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         String[][] datasets = 
-               {{"sick", d + "SICK_train_trail_rel.txt", "sim-parse"},
-                {"sick-rte", d + "SICK_train_trail_rte.txt", "svm-cos"},
+                {{"sick", d + "SICK_train_trial_rel.txt", "sim-parse"},
+                {"sick-rte", d + "SICK_train_trial_rte.txt", "svm-cos"},
                 {"onwn", d + "STS.all.surprise.OnWN.txt", "sim"},
                 {"msr-test", d + "STS.all.MSRvid.test.txt", "sim"},
                 {"msr-train", d + "STS.all.MSRvid.train.txt", "sim"},
@@ -57,7 +60,14 @@ public class ParagraphPhraseEvaluation {
                 System.out.println(name + ": " + pc.evaluatePhraseSpacePearson(space) 
                         + " " + pc.evaluatePhraseSpaceSpearman(space));
             } else if (type.equals("svm-cos")) {
-            
+                CosineFeatureExtractor extracter = new CosineFeatureExtractor(path, path + ".feature");
+                String[] labels = extracter.getLabels();
+                String[] sentences = extracter.getSurfacePhrase();
+                RawSemanticSpace space = new RawSemanticSpace(sentences, p2v.getParagraphVectors());
+                double[][] features = extracter.getCosineFeaturesPhraseSpace(space);
+                SvmCrossValidation crossVad = new SvmCrossValidation(SVM_DIR);
+                System.out.println(name + ": " + crossVad.crossValidation(labels, features, 10, ""));
+                
             } else if (type.equals("svm-vec")) {
                 
             }
