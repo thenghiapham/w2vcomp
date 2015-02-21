@@ -27,6 +27,14 @@ public class SentenceClassification {
         return labels;
     }
     
+    public String[] getSentences() {
+        return sentences;
+    }
+    
+    public String[] getParsedSentences() {
+        return parsedSentences;
+    }
+    
     public double[][] getSentenceVectors(SemanticSpace space, BasicComposition comp) {
         SemanticSpace phraseSpace = comp.composeSpace(space, sentences);
         return getSentenceVectors(phraseSpace);
