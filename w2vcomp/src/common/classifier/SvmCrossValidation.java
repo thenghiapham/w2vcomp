@@ -31,6 +31,7 @@ public class SvmCrossValidation {
              trainFile = File.createTempFile("train", ".txt");
              printTrainData(trainFile, labels, features);
              commandList.add(trainFile.getAbsolutePath());
+             System.out.println(trainFile.getAbsolutePath());
              String[] commands = new String[commandList.size()];
              commands = commandList.toArray(commands);
              Process proc = rt.exec(commands);
@@ -40,7 +41,10 @@ public class SvmCrossValidation {
              
              String s = null;
              double accuracy = -1.0;
+             System.out.println("Output");
              while ((s = stdInput.readLine()) != null) {
+                 
+                 System.out.println(s);
                  if (s.startsWith("Cross Validation")) {
                      String accuracyString = s.split(" ")[4];
                      accuracy = Double.parseDouble(accuracyString.substring(0, accuracyString.length() - 1));

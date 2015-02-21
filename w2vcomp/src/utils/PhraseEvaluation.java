@@ -24,8 +24,6 @@ public class PhraseEvaluation {
                 };
         return datasets;
     }
-    
-    
                         
     public static void main(String args[]) throws IOException{
         String spaceDir = args[0];
