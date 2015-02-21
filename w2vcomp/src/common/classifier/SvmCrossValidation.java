@@ -20,9 +20,12 @@ public class SvmCrossValidation {
         ArrayList<String> commandList = new ArrayList<String>();
         
         commandList.add(svmDir + "/svm-train");
-        String[] options = optionString.split(" ");
-        for (String option: options) {
-            commandList.add(option);
+        if (optionString.length() > 0)
+        {
+            String[] options = optionString.split(" ");
+            for (String option: options) {
+                commandList.add(option);
+            }
         }
         commandList.add("-v");
         commandList.add("" + numFolds);
