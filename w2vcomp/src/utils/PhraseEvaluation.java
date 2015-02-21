@@ -12,10 +12,11 @@ public class PhraseEvaluation {
     public static String[][] getDatasetInfo() {
         String d = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         String[][] datasets = 
-               {{"sick", d + "MEN_dataset_lemma_form_full", "sim-parse"},
-                {"sick-rte", d + "cleaned-wordsim_relatedness_goldstandard.txt", "svm-cos"},
-                {"onwn", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim-"},
-                {"msr", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
+               {{"sick", d + "SICK_train_trail_rel.txt", "sim-parse"},
+                {"sick-rte", d + "SICK_train_trail_rte.txt", "svm-cos"},
+                {"onwn", d + "STS.all.surprise.OnWN.txt", "sim"},
+                {"msr-test", d + "STS.all.MSRvid.test.txt", "sim"},
+                {"msr-train", d + "STS.all.MSRvid.train.txt", "sim"},
                 {"imdb", d + "rubenstein-goodeneough.txt", "svm-vec"}
                 };
         return datasets;
