@@ -135,7 +135,7 @@ public class ParsedPhraseCorrelation{
      * @return
      */
     
-    public double evaluateSpaceSpearman(SMSemanticSpace space, BasicComposition composition) {
+    public double evaluateSpaceSpearman(SemanticSpace space, BasicComposition composition) {
         SemanticSpace phraseSpace = composition.composeSpace(space, surfacePhrase);
         return surfaceCorrelation.evaluateSpaceSpearman(phraseSpace);
     }

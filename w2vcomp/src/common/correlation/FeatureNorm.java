@@ -61,6 +61,7 @@ public class FeatureNorm {
             SimpleMatrix row = newMatrix.extractVector(true, i);
             for (int j = 0; j < nounList.size(); j++) {
                 SimpleMatrix nounVector = space.getVector(nounList.get(j));
+                nounVector = nounVector.divide(nounVector.normF());
                 row = row.plus(nounVector);
             }
             newMatrix.setRow(i, 0, row.getMatrix().data);
