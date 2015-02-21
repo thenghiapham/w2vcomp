@@ -37,10 +37,10 @@ public class SvmCrossValidation {
              System.out.println(trainFile.getAbsolutePath());
              String[] commands = new String[commandList.size()];
              commands = commandList.toArray(commands);
-             for (int i = 0; i < commands.length; i++) {
-                 System.out.print(commands[i] + " ");
-             }
-             System.out.println();
+//             for (int i = 0; i < commands.length; i++) {
+//                 System.out.print(commands[i] + " ");
+//             }
+//             System.out.println();
              Process proc = rt.exec(commands);
 
              BufferedReader stdInput = new BufferedReader(new 
@@ -48,10 +48,10 @@ public class SvmCrossValidation {
              
              String s = null;
              double accuracy = -1.0;
-             System.out.println("Output");
+//             System.out.println("Output");
              while ((s = stdInput.readLine()) != null) {
                  
-                 System.out.println(s);
+//                 System.out.println(s);
                  if (s.startsWith("Cross Validation")) {
                      String accuracyString = s.split(" ")[4];
                      accuracy = Double.parseDouble(accuracyString.substring(0, accuracyString.length() - 1));
