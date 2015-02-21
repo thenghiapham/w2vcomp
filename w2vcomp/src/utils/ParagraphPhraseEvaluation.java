@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.PhraseCorrelation;
-import composition.WeightedAdditive;
 import space.RawSemanticSpace;
 import space.SemanticSpace;
 import word2vec.Paragraph2Vec;
@@ -39,7 +38,6 @@ public class ParagraphPhraseEvaluation {
     }
 
     public static void process(Paragraph2Vec p2v, String[][] datasets) throws IOException{
-        WeightedAdditive add = new WeightedAdditive(1.0, 1.0);
         for (String[] datasetInfo: datasets) {
             String name = datasetInfo[0];
             String path = datasetInfo[1];
@@ -50,15 +48,15 @@ public class ParagraphPhraseEvaluation {
                 String[] sentences = ppc.getSurfacePhrase();
                 p2v.trainParagraphVector(sentences);
                 RawSemanticSpace space = new RawSemanticSpace(sentences, p2v.getParagraphVectors());
-                System.out.println(name + ": " + ppc.evaluateSpacePearson(space, add) 
-                        + " " + ppc.evaluateSpaceSpearman(space, add));
+                System.out.println(name + ": " + ppc.evaluatePhraseSpacePearson(space) 
+                        + " " + ppc.evaluatePhraseSpaceSpearman(space));
             } else if (type.equals("sim")){
                 PhraseCorrelation pc = new PhraseCorrelation(path);
                 String[] sentences = pc.getPhrases();
                 p2v.trainParagraphVector(sentences);
                 RawSemanticSpace space = new RawSemanticSpace(sentences, p2v.getParagraphVectors());
-                System.out.println(name + ": " + pc.evaluateSpacePearson(space, add) 
-                        + " " + pc.evaluateSpaceSpearman(space, add));
+                System.out.println(name + ": " + pc.evaluatePhraseSpacePearson(space) 
+                        + " " + pc.evaluatePhraseSpaceSpearman(space));
             } else if (type.equals("svm-cos")) {
             
             } else if (type.equals("svm-vec")) {
