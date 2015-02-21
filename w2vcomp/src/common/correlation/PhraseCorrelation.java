@@ -54,4 +54,8 @@ public class PhraseCorrelation {
         SemanticSpace phraseSpace = composition.composeSpace(space, uniquePhrases);
         return surfaceCorrelation.evaluateSpacePearson(phraseSpace);
     }
+    
+    public String[] getPhrases() {
+        return uniquePhrases;
+    }
 }
