@@ -7,6 +7,7 @@ import common.classifier.SvmCrossValidation;
 import common.correlation.CosineFeatureExtractor;
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.PhraseCorrelation;
+import common.correlation.SentenceClassification;
 import composition.WeightedAdditive;
 import space.RawSemanticSpace;
 
@@ -59,7 +60,11 @@ public class PhraseEvaluation {
                 SvmCrossValidation crossVad = new SvmCrossValidation(SVM_DIR);
                 System.out.println(name + ": " + crossVad.crossValidation(labels, features, 10, ""));
             } else if (type.equals("svm-vec")) {
-                
+                SentenceClassification extracter = new SentenceClassification(path);
+                String[] labels = extracter.getLabels();
+                double[][] features = extracter.getSentenceVectors(space, add);
+                SvmCrossValidation crossVad = new SvmCrossValidation(SVM_DIR);
+                System.out.println(name + ": " + crossVad.crossValidation(labels, features, 4, ""));
             }
         }
     }
