@@ -1,7 +1,9 @@
 package common.classifier;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -62,7 +64,26 @@ public class SvmCrossValidation {
         }
     }
     
-    protected void printTrainData(File trainFile, String[] labels, double[][] features) {
-        
+    protected void printTrainData(File trainFile, String[] labels, double[][] features) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(trainFile));
+        for (int i = 0; i < labels.length; i++) {
+            writer.write(labels[i] + " ");
+            printVector(writer, features[i], 1);
+            writer.write("\n");
+        }
+        writer.close();
+    }
+    
+    protected void printVector(BufferedWriter writer, double[] vector, int featureIndex) throws IOException {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < vector.length; i++) {
+            buffer.append(i + featureIndex);
+            buffer.append(":");
+            buffer.append(vector[i]);
+            if (i != vector.length - 1) {
+                buffer.append(" ");
+            }
+        }
+        writer.write(buffer.toString());
     }
 }

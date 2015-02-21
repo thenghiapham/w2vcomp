@@ -13,19 +13,17 @@ import composition.BasicComposition;
 import space.SemanticSpace;
 import tree.Tree;
 
-public class CosineFeaturePrinter{
+public class CosineFeatureExtractor{
 
     String name = "";
     String[][] parsePhrasePairs;
     String[][] surfacePhrasePairs;
-    // the info of hrases that need to be composed
-    // it contains a list of string tuples (word1, word2, phrases)
     String[] parsedPhrase;
     String[] surfacePhrase;
     double[][] features;
     String[] labels;
 
-    public CosineFeaturePrinter(String dataset, String featureFile) {
+    public CosineFeatureExtractor(String dataset, String featureFile) {
         readDataset(dataset);
         readFeature(featureFile);
     }
@@ -121,7 +119,7 @@ public class CosineFeaturePrinter{
         return result;
     }
     
-    String[] getLabels() {
+    public String[] getLabels() {
         return labels;
     }
     

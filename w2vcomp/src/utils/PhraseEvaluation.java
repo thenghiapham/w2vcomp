@@ -3,12 +3,15 @@ package utils;
 import java.io.File;
 import java.io.IOException;
 
+import common.classifier.SvmCrossValidation;
+import common.correlation.CosineFeatureExtractor;
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.PhraseCorrelation;
 import composition.WeightedAdditive;
 import space.RawSemanticSpace;
 
 public class PhraseEvaluation {
+    public static final String SVM_DIR = "/home/thenghia.pham/libsvm-3.20";
     public static String[][] getDatasetInfo() {
         String d = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         String[][] datasets = 
@@ -21,6 +24,8 @@ public class PhraseEvaluation {
                 };
         return datasets;
     }
+    
+    
                         
     public static void main(String args[]) throws IOException{
         String spaceDir = args[0];
@@ -50,7 +55,11 @@ public class PhraseEvaluation {
                 System.out.println(name + ": " + pc.evaluateSpacePearson(space, add) 
                         + " " + pc.evaluateSpaceSpearman(space, add));
             } else if (type.equals("svm-cos")) {
-                
+                CosineFeatureExtractor extracter = new CosineFeatureExtractor(path, path + ".feature");
+                String[] labels = extracter.getLabels();
+                double[][] features = extracter.getCosineFeatures(space, add);
+                SvmCrossValidation crossVad = new SvmCrossValidation(SVM_DIR);
+                System.out.println(name + ": " + crossVad.crossValidation(labels, features, 10, ""));
             } else if (type.equals("svm-vec")) {
                 
             }
