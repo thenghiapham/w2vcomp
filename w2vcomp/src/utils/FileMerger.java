@@ -15,7 +15,7 @@ public class FileMerger {
         String line1 = reader1.readLine();
         String line2 = reader2.readLine();
         while (line1 != null && line2 != null) {
-            writer.write(line1 + "\t" + line2);
+            writer.write(line1 + "\t" + line2 + "\n");
             line1 = reader1.readLine();
             line2 = reader2.readLine();
         }

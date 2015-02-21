@@ -21,7 +21,7 @@ public class ParagraphPhraseEvaluation {
                 {"onwn", d + "STS.all.surprise.OnWN.txt", "sim"},
                 {"msr-test", d + "STS.all.MSRvid.test.txt", "sim"},
                 {"msr-train", d + "STS.all.MSRvid.train.txt", "sim"},
-                {"imdb", d + "rubenstein-goodeneough.txt", "svm-vec"}
+                {"imdb", d + "imdb2.txt", "svm-vec"}
                 };
         return datasets;
     }
