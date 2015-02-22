@@ -36,7 +36,7 @@ public class WordAnalogyEvaluation {
             }
         }
         semNum = synIndex;
-        synNum = questionNum / semNum;
+        synNum = questionNum - semNum;
     }
     public double[] evaluation(SemanticSpace space) {
         int numCorrect = 0;
