@@ -12,6 +12,7 @@ import space.RawSemanticSpace;
 public class WordEvaluation {
     public static String[][] getDatasetInfo() {
         String d = "/mnt/povobackup/clic/georgiana.dinu/IP/eval/";
+        String nDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         String[][] datasets = {{"men", d + "MEN_dataset_lemma_form_full", "sim"},
                 {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
                 {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
@@ -20,7 +21,7 @@ public class WordEvaluation {
                 {"tfl", d + "toefl-test-set.txt", "tfl"},
                 {"mcrae", d + "mcrae-dataset.txt", "selpref"},
                 {"up", d + "up-dataset.txt", "selpref"},
-                {"analogy", d + "questions-words.txt", "anal"},
+                {"analogy", nDir + "questions-words.txt", "anal"},
                 {"aamp", d + "aamp-gold-standard.txt", "clst"},
                 {"battig", d + "battig-gold-standard.txt", "clst"},
                 {"esslli", d + "esslli-gold-standard.txt", "clst"}
