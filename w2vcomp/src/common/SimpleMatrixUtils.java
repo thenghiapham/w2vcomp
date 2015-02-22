@@ -110,16 +110,6 @@ public class SimpleMatrixUtils {
         return result;
     }
     
-    // TODO: turn this into a UnitTest
-    public static void main(String[] args) {
-        SimpleMatrix matrix1 = new SimpleMatrix(2,2,true, new double[]{1,2,3,4});
-        SimpleMatrix matrix2 = new SimpleMatrix(2,2,false, new double[]{5,6,7,8});
-        System.out.println("mat 1" + matrix1);
-        System.out.println("mat 2" + matrix2);
-        System.out.println("vstacked" + vStack(matrix1, matrix2));
-        System.out.println("hstacked" + hStack(matrix1, matrix2));
-    }
-    
     public static SimpleMatrix applyActivationFunction(SimpleMatrix input, ActivationFunction activation) {
         double[] data = input.getMatrix().getData();
         double[] newData = new double[data.length];
@@ -129,6 +119,16 @@ public class SimpleMatrixUtils {
         return new SimpleMatrix(input.numRows(), input.numCols(), true, newData);
     }
     
+    // TODO: turn this into a UnitTest
+    public static void main(String[] args) {
+        SimpleMatrix matrix1 = new SimpleMatrix(2,2,true, new double[]{1,2,3,4});
+        SimpleMatrix matrix2 = new SimpleMatrix(2,2,false, new double[]{5,6,7,8});
+        System.out.println("mat 1" + matrix1);
+        System.out.println("mat 2" + matrix2);
+        System.out.println("vstacked" + vStack(matrix1, matrix2));
+        System.out.println("hstacked" + hStack(matrix1, matrix2));
+    }
+
     public static SimpleMatrix applyDerivative(SimpleMatrix input, ActivationFunction activation) {
         double[] data = input.getMatrix().getData();
         double[] newData = new double[data.length];

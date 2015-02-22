@@ -7,6 +7,7 @@ import common.correlation.FeatureNorm;
 import common.correlation.MenCorrelation;
 import common.correlation.Toefl;
 import common.correlation.WordAnalogyEvaluation;
+import space.NormalizedSemanticSpace;
 import space.RawSemanticSpace;
 
 public class WordEvaluation {
@@ -60,7 +61,7 @@ public class WordEvaluation {
                 System.out.println(name + ": " + correlation[0] + " " + correlation[1]);
             } else if (type.equals("anal")) {
                 WordAnalogyEvaluation eval = new WordAnalogyEvaluation(path);
-                double[] accs = eval.evaluation(space);
+                double[] accs = eval.evaluation(new NormalizedSemanticSpace(space.getWords(), space.getVectors()));
                 System.out.println(name + ": " + accs[0] + " " + accs[1] + " " +accs[2]);
             }
         }

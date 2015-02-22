@@ -88,7 +88,7 @@ public class ParagraphPhraseEvaluation {
                 RawSemanticSpace space = new RawSemanticSpace(sentences, p2v.getParagraphVectors());
                 double[][] features = extracter.getSentenceVectors(space);
                 SvmCrossValidation crossVad = new SvmCrossValidation(SVM_DIR);
-                System.out.println(name + ": " + crossVad.crossValidation(labels, features, 4, ""));
+                System.out.println(name + ": " + crossVad.crossValidation(labels, features, 4, "-d 1"));
                 
             }
         }
