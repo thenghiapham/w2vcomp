@@ -16,7 +16,13 @@ public class WordAnalogyEvaluation {
     int semNum;
     public WordAnalogyEvaluation(String dataset) {
         ArrayList<String> lines = IOUtils.readFile(dataset);
-        questionNum = lines.size() - 14;
+        int qCNum = 0;
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).startsWith(":"))
+                qCNum++;
+        }
+        
+        questionNum = lines.size() - qCNum;
         questions = new String[questionNum][];
         int qid = 0;
         for (int i = 0; i < lines.size(); i++) {
