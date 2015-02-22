@@ -74,6 +74,7 @@ public class ParagraphPhraseEvaluation {
                 CosineFeatureExtractor extracter = new CosineFeatureExtractor(path, path + ".feature");
                 String[] labels = extracter.getLabels();
                 String[] sentences = extracter.getSurfacePhrase();
+                p2v.trainParagraphVector(sentences);
                 RawSemanticSpace space = new RawSemanticSpace(sentences, p2v.getParagraphVectors());
                 double[][] features = extracter.getCosineFeaturesPhraseSpace(space);
                 SvmCrossValidation crossVad = new SvmCrossValidation(SVM_DIR);
@@ -83,6 +84,7 @@ public class ParagraphPhraseEvaluation {
                 SentenceClassification extracter = new SentenceClassification(path);
                 String[] labels = extracter.getLabels();
                 String[] sentences = extracter.getSentences();
+                p2v.trainParagraphVector(sentences);
                 RawSemanticSpace space = new RawSemanticSpace(sentences, p2v.getParagraphVectors());
                 double[][] features = extracter.getSentenceVectors(space);
                 SvmCrossValidation crossVad = new SvmCrossValidation(SVM_DIR);

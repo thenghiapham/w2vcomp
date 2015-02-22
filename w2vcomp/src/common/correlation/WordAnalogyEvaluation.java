@@ -38,6 +38,9 @@ public class WordAnalogyEvaluation {
         int semCorrect = 0;
         
         for (int i = 0; i < questions.length; i++) {
+            if (i % 1000 == 1) {
+                System.out.print(" " + i);
+            }
             String[] question = questions[i]; 
             if (correct(space, question)) {
                 numCorrect++;
@@ -48,6 +51,7 @@ public class WordAnalogyEvaluation {
                 }
             }
         }
+        System.out.println();
         double[] result = new double[3];
         result[0] = numCorrect / (double) questionNum;
         result[1] = syncorrect / (double) synNum;
