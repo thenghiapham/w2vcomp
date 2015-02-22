@@ -6,6 +6,7 @@ import java.io.IOException;
 import common.correlation.FeatureNorm;
 import common.correlation.MenCorrelation;
 import common.correlation.Toefl;
+import common.correlation.WordAnalogyEvaluation;
 import space.RawSemanticSpace;
 
 public class WordEvaluation {
@@ -19,6 +20,7 @@ public class WordEvaluation {
                 {"tfl", d + "toefl-test-set.txt", "tfl"},
                 {"mcrae", d + "mcrae-dataset.txt", "selpref"},
                 {"up", d + "up-dataset.txt", "selpref"},
+                {"analogy", d + "questions-words.txt", "anal"},
                 {"aamp", d + "aamp-gold-standard.txt", "clst"},
                 {"battig", d + "battig-gold-standard.txt", "clst"},
                 {"esslli", d + "esslli-gold-standard.txt", "clst"}
@@ -55,6 +57,10 @@ public class WordEvaluation {
                 FeatureNorm fnorm = new FeatureNorm(path);
                 double[] correlation = fnorm.evaluate(space);
                 System.out.println(name + ": " + correlation[0] + " " + correlation[1]);
+            } else if (type.equals("selpref")) {
+                WordAnalogyEvaluation eval = new WordAnalogyEvaluation(path);
+                double[] accs = eval.evaluation(space);
+                System.out.println(name + ": " + accs[0] + " " + accs[1] + " " +accs[2]);
             }
         }
     }
