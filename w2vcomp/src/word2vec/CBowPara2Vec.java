@@ -124,7 +124,7 @@ public class CBowPara2Vec extends Paragraph2Vec{
         }
 
         for (int j = 0; j < projectionLayerSize; j++) {
-            paragraphVectors[sentenceIndex][j] += a1error[j] / wordCount;
+            paragraphVectors[sentenceIndex][j] += a1error[j];
         }
     }
 
