@@ -38,7 +38,7 @@ public class WordAnalogyEvaluation {
         int semCorrect = 0;
         
         for (int i = 0; i < questions.length; i++) {
-            if (i % 100 == 1) {
+            if (i % 20 == 1) {
                 System.out.print(" " + i);
             }
             String[] question = questions[i]; 
