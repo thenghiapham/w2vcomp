@@ -57,7 +57,7 @@ public class WordEvaluation {
                 FeatureNorm fnorm = new FeatureNorm(path);
                 double[] correlation = fnorm.evaluate(space);
                 System.out.println(name + ": " + correlation[0] + " " + correlation[1]);
-            } else if (type.equals("selpref")) {
+            } else if (type.equals("anal")) {
                 WordAnalogyEvaluation eval = new WordAnalogyEvaluation(path);
                 double[] accs = eval.evaluation(space);
                 System.out.println(name + ": " + accs[0] + " " + accs[1] + " " +accs[2]);
