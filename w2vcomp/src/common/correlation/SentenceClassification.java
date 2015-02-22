@@ -13,6 +13,7 @@ public class SentenceClassification {
     String[] labels;
     public SentenceClassification(String dataset) {
         ArrayList<String> lines = IOUtils.readFile(dataset);
+        parsedSentences = new String[lines.size()];
         sentences = new String[lines.size()];
         labels = new String[lines.size()];
         for (int i = 0; i < lines.size(); i++) {
