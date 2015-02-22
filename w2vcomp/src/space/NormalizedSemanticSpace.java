@@ -22,7 +22,7 @@ public class NormalizedSemanticSpace extends SMSemanticSpace {
         HashSet<String> excludedDict = DataStructureUtils
                 .arrayToSet(excludedWords);
         int neighborIndex = 0;
-        double[] sims = vectors.mult(vector).getMatrix().data;
+        double[] sims = vectors.mult(vector.transpose()).getMatrix().data;
         for (int i = 0; i < words.length; i++) {
             if (!excludedDict.contains(words[i])) {
                 neighbors[neighborIndex] = new Neighbor(words[i],sims[i]);
