@@ -36,9 +36,9 @@ public class ParagraphPhraseEvaluation {
          
         for (File file: files) {
             if (!file.getName().endsWith("mdl")) continue;
-            int vectorSize = 300;
+            int vectorSize = 400;
             if (file.getName().contains("300")) {
-                vectorSize = 400;
+                vectorSize = 300;
             }
             Paragraph2Vec p2v = null;
             if (file.getName().contains("skip"))
