@@ -32,6 +32,7 @@ public class SvmCrossValidation {
         File trainFile = null;
         try {
              trainFile = File.createTempFile("train", ".txt");
+             System.out.println(trainFile.getAbsolutePath());
              printTrainData(trainFile, labels, features);
              commandList.add(trainFile.getAbsolutePath());
              String[] commands = new String[commandList.size()];
