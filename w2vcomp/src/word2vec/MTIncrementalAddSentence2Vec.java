@@ -147,6 +147,7 @@ public class MTIncrementalAddSentence2Vec extends Sentence2Vec{
                 synchronized (this) {
                     trainedLines += tmpTrainedLines - oldTrainedLines; 
                 }
+                
                 oldTrainedLines = tmpTrainedLines;
                 
                 synchronized (this) {
@@ -194,6 +195,7 @@ public class MTIncrementalAddSentence2Vec extends Sentence2Vec{
     protected void printStatistics() {
         // TODO Auto-generated method stub
         System.out.println("alpha: " + alpha);
+        System.out.println(trainedLines);
         for (MenCorrelation men : wordCorrelations) {
             double correlation = men.evaluateSpacePearson(space);
             LOGGER.log(Level.INFO, "men: " + correlation);

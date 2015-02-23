@@ -61,7 +61,7 @@ public class WordAnalogyEvaluation {
         double[] result = new double[3];
         result[0] = numCorrect / (double) questionNum;
         result[1] = (synNum == 0)?1:syncorrect / (double) synNum;
-        result[0] = (semNum == 0)?1:semCorrect / (double) semNum;
+        result[2] = (semNum == 0)?1:semCorrect / (double) semNum;
         return result;
     }
     
