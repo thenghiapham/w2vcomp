@@ -22,7 +22,7 @@ public class WordEvaluation {
                 {"tfl", d + "toefl-test-set.txt", "tfl"},
                 {"mcrae", d + "mcrae-dataset.txt", "selpref"},
                 {"up", d + "up-dataset.txt", "selpref"},
-                {"analogy", nDir + "questions-words1.txt", "anal"},
+                {"analogy", nDir + "questions-words1.txt", "anal1"},
                 {"aamp", d + "aamp-gold-standard.txt", "clst"},
                 {"battig", d + "battig-gold-standard.txt", "clst"},
                 {"esslli", d + "esslli-gold-standard.txt", "clst"}
