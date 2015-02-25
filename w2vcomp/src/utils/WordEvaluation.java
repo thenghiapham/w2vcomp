@@ -25,8 +25,8 @@ public class WordEvaluation {
                 {"up", d + "up-dataset.txt", "selpref"},
                 {"analogy", nDir + "questions-words1.txt", "anal1"},
                 {"aamp", d + "aamp-gold-standard.txt", "clst"},
-                {"battig", d + "battig-gold-standard.txt", "clst"},
-                {"esslli", d + "esslli-gold-standard.txt", "clst"}
+                //{"battig", d + "battig-gold-standard.txt", "clst"},
+                //{"esslli", d + "esslli-gold-standard.txt", "clst"}
                 };
         return datasets;
     }
@@ -43,7 +43,7 @@ public class WordEvaluation {
     }
 
     public static void process(File spaceFile, String[][] datasets) throws IOException{
-        String outDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/ap/";
+        String outDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         RawSemanticSpace space = RawSemanticSpace.readSpace(spaceFile.getAbsolutePath());
         for (String[] datasetInfo: datasets) {
             String name = datasetInfo[0];
@@ -67,7 +67,7 @@ public class WordEvaluation {
                 System.out.println(name + ": " + accs[0] + " " + accs[1] + " " +accs[2]);
             } else if (type.equals("clst")) {
                 ClusterHelper helper = new ClusterHelper(path);
-                helper.printSims(space, outDir + spaceFile.getName().replace(".bin", ".txt"));
+                helper.printSims(space, outDir + name + "/" + spaceFile.getName().replace(".bin", ".txt"));
             }
         }
     }
