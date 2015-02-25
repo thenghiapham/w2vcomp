@@ -20,9 +20,9 @@ public class WordEvaluation {
                 {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
                 {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
                 {"rg", d + "rubenstein-goodeneough.txt", "sim"},
-                {"tfl", d + "toefl-test-set.txt", "tfl"},
-                {"mcrae", d + "mcrae-dataset.txt", "selpref"},
-                {"up", d + "up-dataset.txt", "selpref"},
+//                {"tfl", d + "toefl-test-set.txt", "tfl"},
+//                {"mcrae", d + "mcrae-dataset.txt", "selpref"},
+//                {"up", d + "up-dataset.txt", "selpref"},
                 {"analogy", nDir + "questions-words1.txt", "anal1"},
                 {"aamp", d + "aamp-gold-standard.txt", "clst"},
                 //{"battig", d + "battig-gold-standard.txt", "clst"},
@@ -35,9 +35,17 @@ public class WordEvaluation {
         String spaceDir = args[0];
         File[] files = (new File(spaceDir)).listFiles();
         String[][] datasets = getDatasetInfo();
+        for (int i = 0; i < datasets.length; i++) {
+            System.out.print("|l");
+        }
+        System.out.print("|l|\n & ");
+        for (String[] datasetInfo: datasets) {
+            String name = datasetInfo[0];
+            System.out.print(name + " & ");
+        }
         for (File file: files) {
             if (!file.getName().endsWith("bin")) continue;
-            System.out.println(file.getName());
+            System.out.print(file.getName() + " & ");
             process(file, datasets);
         }
     }
@@ -52,22 +60,27 @@ public class WordEvaluation {
             
             if (type.equals("sim")) {
                 MenCorrelation men = new MenCorrelation(path);
-                System.out.println(name + ": " + men.evaluateSpacePearson(space) 
-                        + " " + men.evaluateSpaceSpearman(space));
+//                System.out.println(name + ": " + men.evaluateSpacePearson(space) 
+//                        + " " + men.evaluateSpaceSpearman(space));
+                System.out.print(men.evaluateSpaceSpearman(space) + " & ");
             } else if (type.equals("tfl")){
                 Toefl toefl = new Toefl(path);
-                System.out.println(name + ": " + toefl.evaluation(space));
+//                System.out.println(name + ": " + toefl.evaluation(space));
+                System.out.print(toefl.evaluation(space) + " & ");
             } else if (type.equals("selpref")) {
                 FeatureNorm fnorm = new FeatureNorm(path);
                 double[] correlation = fnorm.evaluate(space);
-                System.out.println(name + ": " + correlation[0] + " " + correlation[1]);
+//                System.out.println(name + ": " + correlation[0] + " " + correlation[1]);
+                System.out.print(correlation[1] + " & ");
             } else if (type.equals("anal")) {
                 WordAnalogyEvaluation eval = new WordAnalogyEvaluation(path);
                 double[] accs = eval.evaluation(new NormalizedSemanticSpace(space.getWords(), space.getVectors()));
-                System.out.println(name + ": " + accs[0] + " " + accs[1] + " " +accs[2]);
+//                System.out.println(name + ": " + accs[0] + " " + accs[1] + " " +accs[2]);
+                System.out.print(accs[1] + " & " +accs[2] + " & ");
             } else if (type.equals("clst")) {
                 ClusterHelper helper = new ClusterHelper(path);
                 helper.printSims(space, outDir + name + "/" + spaceFile.getName().replace(".bin", ".txt"));
+                System.out.print(" & ");
             }
         }
     }
