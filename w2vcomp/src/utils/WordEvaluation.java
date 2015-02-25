@@ -45,12 +45,12 @@ public class WordEvaluation {
             String name = datasetInfo[0];
             System.out.print(" & " + name);
         }
-        System.out.println("\\\\\\line");
+        System.out.println("\\\\ \\hline");
         for (File file: files) {
             if (!file.getName().endsWith("bin")) continue;
             System.out.print(file.getName() + " & ");
             process(file, datasets);
-            System.out.println("\\\\\\line");
+            System.out.println("\\\\ \\hline");
         }
     }
 
