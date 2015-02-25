@@ -14,6 +14,7 @@ public class WordEvaluation {
     public static String[][] getDatasetInfo() {
         String d = "/mnt/povobackup/clic/georgiana.dinu/IP/eval/";
         String nDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
+        
         String[][] datasets = {{"men", d + "MEN_dataset_lemma_form_full", "sim"},
                 {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
                 {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
@@ -36,13 +37,14 @@ public class WordEvaluation {
         String[][] datasets = getDatasetInfo();
         for (File file: files) {
             if (!file.getName().endsWith("bin")) continue;
-            RawSemanticSpace space = RawSemanticSpace.readSpace(file.getAbsolutePath());
             System.out.println(file.getName());
-            process(space, datasets);
+            process(file, datasets);
         }
     }
 
-    public static void process(RawSemanticSpace space, String[][] datasets) throws IOException{
+    public static void process(File spaceFile, String[][] datasets) throws IOException{
+        String outDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/ap/";
+        RawSemanticSpace space = RawSemanticSpace.readSpace(spaceFile.getAbsolutePath());
         for (String[] datasetInfo: datasets) {
             String name = datasetInfo[0];
             String path = datasetInfo[1];
@@ -63,6 +65,9 @@ public class WordEvaluation {
                 WordAnalogyEvaluation eval = new WordAnalogyEvaluation(path);
                 double[] accs = eval.evaluation(new NormalizedSemanticSpace(space.getWords(), space.getVectors()));
                 System.out.println(name + ": " + accs[0] + " " + accs[1] + " " +accs[2]);
+            } else if (type.equals("clst")) {
+                ClusterHelper helper = new ClusterHelper(path);
+                helper.printSims(space, outDir + spaceFile.getName().replace(".bin", ".txt"));
             }
         }
     }
