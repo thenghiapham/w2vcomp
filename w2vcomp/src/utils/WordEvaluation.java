@@ -2,6 +2,8 @@ package utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import common.correlation.FeatureNorm;
 import common.correlation.MenCorrelation;
@@ -53,6 +55,8 @@ public class WordEvaluation {
     }
 
     public static void process(File spaceFile, String[][] datasets) throws IOException{
+        NumberFormat format = DecimalFormat.getInstance();
+        format.setMaximumFractionDigits(0);
         String outDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         RawSemanticSpace space = RawSemanticSpace.readSpace(spaceFile.getAbsolutePath());
         for (String[] datasetInfo: datasets) {
@@ -64,16 +68,16 @@ public class WordEvaluation {
                 MenCorrelation men = new MenCorrelation(path);
 //                System.out.println(name + ": " + men.evaluateSpacePearson(space) 
 //                        + " " + men.evaluateSpaceSpearman(space));
-                System.out.print(men.evaluateSpaceSpearman(space) + " & ");
+                System.out.print(format.format(men.evaluateSpaceSpearman(space) * 100) + " & ");
             } else if (type.equals("tfl")){
                 Toefl toefl = new Toefl(path);
 //                System.out.println(name + ": " + toefl.evaluation(space));
-                System.out.print(toefl.evaluation(space) + " & ");
+                System.out.print(format.format(toefl.evaluation(space) * 100)+ " & ");
             } else if (type.equals("selpref")) {
                 FeatureNorm fnorm = new FeatureNorm(path);
                 double[] correlation = fnorm.evaluate(space);
 //                System.out.println(name + ": " + correlation[0] + " " + correlation[1]);
-                System.out.print(correlation[1] + " & ");
+                System.out.print(format.format(correlation[1] * 100)+ " & ");
             } else if (type.equals("anal")) {
                 WordAnalogyEvaluation eval = new WordAnalogyEvaluation(path);
                 double[] accs = eval.evaluation(new NormalizedSemanticSpace(space.getWords(), space.getVectors()));
