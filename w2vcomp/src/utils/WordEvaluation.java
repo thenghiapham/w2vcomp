@@ -17,7 +17,8 @@ public class WordEvaluation {
         String d = "/mnt/povobackup/clic/georgiana.dinu/IP/eval/";
         String nDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         
-        String[][] datasets = {{"men", d + "MEN_dataset_lemma_form_full", "sim"},
+        String[][] datasets = {
+//                {"men", d + "MEN_dataset_lemma_form_full", "sim"},
                 {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
                 {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
                 {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
