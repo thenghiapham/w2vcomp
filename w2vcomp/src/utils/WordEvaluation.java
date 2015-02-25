@@ -38,15 +38,17 @@ public class WordEvaluation {
         for (int i = 0; i < datasets.length; i++) {
             System.out.print("|l");
         }
-        System.out.print("|l|\n & ");
+        System.out.print("|l|\n");
         for (String[] datasetInfo: datasets) {
             String name = datasetInfo[0];
-            System.out.print(name + " & ");
+            System.out.print(" & " + name);
         }
+        System.out.println("\\\\\\line");
         for (File file: files) {
             if (!file.getName().endsWith("bin")) continue;
             System.out.print(file.getName() + " & ");
             process(file, datasets);
+            System.out.println("\\\\\\line");
         }
     }
 
