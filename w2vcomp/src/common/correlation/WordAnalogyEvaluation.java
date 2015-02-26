@@ -94,7 +94,9 @@ public class WordAnalogyEvaluation {
     }
     
     public boolean correct(NormalizedSemanticSpace space, String[] question) {
+        System.out.println("question: " + question[0] + " " +  question[1] + " " + question[2]);
         String answer = space.getAnalogy(question[0], question[1], question[2]);
+        System.out.println("answer: " + answer);
         if (answer.equals(question[3]))
             return true;
         return false;
