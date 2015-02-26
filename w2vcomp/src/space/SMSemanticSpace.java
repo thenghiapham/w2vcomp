@@ -216,7 +216,7 @@ public class SMSemanticSpace implements SemanticSpace {
     // row vector
     public SimpleMatrix getVector(String word) {
         Integer index = word2Index.get(word);
-        if (word == null) {
+        if (index == null) {
             return null;
         } else {
             return vectors.extractVector(true, index);
