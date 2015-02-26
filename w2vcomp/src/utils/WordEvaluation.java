@@ -86,7 +86,7 @@ public class WordEvaluation {
                 String[] words = space.getWords();
                 double[][] vectors = space.getVectors();
                 NormalizedSemanticSpace normedSpace = null;
-                if (sizeSpace <= words.length) {
+                if (sizeSpace >= words.length) {
                     normedSpace = new NormalizedSemanticSpace(words, vectors);
                 } else {
                     String[] newWords = new String[sizeSpace];
