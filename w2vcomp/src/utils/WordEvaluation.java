@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+
 import common.correlation.FeatureNorm;
 import common.correlation.MenCorrelation;
 import common.correlation.Toefl;
@@ -13,6 +14,7 @@ import space.NormalizedSemanticSpace;
 import space.RawSemanticSpace;
 
 public class WordEvaluation {
+    public static int sizeSpace = 180000;
     public static String[][] getDatasetInfo() {
         String d = "/mnt/povobackup/clic/georgiana.dinu/IP/eval/";
         String nDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
@@ -81,7 +83,19 @@ public class WordEvaluation {
                 System.out.print(format.format(correlation[1] * 100)+ " & ");
             } else if (type.equals("anal")) {
                 WordAnalogyEvaluation eval = new WordAnalogyEvaluation(path);
-                double[] accs = eval.evaluation(new NormalizedSemanticSpace(space.getWords(), space.getVectors()));
+                String[] words = space.getWords();
+                double[][] vectors = space.getVectors();
+                NormalizedSemanticSpace normedSpace = null;
+                if (sizeSpace <= words.length) {
+                    normedSpace = new NormalizedSemanticSpace(words, vectors);
+                } else {
+                    String[] newWords = new String[sizeSpace];
+                    System.arraycopy(words, 0, newWords, 0, sizeSpace);
+                    double[][] newVectors = new double[sizeSpace][];
+                    System.arraycopy(vectors, 0, newVectors, 0, sizeSpace);
+                    normedSpace = new NormalizedSemanticSpace(newWords, newVectors);
+                }
+                double[] accs = eval.evaluation(normedSpace);
 //                System.out.println(name + ": " + accs[0] + " " + accs[1] + " " +accs[2]);
                 System.out.print(accs[1] + " & " +accs[2] + " & ");
             } else if (type.equals("clst")) {
