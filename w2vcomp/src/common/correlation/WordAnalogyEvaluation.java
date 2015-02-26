@@ -76,6 +76,8 @@ public class WordAnalogyEvaluation {
             seenAll += sectionSeen;
         }
         System.out.println();
+        System.out.println("seen: " + seenAll);
+        System.out.println("correct: " + numCorrect);
         double[] result = new double[3];
         result[0] = numCorrect / (double) seenAll;
         result[1] = (syncorrect == 0)?1:syncorrect / (double) seenSyn;
