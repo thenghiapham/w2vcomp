@@ -9,59 +9,75 @@ import space.SemanticSpace;
 import common.IOUtils;
 
 public class WordAnalogyEvaluation {
-    String[][] questions;
-    int synIndex = 0;
-    int questionNum;
-    int synNum;
-    int semNum;
+    ArrayList<ArrayList<String[]>> questionLists;
+    ArrayList<String> labels;
+    int questionNum = 0;
+    int synNum = 0;
+    int semNum = 0;
     public WordAnalogyEvaluation(String dataset) {
+        ArrayList<String[]> currentQuestions = null; 
+        questionLists = new ArrayList<ArrayList<String[]>>();
         ArrayList<String> lines = IOUtils.readFile(dataset);
-        int qCNum = 0;
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).startsWith(":"))
-                qCNum++;
-        }
         
-        questionNum = lines.size() - qCNum;
-        questions = new String[questionNum][];
-        int qid = 0;
         for (int i = 0; i < lines.size(); i++) {
             if (lines.get(i).startsWith(":")) {
-                qid ++;
-                if (qid == 6) {
-                    synIndex = (i + 1)- 6;
-                }
+                currentQuestions = new ArrayList<String[]>();
+                labels.add(lines.get(i));
             } else {
-                questions[i - qid] = lines.get(i).toLowerCase().split("( |\t)");
+                questionNum++;
+                if (i < 5) {
+                    semNum++;
+                }
+                currentQuestions.add(lines.get(i).toLowerCase().split("( |\t)"));
             }
         }
-        semNum = synIndex;
         synNum = questionNum - semNum;
     }
     public double[] evaluation(SemanticSpace space) {
+        int seenSem = 0;
+        int seenSyn = 0;
+        int seenAll = 0;
         int numCorrect = 0;
         int syncorrect = 0;
         int semCorrect = 0;
         
-        for (int i = 0; i < questions.length; i++) {
-            if (i % 100 == 1) {
-                System.out.print(" " + i);
-            }
-            String[] question = questions[i]; 
-            if (correct(space, question)) {
-                numCorrect++;
-                if (i < synIndex) {
-                    semCorrect++;
-                } else {
-                    syncorrect++;
+        for (int i = 0; i < questionLists.size(); i++) {
+            System.out.println(labels.get(i));
+            ArrayList<String[]> section = questionLists.get(i);
+            int sectionSeen = 0;
+            int sectionCorrect = 0;
+            for (int j = 0; j < section.size(); j++) {
+                String[] question = section.get(j);
+                
+                boolean seen = true;
+                for (String word: question) {
+                    if (space.getVector(word) == null) {
+                        seen = false;
+                        break;
+                    }
+                }
+                if (!seen) continue;
+                sectionSeen++;
+                if (correct(space, question)) {
+                    sectionCorrect++;
                 }
             }
+            System.out.println("acc: " + (sectionCorrect / (double) sectionSeen));
+            if (i < 5) {
+                syncorrect += sectionCorrect;
+                seenSyn += sectionSeen;
+            } else {
+                semCorrect += sectionCorrect;
+                seenSem += sectionSeen;
+            }
+            numCorrect += sectionCorrect;
+            seenAll += sectionSeen;
         }
         System.out.println();
         double[] result = new double[3];
-        result[0] = numCorrect / (double) questionNum;
-        result[1] = (synNum == 0)?1:syncorrect / (double) synNum;
-        result[2] = (semNum == 0)?1:semCorrect / (double) semNum;
+        result[0] = numCorrect / (double) seenAll;
+        result[1] = (syncorrect == 0)?1:syncorrect / (double) seenSyn;
+        result[2] = (seenSem == 0)?1:semCorrect / (double) seenSem;
         return result;
     }
     
