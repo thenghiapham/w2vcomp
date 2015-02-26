@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.ejml.simple.SimpleMatrix;
 
 import space.Neighbor;
+import space.NormalizedSemanticSpace;
 import space.SemanticSpace;
 import common.IOUtils;
 
@@ -40,7 +41,7 @@ public class WordAnalogyEvaluation {
 //        System.out.println("Question num: " + questionLists.get(0).size());
         synNum = questionNum - semNum;
     }
-    public double[] evaluation(SemanticSpace space) {
+    public double[] evaluation(NormalizedSemanticSpace space) {
         int seenSem = 0;
         int seenSyn = 0;
         int seenAll = 0;
@@ -92,23 +93,30 @@ public class WordAnalogyEvaluation {
         return result;
     }
     
-    public boolean correct(SemanticSpace space, String[] question) {
-        SimpleMatrix v1 = space.getVector(question[0]);
-        SimpleMatrix v2 = space.getVector(question[1]);
-        SimpleMatrix v3 = space.getVector(question[2]);
-        
-        if (v1 == null || v2 == null || v3 == null) {
-            System.out.println("at least one word is not in the space");
-            return false;
-        }
-        v1 = v1.scale(1 / v1.normF());
-        v2 = v2.scale(1 / v2.normF());
-        v3 = v3.scale(1 / v3.normF());
-        SimpleMatrix v4 = v2.minus(v1).plus(v3);
-        Neighbor[] neighbors = space.getNeighbors(v4, 4, new String[] { question[0], question[1],
-                question[2] });
-        if (neighbors[0].word.equals(question[3]))
+    public boolean correct(NormalizedSemanticSpace space, String[] question) {
+        String answer = space.getAnalogy(question[0], question[1], question[2]);
+        if (answer.equals(question[3]))
             return true;
         return false;
     }
+    
+//    public boolean correct(SemanticSpace space, String[] question) {
+//        SimpleMatrix v1 = space.getVector(question[0]);
+//        SimpleMatrix v2 = space.getVector(question[1]);
+//        SimpleMatrix v3 = space.getVector(question[2]);
+//        
+//        if (v1 == null || v2 == null || v3 == null) {
+//            System.out.println("at least one word is not in the space");
+//            return false;
+//        }
+//        v1 = v1.scale(1 / v1.normF());
+//        v2 = v2.scale(1 / v2.normF());
+//        v3 = v3.scale(1 / v3.normF());
+//        SimpleMatrix v4 = v2.minus(v1).plus(v3);
+//        Neighbor[] neighbors = space.getNeighbors(v4, 4, new String[] { question[0], question[1],
+//                question[2] });
+//        if (neighbors[0].word.equals(question[3]))
+//            return true;
+//        return false;
+//    }
 }
