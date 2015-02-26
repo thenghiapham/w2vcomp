@@ -19,9 +19,9 @@ public class ParagraphPhraseEvaluation {
         String d = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         String[][] datasets = 
                 {
-                //{"sick", d + "SICK_train_trial_rel.txt", "sim-parse"},
-                //{"sick-rte", d + "SICK_train_trial_rte.txt", "svm-cos"},
-                //{"onwn", d + "STS.all.surprise.OnWN.txt", "sim"},
+                {"sick", d + "SICK_train_trial_rel.txt", "sim-parse"},
+                {"sick-rte", d + "SICK_train_trial_rte.txt", "svm-cos"},
+                {"onwn", d + "STS.all.surprise.OnWN.txt", "sim"},
                 {"onwn2", d + "STS.all.surprise.OnWN.txt", "sim"},
                 {"msr-test", d + "STS.all.MSRvid.test.txt", "sim"},
                 {"msr-train", d + "STS.all.MSRvid.train.txt", "sim"},
