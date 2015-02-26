@@ -130,6 +130,7 @@ public class WordAnalogyEvaluation {
             this.section = section;
             this.corrects = corrects;
             this.seens = seens;
+            this.space = space;
         }
         
         public void run() {
