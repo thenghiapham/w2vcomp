@@ -53,6 +53,8 @@ public class NormalizedSemanticSpace extends SMSemanticSpace {
         for (int i = 0; i < 4; i++) {
             String word = neighbors[i].word;
             if (!word.equals(word1) && !word.equals(word2) && !word.equals(word3)) {
+                int index = this.word2Index.get(word);
+                System.out.println(" " + sims1[index] + " " + sims2[index] + " " + sims3[index] + " " + neighbors[i].sim);
                 return word;
             }
         }
