@@ -2,14 +2,11 @@ package common.correlation;
 
 import java.util.ArrayList;
 
-import org.ejml.simple.SimpleMatrix;
-
-import space.Neighbor;
 import space.NormalizedSemanticSpace;
-import space.SemanticSpace;
 import common.IOUtils;
 
 public class WordAnalogyEvaluation {
+    int threadNum = 25;
     ArrayList<ArrayList<String[]>> questionLists;
     ArrayList<String> labels;
     int questionNum = 0;
@@ -54,23 +51,40 @@ public class WordAnalogyEvaluation {
             ArrayList<String[]> section = questionLists.get(i);
             int sectionSeen = 0;
             int sectionCorrect = 0;
+            boolean[] corrects = new boolean[section.size()];
+            boolean[] seens = new boolean[section.size()];
+            // create threads;
+            int total = section.size();
+            int div = total / threadNum;
+            int mod = total % threadNum;
+            EvaluateThread[] threads = new EvaluateThread[threadNum];
+            for (int index = 0; index < threadNum; index++) {
+                int beginIndex;
+                int endIndex;
+                if (index < mod) {
+                    beginIndex = (div + 1) * index;
+                    endIndex = (div + 1) * (index + 1);
+                } else {
+                    beginIndex = div * index + mod;
+                    endIndex = div * (index + 1) + mod;
+                }
+                threads[index] = new EvaluateThread(space, section, corrects, seens, beginIndex, endIndex);
+                // start threads;
+                threads[index].start();
+            }
+            for (int index = 0; index < threadNum; index++) {
+                try {
+                    threads[index].join();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            
+            // join threads;
             for (int j = 0; j < section.size(); j++) {
-                String[] question = section.get(j);
-                
-                boolean seen = true;
-                for (String word: question) {
-//                    System.out.print(word);
-                    if (space.getVector(word) == null) {
-                        seen = false;
-                        break;
-                    }
-//                    System.out.println(" seen");
-                }
-                if (!seen) continue;
-                sectionSeen++;
-                if (correct(space, question)) {
-                    sectionCorrect++;
-                }
+                if (corrects[j]) sectionCorrect++;
+                if (seens[j]) sectionSeen++;
             }
             System.out.println("acc: " + (sectionCorrect / (double) sectionSeen));
             if (i >= 5) {
@@ -94,31 +108,45 @@ public class WordAnalogyEvaluation {
     }
     
     public boolean correct(NormalizedSemanticSpace space, String[] question) {
-        System.out.println("question: " + question[0] + " " +  question[1] + " " + question[2]);
+//        System.out.println("question: " + question[0] + " " +  question[1] + " " + question[2]);
         String answer = space.getAnalogy(question[0], question[1], question[2]);
-        System.out.println("answer: " + answer);
+//        System.out.println("answer: " + answer);
         if (answer.equals(question[3]))
             return true;
         return false;
     }
     
-//    public boolean correct(SemanticSpace space, String[] question) {
-//        SimpleMatrix v1 = space.getVector(question[0]);
-//        SimpleMatrix v2 = space.getVector(question[1]);
-//        SimpleMatrix v3 = space.getVector(question[2]);
-//        
-//        if (v1 == null || v2 == null || v3 == null) {
-//            System.out.println("at least one word is not in the space");
-//            return false;
-//        }
-//        v1 = v1.scale(1 / v1.normF());
-//        v2 = v2.scale(1 / v2.normF());
-//        v3 = v3.scale(1 / v3.normF());
-//        SimpleMatrix v4 = v2.minus(v1).plus(v3);
-//        Neighbor[] neighbors = space.getNeighbors(v4, 4, new String[] { question[0], question[1],
-//                question[2] });
-//        if (neighbors[0].word.equals(question[3]))
-//            return true;
-//        return false;
-//    }
+    protected class EvaluateThread extends Thread {
+        ArrayList<String[]> section; 
+        boolean[] corrects;
+        boolean[] seens;
+        int beginIndex;
+        int endIndex;
+        NormalizedSemanticSpace space;
+        public EvaluateThread(NormalizedSemanticSpace space, ArrayList<String[]> section, 
+                boolean[] corrects, boolean[] seens, int beginIndex, int endIndex) {
+            this.beginIndex = beginIndex;
+            this.endIndex = endIndex;
+            this.section = section;
+            this.corrects = corrects;
+            this.seens = seens;
+        }
+        
+        public void run() {
+            for (int i = beginIndex; i < endIndex; i++) {
+                String[] question = section.get(i);
+                seens[i] = true;
+                for (String word: question) {
+                    if (space.getVector(word) == null) {
+                        seens[i] = false;
+                        break;
+                    }
+                }
+                if (!seens[i]) continue;
+                if (correct(space, question)) {
+                    corrects[i] = true;
+                }
+            }
+        }
+    }
 }

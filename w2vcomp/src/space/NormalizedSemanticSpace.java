@@ -50,17 +50,14 @@ public class NormalizedSemanticSpace extends SMSemanticSpace {
             double sim2 = (sims2[i] + 1) /2;
             double sim3 = (sims3[i] + 1) /2;
             neighbors[i] = new Neighbor(words[i],((sim2 * sim3) / (sim1 + 0.001)));
-            if (sims1[i] < 0) {
-                neighbors[i].sim = 0;
-            }
 //            neighbors[i] = new Neighbor(words[i],(sims2[i] + sims3[i] - sims1[i]));
         }
         Arrays.sort(neighbors, Neighbor.NeighborComparator);
         for (int i = 0; i < 4; i++) {
             String word = neighbors[i].word;
             if (!word.equals(word1) && !word.equals(word2) && !word.equals(word3)) {
-                int index = this.word2Index.get(word);
-                System.out.println(" " + sims1[index] + " " + sims2[index] + " " + sims3[index] + " " + neighbors[i].sim);
+//                int index = this.word2Index.get(word);
+//                System.out.println(" " + sims1[index] + " " + sims2[index] + " " + sims3[index] + " " + neighbors[i].sim);
                 return word;
             }
         }
