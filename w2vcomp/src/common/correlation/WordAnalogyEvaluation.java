@@ -33,9 +33,12 @@ public class WordAnalogyEvaluation {
                 if (i < 5) {
                     semNum++;
                 }
+                System.out.println(lines.get(i));
                 currentQuestions.add(lines.get(i).toLowerCase().split("( |\t)"));
             }
         }
+        System.out.println("Question num: " + questionNum);
+        System.out.println("Question num: " + questionLists.get(0).size());
         synNum = questionNum - semNum;
     }
     public double[] evaluation(SemanticSpace space) {
