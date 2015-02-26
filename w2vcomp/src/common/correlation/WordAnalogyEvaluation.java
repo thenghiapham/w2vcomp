@@ -53,10 +53,12 @@ public class WordAnalogyEvaluation {
                 
                 boolean seen = true;
                 for (String word: question) {
+                    System.out.print(word);
                     if (space.getVector(word) == null) {
                         seen = false;
                         break;
                     }
+                    System.out.println(" seen");
                 }
                 if (!seen) continue;
                 sectionSeen++;
