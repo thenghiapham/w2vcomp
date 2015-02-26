@@ -46,7 +46,7 @@ public class NormalizedSemanticSpace extends SMSemanticSpace {
         double[] sims2 = vectors.mult(v2.transpose()).getMatrix().data;
         double[] sims3 = vectors.mult(v3.transpose()).getMatrix().data;
         for (int i = 0; i < words.length; i++) {
-            neighbors[i] = new Neighbor(words[i],(sims2[i] * sims3[i] / (sims1[i] + 0.001)));
+            neighbors[i] = new Neighbor(words[i],((sims2[i] * sims3[i]) / (sims1[i] + 0.001)));
 //            neighbors[i] = new Neighbor(words[i],(sims2[i] + sims3[i] - sims1[i]));
         }
         Arrays.sort(neighbors, Neighbor.NeighborComparator);
