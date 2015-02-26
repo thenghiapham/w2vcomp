@@ -21,17 +21,17 @@ public class WordEvaluation {
         
         String[][] datasets = {
 //                {"men", d + "MEN_dataset_lemma_form_full", "sim"},
-//                {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
-//                {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
-//                {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
-//                {"rg", d + "rubenstein-goodeneough.txt", "sim"},
+                {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
+                {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
+                {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
+                {"rg", d + "rubenstein-goodeneough.txt", "sim"},
 //                {"tfl", d + "toefl-test-set.txt", "tfl"},
 //                {"mcrae", d + "mcrae-dataset.txt", "selpref"},
 //                {"up", d + "up-dataset.txt", "selpref"},
-                  {"analogy", nDir + "questions-words.txt", "anal"},
-//                {"aamp", d + "aamp-gold-standard.txt", "clst"},
-//                {"battig", d + "battig-gold-standard.txt", "clst"},
-//                {"esslli", d + "esslli-gold-standard.txt", "clst"}
+                {"aamp", d + "aamp-gold-standard.txt", "clst"},
+                {"battig", d + "battig-gold-standard.txt", "clst"},
+                {"esslli", d + "esslli-gold-standard.txt", "clst"},
+//                {"analogy", nDir + "questions-words.txt", "anal"},
                 };
         return datasets;
     }
@@ -48,12 +48,13 @@ public class WordEvaluation {
             String name = datasetInfo[0];
             System.out.print(" & " + name);
         }
+        System.out.print(" & an & ansyn & ansem ");
         System.out.println("\\\\ \\hline");
         for (File file: files) {
             if (!file.getName().endsWith("bin")) continue;
             System.out.print(file.getName() + " & ");
             process(file, datasets);
-            System.out.println("\\\\ \\hline");
+            System.out.println("  &   &   & \\\\ \\hline");
         }
     }
 
