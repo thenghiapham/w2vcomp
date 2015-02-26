@@ -23,8 +23,10 @@ public class WordAnalogyEvaluation {
         
         for (int i = 0; i < lines.size(); i++) {
             if (lines.get(i).startsWith(":")) {
+                questionLists.add(currentQuestions);
                 currentQuestions = new ArrayList<String[]>();
                 labels.add(lines.get(i));
+                
             } else {
                 questionNum++;
                 if (i < 5) {
