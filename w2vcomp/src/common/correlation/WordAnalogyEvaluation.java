@@ -23,9 +23,8 @@ public class WordAnalogyEvaluation {
         
         for (int i = 0; i < lines.size(); i++) {
             if (lines.get(i).startsWith(":")) {
-                if (currentQuestions != null) 
-                    questionLists.add(currentQuestions);
                 currentQuestions = new ArrayList<String[]>();
+                questionLists.add(currentQuestions);
                 labels.add(lines.get(i));
                 
             } else {
@@ -33,12 +32,12 @@ public class WordAnalogyEvaluation {
                 if (i < 5) {
                     semNum++;
                 }
-                System.out.println(lines.get(i));
+//                System.out.println(lines.get(i));
                 currentQuestions.add(lines.get(i).toLowerCase().split("( |\t)"));
             }
         }
         System.out.println("Question num: " + questionNum);
-        System.out.println("Question num: " + questionLists.get(0).size());
+//        System.out.println("Question num: " + questionLists.get(0).size());
         synNum = questionNum - semNum;
     }
     public double[] evaluation(SemanticSpace space) {
@@ -59,12 +58,12 @@ public class WordAnalogyEvaluation {
                 
                 boolean seen = true;
                 for (String word: question) {
-                    System.out.print(word);
+//                    System.out.print(word);
                     if (space.getVector(word) == null) {
                         seen = false;
                         break;
                     }
-                    System.out.println(" seen");
+//                    System.out.println(" seen");
                 }
                 if (!seen) continue;
                 sectionSeen++;
