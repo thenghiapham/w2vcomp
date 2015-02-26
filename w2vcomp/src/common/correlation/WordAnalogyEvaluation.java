@@ -6,7 +6,7 @@ import space.NormalizedSemanticSpace;
 import common.IOUtils;
 
 public class WordAnalogyEvaluation {
-    int threadNum = 25;
+    int threadNum = 28;
     ArrayList<ArrayList<String[]>> questionLists;
     ArrayList<String> labels;
     int questionNum = 0;
