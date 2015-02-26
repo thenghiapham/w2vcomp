@@ -72,7 +72,7 @@ public class WordAnalogyEvaluation {
                 }
             }
             System.out.println("acc: " + (sectionCorrect / (double) sectionSeen));
-            if (i < 5) {
+            if (i >= 5) {
                 syncorrect += sectionCorrect;
                 seenSyn += sectionSeen;
             } else {
@@ -87,7 +87,7 @@ public class WordAnalogyEvaluation {
         System.out.println("correct: " + numCorrect);
         double[] result = new double[3];
         result[0] = numCorrect / (double) seenAll;
-        result[1] = (syncorrect == 0)?1:syncorrect / (double) seenSyn;
+        result[1] = (seenSyn == 0)?1:syncorrect / (double) seenSyn;
         result[2] = (seenSem == 0)?1:semCorrect / (double) seenSem;
         return result;
     }
@@ -102,8 +102,8 @@ public class WordAnalogyEvaluation {
             return false;
         }
         v1 = v1.scale(1 / v1.normF());
-        v2 = v1.scale(1 / v2.normF());
-        v3 = v1.scale(1 / v3.normF());
+        v2 = v2.scale(1 / v2.normF());
+        v3 = v3.scale(1 / v3.normF());
         SimpleMatrix v4 = v2.minus(v1).plus(v3);
         Neighbor[] neighbors = space.getNeighbors(v4, 4, new String[] { question[0], question[1],
                 question[2] });
