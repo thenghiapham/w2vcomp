@@ -16,8 +16,10 @@ public class WordAnalogyEvaluation {
     int semNum = 0;
     public WordAnalogyEvaluation(String dataset) {
         ArrayList<String[]> currentQuestions = null; 
+        
         questionLists = new ArrayList<ArrayList<String[]>>();
         ArrayList<String> lines = IOUtils.readFile(dataset);
+        labels = new ArrayList<String>();
         
         for (int i = 0; i < lines.size(); i++) {
             if (lines.get(i).startsWith(":")) {
