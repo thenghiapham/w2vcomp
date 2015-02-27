@@ -27,6 +27,8 @@ public class SvmTrainTest {
         for (int i = 0; i < 0; i++) {
             indices[i] = indexList.get(i);
         }
+        System.out.println("div: " + divIndex);
+        System.out.println("indices: " + indices[0] + " "+ indices[1] + " "+ indices[2] + " "+ indices[3] + " "+ indices[4] + " "); 
         return indices;
     }
     
