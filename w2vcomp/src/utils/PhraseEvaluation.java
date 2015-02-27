@@ -2,8 +2,11 @@ package utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import common.IOUtils;
 import common.classifier.SvmCrossValidation;
+import common.classifier.SvmTrainTest;
 import common.correlation.CosineFeatureExtractor;
 import common.correlation.ParsedPhraseCorrelation;
 import common.correlation.PhraseCorrelation;
@@ -16,13 +19,14 @@ public class PhraseEvaluation {
     public static String[][] getDatasetInfo() {
         String d = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         String[][] datasets = 
-               {{"sick", d + "SICK_train_trial_rel.txt", "sim-parse"},
-                {"sick-rte", d + "SICK_train_trial_rte.txt", "svm-cos"},
-                {"onwn", d + "STS.all.surprise.OnWN.txt", "sim"},
-                {"onwn2", d + "STS.all.OnWN.txt", "sim"},
-                {"msr-test", d + "STS.all.MSRvid.test.txt", "sim"},
-                {"msr-train", d + "STS.all.MSRvid.train.txt", "sim"},
-                {"imdb", d + "imdb2.txt", "svm-vec1"}
+               {
+//                {"sick", d + "SICK_train_trial_rel.txt", "sim-parse"},
+//                {"sick-rte", d + "SICK_train_trial_rte.txt", "svm-cos"},
+//                {"onwn", d + "STS.all.surprise.OnWN.txt", "sim"},
+//                {"onwn2", d + "STS.all.OnWN.txt", "sim"},
+//                {"msr-test", d + "STS.all.MSRvid.test.txt", "sim"},
+//                {"msr-train", d + "STS.all.MSRvid.train.txt", "sim"},
+                {"imdb", d + "imdb2.txt", "svm-vec"}
                 };
         return datasets;
     }
@@ -64,8 +68,20 @@ public class PhraseEvaluation {
                 SentenceClassification extracter = new SentenceClassification(path);
                 String[] labels = extracter.getLabels();
                 double[][] features = extracter.getSentenceVectors(space, add);
-                SvmCrossValidation crossVad = new SvmCrossValidation(SVM_DIR);
-                System.out.println(name + ": " + crossVad.crossValidation(labels, features, 4, ""));
+                String divFile = path + ".div";
+                ArrayList<String> lines = IOUtils.readFile(divFile);
+                int[] div = new int[lines.size()];
+                for (int i = 0; i < lines.size(); i++) {
+                    div[i] = Integer.parseInt(lines.get(i));
+                }
+                int[] trainIndices = SvmTrainTest.getIndices(div, 1);
+                int[] testIndices = SvmTrainTest.getIndices(div, 2);
+                String[] trainLabels = SvmTrainTest.extractLabels(labels, trainIndices);
+                String[] testLabels = SvmTrainTest.extractLabels(labels, testIndices);
+                double[][] trainData = SvmTrainTest.extractData(features, trainIndices);
+                double[][] testData = SvmTrainTest.extractData(features, testIndices);
+                SvmTrainTest trainTest = new SvmTrainTest(SVM_DIR);
+                System.out.println(name + ": " + trainTest.trainTest(trainLabels, trainData, testLabels, testData, ""));
             }
         }
     }
