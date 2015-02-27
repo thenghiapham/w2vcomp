@@ -2,6 +2,8 @@ package common.correlation;
 
 import java.util.ArrayList;
 
+import org.ejml.simple.SimpleMatrix;
+
 import space.SemanticSpace;
 import tree.Tree;
 import common.IOUtils;
@@ -41,10 +43,13 @@ public class SentenceClassification {
         return getSentenceVectors(phraseSpace);
     }
     
+    // TODO: not average here?
     public double[][] getSentenceVectors(SemanticSpace phraseSpace) {
         double[][] result = new double[sentences.length][];
         for (int i = 0; i < sentences.length; i++) {
-            result[i] = phraseSpace.getVector(sentences[i]).getMatrix().data;
+            SimpleMatrix vector = phraseSpace.getVector(sentences[i]);
+            vector = vector.scale(1.0 / sentences[i].split(" ").length);
+            result[i] = vector.getMatrix().data;
         }
         return result;
     }
