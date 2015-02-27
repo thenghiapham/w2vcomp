@@ -60,6 +60,7 @@ public abstract class BasicComposition {
                 SimpleMatrix newVector = inputSpace.getVector(words[j]);
                 composedVector = compose(composedVector, newVector);
             }
+            if (composedVector == null) composedVector = new SimpleMatrix(1, vectorSize);
             composedMatrix.setRow(i, 0, composedVector.getMatrix().data);
         }
         return new SMSemanticSpace(phrases, composedMatrix);
