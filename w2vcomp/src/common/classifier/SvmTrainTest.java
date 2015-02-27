@@ -82,16 +82,17 @@ public class SvmTrainTest {
              String[] trainCommands = new String[trainCommandList.size()];
              trainCommands = trainCommandList.toArray(trainCommands);
              Process proc = rt.exec(trainCommands);
-             
+             System.out.println("training..." + modelFile.getAbsolutePath());
              BufferedReader stdInput = new BufferedReader(new 
                      InputStreamReader(proc.getInputStream()));
                 
-            String s = null;
-            System.out.println("Output");
-            while ((s = stdInput.readLine()) != null) {
+             String s = null;
+             System.out.println("Output");
+             while ((s = stdInput.readLine()) != null) {
                 System.out.println(s);
              }
              
+             System.out.println("testing..." + modelFile.getAbsolutePath() + " " + testFile.getAbsolutePath());
              String[] testCommands = new String[testCommandList.size()];
              testCommands = testCommandList.toArray(testCommands);
              proc = rt.exec(testCommands);
