@@ -83,14 +83,22 @@ public class SvmTrainTest {
              trainCommands = trainCommandList.toArray(trainCommands);
              Process proc = rt.exec(trainCommands);
              
+             BufferedReader stdInput = new BufferedReader(new 
+                     InputStreamReader(proc.getInputStream()));
+                
+            String s = null;
+            System.out.println("Output");
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+             }
+             
              String[] testCommands = new String[testCommandList.size()];
              testCommands = testCommandList.toArray(testCommands);
              proc = rt.exec(testCommands);
 
-             BufferedReader stdInput = new BufferedReader(new 
+             stdInput = new BufferedReader(new 
                   InputStreamReader(proc.getInputStream()));
              
-             String s = null;
              double accuracy = -1.0;
              System.out.println("Output");
              while ((s = stdInput.readLine()) != null) {
