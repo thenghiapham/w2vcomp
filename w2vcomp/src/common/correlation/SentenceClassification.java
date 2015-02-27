@@ -22,6 +22,7 @@ public class SentenceClassification {
             String[] elements = lines.get(i).split("\t");
             parsedSentences[i] = elements[0];
             sentences[i] = removePunctuation(Tree.fromPennTree(elements[0]).getSurfaceString());
+            System.out.println(sentences[i]);
             labels[i] = elements[1];
         }
     }
