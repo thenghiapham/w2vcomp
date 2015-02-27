@@ -296,10 +296,10 @@ public class SvmUtils {
         String trainFile = args[0];
         String svmDir = "/home/thenghia.pham/libsvm-3.20";
         SvmUtils utils = new SvmUtils(svmDir);
-        HashMap<String, Double> parameters = new HashMap<String, Double>();
-        parameters.put("-s", 0.0);
-        parameters.put("-t", 2.0);
-        parameters.put("-d", 2.0);
+//        HashMap<String, Double> parameters = new HashMap<String, Double>();
+//        parameters.put("-s", 0.0);
+//        parameters.put("-t", 2.0);
+//        parameters.put("-d", 2.0);
         utils.findBestParameters(trainFile);
     }
 }
