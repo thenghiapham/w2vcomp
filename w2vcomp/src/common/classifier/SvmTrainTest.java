@@ -24,7 +24,7 @@ public class SvmTrainTest {
             }
         }
         int[] indices = new int[indexList.size()];
-        for (int i = 0; i < 0; i++) {
+        for (int i = 0; i < indexList.size(); i++) {
             indices[i] = indexList.get(i);
         }
         System.out.println("div: " + divIndex);
