@@ -294,7 +294,7 @@ public class SvmUtils {
     
     public static void main(String[] args) throws IOException{
         String trainFile = args[0];
-        String svmDir = "/home/thenghiapham/Downloads/libsvm-3.20";
+        String svmDir = "/home/thenghia.pham/libsvm-3.20";
         SvmUtils utils = new SvmUtils(svmDir);
         HashMap<String, Double> parameters = new HashMap<String, Double>();
         parameters.put("-s", 0.0);

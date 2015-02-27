@@ -81,7 +81,7 @@ public class PhraseEvaluation {
                 double[][] trainData = SvmTrainTest.extractData(features, trainIndices);
                 double[][] testData = SvmTrainTest.extractData(features, testIndices);
                 SvmTrainTest trainTest = new SvmTrainTest(SVM_DIR);
-                System.out.println(name + ": " + trainTest.trainTest(trainLabels, trainData, testLabels, testData, "-t 1 -d 2"));
+                System.out.println(name + ": " + trainTest.trainTest(trainLabels, trainData, testLabels, testData, "-t 1 -d 1"));
             }
         }
     }
