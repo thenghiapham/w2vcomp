@@ -21,9 +21,36 @@ public class SentenceClassification {
         for (int i = 0; i < lines.size(); i++) {
             String[] elements = lines.get(i).split("\t");
             parsedSentences[i] = elements[0];
-            sentences[i] = Tree.fromPennTree(elements[0]).getSurfaceString();
+            sentences[i] = removePunctuation(Tree.fromPennTree(elements[0]).getSurfaceString());
             labels[i] = elements[1];
         }
+    }
+    
+    public static String removePunctuation(String sentence) {
+        String[] wordArray = sentence.split(" ");
+        ArrayList<String> words = new ArrayList<String>();
+        for (String word: wordArray) {
+            if (!(".".equals(word) || "--".equals(word) || ",".equals(word) 
+                    || "''".equals(word) || "``".equals(word))) {
+                words.add(word);
+            }
+        }
+        String[] result = new String[words.size()];
+        result = words.toArray(result);
+        return join(result, " ");
+    }
+    
+    public static String join(String[] words, String delimiter) {
+        StringBuffer buffer = new StringBuffer();
+        if (words.length == 0) return "";
+        else {
+            buffer.append(words[0]);
+            for (int i = 1; i < words.length; i++) {
+                buffer.append(delimiter);
+                buffer.append(words[i]);
+            }
+        }
+        return buffer.toString();
     }
     
     public String[] getLabels() {
