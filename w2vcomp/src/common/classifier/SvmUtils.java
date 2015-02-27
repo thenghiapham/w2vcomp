@@ -116,6 +116,13 @@ public class SvmUtils {
                             bestC = c;
                             bestP = p;
                             bestG = g;
+                            System.out.println("best Acc: " + bestAcc);
+                            System.out.println("-t" + (double) bestT);
+                            System.out.println("-d" + (double) bestD);
+                            System.out.println("-c" + (double) bestC);
+                            System.out.println("-p" + bestP);
+                            System.out.println("-g" + bestG);
+                            System.out.println("---");
                         }
                     }
                 }
