@@ -48,7 +48,7 @@ public class SentenceClassification {
         double[][] result = new double[sentences.length][];
         for (int i = 0; i < sentences.length; i++) {
             SimpleMatrix vector = phraseSpace.getVector(sentences[i]);
-            vector = vector.scale(1.0 / sentences[i].split(" ").length);
+//            vector = vector.scale(1.0 / sentences[i].split(" ").length);
             result[i] = vector.getMatrix().data;
         }
         return result;
