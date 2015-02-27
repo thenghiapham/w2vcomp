@@ -107,8 +107,8 @@ public class SvmTrainTest {
              while ((s = stdInput.readLine()) != null) {
                  
                  System.out.println(s);
-                 if (s.startsWith("Cross Validation")) {
-                     String accuracyString = s.split(" ")[4];
+                 if (s.startsWith("Accuracy")) {
+                     String accuracyString = s.split(" ")[2];
                      accuracy = Double.parseDouble(accuracyString.substring(0, accuracyString.length() - 1));
                  }
              }
