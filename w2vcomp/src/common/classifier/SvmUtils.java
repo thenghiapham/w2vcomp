@@ -108,7 +108,7 @@ public class SvmUtils {
                     currentParameters.put("-p",(double) p);
                     for (double g: gValues) {
                         currentParameters.put("-g",(double) g);
-                        double acc = trainCrossvalidation(trainFile, currentParameters, 10);
+                        double acc = trainCrossvalidation(trainFile, currentParameters, 4);
                         if (acc > bestAcc) {
                             bestAcc = acc;
                             bestT = t;
