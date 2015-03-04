@@ -245,13 +245,13 @@ public abstract class AbstractWord2Vec {
                             .allocate(4 * projectionLayerSize);
                     buffer.order(ByteOrder.LITTLE_ENDIAN);
                     for (int j = 0; j < projectionLayerSize; j++) {
-                        buffer.putFloat((float) weights1[i][j]);
+                        buffer.putFloat((float) negativeWeights1[i][j]);
                     }
                     os.write(buffer.array());
                 } else {
                     StringBuffer sBuffer = new StringBuffer();
                     for (int j = 0; j < projectionLayerSize; j++) {
-                        sBuffer.append("" + weights1[i][j] + " ");
+                        sBuffer.append("" + negativeWeights1[i][j] + " ");
                     }
                     os.write(sBuffer.toString().getBytes());
                 }
