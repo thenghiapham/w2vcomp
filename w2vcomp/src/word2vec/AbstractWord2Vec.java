@@ -18,6 +18,7 @@ import vocab.Vocab;
 import vocab.VocabEntry;
 import common.IOUtils;
 import common.SigmoidTable;
+import common.exception.ValueException;
 
 /**
  * Abstract class of word2vec
@@ -188,7 +189,8 @@ public abstract class AbstractWord2Vec {
         // Save the word vectors
         // save number of words, length of each vector
         int vocabSize = vocab.getVocabSize();
-
+        if (negativeSamples <= 0) 
+            throw new ValueException("cannot store negative vectors for hierarchical softmax");
         try {
             BufferedOutputStream os = new BufferedOutputStream(
                     new FileOutputStream(outputFile));
@@ -223,7 +225,46 @@ public abstract class AbstractWord2Vec {
         }
     }
     
+    public void saveNegVectors(String outputFile, boolean binary) {
+        // Save the word vectors
+        // save number of words, length of each vector
+        int vocabSize = vocab.getVocabSize();
 
+        try {
+            BufferedOutputStream os = new BufferedOutputStream(
+                    new FileOutputStream(outputFile));
+            String firstLine = "" + vocabSize + " " + projectionLayerSize
+                    + "\n";
+            os.write(firstLine.getBytes(Charset.forName("UTF-8")));
+            // save vectors
+            for (int i = 0; i < vocabSize; i++) {
+                VocabEntry word = vocab.getEntry(i);
+                os.write((word.word + " ").getBytes("UTF-8"));
+                if (binary) {
+                    ByteBuffer buffer = ByteBuffer
+                            .allocate(4 * projectionLayerSize);
+                    buffer.order(ByteOrder.LITTLE_ENDIAN);
+                    for (int j = 0; j < projectionLayerSize; j++) {
+                        buffer.putFloat((float) weights1[i][j]);
+                    }
+                    os.write(buffer.array());
+                } else {
+                    StringBuffer sBuffer = new StringBuffer();
+                    for (int j = 0; j < projectionLayerSize; j++) {
+                        sBuffer.append("" + weights1[i][j] + " ");
+                    }
+                    os.write(sBuffer.toString().getBytes());
+                }
+                os.write("\n".getBytes());
+            }
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+    }
+ 
     public void setVocab(Vocab vocab) {
         this.vocab = vocab;
     }

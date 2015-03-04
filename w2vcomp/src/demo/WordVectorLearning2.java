@@ -83,6 +83,7 @@ public class WordVectorLearning2 {
             }
             word2vec.trainModel(inputStreams);
             word2vec.saveVector(outputFile, true);
+            word2vec.saveNegVectors(outputFile.replace("bin", "neg.bin"), true);
             word2vec.saveNetwork(modelFile, true);
         } catch (IOException e) {
             System.exit(1);
