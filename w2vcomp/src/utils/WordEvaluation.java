@@ -26,13 +26,13 @@ public class WordEvaluation {
                 {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
                 {"rg", d + "rubenstein-goodeneough.txt", "sim"},
                 {"sim-lex", nDir + "simlex-999.txt", "sim"},
-//                {"tfl", d + "toefl-test-set.txt", "tfl"},
-//                {"mcrae", d + "mcrae-dataset.txt", "selpref"},
-//                {"up", d + "up-dataset.txt", "selpref"},
-//                {"aamp", d + "aamp-gold-standard.txt", "clst"},
-//                {"battig", d + "battig-gold-standard.txt", "clst"},
-//                {"esslli", d + "esslli-gold-standard.txt", "clst"},
-//                {"analogy", nDir + "questions-words.txt", "anal"},
+                {"tfl", d + "toefl-test-set.txt", "tfl"},
+                {"mcrae", d + "mcrae-dataset.txt", "selpref"},
+                {"up", d + "up-dataset.txt", "selpref"},
+                {"aamp", d + "aamp-gold-standard.txt", "clst"},
+                {"battig", d + "battig-gold-standard.txt", "clst"},
+                {"esslli", d + "esslli-gold-standard.txt", "clst"},
+                {"analogy", nDir + "questions-words.txt", "anal"},
                 };
         return datasets;
     }
