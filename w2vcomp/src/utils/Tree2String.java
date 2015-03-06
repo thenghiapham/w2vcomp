@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import demo.TestConstants;
+import demo.W2vProperties;
 import tree.Tree;
 import io.sentence.BasicTreeInputStream;
 
@@ -65,8 +65,11 @@ public class Tree2String {
     }
     
     public static void main(String[] args) throws IOException {
-        String inDir = TestConstants.S_TRAIN_DIR;
-        String outFile = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/corpus/rawWiki.txt";
-        treeDir2StringFile(inDir, outFile);
+        String configFile = args[0];
+        String outputFile = args[1];
+        W2vProperties properties = new W2vProperties(configFile);
+        String inDir = properties.getProperty("STrainDir");
+//        String outFile = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/corpus/rawWiki.txt";
+        treeDir2StringFile(inDir, outputFile);
     }
 }
