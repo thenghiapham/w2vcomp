@@ -12,6 +12,10 @@ import io.sentence.BasicTreeInputStream;
 public class Tree2String {
     public static void printArray2Stream(String[] sentence, BufferedWriter outWriter) throws IOException {
         int length = sentence.length;
+        // TODO: remove this when needing doc boundary
+        if (length == 1 && sentence[0].equals("next_document")) {
+            return;
+        }
         for (int i = 0; i < length - 1; i++) {
             outWriter.write(sentence[i]);
             outWriter.write(" ");
