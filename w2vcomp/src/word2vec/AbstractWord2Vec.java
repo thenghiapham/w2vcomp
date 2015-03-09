@@ -20,6 +20,7 @@ import org.jblas.DoubleMatrix;
 import space.SemanticSpace;
 import vocab.Vocab;
 import vocab.VocabEntry;
+import common.IOUtils;
 import common.SigmoidTable;
 import demo.TestConstants;
 
@@ -179,6 +180,41 @@ public abstract class AbstractWord2Vec {
             e.printStackTrace();
         }
     }
+    
+    public void loadNetwork(String inputFile, boolean binary) {
+        try {
+            BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile));
+            double[][] matrix = IOUtils.readMatrix(inputStream, binary);
+            if (matrix.length != vocab.getVocabSize() || matrix[0].length != projectionLayerSize) {
+                System.out.println("matrix size does not match");
+            } else {
+                weights0 = matrix;
+            }
+            
+            if (hierarchicalSoftmax) {
+                matrix = IOUtils.readMatrix(inputStream, binary);
+                if (matrix.length != vocab.getVocabSize() -1 || matrix[0].length != projectionLayerSize) {
+                    System.out.println("matrix size does not match");
+                } else {
+                    weights1 = matrix;
+                }
+            }
+            if (negativeSamples > 0) {
+                matrix = IOUtils.readMatrix(inputStream, binary);
+                System.out.println("matrix size: " + matrix.length + " " + matrix[0].length);
+                System.out.println("expect size: " + vocab.getVocabSize() + " " + projectionLayerSize);
+                if (matrix.length != vocab.getVocabSize() || matrix[0].length != projectionLayerSize) {
+                    System.out.println("matrix size does not match");
+                } else {
+                    negativeWeights1 = matrix;
+                }
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     
     protected void saveImageProjectionMatrix(String projectionFile) {
         try {
@@ -346,5 +382,22 @@ public abstract class AbstractWord2Vec {
     
     public Images getImages(){
         return images;
+    }
+    
+    public void saveNetwork(String outputFile, boolean binary) {
+        try {
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+            IOUtils.saveMatrix(outputStream, weights0, binary);
+            if (hierarchicalSoftmax) {
+                IOUtils.saveMatrix(outputStream, weights1, binary);
+            }
+            if (negativeSamples > 0) {
+                IOUtils.saveMatrix(outputStream, negativeWeights1, binary);
+            }
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
 }

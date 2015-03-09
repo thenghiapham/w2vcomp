@@ -78,8 +78,6 @@ public class MmSkipNGramWithMappingMaxMargin extends SingleThreadWord2Vec {
                         continue;
 
                     
-                    //for (int j = 0; j < projectionLayerSize; j++)
-                      // a1error[j] = 0;
                     VocabEntry context = vocab.getEntry(iWordIndex);
                     // HIERARCHICAL SOFTMAX
                     if (hierarchicalSoftmax) {

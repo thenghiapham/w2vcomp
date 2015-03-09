@@ -133,7 +133,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                     if (iteration % 10 == 0) {
                         System.out.println("Trained: " + wordCount + " words");
                         System.out.println("Training rate: " + alpha);
-                        System.out.println("Visual stuff "+imageProjectionLayer.normF());
+                        //System.out.println("Visual stuff "+imageProjectionLayer.normF());
                         
                     }
                     lastWordCount = wordCount;

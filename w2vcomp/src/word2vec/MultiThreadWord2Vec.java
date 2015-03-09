@@ -80,7 +80,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         }
         
         if (men != null) {
-            System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
+            System.out.println("men: " + men.evaluateSpaceSpearman(outputSpace));
         }
         
         System.out.println("total word count: " + wordCount);
@@ -127,7 +127,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
                             System.out.println("Training rate: " + alpha);
                         }
                         if (men != null && outputSpace != null && iteration %100 == 0) {
-                            System.out.println("men: " + men.evaluateSpacePearson(outputSpace));
+                            System.out.println("men: " + men.evaluateSpaceSpearman(outputSpace));
 //                            System.out.println("men neg: " + men.evaluateSpacePearson(negSpace));
                             printStatistics();
                         }

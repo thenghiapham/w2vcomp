@@ -10,6 +10,8 @@ import de.erichseifert.gral.data.EnumeratedData;
 import de.erichseifert.gral.plots.XYPlot;
 import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
 import de.erichseifert.gral.plots.lines.LineRenderer;
+import de.erichseifert.gral.plots.points.DefaultPointRenderer2D;
+import de.erichseifert.gral.plots.points.PointRenderer;
 
 public class PlotUtils {
     private static final Random RANDOM = new Random();
@@ -21,6 +23,33 @@ public class PlotUtils {
             plot.setLineRenderer(series, lines);
           
             Color color = randomColor();
+            plot.getPointRenderer(series).setColor(color);
+            plot.getPointRenderer(series).setShape(null);
+            plot.getLineRenderer(series).setColor(color);
+        }
+        plot.setLegendVisible(true);
+        double maxY = plot.getAxis("y").getMax().doubleValue(); 
+        plot.getAxis("y").setMin(-maxY/10);
+        
+        double maxX = plot.getAxis("x").getMax().doubleValue(); 
+        plot.getAxis("x").setMin(-maxX/10);
+        return plot;
+    }
+    
+    
+    
+    public static XYPlot createTimePlot(ArrayList<ArrayList<Double>> data, ArrayList<String> label,ArrayList<Color> colors) {
+        DataSeries[] dataSeries = createDataTable(data, label);
+        XYPlot plot = new XYPlot(dataSeries);
+        int i=0;
+        for (DataSeries series: dataSeries) {
+            LineRenderer lines = new DefaultLineRenderer2D();
+            plot.setLineRenderer(series, lines);
+            //PointRenderer points = new DefaultPointRenderer2D();
+            //plot.setPointRenderer(series, points);
+
+            Color color = colors.get(i);
+            i++;
             plot.getPointRenderer(series).setColor(color);
             plot.getPointRenderer(series).setShape(null);
             plot.getLineRenderer(series).setColor(color);

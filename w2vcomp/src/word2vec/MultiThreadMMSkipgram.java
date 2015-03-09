@@ -8,7 +8,6 @@ import common.exception.ValueException;
 import demo.TestConstants;
 
 public class MultiThreadMMSkipgram extends MultiThreadWord2Vec{
-
     public MultiThreadMMSkipgram(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
@@ -124,7 +123,7 @@ public class MultiThreadMMSkipgram extends MultiThreadWord2Vec{
             if (jPerceptIndex == -1)  r = 1.0; else  r= TestConstants.rate_multiplier_grad;
 
             // NEGATIVE SAMPLING  
-            if (negativeSamplesImages > 0  && jPerceptIndex!=-1) {
+            if (negativeSamplesImages != -1  && jPerceptIndex!=-1) {
                 
                 for (int l = 0; l < negativeSamplesImages + 1; l++) {
                     int target;

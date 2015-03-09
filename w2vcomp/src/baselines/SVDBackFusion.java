@@ -11,6 +11,7 @@ import common.MenCorrelation;
 import common.SimpleMatrixUtils;
 import demo.TestConstants;
 import space.SemanticSpace;
+import word2vec.Images;
 
 public class SVDBackFusion {
 
@@ -21,14 +22,14 @@ public class SVDBackFusion {
     int[] images_dim;
     int[] words_dim;
     
-    public SVDBackFusion(SemanticSpace vision,SemanticSpace language){
-        createPairedData(vision, language);
+    public SVDBackFusion(SemanticSpace language,SemanticSpace vision){
+        createPairedData(language, vision);
         fuseData();
     }
     
     
     //gets 2 spaces, find common elements, and creates paired data
-    private void createPairedData(SemanticSpace vision, SemanticSpace language){
+    private void createPairedData(SemanticSpace language, SemanticSpace vision){
         
         Set<String> common_elements = new HashSet<String>(vision.getWord2Index().keySet());
         common_elements.retainAll(language.getWord2Index().keySet());
@@ -45,7 +46,7 @@ public class SVDBackFusion {
         words_dim[0] = words.numRows();
         words_dim[1] = words.numCols();
         
-        this.trainingData = SimpleMatrixUtils.hStack(images, words);
+        this.trainingData = SimpleMatrixUtils.hStack(words, images);
     }
     
     //svd's the paired data
@@ -93,17 +94,64 @@ public class SVDBackFusion {
     public static void main(String[] args) {
         
         MenCorrelation men = new MenCorrelation(TestConstants.CCG_MEN_FILE);
-        SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
-        SemanticSpace visionSpace = SemanticSpace.importSpace(TestConstants.VISION_FILE);
+        MenCorrelation sim999 = new MenCorrelation(TestConstants.SIMLEX_FILE,3);
+        MenCorrelation semSim =  new MenCorrelation(TestConstants.Carina_FILE,2);
+        MenCorrelation visSim =  new MenCorrelation(TestConstants.Carina_FILE,3);
+        MenCorrelation sim999abs = new MenCorrelation(TestConstants.SIMLEX_FILE,3,6,1);
+        
+        Set<String> testData = new HashSet<String>();
+        testData.addAll(men.getWords());
+        testData.addAll(sim999.getWords());
+        testData.addAll(semSim.getWords());
+        
+        
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/baseline/out_wiki_n-1_m0.5_-1_r11.0_r220.0l1.0E-4.bin");
+        
+        Images im = new Images(TestConstants.VISION_FILE, true);
+        SemanticSpace visionSpace = im.getVisionSpace();
+        
         SVDBackFusion baseline = new SVDBackFusion(wordSpace, visionSpace);
         
-        int k=400;
+        int k=300;
      
+        wordSpace = baseline.mapData(wordSpace.getSubSpace(testData), k, false);
         
+
+        //double[] cors = im.pairwise_cor(wordSpace);
         
-        SemanticSpace mapped_vectors = baseline.mapData(wordSpace, k, false);
-        System.out.println("Correlation with Baseline "+k+": " + men.evaluateSpacePearson(mapped_vectors)); 
-        System.out.println("Correlation with Original "+men.evaluateSpacePearson(wordSpace)); 
+        System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman2(wordSpace,visionSpace, 1)); 
+        System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman2(wordSpace,visionSpace,1)); 
+        System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman2(wordSpace,visionSpace,1)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman2(wordSpace,visionSpace,1 )); 
+        System.out.println();
+        
+        System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman2(wordSpace,visionSpace,2)); 
+        System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman2(wordSpace,visionSpace,2)); 
+        System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman2(wordSpace,visionSpace,2)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman2(wordSpace,visionSpace,2 )); 
+        System.out.println();
+        
+        System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman2(wordSpace,visionSpace,3)); 
+        System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman2(wordSpace,visionSpace,3)); 
+        System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman2(wordSpace,visionSpace,3)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman2(wordSpace,visionSpace,3 )); 
+        System.out.println();
+       
+        
+        System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman2(wordSpace,visionSpace,4)); 
+        System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman2(wordSpace,visionSpace,4)); 
+        System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman2(wordSpace,visionSpace,4)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman2(wordSpace,visionSpace,4 )); 
+        System.out.println();
+        
+        System.out.println("SIMLEX ABS :"+sim999abs.evaluateSpaceSpearman(wordSpace));
+        
+        System.out.println("MEN EVALUATION: " + men.evaluateSpaceSpearman(wordSpace)); 
+        System.out.println("sim999 EVALUATION: " + sim999.evaluateSpaceSpearman(wordSpace)); 
+        System.out.println("semSim EVALUATION: " + semSim.evaluateSpaceSpearman(wordSpace)); 
+        System.out.println("visSim EVALUATION: " + visSim.evaluateSpaceSpearman(wordSpace )); 
+        //System.out.println("Printing pearson "+cors[0]);
+        //System.out.println("Printing spearman "+cors[1]);
 
     }
     

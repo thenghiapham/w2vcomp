@@ -197,7 +197,7 @@ public class nips2014BaseEval {
         PearsonsCorrelation pearson = new PearsonsCorrelation();
         SpearmansCorrelation spearman = new SpearmansCorrelation();
         
-        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/masterclic4/temp/bnc.bin");
+        SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/bnc/out_bnc_100.bin");
         String ANDataset = "/home/angeliki/Documents/mikolov_composition/misc/compo_misc/an_lemma.txt";
         
         nips2014BaseEval eval1 = new nips2014BaseEval(wordSpace, ANDataset,datasetType.twopairs);

@@ -10,8 +10,10 @@ import java.util.Set;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.ejml.simple.SimpleMatrix;
 
 import common.IOUtils;
+import common.SimpleMatrixUtils;
 
 import demo.TestConstants;
 
@@ -28,27 +30,48 @@ public class Images {
     HashMap<String, Integer> word2Index;
     
     
+    
     public Images(String textFile,boolean all) {
         random = new Random();
 
         this.space = SemanticSpace.importSpace(textFile);
+        
+        
+        //Disregard some visual concepts.
         if (!all){
+            String randomName = "NEGATIVEEXAMPLE@@";
+            
+            //Concepts that will be used for training
             Set<String> trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
-            this.space = this.space.getSubSpace(trConcepts);
+            SimpleMatrix A = new SimpleMatrix(this.space.getSubSpace(trConcepts).getVectors());
+            System.out.println("Only using labels for "+A.numRows()+" words");
+            
+            //Concepts that will be used for testing
+            Set<String> tsConcepts = new HashSet<String>(this.space.getWord2Index().keySet());
+            tsConcepts.removeAll(trConcepts);
+            SimpleMatrix B = new SimpleMatrix(this.space.getSubSpace(tsConcepts).getVectors());
+            
+            
+            ArrayList<String> rows = new ArrayList<String>();
+            for (String w: trConcepts){
+                rows.add(w);
+            }
+            for (String w: tsConcepts){
+                rows.add(randomName.concat(w));
+            }
+            
+            SimpleMatrix APLUSB = SimpleMatrixUtils.vStack(A, B);
+            this.space = new SemanticSpace(rows, SimpleMatrixUtils.to2DArray(APLUSB));
             
         }
-        //for mapping debugging
-        double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
-        int i = 0;
-        for (double [] vec: this.space.getVectors()){
-           for (int j=0; j<TestConstants.imageDimensions; j++){
-               newvecs[i][j]= vec[j];
-           }
-           i++;
-        }
-        this.space = new SemanticSpace(this.space.getWords(), newvecs);
-        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training");
         
+        
+        //how to reduce the dimensions
+        double [][] newvecs = chop_linear();
+        
+        this.space = new SemanticSpace(this.space.getWords(), newvecs);
+        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training with "+this.space.getVectorSize() );
+        //System.out.println(new SimpleMatrix(this.space.getVectors()));
         
         this.word2Index = space.getWord2Index();
         //random_vecs();
@@ -60,12 +83,153 @@ public class Images {
         
     }
     
+    
+    
+    public Images(String textFile,boolean all, int dimensions) {
+        random = new Random();
+
+        this.space = SemanticSpace.importSpace(textFile);
+        if (!all){
+            String randomName = "NEGATIVEEXAMPLE@@";
+            
+            Set<String> trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
+            SimpleMatrix A = new SimpleMatrix(this.space.getSubSpace(trConcepts).getVectors());
+            
+            Set<String> tsConcepts = new HashSet<String>(this.space.getWord2Index().keySet());
+            tsConcepts.removeAll(trConcepts);
+            SimpleMatrix B = new SimpleMatrix(this.space.getSubSpace(tsConcepts).getVectors());
+            System.out.println("Only using labels for "+A.numRows()+" words");
+            
+            ArrayList<String> rows = new ArrayList<String>();
+            for (String w: trConcepts){
+                rows.add(w);
+            }
+            for (String w: tsConcepts){
+                rows.add(randomName.concat(w));
+            }
+            
+            SimpleMatrix APLUSB = SimpleMatrixUtils.vStack(A, B);
+            this.space = new SemanticSpace(rows, SimpleMatrixUtils.to2DArray(APLUSB));
+            
+        }
+        //for mapping debugging
+        
+        double [][] newvecs = chop_randomly(dimensions);
+        
+        this.space = new SemanticSpace(this.space.getWords(), newvecs);
+        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training with "+this.space.getVectorSize() );
+        
+        this.word2Index = space.getWord2Index();
+        
+        //For test only. Either randomly shuffle the words with the images or assign random vectors to words
+        //shuffling_vecs();
+        //random_vecs();
+       
+           
+        System.out.println("Images vectors with size:"+this.space.getVectorSize());
+
+        //create hash that maps an int to a image ID for finding negative samples.
+        this.randomTablesize = this.word2Index.size();
+        initImageTable();
+        
+    }
+    
      
+   protected double[][] chop_randomly(){
+       System.out.println("Random Chopping");
+       ArrayList<Integer> indices= new ArrayList<Integer>();
+       for (int i=0;i<this.space.getVectorSize();i++){
+           indices.add(i);
+       }
+       Collections.shuffle(indices);
+       
+       double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
+       int i = 0;
+       for (double [] vec: this.space.getVectors()){
+          for (int j=0; j<TestConstants.imageDimensions; j++){
+              newvecs[i][j]= vec[indices.get(j)];
+          }
+          i++;
+       }
+       return newvecs;
+       
+   }
    
+   
+   protected double[][] chop_randomly(int dim){
+       System.out.println("Random Chopping");
+       ArrayList<Integer> indices= new ArrayList<Integer>();
+       for (int i=0;i<this.space.getVectorSize();i++){
+           indices.add(i);
+       }
+       Collections.shuffle(indices);
+       
+       double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
+       int i = 0;
+       for (double [] vec: this.space.getVectors()){
+          for (int j=0; j<dim; j++){
+              newvecs[i][j]= vec[indices.get(j)];
+          }
+          i++;
+       }
+       return newvecs;
+       
+   }
+   
+   protected double[][] chop_summing(){
+       System.out.println("Summed Chopping");
+       ArrayList<Integer> indices= new ArrayList<Integer>();
+       Collections.shuffle(indices);
+       
+       double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
+       for (int i=0; i<newvecs.length; i++){
+           for (int j=0; j<newvecs[0].length; j++){
+               newvecs[i][j]= 0;
+           }
+       }
+       int i = 0;
+       int offset = (int) Math.floor(this.space.getVectorSize()/TestConstants.imageDimensions);
+       System.out.println(offset);
+       int cur = 0;
+       int k=0;
+       for (double [] vec: this.space.getVectors()){
+          k = 0;
+          cur =0;
+          for (int j=0; j<this.space.getVectorSize(); j++){
+              if (cur==offset && k!= TestConstants.imageDimensions-1){
+                  newvecs[i][k]/= (double) cur;
+                  k +=1;
+                  cur = 0;
+                  
+              }
+              cur += 1;
+              newvecs[i][k]+= vec[j];
+          }
+          newvecs[i][k-1]/= (double) cur;
+          i++;
+          
+       }
+       return newvecs;
+       
+   }
     
     
+   protected double[][] chop_linear(){
+       System.out.println("Linear Chopping");
+
+       double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
+       int i = 0;
+       for (double [] vec: this.space.getVectors()){
+          for (int j=0; j<TestConstants.imageDimensions; j++){
+              newvecs[i][j]= vec[j];
+          }
+          i++;
+       }
+       return newvecs;
+   }
+   
     /**
-    * Create an image table to randomly generate an image. 
+    * Create an image table to randomly generate a negative sample for an  image. 
     */
    protected void initImageTable() {
        this.randomTable = new int[this.randomTablesize];

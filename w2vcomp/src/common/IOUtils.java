@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -100,6 +102,59 @@ public class IOUtils {
         }
     }
     
+    public static HashMap<String, HashMap<String, String>>  readFastMappingPassages(String inputFile) throws IOException{
+        
+        HashMap<String, HashMap<String, String>> sentences = new HashMap<String, HashMap<String, String>>();
+        
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        String line = reader.readLine();
+        while (line != null && !line.equals("")) {
+            HashMap<String, String> item = new HashMap<String, String>();
+
+	    String[] els = line.split("[\t]+");
+            //2 is the id and 8 is the sentence, 5 is the foil	    
+            String sentence = els[7].replaceAll("<b>[a-zA-Z]+</b>", "").replaceAll("@@", "").toLowerCase();
+            item.put("sentence",sentence);
+   	    String foil = els[4].split("/")[7].split("\\.")[0];
+            //System.out.println("Foil is "+foil);
+	    item.put("foil",foil);
+	    
+	    sentences.put(els[1], item);
+            //System.out.println(els[1]+" "+sentence);
+            line = reader.readLine();
+        }
+        reader.close();
+        return sentences;
+        
+        
+    }
+
+
+
+    
+public static HashMap<String, String>  readFastMappingSentences(String inputFile) throws IOException{
+        
+        HashMap<String, String> sentences = new HashMap<String, String>();
+        
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        String line = reader.readLine();
+        while (line != null && !line.equals("")) {
+            String[] els = line.split("[\t]+");
+            //2 is the id and 8 is the sentence
+            String[] sentence = els[7].replaceAll("<b>[a-zA-Z]+</b>", "").replace("  ", " ").toLowerCase().split("@@");
+            int i=0;
+            for (String s: sentence){
+                sentences.put(els[1]+"_"+i, s);
+                System.out.println(els[1]+"_"+i+" "+s);
+                i++;
+            }
+            line = reader.readLine();
+        }
+        reader.close();
+        return sentences;
+        
+        
+    }
     /**
      * Save a 2d array to a file in either text format or binary format
      * @param matrixFile: the path to the output file
@@ -138,6 +193,47 @@ public class IOUtils {
             }
             os.flush();
             os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Save a 2d array to a BufferedOutputStream in either text format or binary
+     * format
+     * @param outputStream
+     * @param matrix
+     * @param binary
+     */
+    public static void saveMatrix(BufferedOutputStream outputStream, double[][] matrix, boolean binary) {
+        // Save the word vectors
+        // save number of words, length of each vector
+        int numRow = matrix.length;
+        int numColumn = matrix[0].length;
+        try {
+            String firstLine = "" + numRow + " " + numColumn
+                    + "\n";
+            outputStream.write(firstLine.getBytes(Charset.forName("UTF-8")));
+            // save vectors
+            for (int i = 0; i < matrix.length; i++) {
+                if (binary) {
+                    ByteBuffer buffer = ByteBuffer
+                            .allocate(8 * numColumn);
+                    buffer.order(ByteOrder.LITTLE_ENDIAN);
+                    for (int j = 0; j < numColumn; j++) {
+                        buffer.putDouble(matrix[i][j]);
+                    }
+                    outputStream.write(buffer.array());
+                } else {
+                    StringBuffer sBuffer = new StringBuffer();
+                    for (int j = 0; j < numColumn; j++) {
+                        sBuffer.append("" + matrix[i][j] + " ");
+                    }
+                    outputStream.write(sBuffer.toString().getBytes());
+                }
+                outputStream.write("\n".getBytes());
+            }
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -186,6 +282,21 @@ public class IOUtils {
     
     public static double[][] readMatrix(BufferedInputStream inputStream, boolean binary) {
         try {
+            /*if (binary) {
+                int numRows = Integer.parseInt(readWord(inputStream));
+                int numCols = Integer.parseInt(readWord(inputStream));
+                byte[] rowData = new byte[numCols *4];
+                ByteBuffer buffer = ByteBuffer.wrap(rowData);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                double[][] result = new double[numRows][numCols];
+                for (int i = 0; i < numRows; i++) {
+                    inputStream.read(rowData);
+                    for (int j = 0; j < numCols; j++) {
+                        result[i][j] =(float) buffer.getFloat(j * 4);
+                    }
+                    inputStream.read();
+                }
+                return result;*/
             if (binary) {
                 int numRows = Integer.parseInt(readWord(inputStream));
                 int numCols = Integer.parseInt(readWord(inputStream));

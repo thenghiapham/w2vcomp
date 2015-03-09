@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -233,6 +234,33 @@ public class SemanticSpace {
             return 0;
         }
     }
+    
+    
+ public double getSim(String word1, String word2, SemanticSpace space2) {
+        
+        if (word2Index.containsKey(word1) && space2.word2Index.containsKey(word2)) {
+            int index1 = word2Index.get(word1);
+            return Similarity.cosine(vectors[index1], space2.getVector(word2));
+        } else {
+            return 0;
+        }
+    }
+    
+    public ArrayList<Double> getSims(String word1, Set<String> els) {
+    
+        ArrayList<Double> sims = new ArrayList<Double>();
+        
+        for (String word2: els){
+            if (word2Index.containsKey(word1) && word2Index.containsKey(word2)) {
+                int index1 = word2Index.get(word1);
+                int index2 = word2Index.get(word2);
+                sims.add(Similarity.cosine(vectors[index1], vectors[index2]));
+            } else {
+                continue;
+            }
+        }
+        return sims;
+    }
 
     public Neighbor[] getNeighbors(double[] vector, int noNeighbor) {
         Neighbor[] neighbors = new Neighbor[words.length];
@@ -348,7 +376,7 @@ public class SemanticSpace {
         for (String word : words) {
                 newWordList.add(word);
                 SimpleMatrix u = new SimpleMatrix(1,vectorSize,true,this.getVector(word));
-                newVectors.add(SimpleMatrixUtils.to2DArray(u.scale(1000000/u.normF()))[0]);
+                newVectors.add(SimpleMatrixUtils.to2DArray(u.scale(1.0/u.normF()))[0]);
         }
         return new SemanticSpace(newWordList, newVectors);
     }
