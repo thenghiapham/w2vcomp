@@ -51,9 +51,8 @@ public class TestConstants {
         public static final String Carina_FILE             = "/home/angeliki/Documents/mikolov_composition/misc/similarity_judgements3.txt";
         public static final String CCG_MEN_FILE             = "/home/angeliki/Documents/mikolov_composition/misc/MEN_dataset_lemma_nopos_form_full";
         public static final String CCG_AN_FILE              = "/home/thenghiapham/work/project/mikolov/an_ml/an_ml_lemmapos.txt";
-//
-        
-////        
+
+  
 //        //for cluster
 //        public static final String TRAIN_DIR                 = "/home/angeliki.lazaridou/visLang/mmskipgram/corpora/multi_3b/";
 //        public static final String TRAIN_FILE               = "/home/angeliki.lazaridou/visLang/mmskipgram/corpora/wiki";
