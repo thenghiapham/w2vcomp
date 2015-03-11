@@ -300,7 +300,7 @@ public class AbstractnessPrediction {
      */
     public static void main(String[] args) throws IOException {
         String absFile = "/home/angeliki/Documents/mikolov_composition/misc/abstractness.txt";
-       // SemanticSpace space = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/baseline/out_wiki_n-1_m0.5_-1_r11.0_r220.0l1.0E-4.bin");
+       //SemanticSpace space = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/baseline/out_wiki_n-1_m0.5_-1_r11.0_r220.0l1.0E-4.bin");
         //SemanticSpace space = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/cnn/out_wiki_n5_m0.5_5_r11.0_r220.0l1.0E-4.bin");
         SemanticSpace space = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/cnn_again_mm/out_wiki_n10_m0.5_10_r11.0_r21.0l1.0E-6.bin");
         String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/cnn/out_wiki_n5_m0.5_5_r11.0_r220.0l1.0E-4.mapping";
@@ -314,8 +314,8 @@ public class AbstractnessPrediction {
         
         System.out.println("Spearman is "+a);
         
-        Images im = new Images(TestConstants.VISION_FILE, true);
-        eval.printNeighbours(space,im.getVisionSpace());
+        //Images im = new Images(TestConstants.VISION_FILE, true);
+        //eval.printNeighbours(space,im.getVisionSpace());
         
         //a = eval.measureAbstractness(vision);
         //System.out.println("Spearman is "+a);

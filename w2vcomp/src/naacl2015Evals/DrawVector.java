@@ -33,12 +33,13 @@ public class DrawVector extends JFrame {
     
     //SemanticSpace space = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/cnn/out_wiki_n5_m0.5_5_r11.0_r220.0l1.0E-4.bin")
     SemanticSpace space = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/cnn_again_mm/out_wiki_n10_m0.5_10_r11.0_r21.0l1.0E-6.bin");
-    String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/cnn/out_wiki_n5_m0.5_5_r11.0_r220.0l1.0E-4.mapping";
-    SimpleMatrix map = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream(mapFile)), false));
+    //String mapFile = "/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/cnn/out_wiki_n5_m0.5_5_r11.0_r220.0l1.0E-4.mapping";
+    //SimpleMatrix map = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream(mapFile)), false));
     
    
     Set<String> toMap = new HashSet<String>();
-    String[] asbtract = {"respect"};//, "potential","opinion"};
+    //String[] asbtract = {"moral", "hope","thought"};
+    String[] asbtract = {"hope"};
     Set<String> a = new HashSet<String>();
     for (String word:asbtract){
         a.add(word);
@@ -46,14 +47,14 @@ public class DrawVector extends JFrame {
     toMap.addAll(a);
     
     Set<String> c = new HashSet<String>();
-    String[] concrete = {"road"};//, "school","road"};
-    
+    //String[] concrete = {"meat","girl","polic"};
+    String[] concrete = {"meat"};
     for (String word:concrete){
         c.add(word);
     }
-    //toMap.addAll(c) ;
-    SemanticSpace wordSpaceMapped = new SemanticSpace(space.getSubSpace(toMap).getWords(), SimpleMatrixUtils.to2DArray((new SimpleMatrix(space.getSubSpace(toMap).getVectors())).mult(map)));
-    wordSpaceMapped = space;
+    toMap.addAll(c) ;
+    //SemanticSpace wordSpaceMapped = new SemanticSpace(space.getSubSpace(toMap).getWords(), SimpleMatrixUtils.to2DArray((new SimpleMatrix(space.getSubSpace(toMap).getVectors())).mult(map)));
+    SemanticSpace wordSpaceMapped = space;
     ArrayList<Color> colors = new ArrayList<Color>();
     for (String word: toMap) {
         

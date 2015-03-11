@@ -55,9 +55,11 @@ public class ZeroShotEvalCV {
     Set<String> trConcepts;
     Set<String> tsConcepts;
     
-    //static double[] lambdas = {0,1,2,2.5,3,3.5,4,4.5,5,4.5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+    HashSet<String> LSVRC2012_words;
+    
+    static double[] lambdas = {0,1,2,2.5,3,3.5,4,4.5,5,4.5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
     //static double[] lambdas = {17,18,19,20,21,22,23,24,25,26,27,28,30,40,50};
-    static double[] lambdas = {10,0};
+    //static double[] lambdas = {10,0};
     
     enum trainingDirection {
         v2l, l2v;
@@ -96,22 +98,24 @@ public class ZeroShotEvalCV {
         skipragramConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
         skipragramConcepts.retainAll(allConcepts);
         zeroshotConcepts = new HashSet<String>(allConcepts);
-        //zeroshotConcepts.removeAll(skipragramConcepts);
-        HashSet<String> LSVRC2012 =  new HashSet<String>(IOUtils.readFile("/home/angeliki/Desktop/LSVRC2012.txt"));
+        //remove skipgram concepts from the zeroshot used in validation
+        zeroshotConcepts.removeAll(skipragramConcepts);
+        HashSet<String> LSVRC2012 =  new HashSet<String>(IOUtils.readFile("/home/angeliki/Documents/mikolov_composition/misc/LSVRC2012.txt"));
         
         int trainedWords = 0;
+        LSVRC2012_words =  new HashSet<String>();
         for (String word:zeroshotConcepts){
             for (String LSVRC2012Class : LSVRC2012){ 
                 if (LSVRC2012Class.contains(word)){
                     trainedWords+=1;
+                    LSVRC2012_words.add(word);
                     break;
                 }
             }
         }
         
         System.out.println(trainedWords+"  out of "+zeroshotConcepts.size()+" are in the LSVRC2012");
-        
-        
+        zeroshotConcepts.removeAll(LSVRC2012_words);
                 
     }
     
@@ -119,7 +123,7 @@ public class ZeroShotEvalCV {
         SimpleMatrix mapping, estimated;
         
         ArrayList<String> concepts = new ArrayList<String>(zeroshotConcepts);
-        Collections.shuffle(concepts);
+        Collections.shuffle(concepts,new Random(TestConstants.SEED));
         System.out.println(concepts.get(0));
 
         System.out.println("Size of 0shot concepts "+zeroshotConcepts.size());
@@ -127,8 +131,8 @@ public class ZeroShotEvalCV {
         
         int fold_size = concepts.size()/folds;
         for (double lambda: lambdas){
-            Collections.shuffle(concepts);
-            System.out.println(concepts.get(0));
+            //Collections.shuffle(concepts,new Random(TestConstants.SEED));
+            //System.out.println(concepts.get(0));
             double[] ranks= new  double[] {0,0,0,0,0,0};
             for (int i=0;i<folds;i++){
                 int start_index = fold_size * i;
@@ -138,11 +142,16 @@ public class ZeroShotEvalCV {
                 trConcepts.removeAll(tsConcepts);
                 //for baseline
                 trConcepts.addAll(skipragramConcepts);
+                //for baseline in l2v
+                trConcepts = skipragramConcepts;
+                
+                //add also in training the LSVRC2012_words for all in the v2l
+                //trConcepts.addAll(LSVRC2012_words);
                 searchConcepts  = allConcepts;
     
                 
                 if (!normalize){
-                    System.out.println(trConcepts.size());
+                    //System.out.println(trConcepts.size());
                     trVision = new SimpleMatrix(vision.getSubSpace(trConcepts).getVectors());
                     tsVision = new SimpleMatrix(vision.getSubSpace(tsConcepts).getVectors());
                     trLanguage = new SimpleMatrix(language.getSubSpace(trConcepts).getVectors());
@@ -173,8 +182,6 @@ public class ZeroShotEvalCV {
                     temp[j] = r;
                     ranks[j++] += r/(double)folds;
                 }
-                System.out.print(i+" ");
-                printRanks(temp);
              }
             printRanks(ranks);
         }
@@ -303,9 +310,9 @@ public class ZeroShotEvalCV {
                 String n = NNs[i].word;
                 
                 ArrayList<Double> t = new ArrayList<Double>();
-                t.add((double) i);
-                //t.add((double) (NNS_evalspace.get(n).get(word)));
-                t.add((double) ((NNS_evalspace.get(n).get(word)+i)/2));
+                t.add((double) i);   //for normal querying
+                //t.add((double) (NNS_evalspace.get(n).get(word))); //for inverse querying
+                //t.add((double) ((NNS_evalspace.get(n).get(word)+i)/2));
                 t.add(space.getSim(word, n, evalSpace));
                 NNS_space.get(word).put(n, t);
                 //NNS_space.get(word).put(n, (double) i);
@@ -366,9 +373,9 @@ public class ZeroShotEvalCV {
      */
     public static void main(String[] args) throws FileNotFoundException {
         
-        long seed = System.nanoTime();
-        //long seed = TestConstants.SEED;
-        System.out.println("Seed is "+seed);
+        //long seed = System.nanoTime();
+        long seed = TestConstants.SEED;
+        //System.out.println("Seed is "+seed);
         
         //SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/cnn_again_zero/out_wiki_n5_m0.5_5_r11.0_r220.0l1.0E-4.bin");
         SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/baseline/out_wiki_n-1_m0.5_-1_r11.0_r220.0l1.0E-4.bin");
@@ -388,7 +395,7 @@ public class ZeroShotEvalCV {
         
 
         //evaluate mapping
-        exp.startCV(1,dir);
+        exp.startCV(5,dir);
         
         
         
