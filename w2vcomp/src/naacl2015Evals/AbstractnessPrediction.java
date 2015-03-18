@@ -64,11 +64,13 @@ public class AbstractnessPrediction {
         double min = 0.0;
         SimpleMatrix u = new SimpleMatrix(1,vec.length,false,vec);
         double normF = u.normF();
-             
+        
         for (int i=0;i<vec.length;i++){
             vec[i]/=normF;
         }
+       
         for (int i=0;i<vec.length;i++){
+           
             k[i] = vec[i]+0.05;
             sum += k[i];
             if (vec[i]<=min){
@@ -76,6 +78,7 @@ public class AbstractnessPrediction {
             }
             
         }
+        System.out.println(min);
         
         
         for (int i=0;i<vec.length;i++){
@@ -86,6 +89,7 @@ public class AbstractnessPrediction {
             System.out.println("IsNan");
             en = 0;
         }
+       
        return en;
         
     }
@@ -123,7 +127,7 @@ public class AbstractnessPrediction {
             System.out.println(words[i]+"\t"+p1[i]+"\t"+p2[i]);
 
         }
-        return spearman.correlation(p1, p2);
+        return pearson.correlation(p1, p2);
     }
         
     public double measureAbstractness(SemanticSpace space, SimpleMatrix mapping, Set<String> tokeep){
