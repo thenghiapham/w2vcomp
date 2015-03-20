@@ -39,7 +39,7 @@ public class SentenceLearning {
         p2v.trainParagraphVector(sentences);
         double[][] sentenceVector = p2v.getParagraphVectors();
         SemanticSpace space = new SemanticSpace(ids, sentenceVector);
-        space.exportSpace("/home/angeliki/sas/visLang/fast-mapping/mapping_chimeras_3b_cnnsvd_3.txt");
+        space.exportSpace("/home/angeliki/sas/visLang/fast-mapping/mapping_chimeras_3b_cnnsvd_normalized.txt");
         
         
     }

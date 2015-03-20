@@ -113,12 +113,12 @@ public class IOUtils {
 
 	    String[] els = line.split("[\t]+");
             //2 is the id and 8 is the sentence, 5 is the foil	    
-            String sentence = els[7].replaceAll("<b>[a-zA-Z]+</b>", "").replaceAll("@@", "").toLowerCase();
-            item.put("sentence",sentence);
+        String sentence = els[7].replaceAll("<b>[a-zA-Z]+</b>", "").toLowerCase();
+        item.put("sentence",sentence);
    	    String foil = els[4].split("/")[7].split("\\.")[0];
             //System.out.println("Foil is "+foil);
 	    item.put("foil",foil);
-	    
+	    item.put("McRaeSim",els[6]);
 	    sentences.put(els[1], item);
             //System.out.println(els[1]+" "+sentence);
             line = reader.readLine();
