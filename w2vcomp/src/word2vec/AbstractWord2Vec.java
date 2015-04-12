@@ -68,12 +68,12 @@ public abstract class AbstractWord2Vec {
      * negative Sampling size = H * V, only (k + 1) * V are estimated, where k =
      * negativeSamples
      */
-    double[][]                  weights0, weights1, negativeWeights1;
+    protected double[][]                  weights0, weights1, negativeWeights1;
 
     // Random instance
     // for randomize window size, initial weights, subsampling probability
     // and negative samples
-    Random                     rand;
+    protected Random                     rand;
 
     public AbstractWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, double subSample) {
