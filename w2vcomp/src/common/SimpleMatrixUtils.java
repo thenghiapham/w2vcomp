@@ -343,4 +343,15 @@ public class SimpleMatrixUtils {
         }
         return result;
     }
+    
+    public static SimpleMatrix cosineDerivative(SimpleMatrix x, SimpleMatrix a) {
+        double lengthX = x.normF();
+        double lengthA = a.normF();
+        double dotP = x.mult(a.transpose()).get(0,0);
+        double rToScaleA = 1 / (lengthX * lengthA);
+        double rToScaleX = dotP / (lengthA * lengthX * lengthX * lengthX);
+        SimpleMatrix result = (a.scale(rToScaleA)).minus(x.scale(rToScaleX));
+        
+        return result;
+    }
 }

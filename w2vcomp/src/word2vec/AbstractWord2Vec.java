@@ -189,8 +189,6 @@ public abstract class AbstractWord2Vec {
         // Save the word vectors
         // save number of words, length of each vector
         int vocabSize = vocab.getVocabSize();
-        if (negativeSamples <= 0) 
-            throw new ValueException("cannot store negative vectors for hierarchical softmax");
         try {
             BufferedOutputStream os = new BufferedOutputStream(
                     new FileOutputStream(outputFile));
@@ -229,7 +227,8 @@ public abstract class AbstractWord2Vec {
         // Save the word vectors
         // save number of words, length of each vector
         int vocabSize = vocab.getVocabSize();
-
+        if (negativeSamples <= 0) 
+            throw new ValueException("cannot store negative vectors for hierarchical softmax");
         try {
             BufferedOutputStream os = new BufferedOutputStream(
                     new FileOutputStream(outputFile));

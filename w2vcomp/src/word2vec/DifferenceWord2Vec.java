@@ -1,26 +1,24 @@
-package word2vec.multitask;
+package word2vec;
 
 import java.util.ArrayList;
 
 import org.ejml.simple.SimpleMatrix;
 
-import space.SemanticSpace;
 import vocab.VocabEntry;
 import word2vec.MultiThreadWord2Vec;
-import common.MathUtils;
 import common.SimpleMatrixUtils;
-import common.exception.ValueException;
 import common.wordnet.WordNetAdj;
-import demo.TestConstants;
 
-public class AntonymWord2Vec extends MultiThreadWord2Vec{
+public class DifferenceWord2Vec extends MultiThreadWord2Vec{
     public static final int DEFAULT_SYNONYM_SAMPLES = 5;
-    public static final double DEFAULT_MARGIN = 0.1;
+    public static final double DEFAULT_MARGIN = 0.2;
+    public static final double DEFAULT_ANTONYM_IMPORTANCE = 3.0;
     protected int synonymSamples = DEFAULT_SYNONYM_SAMPLES;
     protected double margin = DEFAULT_MARGIN;
+    
     protected WordNetAdj wordnetAdj;
     
-    public AntonymWord2Vec(int projectionLayerSize, int windowSize,
+    public DifferenceWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int synonymSamples, WordNetAdj wordNetAdj, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample);
@@ -28,7 +26,7 @@ public class AntonymWord2Vec extends MultiThreadWord2Vec{
         this.synonymSamples = synonymSamples;
     }
     
-    public AntonymWord2Vec(int projectionLayerSize, int windowSize,
+    public DifferenceWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int synonymSamples, WordNetAdj wordNetAdj, double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample, menFile);
@@ -43,7 +41,7 @@ public class AntonymWord2Vec extends MultiThreadWord2Vec{
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
         // TODO: set the thing here
-        double r = 1.0;
+        double r = DEFAULT_ANTONYM_IMPORTANCE;
 
         
         boolean updateAtTheEnd=false;
@@ -166,7 +164,7 @@ public class AntonymWord2Vec extends MultiThreadWord2Vec{
         
  /*************    FOR SECOND MODALITY   ****************/
             
-            SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
+            SimpleMatrix a1error_temp = new SimpleMatrix(1, a1error.length);
             boolean isWNAdj = wordnetAdj.hasAdjSynset(percept);
             
             if (isWNAdj) {
@@ -177,15 +175,15 @@ public class AntonymWord2Vec extends MultiThreadWord2Vec{
                 String antonym = antoSynoSimNyms[0][rand.nextInt(antoSynoSimNyms[0].length)];
                 int antonymIndex = vocab.getWordIndex(antonym);
                 if (antonymIndex == -1) continue;
-                SimpleMatrix antonymError = new SimpleMatrix(projectionLayerSize, 1);
+                SimpleMatrix antonymError = new SimpleMatrix(1, projectionLayerSize);
                 double gradient=0;
                 
                 // TODO: counting
 //                mmWordsPerRun++;
                 
                 //mapping word
-                SimpleMatrix wordVector = new SimpleMatrix(projectionLayerSize, 1, true, weights0[wordIndex]));
-                SimpleMatrix antonymVector = new SimpleMatrix(projectionLayerSize,1,true, weights0[antonymIndex]);
+                SimpleMatrix wordVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[wordIndex]);
+                SimpleMatrix antonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[antonymIndex]);
                 SimpleMatrix err_cos_row = SimpleMatrixUtils.cosineDerivative(wordVector, antonymVector);
                 
                 double cos = SimpleMatrixUtils.cosine(wordVector, antonymVector);
@@ -193,35 +191,40 @@ public class AntonymWord2Vec extends MultiThreadWord2Vec{
                 int k=0;
                 int l = 0;
                 int index = 0;
-                while (l < synonymSamples || index < synonyms.size()) {
-                    int neg_sample;
-                    while (true && index < synonyms.size()){
+                while (l < synonymSamples && index < synonyms.size()) {
+                    int synonymIndex = -1;
+                    while (index < synonyms.size()){
+//                        System.out.println("here " + index);
                         String synonym = synonyms.get(index);
-                        neg_sample = vocab.getWordIndex(synonym);       //random sampling and then based on neighboorhood
-                        if (neg_sample != -1)
+                        synonymIndex = vocab.getWordIndex(synonym);       //random sampling and then based on neighboorhood
+                        if (synonymIndex != -1)
                             break;
                         index++;
+                        
                     }
-                    SimpleMatrix synonymVector = new SimpleMatrix(projectionLayerSize,1,true, weights0[neg_sample]);
+                    if (synonymIndex == -1) break;
+                    SimpleMatrix synonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[synonymIndex]);
                     
                     double cosSynonym = SimpleMatrixUtils.cosine(wordVector, synonymVector);
+                    index++;
+                    l++;
                     if (cosSynonym - cos>= margin) continue;
                     k++;
                     
                     //calculate error with respect to the cosine
-                    antonymError = antonymError.plus(MathUtils.cosineDerivative(wordVector, synonymVector));
-                    index++;
-                    l++;
+                    antonymError = antonymError.plus(SimpleMatrixUtils.cosineDerivative(wordVector, synonymVector));
+                    
                 }
                 gradient = (double) (alpha* r);
                 antonymError = antonymError.minus(err_cos_row.scale(k));
                 a1error_temp  = a1error_temp.plus(antonymError.scale(gradient));
                 
-                
+                double[] errorArray = a1error_temp.getMatrix().data;
                 
                 // Learn weights input -> hidden
+                
                 for (int j = 0; j < projectionLayerSize; j++) {
-                    weights0[wordIndex][j] += a1error_temp.get(j, 0);
+                    weights0[wordIndex][j] += errorArray[j];
                     a1error[j] = 0;
                 }
             }
