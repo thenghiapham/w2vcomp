@@ -29,8 +29,8 @@ public class PrintNeighbors {
         //System.out.println(pretrained);
         //IOUtils.saveMatrix("/home/angeliki/sas/visLang/mmskipgram/out/fast-mapping/hs/out_3b_z_n20_m0.5_20_r11.0_r21.0l1.0E-4.bin", SimpleMatrixUtils.to2DArray(pretrained),false);
         
-        SemanticSpace bla = SemanticSpace.readSpace("/home/angeliki.lazaridou/visLang/mmskipgram/out/fast-mapping/hs/cnn_svd/out_3b_z_n5_m0.5_5_r11.0_r220.0l1.0E-4.bin");
-        bla.exportSpace("/home/angeliki.lazaridou/visLang/mmskipgram/out/fast-mapping/hs/cnn_svd/out_3b_z_n5_m0.5_5_r11.0_r220.0l1.0E-4.txt");
+        SemanticSpace bla = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/baseline/out_wiki_n-1_m0.5_-1_r11.0_r220.0l1.0E-4.bin");
+        bla.exportSpace("/home/angeliki/sas/out_wiki_n-1_m0.5_-1_r11.0_r220.0l1.0E-4.txt");
         /*SemanticSpace wordSpace = SemanticSpace.readSpace("/home/angeliki/Documents/mikolov_composition/out/multimodal/NAACL/baseline/out_wiki_n-1_m0.5_-1_r11.0_r220.0l1.0E-4.bin");
         SemanticSpace t = SemanticSpace.importSpace(TestConstants.VISION_FILE);
         Images im = new Images(TestConstants.VISION_FILE, true);
