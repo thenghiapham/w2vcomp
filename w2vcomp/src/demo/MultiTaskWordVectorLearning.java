@@ -15,11 +15,15 @@ import java.util.ArrayList;
 
 
 
+
+import java.util.HashSet;
+
+import common.IOUtils;
 import common.wordnet.WordNetAdj;
 import vocab.Vocab;
 import word2vec.MultiThreadAlterSkipGram;
 import word2vec.MultiThreadSkipGram;
-import word2vec.DifferenceWord2Vec;
+import word2vec.multitask.AntonymWord2Vec;
 //import word2vec.CBowWord2Vec;
 //import word2vec.SkipNGramWord2Vec;
 import demo.TestConstants;
@@ -28,12 +32,15 @@ public class MultiTaskWordVectorLearning {
     public static void main(String[] args) throws IOException{
         
 //        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(300, 5, false, 10, (float) 1e-3, TestConstants.MEN_FILE);
-        MultiThreadAlterSkipGram word2vec = new MultiThreadAlterSkipGram(300, 5, false, 10, (float) 1e-3, TestConstants.MEN_FILE);
-//        WordNetAdj wordNetAdj = new WordNetAdj("/home/nghia/Downloads/dict/data.adj");
-//        AntonymWord2Vec word2vec = new AntonymWord2Vec(300, 5, false, 10, 5, wordNetAdj, (float) 1e-3, TestConstants.MEN_FILE);
-//        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_anto.bin");
+//        MultiThreadAlterSkipGram word2vec = new MultiThreadAlterSkipGram(300, 5, false, 10, (float) 1e-3, TestConstants.MEN_FILE);
+        WordNetAdj wordNetAdj = new WordNetAdj("/home/nghia/Downloads/dict/data.adj");
+        AntonymWord2Vec word2vec = new AntonymWord2Vec(300, 5, false, 10, 5, wordNetAdj, (float) 1e-3, TestConstants.MEN_FILE);
+        ArrayList<String> forbiddenWords = IOUtils.readFile("/home/nghia/test.word.txt");
+        HashSet<String> forbiddenSet = new HashSet<String>(forbiddenWords);
+        word2vec.setForbiddenWords(forbiddenSet);
+        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_anto_train.bin");
         
-        String outputFile = TestConstants.VECTOR_FILE;
+//        String outputFile = TestConstants.VECTOR_FILE;
         String trainDirPath = TestConstants.TRAIN_DIR;
         String vocabFile = TestConstants.VOCABULARY_FILE;
         

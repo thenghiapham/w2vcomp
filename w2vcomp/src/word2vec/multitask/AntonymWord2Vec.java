@@ -1,6 +1,7 @@
-package word2vec;
+package word2vec.multitask;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -9,7 +10,7 @@ import word2vec.MultiThreadWord2Vec;
 import common.SimpleMatrixUtils;
 import common.wordnet.WordNetAdj;
 
-public class DifferenceWord2Vec extends MultiThreadWord2Vec{
+public class AntonymWord2Vec extends MultiThreadWord2Vec{
     public static final int DEFAULT_SYNONYM_SAMPLES = 5;
     public static final double DEFAULT_MARGIN = 0.2;
     public static final double DEFAULT_ANTONYM_IMPORTANCE = 3.0;
@@ -17,8 +18,9 @@ public class DifferenceWord2Vec extends MultiThreadWord2Vec{
     protected double margin = DEFAULT_MARGIN;
     
     protected WordNetAdj wordnetAdj;
+    protected HashSet<String> forbiddenWords;
     
-    public DifferenceWord2Vec(int projectionLayerSize, int windowSize,
+    public AntonymWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int synonymSamples, WordNetAdj wordNetAdj, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample);
@@ -26,7 +28,7 @@ public class DifferenceWord2Vec extends MultiThreadWord2Vec{
         this.synonymSamples = synonymSamples;
     }
     
-    public DifferenceWord2Vec(int projectionLayerSize, int windowSize,
+    public AntonymWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int synonymSamples, WordNetAdj wordNetAdj, double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample, menFile);
@@ -34,6 +36,9 @@ public class DifferenceWord2Vec extends MultiThreadWord2Vec{
         this.synonymSamples = synonymSamples;
     }
 
+    public void setForbiddenWords(HashSet<String> forbiddenWords) {
+        this.forbiddenWords = forbiddenWords;
+    }
     public void trainSentence(int[] sentence) {
         // train with the sentence
         double[] a1 = new double[projectionLayerSize];
@@ -167,8 +172,8 @@ public class DifferenceWord2Vec extends MultiThreadWord2Vec{
             SimpleMatrix a1error_temp = new SimpleMatrix(1, a1error.length);
             boolean isWNAdj = wordnetAdj.hasAdjSynset(percept);
             
-            if (isWNAdj) {
-                String[][] antoSynoSimNyms = wordnetAdj.getRandomSynoAntoSimNyms(percept);
+            if (isWNAdj && !forbiddenWords.contains(percept)) {
+                String[][] antoSynoSimNyms = wordnetAdj.getRandomSynoAntoSimNyms(percept, forbiddenWords);
                 if (antoSynoSimNyms[0].length == 0) {
                     continue;
                 }
