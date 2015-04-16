@@ -8,12 +8,13 @@ public class Synset {
 	String[] words;
 	String antonymSSId;
 	String[] simSSId;
+	String[] hypoSSId;
+	String[] hyperSSId;
 	
 	public Synset(String line) {
 		String[] elements = line.split(" ");
 		id = elements[0];
 		synsetType = elements[2];
-//		System.out.println(id);
 		readWords(elements);
 	}
 	
@@ -30,6 +31,8 @@ public class Synset {
 		int fieldNum = Integer.parseInt(elements[4 + size * 2],10);
 		
 		ArrayList<String> simList = new ArrayList<String>();
+		ArrayList<String> hypoList = new ArrayList<String>();
+		ArrayList<String> hyperList = new ArrayList<String>();
 		for (int i = 0; i < fieldNum; i++) {
 			String type = elements[4 + size * 2 + 1 + i * 4];
 			String id = elements[4 + size * 2 + 2 + i * 4];
@@ -39,9 +42,17 @@ public class Synset {
 					simList.add(id);
 			} else if (type.equals("!")) {
 				antonymSSId = id;
-			}
+			} else if (type.equals("@")) {
+			    hyperList.add(id);
+            } else if (type.equals("~")) {
+                hypoList.add(id);
+            }
 		}
 		simSSId = new String[simList.size()];
 		simSSId = simList.toArray(simSSId);
+		hyperSSId = new String[simList.size()];
+		hyperSSId = hyperList.toArray(hyperSSId);
+        hypoSSId = new String[simList.size()];
+        hypoSSId = hypoList.toArray(hypoSSId);
 	}
  }

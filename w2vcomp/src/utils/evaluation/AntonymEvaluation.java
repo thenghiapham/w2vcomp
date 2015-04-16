@@ -12,6 +12,8 @@ public class AntonymEvaluation {
     public static void evaluate(String spaceFile, String datasetFile) throws IOException{
         ArrayList<String> words = readWord(datasetFile);
         ArrayList<ArrayList<String[]>> info = readAntoSynoSimnyms(datasetFile);
+        System.out.println(info.size());
+        System.out.println(words.size());
         double difference = 0;
         int count = 0;
         SemanticSpace space = RawSemanticSpace.readSpace(spaceFile);
@@ -69,6 +71,7 @@ public class AntonymEvaluation {
             }
             line = reader.readLine();
         }
+        result.add(antoSynoSimnyms);
         reader.close();
         return result;
     }
@@ -93,5 +96,7 @@ public class AntonymEvaluation {
         String evalDataFile = args[0];
         String spaceFile = args[1];
         evaluate(spaceFile, evalDataFile);
+        evaluate(spaceFile.replaceAll(".bin","_anto.bin"), evalDataFile);
+        evaluate(spaceFile.replaceAll(".bin","_anto_train.bin"), evalDataFile);
     }
 }

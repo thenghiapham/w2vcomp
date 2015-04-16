@@ -301,7 +301,7 @@ public class WordNetAdj {
 	
 	public void printSplitInfo(String outFile, String wordFile) {
 	    ArrayList<String> allWords = new ArrayList<String>(word2SynsetIds.keySet());
-	    ArrayList<String> chosenWords = randomSublist(allWords, 200);
+	    ArrayList<String> chosenWords = randomSublist(allWords, 400);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
             for (String word: chosenWords) {

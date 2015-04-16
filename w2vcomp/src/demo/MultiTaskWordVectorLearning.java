@@ -1,10 +1,8 @@
 package demo;
 
-import io.sentence.BasicTreeInputStream;
 import io.sentence.PlainSentenceInputStream;
 import io.word.CombinedWordInputStream;
 import io.word.PushBackWordStream;
-import io.word.TreeWordInputStream;
 import io.word.WordInputStream;
 import io.sentence.SentenceInputStream;
 
@@ -20,6 +18,7 @@ import java.util.HashSet;
 
 import common.IOUtils;
 import common.wordnet.WordNetAdj;
+import common.wordnet.WordNetNoun;
 import vocab.Vocab;
 import word2vec.MultiThreadAlterSkipGram;
 import word2vec.MultiThreadSkipGram;
@@ -31,14 +30,24 @@ import demo.TestConstants;
 public class MultiTaskWordVectorLearning {
     public static void main(String[] args) throws IOException{
         
-//        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(300, 5, false, 10, (float) 1e-3, TestConstants.MEN_FILE);
-//        MultiThreadAlterSkipGram word2vec = new MultiThreadAlterSkipGram(300, 5, false, 10, (float) 1e-3, TestConstants.MEN_FILE);
-        WordNetAdj wordNetAdj = new WordNetAdj("/home/nghia/Downloads/dict/data.adj");
-        AntonymWord2Vec word2vec = new AntonymWord2Vec(300, 5, false, 10, 5, wordNetAdj, (float) 1e-3, TestConstants.MEN_FILE);
-        ArrayList<String> forbiddenWords = IOUtils.readFile("/home/nghia/test.word.txt");
-        HashSet<String> forbiddenSet = new HashSet<String>(forbiddenWords);
-        word2vec.setForbiddenWords(forbiddenSet);
-        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_anto_train.bin");
+        boolean softmax = false;
+        int negativeSamples = 10;
+        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(300, 5, softmax, negativeSamples, (float) 1e-3, TestConstants.MEN_FILE);
+//        MultiThreadAlterSkipGram word2vec = new MultiThreadAlterSkipGram(300, 5, softmax, negativeSamples, (float) 1e-3, TestConstants.MEN_FILE);
+////        WordNetAdj wordNetAdj = new WordNetAdj("/home/nghia/Downloads/dict/data.adj");
+////        AntonymWord2Vec word2vec = new AntonymWord2Vec(300, 5, softmax, negativeSamples, 5, wordNetAdj, (float) 1e-3, TestConstants.MEN_FILE);
+//        WordNetNoun wordNetNoun = new WordNetNoun("/home/nghia/Downloads/dict/data.noun");
+//        AntonymWord2Vec word2vec = new AntonymWord2Vec(300, 5, softmax, negativeSamples, 5,  (float) 1e-3, TestConstants.MEN_FILE);
+////        ArrayList<String> forbiddenWords = IOUtils.readFile("/home/nghia/test.word.txt");
+//        HashSet<String> forbiddenSet = new HashSet<String>();
+//        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_anto.bin");
+////        HashSet<String> forbiddenSet = new HashSet<String>(forbiddenWords);
+////        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_anto_train.bin");
+//        word2vec.setForbiddenWords(forbiddenSet);
+//        word2vec.setWordNetNoun(wordNetNoun);
+        
+        
+        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_old.bin");
         
 //        String outputFile = TestConstants.VECTOR_FILE;
         String trainDirPath = TestConstants.TRAIN_DIR;

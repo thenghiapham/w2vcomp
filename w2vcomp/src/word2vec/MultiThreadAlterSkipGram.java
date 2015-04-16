@@ -23,7 +23,7 @@ public class MultiThreadAlterSkipGram extends MultiThreadWord2Vec {
         int sentenceLength = sentence.length;
         int iWordIndex = 0;
         // TODO: set the thing here
-        double r = 3.0;
+        double r = 8.0;
         
         boolean updateAtTheEnd=false;
         
