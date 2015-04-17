@@ -10,10 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
-
-
-
 import java.util.HashSet;
 
 import common.IOUtils;
@@ -25,9 +21,6 @@ import word2vec.MultiThreadAlterSkipGram;
 import word2vec.MultiThreadSkipGram;
 import word2vec.MultiThreadWord2Vec;
 import word2vec.multitask.AntonymWord2Vec;
-//import word2vec.CBowWord2Vec;
-//import word2vec.SkipNGramWord2Vec;
-import demo.TestConstants;
 
 public class MultiTaskWordVectorLearning {
     public static void main(String[] args) throws IOException{

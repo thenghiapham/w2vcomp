@@ -16,7 +16,8 @@ import utils.ClusterHelper;
 public class LexicalEvaluation {
     public static int sizeSpace = 180000;
     public static String[][] getDatasetInfo() {
-        String d = "/home/thenghiapham/work/project/antonym/lexical/";
+//        String d = "/home/thenghiapham/work/project/antonym/lexical/";
+        String d = "/home/nghia/work/project/antonym/lexical/";
 //        String nDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         
         String[][] datasets = {
