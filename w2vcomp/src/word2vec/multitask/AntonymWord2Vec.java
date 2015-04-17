@@ -175,136 +175,139 @@ public class AntonymWord2Vec extends MultiThreadWord2Vec{
            
         
  /*************    FOR SECOND MODALITY   ****************/
-            
-            SimpleMatrix a1error_temp = new SimpleMatrix(1, a1error.length);
-            boolean isWNNoun = wordnetNoun.hasNounSynset(percept);
-            
-            if (isWNNoun && !forbiddenWords.contains(percept)) {
-                String[][] antoSynoSimNyms = wordnetNoun.getRandomSynoAntoSimNyms(percept, forbiddenWords);
-                if (antoSynoSimNyms[0].length == 0) {
-                    continue;
-                }
-                String antonym = antoSynoSimNyms[0][rand.nextInt(antoSynoSimNyms[0].length)];
-                int antonymIndex = vocab.getWordIndex(antonym);
-                if (antonymIndex == -1) continue;
-                SimpleMatrix antonymError = new SimpleMatrix(1, projectionLayerSize);
-                double gradient=0;
+            if (wordnetNoun != null) {
+                SimpleMatrix a1error_temp = new SimpleMatrix(1, a1error.length);
+                boolean isWNNoun = wordnetNoun.hasNounSynset(percept);
                 
-                // TODO: counting
-//                mmWordsPerRun++;
-                
-                //mapping word
-                SimpleMatrix wordVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[wordIndex]);
-                SimpleMatrix antonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[antonymIndex]);
-                SimpleMatrix err_cos_row = SimpleMatrixUtils.cosineDerivative(wordVector, antonymVector);
-                
-                double cos = SimpleMatrixUtils.cosine(wordVector, antonymVector);
-                ArrayList<String> synonyms = WordNetNoun.getShuffledSynonyms(antoSynoSimNyms[1], antoSynoSimNyms[2]);
-                int k=0;
-                int l = 0;
-                int index = 0;
-                while (l < synonymSamples && index < synonyms.size()) {
-                    int synonymIndex = -1;
-                    while (index < synonyms.size()){
-//                        System.out.println("here " + index);
-                        String synonym = synonyms.get(index);
-                        synonymIndex = vocab.getWordIndex(synonym);       //random sampling and then based on neighboorhood
-                        if (synonymIndex != -1)
-                            break;
+                if (isWNNoun && !forbiddenWords.contains(percept)) {
+                    String[][] antoSynoSimNyms = wordnetNoun.getRandomSynoAntoSimNyms(percept, forbiddenWords);
+                    if (antoSynoSimNyms[0].length == 0) {
+                        continue;
+                    }
+                    String antonym = antoSynoSimNyms[0][rand.nextInt(antoSynoSimNyms[0].length)];
+                    int antonymIndex = vocab.getWordIndex(antonym);
+                    if (antonymIndex == -1) continue;
+                    SimpleMatrix antonymError = new SimpleMatrix(1, projectionLayerSize);
+                    double gradient=0;
+                    
+                    // TODO: counting
+    //                mmWordsPerRun++;
+                    
+                    //mapping word
+                    SimpleMatrix wordVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[wordIndex]);
+                    SimpleMatrix antonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[antonymIndex]);
+                    SimpleMatrix err_cos_row = SimpleMatrixUtils.cosineDerivative(wordVector, antonymVector);
+                    
+                    double cos = SimpleMatrixUtils.cosine(wordVector, antonymVector);
+                    ArrayList<String> synonyms = WordNetNoun.getShuffledSynonyms(antoSynoSimNyms[1], antoSynoSimNyms[2]);
+                    int k=0;
+                    int l = 0;
+                    int index = 0;
+                    while (l < synonymSamples && index < synonyms.size()) {
+                        int synonymIndex = -1;
+                        while (index < synonyms.size()){
+    //                        System.out.println("here " + index);
+                            String synonym = synonyms.get(index);
+                            synonymIndex = vocab.getWordIndex(synonym);       //random sampling and then based on neighboorhood
+                            if (synonymIndex != -1)
+                                break;
+                            index++;
+                            
+                        }
+                        if (synonymIndex == -1) break;
+                        SimpleMatrix synonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[synonymIndex]);
+                        
+                        double cosSynonym = SimpleMatrixUtils.cosine(wordVector, synonymVector);
                         index++;
+                        l++;
+                        if (cosSynonym - cos>= margin) continue;
+                        k++;
+                        
+                        //calculate error with respect to the cosine
+                        antonymError = antonymError.plus(SimpleMatrixUtils.cosineDerivative(wordVector, synonymVector));
                         
                     }
-                    if (synonymIndex == -1) break;
-                    SimpleMatrix synonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[synonymIndex]);
+                    gradient = (double) (alpha* r);
+                    antonymError = antonymError.minus(err_cos_row.scale(k));
+                    a1error_temp  = a1error_temp.plus(antonymError.scale(gradient));
                     
-                    double cosSynonym = SimpleMatrixUtils.cosine(wordVector, synonymVector);
-                    index++;
-                    l++;
-                    if (cosSynonym - cos>= margin) continue;
-                    k++;
+                    double[] errorArray = a1error_temp.getMatrix().data;
                     
-                    //calculate error with respect to the cosine
-                    antonymError = antonymError.plus(SimpleMatrixUtils.cosineDerivative(wordVector, synonymVector));
+                    // Learn weights input -> hidden
                     
-                }
-                gradient = (double) (alpha* r);
-                antonymError = antonymError.minus(err_cos_row.scale(k));
-                a1error_temp  = a1error_temp.plus(antonymError.scale(gradient));
-                
-                double[] errorArray = a1error_temp.getMatrix().data;
-                
-                // Learn weights input -> hidden
-                
-                for (int j = 0; j < projectionLayerSize; j++) {
-                    weights0[wordIndex][j] += errorArray[j];
-                    a1error[j] = 0;
+                    for (int j = 0; j < projectionLayerSize; j++) {
+                        weights0[wordIndex][j] += errorArray[j];
+                        a1error[j] = 0;
+                    }
                 }
             }
             
-//            SimpleMatrix a1error_temp = new SimpleMatrix(1, a1error.length);
-//            boolean isWNAdj = wordnetAdj.hasAdjSynset(percept);
-//            
-//            if (isWNAdj && !forbiddenWords.contains(percept)) {
-//                String[][] antoSynoSimNyms = wordnetAdj.getRandomSynoAntoSimNyms(percept, forbiddenWords);
-//                if (antoSynoSimNyms[0].length == 0) {
-//                    continue;
-//                }
-//                String antonym = antoSynoSimNyms[0][rand.nextInt(antoSynoSimNyms[0].length)];
-//                int antonymIndex = vocab.getWordIndex(antonym);
-//                if (antonymIndex == -1) continue;
-//                SimpleMatrix antonymError = new SimpleMatrix(1, projectionLayerSize);
-//                double gradient=0;
-//                
-//                // TODO: counting
-////                mmWordsPerRun++;
-//                
-//                //mapping word
-//                SimpleMatrix wordVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[wordIndex]);
-//                SimpleMatrix antonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[antonymIndex]);
-//                SimpleMatrix err_cos_row = SimpleMatrixUtils.cosineDerivative(wordVector, antonymVector);
-//                
-//                double cos = SimpleMatrixUtils.cosine(wordVector, antonymVector);
-//                ArrayList<String> synonyms = WordNetAdj.getShuffledSynonyms(antoSynoSimNyms[1], antoSynoSimNyms[2]);
-//                int k=0;
-//                int l = 0;
-//                int index = 0;
-//                while (l < synonymSamples && index < synonyms.size()) {
-//                    int synonymIndex = -1;
-//                    while (index < synonyms.size()){
-////                        System.out.println("here " + index);
-//                        String synonym = synonyms.get(index);
-//                        synonymIndex = vocab.getWordIndex(synonym);       //random sampling and then based on neighboorhood
-//                        if (synonymIndex != -1)
-//                            break;
-//                        index++;
-//                        
-//                    }
-//                    if (synonymIndex == -1) break;
-//                    SimpleMatrix synonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[synonymIndex]);
-//                    
-//                    double cosSynonym = SimpleMatrixUtils.cosine(wordVector, synonymVector);
-//                    index++;
-//                    l++;
-//                    if (cosSynonym - cos>= margin) continue;
-//                    k++;
-//                    
-//                    //calculate error with respect to the cosine
-//                    antonymError = antonymError.plus(SimpleMatrixUtils.cosineDerivative(wordVector, synonymVector));
-//                    
-//                }
-//                gradient = (double) (alpha* r);
-//                antonymError = antonymError.minus(err_cos_row.scale(k));
-//                a1error_temp  = a1error_temp.plus(antonymError.scale(gradient));
-//                
-//                double[] errorArray = a1error_temp.getMatrix().data;
-//                
-//                // Learn weights input -> hidden
-//                
-//                for (int j = 0; j < projectionLayerSize; j++) {
-//                    weights0[wordIndex][j] += errorArray[j];
-//                    a1error[j] = 0;
-//                }
-//            }
+            if (wordnetAdj != null) {
+                SimpleMatrix a1error_temp = new SimpleMatrix(1, a1error.length);
+                boolean isWNAdj = wordnetAdj.hasAdjSynset(percept);
+                
+                if (isWNAdj && !forbiddenWords.contains(percept)) {
+                    String[][] antoSynoSimNyms = wordnetAdj.getRandomSynoAntoSimNyms(percept, forbiddenWords);
+                    if (antoSynoSimNyms[0].length == 0) {
+                        continue;
+                    }
+                    String antonym = antoSynoSimNyms[0][rand.nextInt(antoSynoSimNyms[0].length)];
+                    int antonymIndex = vocab.getWordIndex(antonym);
+                    if (antonymIndex == -1) continue;
+                    SimpleMatrix antonymError = new SimpleMatrix(1, projectionLayerSize);
+                    double gradient=0;
+                    
+                    // TODO: counting
+    //                mmWordsPerRun++;
+                    
+                    //mapping word
+                    SimpleMatrix wordVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[wordIndex]);
+                    SimpleMatrix antonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[antonymIndex]);
+                    SimpleMatrix err_cos_row = SimpleMatrixUtils.cosineDerivative(wordVector, antonymVector);
+                    
+                    double cos = SimpleMatrixUtils.cosine(wordVector, antonymVector);
+                    ArrayList<String> synonyms = WordNetAdj.getShuffledSynonyms(antoSynoSimNyms[1], antoSynoSimNyms[2]);
+                    int k=0;
+                    int l = 0;
+                    int index = 0;
+                    while (l < synonymSamples && index < synonyms.size()) {
+                        int synonymIndex = -1;
+                        while (index < synonyms.size()){
+    //                        System.out.println("here " + index);
+                            String synonym = synonyms.get(index);
+                            synonymIndex = vocab.getWordIndex(synonym);       //random sampling and then based on neighboorhood
+                            if (synonymIndex != -1)
+                                break;
+                            index++;
+                            
+                        }
+                        if (synonymIndex == -1) break;
+                        SimpleMatrix synonymVector = new SimpleMatrix(1, projectionLayerSize, true, weights0[synonymIndex]);
+                        
+                        double cosSynonym = SimpleMatrixUtils.cosine(wordVector, synonymVector);
+                        index++;
+                        l++;
+                        if (cosSynonym - cos>= margin) continue;
+                        k++;
+                        
+                        //calculate error with respect to the cosine
+                        antonymError = antonymError.plus(SimpleMatrixUtils.cosineDerivative(wordVector, synonymVector));
+                        
+                    }
+                    gradient = (double) (alpha* r);
+                    antonymError = antonymError.minus(err_cos_row.scale(k));
+                    a1error_temp  = a1error_temp.plus(antonymError.scale(gradient));
+                    
+                    double[] errorArray = a1error_temp.getMatrix().data;
+                    
+                    // Learn weights input -> hidden
+                    
+                    for (int j = 0; j < projectionLayerSize; j++) {
+                        weights0[wordIndex][j] += errorArray[j];
+                        a1error[j] = 0;
+                    }
+                }
+            }
         }
         
     }

@@ -1,6 +1,7 @@
 package utils.evaluation;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class AntonymEvaluation {
             for (String[] senseInfo: antoSynoSimnyms) {
                 String[] antonyms = senseInfo[0].split(",");
                 String[] synonyms = senseInfo[1].split(",");
-                String[] simnyms = senseInfo[2].split(",");
+//                String[] simnyms = senseInfo[2].split(",");
                 for (String antonym: antonyms) {
                     double antonymSim = space.getSim(word, antonym);
                     if (antonymSim == 0) continue;
@@ -34,12 +35,12 @@ public class AntonymEvaluation {
                         count++;
                         difference += (synonymSim - antonymSim);
                     }
-                    for (String simnym: simnyms) {
-                        double simnymSim = space.getSim(word, simnym);
-                        if (simnymSim == 0) continue;
-                        count++;
-                        difference += (simnymSim - antonymSim);
-                    }
+//                    for (String simnym: simnyms) {
+//                        double simnymSim = space.getSim(word, simnym);
+//                        if (simnymSim == 0) continue;
+//                        count++;
+//                        difference += (simnymSim - antonymSim);
+//                    }
                 }
             }
         }
@@ -93,10 +94,16 @@ public class AntonymEvaluation {
     }
     
     public static void main(String[] args) throws IOException {
-        String evalDataFile = args[0];
-        String spaceFile = args[1];
-        evaluate(spaceFile, evalDataFile);
-        evaluate(spaceFile.replaceAll(".bin","_anto.bin"), evalDataFile);
-        evaluate(spaceFile.replaceAll(".bin","_anto_train.bin"), evalDataFile);
+        
+        String evalDataFile = args[1];
+        String spaceDir = args[0];
+        File[] files = (new File(spaceDir)).listFiles();
+        for (File file: files) {
+            
+            if (!file.getName().endsWith("bin")) continue;
+            System.out.println(file.getName());
+            String spaceFile = file.getAbsolutePath();
+            evaluate(spaceFile, evalDataFile);
+        }
     }
 }
