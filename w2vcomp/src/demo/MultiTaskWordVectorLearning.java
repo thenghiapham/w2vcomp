@@ -82,7 +82,7 @@ public class MultiTaskWordVectorLearning {
                     outputFile = outputFile.replaceAll(".bin", "_adj.bin");
                 }
                 if (verb) {
-                    WordNetVerb wordNetVerb = new WordNetVerb(properties.getProperty("wordNetVerb"));
+                    WordNetVerb wordNetVerb = new WordNetVerb(properties.getProperty("WordNetVerb"));
                     antoWord2Vec.setWordNetVerb(wordNetVerb);
                     outputFile = outputFile.replaceAll(".bin", "_verb.bin");  
                 }
