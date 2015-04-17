@@ -654,7 +654,7 @@ public class ThreadedWord2Vec {
         // (double) 0, 50);
         ThreadedWord2Vec word2vec = new ThreadedWord2Vec(200, 5, false, 10,
                 (double) 0, 50);
-        String trainFile = TestConstants.TRAIN_FILE;
+        String trainFile = TestConstants.SOURCE_FILE;
         String outputFile = TestConstants.VECTOR_FILE;
         String vocabFile = TestConstants.VOCABULARY_FILE;
         String initFile = TestConstants.INITIALIZATION_FILE;

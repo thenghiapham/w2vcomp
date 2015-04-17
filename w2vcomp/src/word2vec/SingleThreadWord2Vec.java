@@ -48,7 +48,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     
 
     @Override
-    public void trainModel(ArrayList<SentenceInputStream> inputStreams) {
+    public void trainModel(ArrayList<SentenceInputStream> inputStreamsSource, ArrayList<SentenceInputStream> inputStreamsTarget) {
         // single-threaded instead of multi-threaded
         oldWordCount = 0;
         wordCount = 0;
@@ -69,19 +69,24 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
             }
         }
         
-        for (SentenceInputStream inputStream : inputStreams) {
+        int i = 0;
+        for (SentenceInputStream inputStreamSource : inputStreamsSource) {
+            //subsample only source side
             if (subSample > 0) {
-                inputStream = new SubSamplingSentenceInputStream(inputStream, subSample);
+                inputStreamSource = new SubSamplingSentenceInputStream(inputStreamSource, subSample);
             }
-            trainModelThread(inputStream);
+            
+            SentenceInputStream inputStreamTarget = inputStreamsTarget.get(i);
+            System.out.println(inputStreamTarget.getWordCount()+" "+inputStreamSource.getWordCount());
+            i++;
+            trainModelThread(inputStreamSource, inputStreamTarget);
         }
         System.out.println("total word count: " + wordCount);
     }
 
-    void trainModelThread(SentenceInputStream inputStream) {
+    void trainModelThread(SentenceInputStream inputStreamSource, SentenceInputStream inputStreamTarget) {
         oldWordCount = wordCount;
         long lastWordCount = wordCount;
-        long lastWordCount2 = wordCount;
         try {
             int iteration = 0;
             while (true) {
@@ -89,44 +94,39 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 // read the whole sentence sentence,
                 // the output would be the list of the word's indices in the
                 // dictionary
-                boolean hasNextSentence = inputStream.readNextSentence(vocab);
-                if (!hasNextSentence) break;
-                int[] sentence = inputStream.getCurrentSentence();
-                Phrase[] phrases = inputStream.getCurrentPhrases();
+                boolean hasNextSentenceSource = inputStreamSource.readNextSentence(vocab);
+                boolean hasNextSentenceTarget = inputStreamTarget.readNextSentence(vocab);
+                
+                if (!hasNextSentenceSource) break;
+
+                int[] sentenceSource = inputStreamSource.getCurrentSentence();
+                int[] sentenceTarget = inputStreamTarget.getCurrentSentence();
+                
                 // if end of file, finish
-                if (sentence.length == 0) {
+                if (sentenceSource.length == 0) {
                     continue;
-//                    if (!hasNextSentence)
-//                        break;
                 }
 
                 // check word count
                 // update alpha
-                wordCount = oldWordCount + inputStream.getWordCount();
-//                System.out.println(wordCount);
-//                System.out.println(inputStream.getWordCount());
+                wordCount = oldWordCount + inputStreamSource.getWordCount();
+              
                 
-                if (wordCount - lastWordCount2 > 3080000){
-                    if (men != null && outputSpace != null/* && iteration %2 == 0*/) {
-                        //System.out.println("Correlation "+(images.pairwise_cor(new SemanticSpace(vocab, weights0, false)))[1]);
-                     }
-                    lastWordCount2 = wordCount;
-                }
+                
                 
                 if (wordCount - lastWordCount > 10000) {
                     iteration++;
-                    // if (wordCount - lastWordCount > 50) {
+                    
                     
                     // update alpha
-                    // what about thread safe???
                     alpha = starting_alpha
                             * (1 - (double) wordCount / (trainWords + 1));
                     if (alpha < starting_alpha * 0.0001) {
                         alpha = starting_alpha * 0.0001;
                     }
-                    if (men != null && outputSpace != null/* && iteration %2 == 0*/) {
+                    if (men != null && outputSpace != null &&  iteration %10 == 0) {
                         //System.out.println("correlation: " + men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),1)+" "+men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),2));
-                        System.out.println("correlation: " + men.evaluateSpaceSpearman(outputSpace)+" and "+((double) mmWordsPerRun)/((double) wordCount - lastWordCount)+"% mm words");
+                        System.out.println("correlation: " + men.evaluateSpaceSpearman(outputSpace));
                         mmWordsPerRun = 0;
                         printStatistics();
                     }
@@ -141,9 +141,8 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 
                         
                 
-                        
-                trainSentence(sentence);
-                trainPhrases(phrases, sentence);
+                trainSentence(sentenceSource, sentenceTarget);
+                
             }
         } catch (IOException | ValueException  e) {
             e.printStackTrace();
@@ -168,6 +167,6 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     public abstract void trainSinglePhrase(Phrase phrase,
             int[] sentence);
 
-    public abstract void trainSentence(int[] sentence);
-
+    public abstract void trainSentence(int[] sentenceSource, int[] sentenceTarget);
+    
 }

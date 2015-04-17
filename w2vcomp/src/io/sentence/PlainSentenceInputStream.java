@@ -23,6 +23,7 @@ public class PlainSentenceInputStream implements SentenceInputStream {
 
     @Override
     public boolean readNextSentence(Vocab vocab) throws IOException {
+        
         ArrayList<Integer> currentSentence = new ArrayList<Integer>();
         while (true) {
             // read the next word & the word index

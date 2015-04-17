@@ -1,4 +1,4 @@
-package naacl2015Evals;
+package evaluation;
 
 import java.awt.Color;
 import java.io.BufferedInputStream;

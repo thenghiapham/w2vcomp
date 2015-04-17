@@ -65,9 +65,10 @@ public class Images {
             
         }
         
+        System.out.println("Size of space "+this.space.getVectorSize()+" "+this.space.getWord2Index().size());
         
         //how to reduce the dimensions
-        double [][] newvecs = chop_linear();
+        double [][] newvecs = chop_summing();
         
         this.space = new SemanticSpace(this.space.getWords(), newvecs);
         System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training with "+this.space.getVectorSize() );
@@ -75,7 +76,8 @@ public class Images {
         
         this.word2Index = space.getWord2Index();
         //random_vecs();
-        //shuffling_vecs();
+        /*System.out.println("Shuffling vecs");
+        shuffling_vecs();*/
         System.out.println(this.space.getVectorSize());
 
         this.randomTablesize = this.word2Index.size();
@@ -114,7 +116,7 @@ public class Images {
         }
         //for mapping debugging
         
-        double [][] newvecs = chop_randomly(dimensions);
+        double [][] newvecs = chop_summing();
         
         this.space = new SemanticSpace(this.space.getWords(), newvecs);
         System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training with "+this.space.getVectorSize() );
@@ -122,8 +124,9 @@ public class Images {
         this.word2Index = space.getWord2Index();
         
         //For test only. Either randomly shuffle the words with the images or assign random vectors to words
-        //shuffling_vecs();
         //random_vecs();
+        /*System.out.println("Shuffling vecs");
+        shuffling_vecs();*/
        
            
         System.out.println("Images vectors with size:"+this.space.getVectorSize());
@@ -178,8 +181,7 @@ public class Images {
    
    protected double[][] chop_summing(){
        System.out.println("Summed Chopping");
-       ArrayList<Integer> indices= new ArrayList<Integer>();
-       Collections.shuffle(indices);
+      
        
        double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
        for (int i=0; i<newvecs.length; i++){
@@ -205,7 +207,7 @@ public class Images {
               cur += 1;
               newvecs[i][k]+= vec[j];
           }
-          newvecs[i][k-1]/= (double) cur;
+          newvecs[i][k]/= (double) cur;
           i++;
           
        }
@@ -222,6 +224,7 @@ public class Images {
        for (double [] vec: this.space.getVectors()){
           for (int j=0; j<TestConstants.imageDimensions; j++){
               newvecs[i][j]= vec[j];
+              
           }
           i++;
        }
@@ -257,7 +260,8 @@ public class Images {
        for (int i=0; i<word2Index.size(); i++) {
            pos[i] = i;
        }
-       Collections.shuffle(Arrays.asList(pos));
+       Collections.shuffle(Arrays.asList(pos), new Random(TestConstants.SEED));
+       System.out.println("0 is "+pos[1]);
        int i=0;
        for (String key : word2Index.keySet()) {
            word2Index.put(key,pos[i]);
@@ -289,18 +293,17 @@ public class Images {
    }
    
    public double[] pairwise_cor(SemanticSpace space2){
-    Set<String> common_elements = new HashSet<String>(word2Index.keySet());
-    System.out.println(common_elements.size());
+    Set<String> common_elements = new HashSet<String>(space2.getWord2Index().keySet());
     common_elements.retainAll(word2Index.keySet());
-    System.out.println(common_elements.size());
     ArrayList<String> list_of_els = new ArrayList<String>(common_elements);
+    
     
     double[] cors = new double[2];
     PearsonsCorrelation pearson = new PearsonsCorrelation();
     SpearmansCorrelation spearman = new SpearmansCorrelation();
     
     int len = common_elements.size();
-    //System.out.println(len);
+    System.out.println("Correlating "+len+" elements");
     double[] sims_1 = new double[len*(len-1)/2];
     double[] sims_2 = new double[len*(len-1)/2];
     int k=0;
@@ -311,10 +314,16 @@ public class Images {
             
             sims_1[k]  = space.getSim(word1, word2);
             sims_2[k]  = space2.getSim(word1, word2);
+            if (Double.isNaN(sims_1[k]) || Double.isNaN(sims_2[k]) || sims_1[k]==0 || sims_2[k]==0){
+                //System.out.println(word1+" "+word2+" "+sims_1[k]+" "+sims_2[k]);
+            }
+            
+            
             k+=1;
             
         }
     }
+   
     cors[0] = spearman.correlation(sims_1, sims_2);   
     cors[1] = pearson.correlation(sims_1, sims_2); 
     

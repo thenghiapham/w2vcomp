@@ -22,6 +22,7 @@ import vocab.Vocab;
 import vocab.VocabEntry;
 import common.IOUtils;
 import common.SigmoidTable;
+import common.exception.ValueException;
 import demo.TestConstants;
 
 /**
@@ -328,7 +329,7 @@ public abstract class AbstractWord2Vec {
         // Save the word vectors
         // save number of words, length of each vector
         int vocabSize = vocab.getVocabSize();
-
+        
         try {
             BufferedOutputStream os = new BufferedOutputStream(
                     new FileOutputStream(outputFile));
@@ -368,7 +369,9 @@ public abstract class AbstractWord2Vec {
         this.vocab = vocab;
     }
 
-    public abstract void trainModel(ArrayList<SentenceInputStream> inputStreams);
+    
+    public abstract void trainModel(ArrayList<SentenceInputStream> inputStreamsSource, ArrayList<SentenceInputStream> inputStreamsTarget);
+    
 
     public void setImageWeights(){
         this.negativeWeights1Images = images.getVectors();

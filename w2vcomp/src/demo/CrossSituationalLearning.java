@@ -12,13 +12,10 @@ import java.util.ArrayList;
 import common.LogUtils;
 import common.exception.ValueException;
 
+import space.SemanticSpace;
 import vocab.Vocab;
-import word2vec.MMSkipNgramWord2Vec;
 import word2vec.MMSkipgramMaxMargin;
-import word2vec.MmSkipNGramWithMappingMaxMargin;
 //import word2vec.CBowWord2Vec;
-import word2vec.SkipNGramWord2Vec;
-import word2vec.extra.MmSkipNGramWithMappingCosine;
 
 import demo.TestConstants;
 
@@ -27,31 +24,34 @@ public class CrossSituationalLearning {
         
         //MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
         
-        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
+        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         
         
-        //TODO: Assume that we extend vocabulary with new items
-        //TODO: Assume that for every word we have its extended context
-        String trainFile = TestConstants.TRAIN_FILE;
+        //TODO: Fix that you have two different vobacularies
+        String sourceFile = TestConstants.SOURCE_FILE;
+        String targetFile = TestConstants.TARGET_FILE;
+        
         String outputFile = TestConstants.VECTOR_FILE;
         String vocabFile = TestConstants.VOCABULARY_FILE;
+        
         String initFile = TestConstants.INITIALIZATION_FILE;
         String projInitFile = TestConstants.IMAGE_INITIALIZATION_FILE;
         String logGile = TestConstants.LOG_FILE;
         LogUtils.setup(logGile);
         
-        System.out.println("Starting training using file " + trainFile);
+        
+        System.out.println("Starting training using file " + sourceFile);
         
         System.out.println("Welcome!---->"+TestConstants.VECTOR_FILE);
 
 
         boolean learnVocab = !(new File(vocabFile)).exists();
         
-        Vocab vocab = new Vocab(5); 
+        Vocab vocab = new Vocab(1); 
         if (!learnVocab)
             vocab.loadVocab(vocabFile);
         else {
-            vocab.learnVocabFromTrainFile(trainFile);
+            vocab.learnVocabFromTrainFile(sourceFile);
             // save vocabulary
             vocab.saveVocab(vocabFile);
         }
@@ -60,7 +60,7 @@ public class CrossSituationalLearning {
         
         word2vec.initNetwork(initFile,projInitFile);
         
-        word2vec.initImages(TestConstants.VISION_FILE,false);
+        word2vec.initImages(TestConstants.VISION_FILE,true);
         
        
       
@@ -68,19 +68,29 @@ public class CrossSituationalLearning {
         // single threaded instead of multithreading
         System.out.println("Start training");
         try {
-            SentenceInputStream sentenceInputStream = new PlainSentenceInputStream(
-                    new PushBackWordStream(trainFile, 100));
-            ArrayList<SentenceInputStream> inputStreams = new ArrayList<SentenceInputStream>();
-            inputStreams.add(sentenceInputStream);
-            word2vec.trainModel(inputStreams);
+            //Source Language
+            SentenceInputStream sentenceInputStreamSource = new PlainSentenceInputStream(
+                    new PushBackWordStream(sourceFile, 100));
+            ArrayList<SentenceInputStream> inputStreamsSource = new ArrayList<SentenceInputStream>();
+            inputStreamsSource.add(sentenceInputStreamSource);
+            
+            //Target  Language
+            SentenceInputStream sentenceInputStreamTarget = new PlainSentenceInputStream(
+                    new PushBackWordStream(targetFile, 100));
+            ArrayList<SentenceInputStream> inputStreamsTarget = new ArrayList<SentenceInputStream>();
+            inputStreamsTarget.add(sentenceInputStreamTarget);
+            
+            word2vec.trainModel(inputStreamsSource,inputStreamsTarget);
             word2vec.saveVector(outputFile, true);
            } catch (IOException e) {
             System.exit(1);
         }
         
+       
+        
         double [] cors = word2vec.getCors();
-        System.out.println("Printing pearson "+cors[0]);
-        System.out.println("Printing spearman "+cors[1]);
+        System.out.println("Printing spearman "+cors[0]);
+        System.out.println("Printing pearson "+cors[1]);
      
         
        

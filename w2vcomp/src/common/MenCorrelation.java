@@ -216,8 +216,7 @@ public class MenCorrelation {
 	    double[] predicts = new double[golds.length];
         for (int i = 0; i < golds.length; i++) {
             if (space.getSim(wordPairs[i][0], wordPairs[i][1])==0){
-                //System.out.println(0);
-                continue;
+               continue;
             }
            
             exists++;
@@ -328,7 +327,6 @@ public class MenCorrelation {
         ArrayList<Double> g  = new ArrayList<Double>();
         
         Set<String> tsConcepts = new HashSet<String>(words);
-        tsConcepts.removeAll(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
         
        int exists = 0;
 

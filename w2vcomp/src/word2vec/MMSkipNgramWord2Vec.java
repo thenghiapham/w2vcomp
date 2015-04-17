@@ -185,6 +185,12 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
     public void saveMappingFunction(String outFile, boolean tobinary){
         IOUtils.saveMatrix(outFile, SimpleMatrixUtils.to2DArray(imageProjectionLayer), tobinary);
     }
+
+    @Override
+    public void trainSentence(int[] sentenceSource, int[] sentenceTarget) {
+        // TODO Auto-generated method stub
+        
+    }
     
     
 }

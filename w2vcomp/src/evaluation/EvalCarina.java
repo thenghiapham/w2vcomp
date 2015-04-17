@@ -1,4 +1,4 @@
-package naacl2015Evals;
+package evaluation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
