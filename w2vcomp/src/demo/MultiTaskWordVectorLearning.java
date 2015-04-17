@@ -17,11 +17,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import common.IOUtils;
+import common.exception.ValueException;
 import common.wordnet.WordNetAdj;
 import common.wordnet.WordNetNoun;
 import vocab.Vocab;
 import word2vec.MultiThreadAlterSkipGram;
 import word2vec.MultiThreadSkipGram;
+import word2vec.MultiThreadWord2Vec;
 import word2vec.multitask.AntonymWord2Vec;
 //import word2vec.CBowWord2Vec;
 //import word2vec.SkipNGramWord2Vec;
@@ -32,33 +34,71 @@ public class MultiTaskWordVectorLearning {
         
         boolean softmax = false;
         int negativeSamples = 10;
-        MultiThreadSkipGram word2vec = new MultiThreadSkipGram(300, 5, softmax, negativeSamples, (float) 1e-3, TestConstants.MEN_FILE);
-//        MultiThreadAlterSkipGram word2vec = new MultiThreadAlterSkipGram(300, 5, softmax, negativeSamples, (float) 1e-3, TestConstants.MEN_FILE);
-////        WordNetAdj wordNetAdj = new WordNetAdj("/home/nghia/Downloads/dict/data.adj");
-////        AntonymWord2Vec word2vec = new AntonymWord2Vec(300, 5, softmax, negativeSamples, 5, wordNetAdj, (float) 1e-3, TestConstants.MEN_FILE);
-//        WordNetNoun wordNetNoun = new WordNetNoun("/home/nghia/Downloads/dict/data.noun");
-//        AntonymWord2Vec word2vec = new AntonymWord2Vec(300, 5, softmax, negativeSamples, 5,  (float) 1e-3, TestConstants.MEN_FILE);
-////        ArrayList<String> forbiddenWords = IOUtils.readFile("/home/nghia/test.word.txt");
-//        HashSet<String> forbiddenSet = new HashSet<String>();
-//        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_anto.bin");
-////        HashSet<String> forbiddenSet = new HashSet<String>(forbiddenWords);
-////        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_anto_train.bin");
-//        word2vec.setForbiddenWords(forbiddenSet);
-//        word2vec.setWordNetNoun(wordNetNoun);
-        
-        
-        String outputFile = TestConstants.VECTOR_FILE.replaceAll(".bin", "_old.bin");
-        
-//        String outputFile = TestConstants.VECTOR_FILE;
-        String trainDirPath = TestConstants.TRAIN_DIR;
-        String vocabFile = TestConstants.VOCABULARY_FILE;
+        double subSampling = 1e-3;
+        MultiThreadWord2Vec word2vec = null;
+        String configFile = args[0];
+        int type = Integer.parseInt(args[1]);
+        boolean adj = Boolean.parseBoolean(args[2]);
+        boolean noun = Boolean.parseBoolean(args[3]);
+        boolean verb = Boolean.parseBoolean(args[4]);
+        String forbiddenWordFile = null;
+        if (args.length == 6) {
+            forbiddenWordFile = args[5];
+        }
+        W2vProperties properties = new W2vProperties(configFile);
+        String trainDirPath = properties.getProperty("TrainDir");
+        String outputFile = properties.getProperty("WordVectorFile");
+        String vocabFile = properties.getProperty("VocabFile");
+        String menFile = properties.getProperty("MenFile");
+        switch (type) {
+        case 0:
+            word2vec = new MultiThreadSkipGram(300, 5, softmax, negativeSamples, subSampling, menFile);
+            break;
+        case 1:
+            word2vec = new MultiThreadAlterSkipGram(300, 5, softmax, negativeSamples, subSampling, menFile);
+            outputFile = outputFile.replaceAll(".bin", "_old.bin");
+            break;
+        case 2: 
+            word2vec = new AntonymWord2Vec(300, 5, softmax, negativeSamples, 5, subSampling, menFile);
+            if (!(noun || adj || verb)) {
+                throw new ValueException("should train with at least one wordnet");
+            } else {
+                
+                AntonymWord2Vec antoWord2Vec = (AntonymWord2Vec) word2vec;
+                outputFile = outputFile.replaceAll(".bin", "_anto.bin");
+                HashSet<String> forbiddenSet = new HashSet<String>();
+                if (forbiddenWordFile != null) {
+                    ArrayList<String> forbiddenWords = IOUtils.readFile(forbiddenWordFile);
+                    forbiddenSet = new HashSet<String>(forbiddenWords);
+                    outputFile = outputFile.replaceAll(".bin", "_train.bin");
+                }
+                antoWord2Vec.setForbiddenWords(forbiddenSet);
+                
+                if (noun) {
+                    WordNetNoun wordNetNoun = new WordNetNoun("/home/nghia/Downloads/dict/data.noun");
+                    antoWord2Vec.setWordNetNoun(wordNetNoun);
+                    outputFile.replaceAll(".bin", "_noun.bin");
+                }
+                if (adj) {
+                    WordNetAdj wordNetAdj = new WordNetAdj("/home/nghia/Downloads/dict/data.adj");
+                    antoWord2Vec.setWordNetAdj(wordNetAdj);
+                    outputFile.replaceAll(".bin", "adj.bin");
+                }
+                if (verb) {
+                    
+                }
+                
+            }
+            
+            break;
+        }
         
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
         System.out.println("Starting training using dir " + trainDirPath);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
-        Vocab vocab = new Vocab(50);
+        Vocab vocab = new Vocab(Integer.parseInt(properties.getProperty("MinFrequency")));
         if (!learnVocab)
             vocab.loadVocab(vocabFile);// ,minFrequency);
         else {
@@ -75,11 +115,8 @@ public class MultiTaskWordVectorLearning {
         }
 
         word2vec.setVocab(vocab);
-
-//        word2vec.initNetwork(initFile);
         word2vec.initNetwork();
 
-        // single threaded instead of multithreading
         System.out.println("Start training");
         try {
             ArrayList<SentenceInputStream> inputStreams = new ArrayList<SentenceInputStream>();
