@@ -20,6 +20,7 @@ import common.IOUtils;
 import common.exception.ValueException;
 import common.wordnet.WordNetAdj;
 import common.wordnet.WordNetNoun;
+import common.wordnet.WordNetVerb;
 import vocab.Vocab;
 import word2vec.MultiThreadAlterSkipGram;
 import word2vec.MultiThreadSkipGram;
@@ -88,7 +89,9 @@ public class MultiTaskWordVectorLearning {
                     outputFile = outputFile.replaceAll(".bin", "_adj.bin");
                 }
                 if (verb) {
-                    
+                    WordNetVerb wordNetVerb = new WordNetVerb(properties.getProperty("wordNetVerb"));
+                    antoWord2Vec.setWordNetVerb(wordNetVerb);
+                    outputFile = outputFile.replaceAll(".bin", "_verb.bin");  
                 }
                 
             }

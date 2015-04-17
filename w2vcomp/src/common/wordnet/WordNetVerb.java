@@ -14,12 +14,12 @@ import java.util.Random;
 
 import common.IOUtils;
 
-public class WordNetNoun {
+public class WordNetVerb {
     HashMap<String, Synset> id2Synset;
     HashMap<String, ArrayList<String>> word2SynsetIds;
     Random random;
-    public WordNetNoun(String nounFile) throws IOException {
-        id2Synset = WordNetReader.readSynsets(nounFile);
+    public WordNetVerb(String verbFile) throws IOException {
+        id2Synset = WordNetReader.readSynsets(verbFile);
         word2SynsetIds = WordNetReader.getWord2SynsetIds(id2Synset);
         random = new Random();
     }
@@ -43,7 +43,7 @@ public class WordNetNoun {
         System.out.println(sb.toString());
     }
     
-    public boolean hasNounSynset(String word) {
+    public boolean hasVerbSynset(String word) {
         return word2SynsetIds.containsKey(word);
     }
     
@@ -263,12 +263,12 @@ public class WordNetNoun {
     
     
     public static void main(String[] args) throws IOException{
-        String nounFile = args[0];
-        WordNetNoun wordnetNoun = new WordNetNoun(nounFile);
+        String verbFile = args[0];
+        WordNetVerb wordnetVerb = new WordNetVerb(verbFile);
         String word = "love";
         System.out.println("***   " + word + "   ***");
         
-        String[][] antoSynoSimNyms = wordnetNoun.getRandomSynoAntoSimNyms(word);
+        String[][] antoSynoSimNyms = wordnetVerb.getRandomSynoAntoSimNyms(word);
         System.out.print("antonyms:");
         printStrings(antoSynoSimNyms[0]);
         System.out.print("synonyms:");
