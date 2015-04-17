@@ -37,29 +37,32 @@ public class MultiTaskWordVectorLearning {
         double subSampling = 1e-3;
         MultiThreadWord2Vec word2vec = null;
         String configFile = args[0];
-        int type = Integer.parseInt(args[1]);
-        boolean adj = Boolean.parseBoolean(args[2]);
-        boolean noun = Boolean.parseBoolean(args[3]);
-        boolean verb = Boolean.parseBoolean(args[4]);
+        int size = Integer.parseInt(args[1]);
+        int type = Integer.parseInt(args[2]);
+        boolean adj = Boolean.parseBoolean(args[3]);
+        boolean noun = Boolean.parseBoolean(args[4]);
+        boolean verb = Boolean.parseBoolean(args[5]);
+        
         String forbiddenWordFile = null;
-        if (args.length == 6) {
-            forbiddenWordFile = args[5];
+        if (args.length == 7) {
+            forbiddenWordFile = args[6];
         }
         W2vProperties properties = new W2vProperties(configFile);
         String trainDirPath = properties.getProperty("TrainDir");
         String outputFile = properties.getProperty("WordVectorFile");
         String vocabFile = properties.getProperty("VocabFile");
         String menFile = properties.getProperty("MenFile");
+        outputFile = outputFile.replaceAll(".bin", "_" + size + ".bin");
         switch (type) {
         case 0:
-            word2vec = new MultiThreadSkipGram(300, 5, softmax, negativeSamples, subSampling, menFile);
+            word2vec = new MultiThreadSkipGram(size, 5, softmax, negativeSamples, subSampling, menFile);
             break;
         case 1:
-            word2vec = new MultiThreadAlterSkipGram(300, 5, softmax, negativeSamples, subSampling, menFile);
+            word2vec = new MultiThreadAlterSkipGram(size, 5, softmax, negativeSamples, subSampling, menFile);
             outputFile = outputFile.replaceAll(".bin", "_old.bin");
             break;
         case 2: 
-            word2vec = new AntonymWord2Vec(300, 5, softmax, negativeSamples, 5, subSampling, menFile);
+            word2vec = new AntonymWord2Vec(size, 5, softmax, negativeSamples, 5, subSampling, menFile);
             if (!(noun || adj || verb)) {
                 throw new ValueException("should train with at least one wordnet");
             } else {
@@ -75,14 +78,14 @@ public class MultiTaskWordVectorLearning {
                 antoWord2Vec.setForbiddenWords(forbiddenSet);
                 
                 if (noun) {
-                    WordNetNoun wordNetNoun = new WordNetNoun("/home/nghia/Downloads/dict/data.noun");
+                    WordNetNoun wordNetNoun = new WordNetNoun(properties.getProperty("WordNetNoun"));
                     antoWord2Vec.setWordNetNoun(wordNetNoun);
                     outputFile.replaceAll(".bin", "_noun.bin");
                 }
                 if (adj) {
-                    WordNetAdj wordNetAdj = new WordNetAdj("/home/nghia/Downloads/dict/data.adj");
+                    WordNetAdj wordNetAdj = new WordNetAdj(properties.getProperty("WordNetAdj"));
                     antoWord2Vec.setWordNetAdj(wordNetAdj);
-                    outputFile.replaceAll(".bin", "adj.bin");
+                    outputFile.replaceAll(".bin", "_adj.bin");
                 }
                 if (verb) {
                     
