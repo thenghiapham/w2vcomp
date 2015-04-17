@@ -80,12 +80,12 @@ public class MultiTaskWordVectorLearning {
                 if (noun) {
                     WordNetNoun wordNetNoun = new WordNetNoun(properties.getProperty("WordNetNoun"));
                     antoWord2Vec.setWordNetNoun(wordNetNoun);
-                    outputFile.replaceAll(".bin", "_noun.bin");
+                    outputFile = outputFile.replaceAll(".bin", "_noun.bin");
                 }
                 if (adj) {
                     WordNetAdj wordNetAdj = new WordNetAdj(properties.getProperty("WordNetAdj"));
                     antoWord2Vec.setWordNetAdj(wordNetAdj);
-                    outputFile.replaceAll(".bin", "_adj.bin");
+                    outputFile = outputFile.replaceAll(".bin", "_adj.bin");
                 }
                 if (verb) {
                     
