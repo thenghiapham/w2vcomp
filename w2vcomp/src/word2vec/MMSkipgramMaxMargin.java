@@ -33,7 +33,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
         double[] a1error = new double[projectionLayerSize];
         int sentenceLength = sentenceSource.length;
         int iWordIndex = 0;
-        double r = 1.0;
+        
 
         boolean updateAtTheEnd=false;
         
@@ -98,7 +98,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         }
                         // Learn weights hidden -> output
                         for (int j = 0; j < projectionLayerSize; j++) {
-                            weights1[iParentIndex][j] += gradient * r
+                            weights1[iParentIndex][j] += gradient * TestConstants.rate_multiplier_sft
                                     * weights0[wordIndex][j];
                         }
                     }
@@ -136,7 +136,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                                     * negativeWeights1[target][j];
                         }
                         for (int j = 0; j < projectionLayerSize; j++) {
-                            negativeWeights1[target][j] += gradient *r
+                            negativeWeights1[target][j] += gradient * TestConstants.rate_multiplier_sft
                                     * weights0[wordIndex][j];
                         }
                     }
@@ -157,10 +157,9 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
         
  /*************    FOR TARGET LANGUAGE   ****************/
             
-            SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
             
             if (negativeSamplesImages != -1) {
-                SimpleMatrix der = new SimpleMatrix(TestConstants.imageDimensions, 1);
+                SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
                 double gradient=0;
                 mmWordsPerRun++;
                 
@@ -169,6 +168,10 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 //try to come closer to all the words in the target language
                 for (int wordPositionTarget = 0; wordPositionTarget < sentenceTarget.length; wordPositionTarget++) {
                     
+                    //set to 0 for every positive example
+                    SimpleMatrix der = new SimpleMatrix(TestConstants.imageDimensions, 1);
+                    
+                    //specifics of current word
                     int wordIndexTarget = sentenceTarget[wordPositionTarget];
                     VocabEntry curWord = vocab.getEntry(wordIndexTarget);
                     int jPerceptIndex = images.getIndex(curWord.word);
@@ -184,6 +187,8 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 
                 
                     double cos = MathUtils.cosine(mapped_word_row, image);
+                    
+                    //NEGATIVE EXAMPLES
                     int k=0;
                     for (int l = 0; l < negativeSamplesImages ; l++) {
                         int neg_sample;
@@ -202,17 +207,20 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         der = der.minus(MathUtils.cosineDerivative(mapped_word_row, image_neg));
                     }
                 
-                    gradient = (double) (alpha* r);
+                    gradient = (double) (alpha*  TestConstants.rate_multiplier_grad);
+                    
                     der = der.plus(err_cos_row.scale(k));
                     a1error_temp  = a1error_temp.plus(der.scale(gradient));
+                
+                   
                 }
-                
-                
                 // Learn weights input -> hidden
                 for (int j = 0; j < projectionLayerSize; j++) {
                     weights0[wordIndex][j] += a1error_temp.get(j, 0);
                     a1error[j] = 0;
                 }
+                
+                
             }
         }
         

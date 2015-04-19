@@ -256,15 +256,15 @@ public class Images {
    }
    
    public void shuffling_vecs(){
-       int[] pos = new int[word2Index.size()];  
+       ArrayList<Integer> pos = new ArrayList<Integer>();  
        for (int i=0; i<word2Index.size(); i++) {
-           pos[i] = i;
+           pos.add(i, i);
        }
-       Collections.shuffle(Arrays.asList(pos), new Random(TestConstants.SEED));
-       System.out.println("0 is "+pos[1]);
+       Collections.shuffle(pos, new Random(TestConstants.SEED));
+       System.out.println("10 is "+pos.get(9));
        int i=0;
        for (String key : word2Index.keySet()) {
-           word2Index.put(key,pos[i]);
+           word2Index.put(key,pos.get(i));
            i++;
        }
    }

@@ -15,7 +15,6 @@ import common.exception.ValueException;
 import space.SemanticSpace;
 import vocab.Vocab;
 import word2vec.MMSkipgramMaxMargin;
-//import word2vec.CBowWord2Vec;
 
 import demo.TestConstants;
 
