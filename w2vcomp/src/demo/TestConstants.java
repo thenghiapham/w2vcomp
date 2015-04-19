@@ -7,8 +7,8 @@ public class TestConstants {
         public static final int imageDimensions = 50;
         public static final String typeOfLearning = "";
     
-        public static final double rate_multiplier_grad = 1; //20 for mapping, 1 for mm
-        public static final double rate_multiplier_sft = 1;
+        public static final double rate_multiplier_grad = 5; //20 for mapping, 1 for mm
+        public static final double rate_multiplier_sft = 5;
     
         public static final double lambda = 0.0001;  // 0.0001: add to zeros for less reg
         public static final int negative_samples = 20; // 5 for mapping, 20 for mm
