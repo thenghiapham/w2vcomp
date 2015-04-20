@@ -58,7 +58,8 @@ public abstract class AbstractWord2Vec {
 
     protected int              windowSize;
 
-    protected Vocab            vocab;
+    protected Vocab            vocab_lang1;
+    protected Vocab            vocab_lang2;
 
     // parameters to keep track of the training progress
     protected long             wordCount;
@@ -113,10 +114,10 @@ public abstract class AbstractWord2Vec {
                     new FileOutputStream(weightFile));
             ByteBuffer buffer = ByteBuffer.allocate(8);
             buffer.order(ByteOrder.LITTLE_ENDIAN);
-            buffer.putInt(vocab.getVocabSize());
+            buffer.putInt(vocab_lang1.getVocabSize());
             buffer.putInt(projectionLayerSize);
             outStream.write(buffer.array());
-            for (int i = 0; i < vocab.getVocabSize(); i++) {
+            for (int i = 0; i < vocab_lang1.getVocabSize(); i++) {
                 buffer = ByteBuffer.allocate(4 * projectionLayerSize);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 for (int j = 0; j < projectionLayerSize; j++) {
@@ -143,7 +144,7 @@ public abstract class AbstractWord2Vec {
             int newLayer1Size = buffer.getInt(0);
             System.out.println("new vocab size:" + newVocabSize);
             System.out.println("new layer1 size:" + newLayer1Size);
-            for (int i = 0; i < vocab.getVocabSize(); i++) {
+            for (int i = 0; i < vocab_lang1.getVocabSize(); i++) {
                 for (int j = 0; j < projectionLayerSize; j++) {
                     inStream.read(array);
                     weights0[i][j] = buffer.getFloat(0);
@@ -186,7 +187,7 @@ public abstract class AbstractWord2Vec {
         try {
             BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile));
             double[][] matrix = IOUtils.readMatrix(inputStream, binary);
-            if (matrix.length != vocab.getVocabSize() || matrix[0].length != projectionLayerSize) {
+            if (matrix.length != vocab_lang1.getVocabSize() || matrix[0].length != projectionLayerSize) {
                 System.out.println("matrix size does not match");
             } else {
                 weights0 = matrix;
@@ -194,7 +195,7 @@ public abstract class AbstractWord2Vec {
             
             if (hierarchicalSoftmax) {
                 matrix = IOUtils.readMatrix(inputStream, binary);
-                if (matrix.length != vocab.getVocabSize() -1 || matrix[0].length != projectionLayerSize) {
+                if (matrix.length != vocab_lang1.getVocabSize() -1 || matrix[0].length != projectionLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
                     weights1 = matrix;
@@ -203,8 +204,8 @@ public abstract class AbstractWord2Vec {
             if (negativeSamples > 0) {
                 matrix = IOUtils.readMatrix(inputStream, binary);
                 System.out.println("matrix size: " + matrix.length + " " + matrix[0].length);
-                System.out.println("expect size: " + vocab.getVocabSize() + " " + projectionLayerSize);
-                if (matrix.length != vocab.getVocabSize() || matrix[0].length != projectionLayerSize) {
+                System.out.println("expect size: " + vocab_lang1.getVocabSize() + " " + projectionLayerSize);
+                if (matrix.length != vocab_lang1.getVocabSize() || matrix[0].length != projectionLayerSize) {
                     System.out.println("matrix size does not match");
                 } else {
                     negativeWeights1 = matrix;
@@ -243,9 +244,9 @@ public abstract class AbstractWord2Vec {
    
     
     protected void initBare() {
-        int vocabSize = vocab.getVocabSize();
+        int vocabSize = vocab_lang1.getVocabSize();
         if (negativeSamples > 0) {
-            unigram = new UniGram(vocab);
+            unigram = new UniGram(vocab_lang1);
         }
         weights0 = new double[vocabSize][projectionLayerSize];
         if (hierarchicalSoftmax) {
@@ -256,7 +257,7 @@ public abstract class AbstractWord2Vec {
         }
         
       
-        vocab.assignCode();
+        vocab_lang1.assignCode();
     }
 
     public void initNetwork() {
@@ -292,7 +293,7 @@ public abstract class AbstractWord2Vec {
      * [-0.5 / hidden_layer_size, 0.5 / hidden_layer_size]
      */
     protected void randomInitProjectionMatrices() {
-        for (int i = 0; i < vocab.getVocabSize(); i++) {
+        for (int i = 0; i < vocab_lang1.getVocabSize(); i++) {
             for (int j = 0; j < projectionLayerSize; j++) {
                 weights0[i][j] = (double) (rand.nextFloat() - 0.5)
                         / projectionLayerSize;
@@ -328,7 +329,7 @@ public abstract class AbstractWord2Vec {
     public void saveVector(String outputFile, boolean binary) {
         // Save the word vectors
         // save number of words, length of each vector
-        int vocabSize = vocab.getVocabSize();
+        int vocabSize = vocab_lang1.getVocabSize();
         
         try {
             BufferedOutputStream os = new BufferedOutputStream(
@@ -338,7 +339,7 @@ public abstract class AbstractWord2Vec {
             os.write(firstLine.getBytes(Charset.forName("UTF-8")));
             // save vectors
             for (int i = 0; i < vocabSize; i++) {
-                VocabEntry word = vocab.getEntry(i);
+                VocabEntry word = vocab_lang1.getEntry(i);
                 os.write((word.word + " ").getBytes("UTF-8"));
                 if (binary) {
                     ByteBuffer buffer = ByteBuffer
@@ -365,10 +366,15 @@ public abstract class AbstractWord2Vec {
     }
     
 
-    public void setVocab(Vocab vocab) {
-        this.vocab = vocab;
+    public void setVocabs(Vocab vocab1, Vocab vocab2) {
+        this.vocab_lang1 = vocab1;
+        this.vocab_lang2 = vocab2;
     }
 
+    public void setVocab(Vocab vocab1) {
+        this.vocab_lang1 = vocab1;
+    }
+   
     
     public abstract void trainModel(ArrayList<SentenceInputStream> inputStreamsSource, ArrayList<SentenceInputStream> inputStreamsTarget);
     

@@ -51,7 +51,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
             }
 
             
-            //System.out.println("For Word "+vocab.getEntry(wordIndex).word);
+            //System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word);
             
       
             
@@ -72,7 +72,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                     continue;
 
                 
-                VocabEntry context = vocab.getEntry(iWordIndex);
+                VocabEntry context = vocab_lang1.getEntry(iWordIndex);
                 
                 // HIERARCHICAL SOFTMAX
                 if (hierarchicalSoftmax) {
@@ -116,7 +116,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         } else {
                             target = unigram.randomWordIndex();
                             if (target == 0) {
-                                target = rand.nextInt(vocab.getVocabSize() - 1) + 1;
+                                target = rand.nextInt(vocab_lang1.getVocabSize() - 1) + 1;
                             }
                             if (target == iWordIndex)
                                 continue;
@@ -173,7 +173,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                     
                     //specifics of current word
                     int wordIndexTarget = sentenceTarget[wordPositionTarget];
-                    VocabEntry curWord = vocab.getEntry(wordIndexTarget);
+                    VocabEntry curWord = vocab_lang2.getEntry(wordIndexTarget);
                     int jPerceptIndex = images.getIndex(curWord.word);
                     
                     if (jPerceptIndex==-1){
@@ -229,7 +229,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
     
 
     public double[] getCors() throws ValueException{
-        return images.pairwise_cor(new SemanticSpace(vocab, weights0,false));
+        return images.pairwise_cor(new SemanticSpace(vocab_lang1, weights0,false));
     }
 
     @Override
