@@ -26,7 +26,7 @@ public class AddEvaluation {
             String exportFile = vectorFile.replace(".bin", ".txt");
             space = RawSemanticSpace.readSpace(vectorFile);
             if (!(new File(exportFile)).exists()) {
-                space.exportSpace(exportFile);
+                space.exportSpace(exportFile, false);
             }
         } else {
             String exportFile = vectorFile.replace(".txt", ".bin");

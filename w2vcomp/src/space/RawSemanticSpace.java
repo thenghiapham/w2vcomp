@@ -96,7 +96,7 @@ public class RawSemanticSpace implements SemanticSpace{
         return null;
     }
 
-    public void exportSpace(String textFile) {
+    public void exportSpace(String textFile, boolean unknownWord) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(textFile));
             for (int i = 0; i < words.length; i++) {
@@ -104,6 +104,17 @@ public class RawSemanticSpace implements SemanticSpace{
                 double[] vector = vectors[i];
                 for (int j = 0; j < vectorSize; j++) {
                     writer.write("" + vector[j]);
+                    if (j < vectorSize - 1) {
+                        writer.write("\t");
+                    } else {
+                        writer.write("\n");
+                    }
+                }
+            }
+            if (unknownWord) {
+                writer.write("UNK\t");
+                for (int j = 0; j < vectorSize; j++) {
+                    writer.write("0");
                     if (j < vectorSize - 1) {
                         writer.write("\t");
                     } else {
@@ -161,6 +172,8 @@ public class RawSemanticSpace implements SemanticSpace{
             return result;
         }
     }
+    
+    
 
     public static String readWord(InputStream inputStream) throws IOException {
         StringBuffer buffer = new StringBuffer();

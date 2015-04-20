@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import common.correlation.AntonymSynonymROC;
 import common.correlation.FeatureNorm;
 import common.correlation.MenCorrelation;
 import common.correlation.Toefl;
@@ -23,6 +24,7 @@ public class LexicalEvaluation {
         String[][] datasets = {
                 {"men", d + "MEN_dataset_lemma.txt", "sim"},
                 {"simlex", d + "simlex-999.txt", "sim"},
+                {"lenci-adj", d + "EN_ant_adj.txt", "anto"},
                 };
         return datasets;
     }
@@ -55,6 +57,7 @@ public class LexicalEvaluation {
         format.setMaximumFractionDigits(0);
         String outDir = "/mnt/cimec-storage-sata/users/thenghia.pham/data/project/mikcom/eval/";
         RawSemanticSpace space = RawSemanticSpace.readSpace(spaceFile.getAbsolutePath());
+        
         for (String[] datasetInfo: datasets) {
             String name = datasetInfo[0];
             String path = datasetInfo[1];
@@ -62,13 +65,17 @@ public class LexicalEvaluation {
             
             if (type.equals("sim")) {
                 MenCorrelation men = new MenCorrelation(path);
-//                System.out.println(name + ": " + men.evaluateSpacePearson(space) 
-//                        + " " + men.evaluateSpaceSpearman(space));
+//                System.out.print(format.format(men.evaluateSpacePearson(space) * 100) + " & ");
                 System.out.print(format.format(men.evaluateSpaceSpearman(space) * 100) + " & ");
+                
             } else if (type.equals("tfl")){
                 Toefl toefl = new Toefl(path);
 //                System.out.println(name + ": " + toefl.evaluation(space));
                 System.out.print(format.format(toefl.evaluation(space) * 100)+ " & ");
+            } else if (type.equals("anto")) {
+                AntonymSynonymROC roc = new AntonymSynonymROC(path, path.replaceAll("_ant_", "_syn_"));
+                double auc = roc.areaUnderCurve(space);
+                System.out.print(format.format(auc * 100)+ " & ");
             } else if (type.equals("selpref")) {
                 FeatureNorm fnorm = new FeatureNorm(path);
                 double[] correlation = fnorm.evaluate(space);

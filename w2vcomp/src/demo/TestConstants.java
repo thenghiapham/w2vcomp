@@ -4,17 +4,29 @@ public class TestConstants {
     
     public static final boolean LOWER_CASE = true;
     
-    public static final String TRAIN_FILE               = "/home/nghia/work/corpus/text/wiki9.txt";
-    public static final String TRAIN_DIR                = "/home/nghia/work/corpus/text_split/enwik9";
-    public static final String VOCABULARY_FILE          = "/home/nghia/work/project/antonym/output/wiki9.voc";
+//    public static final String TRAIN_FILE               = "/home/nghia/work/corpus/text/wiki9.txt";
+//    public static final String TRAIN_DIR                = "/home/nghia/work/corpus/text_split/enwik9";
+//    public static final String VOCABULARY_FILE          = "/home/nghia/work/project/antonym/output/wiki9.voc";
+////    public static final String VECTOR_FILE              = "/home/nghia/work/project/antonym/output/wiki9_hs300.bin";
+////    public static final String INITIALIZATION_FILE      = "/home/nghia/work/project/antonym/output/wiki9_hs300.ini";
+////    public static final String MATRIX_FILE              = "/home/nghia/work/project/antonym/output/wiki9_hs300.mat";
+//    public static final String VECTOR_FILE              = "/home/nghia/work/project/antonym/output/wiki9_neg300.bin";
+//    public static final String INITIALIZATION_FILE      = "/home/nghia/work/project/antonym/output/wiki9_neg300.ini";
+//    public static final String MATRIX_FILE              = "/home/nghia/work/project/antonym/output/wiki9_neg300.mat";
+//    public static final String MEN_FILE                 = "/home/nghia/work/dataset/simlex/simlex-999.txt";
+////    public static final String MEN_FILE                 = "/home/nghia/work/dataset/men/MEN_dataset_lemma.txt";
+    
+    public static final String TRAIN_FILE               = "/home/thenghiapham/work/project/antonym/corpus/enwik9.txt";
+    public static final String TRAIN_DIR                = "/home/thenghiapham/work/project/antonym/corpus/wiki9";
+    public static final String VOCABULARY_FILE          = "/home/thenghiapham/work/project/antonym/output/wiki9.voc";
 //    public static final String VECTOR_FILE              = "/home/nghia/work/project/antonym/output/wiki9_hs300.bin";
 //    public static final String INITIALIZATION_FILE      = "/home/nghia/work/project/antonym/output/wiki9_hs300.ini";
 //    public static final String MATRIX_FILE              = "/home/nghia/work/project/antonym/output/wiki9_hs300.mat";
-    public static final String VECTOR_FILE              = "/home/nghia/work/project/antonym/output/wiki9_neg300.bin";
-    public static final String INITIALIZATION_FILE      = "/home/nghia/work/project/antonym/output/wiki9_neg300.ini";
-    public static final String MATRIX_FILE              = "/home/nghia/work/project/antonym/output/wiki9_neg300.mat";
-    public static final String MEN_FILE                 = "/home/nghia/work/dataset/simlex/simlex-999.txt";
-//    public static final String MEN_FILE                 = "/home/nghia/work/dataset/men/MEN_dataset_lemma.txt";
+    public static final String VECTOR_FILE              = "/home/thenghiapham/work/project/antonym/output/wiki9_neg300.bin";
+    public static final String INITIALIZATION_FILE      = "/home/thenghiapham/work/project/antonym/output/wiki9_neg300.ini";
+    public static final String MATRIX_FILE              = "/home/thenghiapham/work/project/antonym/output/wiki9_neg300.mat";
+    public static final String MEN_FILE                 = "/home/thenghiapham/work/project/antonym/lexical/simlex-999.txt";
+    public static final String WORD_NET_DIR             = "/home/thenghiapham/work/project/antonym/dict";
     
     
     public static final String S_PROJECT_DIR              = "/home/thenghiapham/work/project/mikolov/";
