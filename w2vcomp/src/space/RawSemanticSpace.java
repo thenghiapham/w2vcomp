@@ -26,6 +26,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import vocab.Vocab;
 import common.DataStructureUtils;
+import common.IOUtils;
 import common.exception.ValueException;
 
 public class RawSemanticSpace implements SemanticSpace{
@@ -115,6 +116,32 @@ public class RawSemanticSpace implements SemanticSpace{
                 writer.write("UNK\t");
                 for (int j = 0; j < vectorSize; j++) {
                     writer.write("0");
+                    if (j < vectorSize - 1) {
+                        writer.write("\t");
+                    } else {
+                        writer.write("\n");
+                    }
+                }
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void exportSentimentSpace(String textFile, String wordFile) {
+        ArrayList<String> newWords = new ArrayList<String>();
+        newWords.add("#UNKNOWN#");
+        newWords.addAll(Arrays.asList(words));
+        IOUtils.printToFile(wordFile, newWords);
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(textFile));
+            writer.write("" + (words.length) + "\t" + vectorSize + "\n" );
+            for (int i = 0; i < words.length; i++) {
+                writer.write(words[i] + "\t");
+                double[] vector = vectors[i];
+                for (int j = 0; j < vectorSize; j++) {
+                    writer.write("" + vector[j]);
                     if (j < vectorSize - 1) {
                         writer.write("\t");
                     } else {
