@@ -9,8 +9,9 @@ public class ExportSentimentSpace {
     public static void exportSpace(String inputSpaceFile, String inputWordFile, String outputSpaceFile, String outputWordFile) {
         RawSemanticSpace space = RawSemanticSpace.readSpace(inputSpaceFile);
         ArrayList<String> inputWords = IOUtils.readFile(inputWordFile);
-        RawSemanticSpace subSpace = space.getSubSpace(inputWords);
+        RawSemanticSpace subSpace = space.getSubCapSpace(inputWords);
         subSpace.exportSentimentSpace(outputSpaceFile, outputWordFile);
+        
     }
     
     public static void main(String[] args) {

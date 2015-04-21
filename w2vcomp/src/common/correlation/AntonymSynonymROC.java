@@ -50,6 +50,7 @@ public class AntonymSynonymROC {
         String[][] result = new String[filteredInfo.size()][];
         int index = 0;
         for (String filteredPair: filteredInfo) {
+            filteredPair = filteredPair.replaceAll("_", "-");
             String[] elements = filteredPair.split("\\s");
             result[index] = elements;
             index++;

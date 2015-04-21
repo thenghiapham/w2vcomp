@@ -24,7 +24,7 @@ public class Synset {
 		int size = Integer.parseInt(elements[3],16);
 		words = new String[size];
 		for (int i = 0; i< size; i++) {
-			words[i] = elements[4 + 2 * i];
+			words[i] = elements[4 + 2 * i].replaceAll("_", "-");
 		}
 		
 		// read info

@@ -12,7 +12,7 @@ import common.wordnet.WordNetAdj;
 import common.wordnet.WordNetNoun;
 import common.wordnet.WordNetVerb;
 
-public class AntonymWord2Vec extends MultiThreadWord2Vec{
+public class SynonymWord2Vec extends MultiThreadWord2Vec{
     public static final int DEFAULT_SYNONYM_SAMPLES = 5;
     public static final double DEFAULT_MARGIN = 0.2;
     public static final double DEFAULT_ANTONYM_IMPORTANCE = 3.0;
@@ -24,14 +24,14 @@ public class AntonymWord2Vec extends MultiThreadWord2Vec{
     protected WordNetVerb wordnetVerb;
     protected HashSet<String> forbiddenWords;
     
-    public AntonymWord2Vec(int projectionLayerSize, int windowSize,
+    public SynonymWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int synonymSamples, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample);
         this.synonymSamples = synonymSamples;
     }
     
-    public AntonymWord2Vec(int projectionLayerSize, int windowSize,
+    public SynonymWord2Vec(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int synonymSamples, double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, subSample, menFile);

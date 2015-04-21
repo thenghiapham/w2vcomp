@@ -354,6 +354,21 @@ public class RawSemanticSpace implements SemanticSpace{
         return new RawSemanticSpace(newWordList, newVectors);
     }
 
+    public RawSemanticSpace getSubCapSpace(Collection<String> wordList) {
+        ArrayList<String> newWordList = new ArrayList<String>();
+        ArrayList<double[]> newVectors = new ArrayList<double[]>();
+        for (String word : wordList) {
+            if (this.contains(word)) {
+                newWordList.add(word);
+                newVectors.add(this.getVector(word).getMatrix().getData());
+            } else if (this.contains(word.toLowerCase())) {
+                newWordList.add(word);
+                newVectors.add(this.getVector(word.toLowerCase()).getMatrix().getData());
+            }
+        }
+        return new RawSemanticSpace(newWordList, newVectors);
+    }
+    
     public RawSemanticSpace getSubSpace(Collection<String> wordList) {
         ArrayList<String> newWordList = new ArrayList<String>();
         ArrayList<double[]> newVectors = new ArrayList<double[]>();
