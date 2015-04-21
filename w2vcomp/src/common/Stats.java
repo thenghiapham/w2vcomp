@@ -2,6 +2,7 @@ package common;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -24,7 +25,7 @@ public class Stats {
         frame.setVisible(true);
     }
     
-    public static void showPredictionMatrix(Graphics gIn, Rectangle r, String[] xLabel, String[] yLabel, double[][] values, int[] match) {
+    public static void showPredictionMatrix(Graphics gIn, Rectangle r, String[] xLabel, String[] yLabel, double[][] values, HashMap<String, String> match) {
         Graphics2D g = (Graphics2D)gIn;
         
         FontMetrics fm = g.getFontMetrics();
@@ -58,7 +59,7 @@ public class Stats {
                 g.setColor(new Color(val,val,val));
                 g.fillRect(x, y, width, height);
                 
-                if(match[i] == j) {
+                if(match.get(xLabel[i]).equals(yLabel[j])) {
                     g.setColor(Color.RED);
                 } else {
                     g.setColor(Color.lightGray);

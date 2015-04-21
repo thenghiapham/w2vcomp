@@ -15,6 +15,7 @@ import common.exception.ValueException;
 import space.SemanticSpace;
 import vocab.Vocab;
 import word2vec.MMSkipgramMaxMargin;
+import word2vec.MMSkipgramMaxMarginWeighted;
 
 import demo.TestConstants;
 
@@ -23,7 +24,8 @@ public class CrossSituationalLearning {
         
         //MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
         
-        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, false, 5,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        //MMSkipgramMaxMarginWeighted word2vec = new MMSkipgramMaxMarginWeighted(TestConstants.wordDimensions, 5, false, 5,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         
         
         //TODO: Fix that you have two different vobacularies

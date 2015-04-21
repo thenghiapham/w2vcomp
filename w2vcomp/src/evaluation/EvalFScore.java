@@ -82,6 +82,7 @@ public class EvalFScore {
         acc.fScore(null, "bla");
         
         System.out.println("SCORE: "+acc.score()+" out of "+words.length);
+        acc.showBest();
     }
 
 }

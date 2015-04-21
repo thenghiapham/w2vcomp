@@ -46,19 +46,19 @@ public class CompareAssociations {
         WeightedObject<Boolean>[] corrects = new WeightedObject[yAxis.length];
                 
         for(int i=0;i<yAxis.length;i++) {
-            double min = values[i][0];
-            int minIndex = 0;
+            double max = values[i][0];
+            int maxIndex = 0;
             for(int j=0;j<xAxis.length;j++) {
-                if(values[i][j] > min) {
-                    min = values[i][j];
-                    minIndex = j;
+                if(values[i][j] > max) {
+                    max = values[i][j];
+                    maxIndex = j;
                 }
             }
             
-            if(minIndex == xAxis_2.indexOf(goldStandard.get(yAxis[i]))) {
-                corrects[i] = new WeightedObject<Boolean>(true, min);
+            if(maxIndex == xAxis_2.indexOf(goldStandard.get(yAxis[i]))) {
+                corrects[i] = new WeightedObject<Boolean>(true, max);
             } else {
-                corrects[i] = new WeightedObject<Boolean>(false, min);              
+                corrects[i] = new WeightedObject<Boolean>(false, max);              
             }
             
         }
@@ -98,7 +98,7 @@ public class CompareAssociations {
         }
     }
     
-    
+
     /**
      * Given a set of models, find the maximum weighting to optimize number correct.
      * @param models
@@ -129,22 +129,22 @@ public class CompareAssociations {
     
     /**
      * Calculate number correct.
-     * This finds the maximum value in each collumn and compares to the gold standard.
+     * This finds the maximum value in each column and compares to the gold standard.
      * @return
      */
     public double score() {             
         double score = 0;
         for(int i=0;i<yAxis.length;i++) {
-            double min = values[i][0];
-            int minIndex = 0;
+            double max = values[i][0];
+            int maxIndex = 0;
             for(int j=0;j<xAxis.length;j++) {
-                if(values[i][j] > min) {
-                    min = values[i][j];
-                    minIndex = j;
+                if(values[i][j] > max) {
+                    max = values[i][j];
+                    maxIndex = j;
                 }
             }
             
-            if(minIndex == xAxis_2.indexOf(goldStandard.get(yAxis[i])))  {
+            if(maxIndex == xAxis_2.indexOf(goldStandard.get(yAxis[i])))  {
                 System.out.println("Correct for "+yAxis_2.get(i));
                 score++;
             }
@@ -230,7 +230,7 @@ public class CompareAssociations {
     public void saveGraph(File file) {
         BufferedImage image = new BufferedImage(800,800,BufferedImage.TYPE_INT_RGB);
         Graphics g = image.getGraphics();
-//        /Stats.showPredictionMatrix(g, new Rectangle(80,80,image.getWidth()-90,image.getHeight()-120), yAxis, xAxis, values, goldStandard);
+        Stats.showPredictionMatrix(g, new Rectangle(80,80,image.getWidth()-90,image.getHeight()-120), yAxis, xAxis, values, goldStandard);
         try {
             ImageIO.write(image, "png", file);
         } catch (IOException e) {
@@ -277,7 +277,7 @@ public class CompareAssociations {
             private static final long serialVersionUID = 1L;
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                //Stats.showPredictionMatrix(g, new Rectangle(50,50,getWidth()-60,getHeight()-80), yAxis, xAxis, values, goldStandard);
+                Stats.showPredictionMatrix(g, new Rectangle(50,50,getWidth()-60,getHeight()-80), yAxis, xAxis, values, goldStandard);
             }
         });
         frame.setVisible(true);
@@ -288,8 +288,8 @@ public class CompareAssociations {
      */
     public void showBest() {
         for(int i=0;i<yAxis.length;i++) {
-            double max = -99999;
-            String maxStr = "";
+            double max = Integer.MIN_VALUE;
+            String maxStr = xAxis[0];
             for(int j=0;j<xAxis.length;j++) {
                 if(values[i][j] > max) {
                     max = values[i][j];
