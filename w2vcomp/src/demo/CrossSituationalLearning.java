@@ -15,6 +15,7 @@ import common.exception.ValueException;
 import space.SemanticSpace;
 import vocab.Vocab;
 import word2vec.MMSkipgramMaxMargin;
+import word2vec.MMSkipgramMaxMarginWeighted;
 
 import demo.TestConstants;
 
@@ -23,7 +24,8 @@ public class CrossSituationalLearning {
         
         //MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
         
-        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, false, 5,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        //MMSkipgramMaxMarginWeighted word2vec = new MMSkipgramMaxMarginWeighted(TestConstants.wordDimensions, 5, false, 5,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         
         
         //TODO: Fix that you have two different vobacularies
@@ -31,7 +33,8 @@ public class CrossSituationalLearning {
         String targetFile = TestConstants.TARGET_FILE;
         
         String outputFile = TestConstants.VECTOR_FILE;
-        String vocabFile = TestConstants.VOCABULARY_FILE;
+        String vocabFile_lang1 = TestConstants.VOCABULARY_FILE_lang1;
+        String vocabFile_lang2 = TestConstants.VOCABULARY_FILE_lang2;
         
         String initFile = TestConstants.INITIALIZATION_FILE;
         String projInitFile = TestConstants.IMAGE_INITIALIZATION_FILE;
@@ -39,24 +42,37 @@ public class CrossSituationalLearning {
         LogUtils.setup(logGile);
         
         
-        System.out.println("Starting training using file " + sourceFile);
+        System.out.println("Starting training using source file " + sourceFile);
         
         System.out.println("Welcome!---->"+TestConstants.VECTOR_FILE);
 
 
-        boolean learnVocab = !(new File(vocabFile)).exists();
+        boolean learnVocab = !(new File(vocabFile_lang1)).exists();
         
-        Vocab vocab = new Vocab(1); 
+        Vocab vocab_lang1 = new Vocab(1); 
         if (!learnVocab)
-            vocab.loadVocab(vocabFile);
+            vocab_lang1.loadVocab(vocabFile_lang1);
         else {
-            vocab.learnVocabFromTrainFile(sourceFile);
+            vocab_lang1.learnVocabFromTrainFile(sourceFile);
             // save vocabulary
-            vocab.saveVocab(vocabFile);
+            vocab_lang1.saveVocab(vocabFile_lang1);
         }
-
-        word2vec.setVocab(vocab);
         
+        System.out.println("Starting training using target file " + targetFile);
+        
+        learnVocab = !(new File(vocabFile_lang2)).exists();
+        
+        Vocab vocab_lang2 = new Vocab(1); 
+        if (!learnVocab)
+            vocab_lang2.loadVocab(vocabFile_lang2);
+        else {
+            vocab_lang2.learnVocabFromTrainFile(targetFile);
+            // save vocabulary
+            vocab_lang2.saveVocab(vocabFile_lang2);
+        }   
+
+        word2vec.setVocabs(vocab_lang1,vocab_lang2);
+       
         word2vec.initNetwork(initFile,projInitFile);
         
         word2vec.initImages(TestConstants.VISION_FILE,true);

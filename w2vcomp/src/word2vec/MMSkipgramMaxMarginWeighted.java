@@ -13,14 +13,14 @@ import common.exception.ValueException;
 
 import demo.TestConstants;
 
-public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
-    public MMSkipgramMaxMargin(int projectionLayerSize, int windowSize,
+public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
+    public MMSkipgramMaxMarginWeighted(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample);
     }
     
-    public MMSkipgramMaxMargin(int projectionLayerSize, int windowSize,
+    public MMSkipgramMaxMarginWeighted(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages , double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample, menFile);
@@ -164,6 +164,31 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 mmWordsPerRun++;
                 
                 SimpleMatrix mapped_word_row = (new SimpleMatrix(1,projectionLayerSize,false, weights0[wordIndex]));
+                double norm = 0.0;
+                //first run to calculate weight for each object
+                for (int wordPositionTarget = 0; wordPositionTarget < sentenceTarget.length; wordPositionTarget++) {
+                    
+                    //specifics of current word
+                    int wordIndexTarget = sentenceTarget[wordPositionTarget];
+                    VocabEntry curWord = vocab_lang2.getEntry(wordIndexTarget);
+                    int jPerceptIndex;
+                    if (curWord.word.equals("rattle")){
+                        jPerceptIndex = images.getIndex("maraca");
+                    }
+                    else{
+                        jPerceptIndex = images.getIndex(curWord.word);
+                    }
+                   
+                    
+                    
+                    if (jPerceptIndex==-1){
+                        continue;
+                    }
+                    
+                    SimpleMatrix image = new SimpleMatrix(negativeWeights1Images[jPerceptIndex].length,1,true, negativeWeights1Images[jPerceptIndex]);
+                    double cos = MathUtils.cosine(mapped_word_row, image);
+                    norm += Math.exp(cos);
+                }
                 
                 //try to come closer to all the words in the target language
                 for (int wordPositionTarget = 0; wordPositionTarget < sentenceTarget.length; wordPositionTarget++) {
@@ -174,14 +199,20 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                     //specifics of current word
                     int wordIndexTarget = sentenceTarget[wordPositionTarget];
                     VocabEntry curWord = vocab_lang2.getEntry(wordIndexTarget);
-                    int jPerceptIndex = images.getIndex(curWord.word);
+                    int jPerceptIndex;
                     
-                    
+                    if (curWord.word.equals("rattle")){
+                        jPerceptIndex = images.getIndex("maraca");
+                    }
+                    else{
+                        jPerceptIndex = images.getIndex(curWord.word);
+                    }
                     
                     if (jPerceptIndex==-1){
                         //System.out.println(curWord.word+" not in visual space");
                         continue;
                     }
+                    
                     //System.out.println("Visual Referent "+curWord.word);
                     SimpleMatrix image = new SimpleMatrix(negativeWeights1Images[jPerceptIndex].length,1,true, negativeWeights1Images[jPerceptIndex]);
                     SimpleMatrix err_cos_row = MathUtils.cosineDerivative(mapped_word_row, image);
@@ -207,8 +238,10 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         //calculate error with respect to the cosine
                         der = der.minus(MathUtils.cosineDerivative(mapped_word_row, image_neg));
                     }
+                    
+                    double probability = (Math.exp(cos)/norm);
                 
-                    gradient = (double) (alpha*  TestConstants.rate_multiplier_grad);
+                    gradient = (double) (alpha*  TestConstants.rate_multiplier_grad * probability);
                     
                     der = der.plus(err_cos_row.scale(k));
                     a1error_temp  = a1error_temp.plus(der.scale(gradient));

@@ -3,35 +3,38 @@ package demo;
 public class TestConstants {
     
         
-        public static final int wordDimensions = 50;
-        public static final int imageDimensions = 50;
-        public static final String typeOfLearning = "";
+        public static final int wordDimensions = 100;
+        public static final int imageDimensions = 100;
     
         public static final double rate_multiplier_grad = 5; //20 for mapping, 1 for mm
         public static final double rate_multiplier_sft = 10;
     
         public static final double lambda = 0.0001;  // 0.0001: add to zeros for less reg
-        public static final int negative_samples = 20; // 5 for mapping, 20 for mm
+        public static final int negative_samples = 40; // 5 for mapping, 20 for mm
         public static final double threshold = 5;
         public static final double margin = 0.5;
     
         public static final long SEED                       = 292626718599866L;
 
+        public static final String typeOfLearning = "ts";
+
         
-        //public static final String ROOT_EXP_DIR                     = "/home/angeliki/Documents/cross-situational/";
-        //public static final String ROOT_EVAL_DIR        = "/home/angeliki/Documents/mikolov_composition/misc/";
-        //public static final String ROOT_VISUAL_DIR        = "/home/angeliki/sas/visLang/cross-situational/visual_symbols/all/";
+        public static final String ROOT_EXP_DIR                     = "/home/angeliki/Documents/cross-situational/";
+        public static final String ROOT_EVAL_DIR        = "/home/angeliki/Documents/mikolov_composition/misc/";
+        public static final String ROOT_VISUAL_DIR        = "/home/angeliki/sas/visLang/cross-situational/visual_symbols/all/";
 
 
-        public static final String ROOT_EXP_DIR                     = "/home/aggeliki/sas/visLang/cross-situational/";
-        public static final String ROOT_EVAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/misc/";
-        public static final String ROOT_VISUAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/visual_symbols/all/";
+        //public static final String ROOT_EXP_DIR                     = "/home/aggeliki/sas/visLang/cross-situational/";
+        //public static final String ROOT_EVAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/misc/";
+        //public static final String ROOT_VISUAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/visual_symbols/all/";
         
         //for pc
         
         //parallel data
-        public static final String SOURCE_FILE                  = ROOT_EXP_DIR+"corpus/test_version/cds.11_24.words.txt";
-        public static final String TARGET_FILE                  = ROOT_EXP_DIR+"corpus/test_version/cds.11_24.images.txt";
+        public static final String SOURCE_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.words.txt";
+        //public static final String SOURCE_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/words.txt";
+        public static final String TARGET_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.images.txt";
+        //public static final String TARGET_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/objects.txt";
         public static final String TRAIN_DIR               = "";
 
 
@@ -43,17 +46,18 @@ public class TestConstants {
         //model files
         public static final String MODEL_FILE               = null;
         
-        public static final String VECTOR_FILE              =  ROOT_EXP_DIR+"experiments/vectors/cds"+"_n"+negative_samples+"_m"+margin+"_"
+        public static final String VECTOR_FILE              =  ROOT_EXP_DIR+"experiments/vectors/"+typeOfLearning+"_d_"+wordDimensions+"_n"+negative_samples+"_m"+margin
                                                                                                       +"_r1"+rate_multiplier_sft
                                                                                                       +"_r2"+rate_multiplier_grad+"l"+lambda+".bin";                                                                                                                                                            
-        public static final String MAPPING_FUNCTION         = ROOT_EXP_DIR+"experiments/vectors/cds"+"_n"+negative_samples+"_m"+margin+"_"
+        public static final String MAPPING_FUNCTION         = ROOT_EXP_DIR+"experiments/vectors/"+typeOfLearning+"_d_"+wordDimensions+"_n"+negative_samples+"_m"+margin
                                                                                                         +"_r1"+rate_multiplier_sft
                                                                                                         +"_r2"+rate_multiplier_grad+"l"+lambda+".mapping"; 
         
         
-        public static final String VOCABULARY_FILE          = ROOT_EXP_DIR+"experiments/vocab/cds"+".voc";
-        public static final String INITIALIZATION_FILE      = ROOT_EXP_DIR+"experiments/init/cds"+".ini";
-        public static final String IMAGE_INITIALIZATION_FILE = ROOT_EXP_DIR+"experiments/init/cds.im"+TestConstants.wordDimensions+"_"+TestConstants.imageDimensions+".ini";
+        public static final String VOCABULARY_FILE_lang1          = ROOT_EXP_DIR+"experiments/vocab/"+typeOfLearning+".lang1.voc";
+        public static final String VOCABULARY_FILE_lang2          = ROOT_EXP_DIR+"experiments/vocab/"+typeOfLearning+".lang2.voc";
+        public static final String INITIALIZATION_FILE      = ROOT_EXP_DIR+"experiments/init/"+typeOfLearning+".ini";
+        public static final String IMAGE_INITIALIZATION_FILE = ROOT_EXP_DIR+"experiments/init/"+typeOfLearning+".im"+TestConstants.wordDimensions+"_"+TestConstants.imageDimensions+".ini";
     
         public static final String LOG_FILE               = ROOT_EXP_DIR+"experiments/logs/dump.log";
         public static final String LOG_DIR               = ROOT_EXP_DIR+"experiments/logs";

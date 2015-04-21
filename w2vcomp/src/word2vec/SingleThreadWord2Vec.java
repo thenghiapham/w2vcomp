@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import baselines.SVDFusion;
 
 import space.SemanticSpace;
 
@@ -52,18 +51,18 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         // single-threaded instead of multi-threaded
         oldWordCount = 0;
         wordCount = 0;
-        trainWords = vocab.getTrainWords();
+        trainWords = vocab_lang1.getTrainWords();
         System.out.println("train words: " + trainWords);
-        System.out.println("vocab size: " + vocab.getVocabSize());
+        System.out.println("vocab size: " + vocab_lang1.getVocabSize());
         System.out.println("hidden size: " + projectionLayerSize);
-        System.out.println("first word:" + vocab.getEntry(0).word);
+        System.out.println("first word:" + vocab_lang1.getEntry(0).word);
         System.out.println("last word:"
-                + vocab.getEntry(vocab.getVocabSize() - 1).word);
+                + vocab_lang1.getEntry(vocab_lang1.getVocabSize() - 1).word);
         
         
         if (men != null) {
             try {
-                outputSpace = new SemanticSpace(vocab, weights0, false);
+                outputSpace = new SemanticSpace(vocab_lang1, weights0, false);
             } catch (ValueException e) {
                 e.printStackTrace();
             }
@@ -87,6 +86,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     void trainModelThread(SentenceInputStream inputStreamSource, SentenceInputStream inputStreamTarget) {
         oldWordCount = wordCount;
         long lastWordCount = wordCount;
+        int curSentence = 1;
         try {
             int iteration = 0;
             while (true) {
@@ -94,9 +94,11 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 // read the whole sentence sentence,
                 // the output would be the list of the word's indices in the
                 // dictionary
-                boolean hasNextSentenceSource = inputStreamSource.readNextSentence(vocab);
-                boolean hasNextSentenceTarget = inputStreamTarget.readNextSentence(vocab);
+                boolean hasNextSentenceSource = inputStreamSource.readNextSentence(vocab_lang1);
+                boolean hasNextSentenceTarget = inputStreamTarget.readNextSentence(vocab_lang2);
                 
+                //System.out.println("Current sentence is "+curSentence);
+                curSentence++;
                 if (!hasNextSentenceSource) break;
 
                 int[] sentenceSource = inputStreamSource.getCurrentSentence();

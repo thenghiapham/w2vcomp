@@ -62,7 +62,7 @@ public class MmSkipNGramWithMappingMaxMargin extends SingleThreadWord2Vec {
             int start = rand.nextInt(windowSize);
             //int start = 0;
 
-            VocabEntry targetWord = vocab.getEntry(wordIndex);
+            VocabEntry targetWord = vocab_lang1.getEntry(wordIndex);
             String percept =    targetWord.word;      
             int jPerceptIndex = images.getIndex(percept);
             if (jPerceptIndex == -1 || negativeSamplesImages!=-1)  r = 1.0; else  r= TestConstants.rate_multiplier_sft;
@@ -78,7 +78,7 @@ public class MmSkipNGramWithMappingMaxMargin extends SingleThreadWord2Vec {
                         continue;
 
                     
-                    VocabEntry context = vocab.getEntry(iWordIndex);
+                    VocabEntry context = vocab_lang1.getEntry(iWordIndex);
                     // HIERARCHICAL SOFTMAX
                     if (hierarchicalSoftmax) {
                         for (int bit = 0; bit < context.code.length(); bit++) {
@@ -121,7 +121,7 @@ public class MmSkipNGramWithMappingMaxMargin extends SingleThreadWord2Vec {
                             } else {
                                 target = unigram.randomWordIndex();
                                 if (target == 0) {
-                                    target = rand.nextInt(vocab.getVocabSize() - 1) + 1;
+                                    target = rand.nextInt(vocab_lang1.getVocabSize() - 1) + 1;
                                 }
                                 if (target == iWordIndex)
                                     continue;
@@ -227,7 +227,7 @@ public class MmSkipNGramWithMappingMaxMargin extends SingleThreadWord2Vec {
     }
 
     public double[] getCors() throws ValueException{
-        return images.pairwise_cor(new SemanticSpace(vocab, weights0, false));
+        return images.pairwise_cor(new SemanticSpace(vocab_lang1, weights0, false));
     }
 
     @Override

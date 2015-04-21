@@ -44,7 +44,7 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
             //int start = rand.nextInt(windowSize);
             int start = 0;
 
-            VocabEntry word = vocab.getEntry(wordIndex);
+            VocabEntry word = vocab_lang1.getEntry(wordIndex);
             for (int i = start; i < windowSize * 2 + 1 - start; i++) {
                 if (i != windowSize) {
                     int iPos = wordPosition - windowSize + i;
@@ -100,7 +100,7 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
                             } else {
                                 target = unigram.randomWordIndex();
                                 if (target == 0) {
-                                    target = rand.nextInt(vocab.getVocabSize() - 1) + 1;
+                                    target = rand.nextInt(vocab_lang1.getVocabSize() - 1) + 1;
                                 }
                                 if (target == wordIndex)
                                     continue;

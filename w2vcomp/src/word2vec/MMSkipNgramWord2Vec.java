@@ -52,7 +52,7 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
             // random actual window size
             int start = rand.nextInt(windowSize);
 
-            VocabEntry targetWord = vocab.getEntry(wordIndex);
+            VocabEntry targetWord = vocab_lang1.getEntry(wordIndex);
             String percept =    targetWord.word;      
             int jPerceptIndex = images.getIndex(percept);
             
@@ -71,7 +71,7 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
                     
                     //for (int j = 0; j < projectionLayerSize; j++)
                       // a1error[j] = 0;
-                    VocabEntry context = vocab.getEntry(iWordIndex);
+                    VocabEntry context = vocab_lang1.getEntry(iWordIndex);
                     // HIERARCHICAL SOFTMAX
                     if (hierarchicalSoftmax) {
                         for (int bit = 0; bit < context.code.length(); bit++) {
@@ -173,7 +173,7 @@ public class MMSkipNgramWord2Vec extends SingleThreadWord2Vec {
     }
 
     public double[] getCors() throws ValueException{
-        return images.pairwise_cor(new SemanticSpace(vocab, weights0,false));
+        return images.pairwise_cor(new SemanticSpace(vocab_lang1, weights0,false));
     }
 
     @Override

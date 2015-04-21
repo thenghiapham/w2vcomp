@@ -147,6 +147,7 @@ public class SemanticSpace {
                 String[] elements = line.split("( |\\t)");
                 // vectorSize = elements.length - 1;
                 double[] vector = parseVector(elements, 1);
+               
                 words.add(elements[0]);
                 vectors.add(vector);
 
