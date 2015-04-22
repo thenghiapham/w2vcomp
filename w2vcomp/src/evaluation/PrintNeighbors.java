@@ -42,9 +42,17 @@ public class PrintNeighbors {
         common_elements.retainAll(visionSpace.getWord2Index().keySet());
         System.out.println(common_elements.size());
         
-        ArrayList<String> list_of_els = new ArrayList<String>(common_elements);
+        //ArrayList<String> list_of_els = new ArrayList<String>(common_elements);
+        ArrayList<String> list_of_els = new ArrayList<String>();
         
-       
+        list_of_els.add("kitty");
+        list_of_els.add("piggie");
+        list_of_els.add("rings");
+        list_of_els.add("eyes");
+        list_of_els.add("mirror");
+        list_of_els.add("hat");
+        list_of_els.add("book");
+        list_of_els.add("books");
         
         for (String word: list_of_els){
             System.out.print(word+" --->");

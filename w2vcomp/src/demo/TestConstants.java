@@ -6,8 +6,8 @@ public class TestConstants {
         public static final int wordDimensions = 100;
         public static final int imageDimensions = 100;
     
-        public static final double rate_multiplier_grad = 1; //20 for mapping, 1 for mm
-        public static final double rate_multiplier_sft = 10;
+        public static final double rate_multiplier_grad = 100; //20 for mapping, 1 for mm
+        public static final double rate_multiplier_sft = 1;
     
         public static final double lambda = 0.0001;  // 0.0001: add to zeros for less reg
         public static final int negative_samples = 40; // 5 for mapping, 20 for mm
@@ -33,7 +33,7 @@ public class TestConstants {
         //parallel data
         public static final String SOURCE_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.words.txt";
         //public static final String SOURCE_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/words.txt";
-        public static final String TARGET_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.images.txt";
+        public static final String TARGET_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.images_empty.txt";
         //public static final String TARGET_FILE                  = ROOT_EXP_DIR+"corpus/extended_version/objects.txt";
         public static final String TRAIN_DIR               = "";
 

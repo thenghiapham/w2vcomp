@@ -171,16 +171,8 @@ public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
                     //specifics of current word
                     int wordIndexTarget = sentenceTarget[wordPositionTarget];
                     VocabEntry curWord = vocab_lang2.getEntry(wordIndexTarget);
-                    int jPerceptIndex;
-                    if (curWord.word.equals("rattle")){
-                        jPerceptIndex = images.getIndex("maraca");
-                    }
-                    else{
-                        jPerceptIndex = images.getIndex(curWord.word);
-                    }
-                   
-                    
-                    
+                    int jPerceptIndex = images.getIndex(curWord.word);
+                  
                     if (jPerceptIndex==-1){
                         continue;
                     }
@@ -199,14 +191,7 @@ public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
                     //specifics of current word
                     int wordIndexTarget = sentenceTarget[wordPositionTarget];
                     VocabEntry curWord = vocab_lang2.getEntry(wordIndexTarget);
-                    int jPerceptIndex;
-                    
-                    if (curWord.word.equals("rattle")){
-                        jPerceptIndex = images.getIndex("maraca");
-                    }
-                    else{
-                        jPerceptIndex = images.getIndex(curWord.word);
-                    }
+                    int jPerceptIndex = images.getIndex(curWord.word);
                     
                     if (jPerceptIndex==-1){
                         //System.out.println(curWord.word+" not in visual space");
