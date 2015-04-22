@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import common.IOUtils;
 
@@ -55,6 +56,10 @@ public class WordNetAdj {
         Collections.shuffle(simList);
         result.addAll(simList);
 	    return result;
+	}
+	
+	public Set<String> getAllWords() {
+	    return word2SynsetIds.keySet();
 	}
 	
 	public String[][] getRandomSynoAntoSimNyms(String word, HashSet<String> forbiddenWords) {
@@ -184,6 +189,25 @@ public class WordNetAdj {
 		}
 		return collection2Array(antonyms);
 	}
+	
+	public String[] getAllFirstSenseAntonyms(String word) {
+        ArrayList<String> synsetIds = word2SynsetIds.get(word);
+        if (synsetIds == null) return null;
+        HashSet<String> antonyms = new HashSet<String>();
+        for (String id: synsetIds) {
+            Synset synset = id2Synset.get(id);
+            if (synset.antonymSSId == null) {
+                
+            }
+            else {
+                Synset antoSynset = id2Synset.get(synset.antonymSSId);
+                for (String antonym: antoSynset.words) {
+                    antonyms.add(antonym);
+                }
+            }
+        }
+        return collection2Array(antonyms);
+    }
 	
 	public String[] getAllSynonyms(String word) {
 		ArrayList<String> synsetIds = word2SynsetIds.get(word);

@@ -14,8 +14,8 @@ import common.wordnet.WordNetVerb;
 
 public class AntonymWord2Vec extends MultiThreadWord2Vec{
     public static final int DEFAULT_SYNONYM_SAMPLES = 5;
-    public static final double DEFAULT_MARGIN = 0.2;
-    public static final double DEFAULT_ANTONYM_IMPORTANCE = 3.0;
+    public static final double DEFAULT_MARGIN = 0.4;
+    public static final double DEFAULT_ANTONYM_IMPORTANCE = 8.0;
     protected int synonymSamples = DEFAULT_SYNONYM_SAMPLES;
     protected double margin = DEFAULT_MARGIN;
     

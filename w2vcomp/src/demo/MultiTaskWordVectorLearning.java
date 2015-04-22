@@ -26,9 +26,7 @@ import word2vec.multitask.AntonymWord2Vec;
 public class MultiTaskWordVectorLearning {
     public static void main(String[] args) throws IOException{
         
-        boolean softmax = false;
-        int negativeSamples = 10;
-        double subSampling = 1e-3;
+        
         MultiThreadWord2Vec word2vec = null;
         String configFile = args[0];
         int size = Integer.parseInt(args[1]);
@@ -42,6 +40,9 @@ public class MultiTaskWordVectorLearning {
             forbiddenWordFile = args[6];
         }
         W2vProperties properties = new W2vProperties(configFile);
+        boolean softmax = Boolean.parseBoolean(properties.getProperty("HierarchialSoftmax"));
+        int negativeSamples = Integer.parseInt(properties.getProperty("NegativeSampling"));
+        double subSampling = Double.parseDouble(properties.getProperty("SubSampling"));
         String trainDirPath = properties.getProperty("TrainDir");
         String outputFile = properties.getProperty("WordVectorFile");
         String vocabFile = properties.getProperty("VocabFile");

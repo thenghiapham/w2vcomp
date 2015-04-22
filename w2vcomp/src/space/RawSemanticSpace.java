@@ -129,16 +129,22 @@ public class RawSemanticSpace implements SemanticSpace{
         }
     }
     
-    public void exportSentimentSpace(String textFile, String wordFile) {
+    public void exportSentimentSpace(String textFile, String wordFile, boolean printRawMat) {
         ArrayList<String> newWords = new ArrayList<String>();
-        newWords.add("#UNKNOWN#");
+        if (!printRawMat) {
+            newWords.add("#UNKNOWN#");
+        }
         newWords.addAll(Arrays.asList(words));
         IOUtils.printToFile(wordFile, newWords);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(textFile));
-            writer.write("" + (words.length) + "\t" + vectorSize + "\n" );
+            if (!printRawMat) {
+                writer.write("" + (words.length) + "\t" + vectorSize + "\n" );
+            }
             for (int i = 0; i < words.length; i++) {
-                writer.write(words[i] + "\t");
+                if (!printRawMat) {
+                    writer.write(words[i] + "\t");
+                }
                 double[] vector = vectors[i];
                 for (int j = 0; j < vectorSize; j++) {
                     writer.write("" + vector[j]);

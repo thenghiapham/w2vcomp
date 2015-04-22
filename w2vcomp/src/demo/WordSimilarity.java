@@ -11,7 +11,7 @@ import demo.TestConstants;
 
 public class WordSimilarity {
     public static void main(String[] args) {
-        String vectorFile = TestConstants.VECTOR_FILE;
+        String vectorFile = "/home/thenghiapham/work/project/antonym/output/hs_skip_wiki9_300_anto_train_adj_verb.bin";//TestConstants.VECTOR_FILE;
 //        String vectorFile = TestConstants.VECTOR_FILE.replace(".bin", "_anto.bin");
         RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
         System.out.println("Enter a word or EXIT to exit");
@@ -37,7 +37,7 @@ public class WordSimilarity {
             System.out.println(word + " is not in the space");
             return;
         }
-        Neighbor[] neighbors = space.getNeighbors(word, 10);
+        Neighbor[] neighbors = space.getNeighbors(word, 20);
         System.out.println("Nearest neighbors of \"" + word + "\" are: ");
         for (int i = 0; i < neighbors.length; i++) {
             System.out.println(neighbors[i].word + " " + neighbors[i].sim);
