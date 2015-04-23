@@ -409,4 +409,10 @@ public abstract class AbstractWord2Vec {
         }
         
     }
+
+    public void trainModel(ArrayList<SentenceInputStream> inputStreamsSource,
+            ArrayList<SentenceInputStream> inputStreamsTarget, Vocab vocab) {
+        // TODO Auto-generated method stub
+        
+    }
 }

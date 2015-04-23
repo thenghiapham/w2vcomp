@@ -25,6 +25,11 @@ public class VocabEntry {
         this.frequency = frequency;
     }
 
+    public VocabEntry(String word, long frequency2) {
+        this.word = word;
+        this.frequency = frequency2;
+    }
+
     public static Comparator<VocabEntry> VocabEntryFrequencyComparator = new Comparator<VocabEntry>() {
 
                                                                            @Override

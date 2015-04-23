@@ -6,13 +6,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import common.IOUtils;
-
 import space.SemanticSpace;
 import word2vec.Images;
+
+import common.IOUtils;
+
 import demo.TestConstants;
 
-public class EvalFScore {
+public class CalculateRoc {
 
     public HashMap<String, String> goldStandard;
 
@@ -46,7 +47,7 @@ public class EvalFScore {
         SemanticSpace visionSpace = im.getVisionSpace();
         
         EvalFScore eval = new EvalFScore();
-        eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/frank/dictionary.txt");
+        eval.readGoldStandard("/home/angeliki/Documents/cross-situational/corpus/Frank/dictionary.txt");
         
         eval.words.retainAll(wordSpace.getWord2Index().keySet());
         eval.objects.retainAll(visionSpace.getWord2Index().keySet());
@@ -66,24 +67,21 @@ public class EvalFScore {
         
         
         double[][] cost = new double[eval.words.size()][eval.objects.size()];
-        System.out.println(eval.words.size());
         for (int i = 0; i < eval.words.size(); i++)
         {
             for (int j = 0; j < eval.objects.size(); j++)
             {
                 cost[i][j] = wordSpace.getSim(words[i], objects[j], visionSpace);
-                
+                if (eval.goldStandard.get(words[i]).equals(objects[j])){
+                    System.out.println(cost[i][j]+" 1");
+                }
+                else{
+                    System.out.println(cost[i][j]+" 0");
+                }
                 
             }
         }
-        System.out.println(cost.length+" "+cost[0].length);
-        System.out.println(words.length+" "+objects.length);
-        
-        CompareAssociations acc = new CompareAssociations(words, objects,cost,eval.goldStandard);
-        acc.fScore(null, "bla");
-        
-        System.out.println("SCORE: "+acc.score()+" out of "+words.length);
-        acc.showBest();
+       
     }
 
 }

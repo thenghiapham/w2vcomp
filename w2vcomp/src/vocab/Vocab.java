@@ -186,10 +186,24 @@ public class Vocab {
         trainWords = 0;
         int newIndex = 0;
         for (int index = 0; index < vocabSize; index++) {
-            if (vocab.get(index).frequency >= minCount) {
+            // check if word has acceptable count or it is a test word
+            if ( (vocab.get(index).frequency >= minCount) || vocab.get(index).word.endsWith("#test"))  {
                 VocabEntry entry = vocab.get(index);
-                vocab.set(newIndex, entry);
-                vocabHash.put(entry.word, newIndex);
+                VocabEntry newentry;
+                
+                //it is a test word, remove the #test identifier
+                if (vocab.get(index).word.endsWith("#test")){
+                    newentry = new VocabEntry(entry.word.split("#")[0], entry.frequency);
+                    System.out.println(newentry.word+" "+entry.frequency);
+                    
+                }
+                else{
+                    newentry = entry;
+                }
+                
+                
+                vocab.set(newIndex, newentry);
+                vocabHash.put(newentry.word, newIndex);
                 trainWords += vocab.get(newIndex).frequency;
                 newIndex++;
             }
