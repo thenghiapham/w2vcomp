@@ -79,7 +79,7 @@ public class CompareAssociations {
         }
         System.out.println();
         */
-        
+        double f_all = 0;
         int correct = 0;
         for(int i=0;i<corrects.length;i++) {
             if(corrects[i].object) {
@@ -89,13 +89,14 @@ public class CompareAssociations {
             double recall = correct / (double)corrects.length;              
             double f = 2 * (precision * recall) / (precision + recall);
             String textOut = yAxis[i] + "," + precision + "," + recall + "," + f + "\n";
-            
+            f_all+=f;
             if(w != null) {
                 w.write(textOut);
             } else {
                 System.out.print(textOut);
             }
         }
+        System.out.println("F overall is "+(f_all/corrects.length));
     }
     
 

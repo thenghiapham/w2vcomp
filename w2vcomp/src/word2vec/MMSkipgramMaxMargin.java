@@ -6,6 +6,7 @@ import io.word.Phrase;
 import org.ejml.simple.SimpleMatrix;
 
 import space.SemanticSpace;
+import vocab.Vocab;
 import vocab.VocabEntry;
 
 import common.MathUtils;
@@ -52,7 +53,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
 
             
             //System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word);
-            
+            double sum = 0;
       
             
             //language 1
@@ -141,10 +142,12 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         }
                     }
                 }
+               
                 // Learn weights input -> hidden
                 if (!updateAtTheEnd){
                     for (int j = 0; j < projectionLayerSize; j++) {
                         weights0[wordIndex][j] += a1error[j];
+                        sum+=a1error[j];
                         a1error[j] = 0;
 
                     }
@@ -218,15 +221,25 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 // Learn weights input -> hidden
                 for (int j = 0; j < projectionLayerSize; j++) {
                     weights0[wordIndex][j] += a1error_temp.get(j, 0);
+                    sum-=a1error_temp.get(j, 0);
                     a1error[j] = 0;
                 }
                 
-                
+                //System.out.println("Difference is "+sum);
             }
         }
         
         }
 
+    public Vocab getVocabSource(){
+        return vocab_lang1;
+        
+    }
+    
+    public Vocab getVocabTarget(){
+        return vocab_lang2;
+        
+    }
     
 
     public double[] getCors() throws ValueException{

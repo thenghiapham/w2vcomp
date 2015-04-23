@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 
 import space.SemanticSpace;
+import vocab.Vocab;
 
 import common.MenCorrelation;
 import common.exception.ValueException;
@@ -82,10 +83,48 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         }
         System.out.println("total word count: " + wordCount);
     }
+    
+    @Override
+    public void trainModel(ArrayList<SentenceInputStream> inputStreamsSource, ArrayList<SentenceInputStream> inputStreamsTarget, Vocab vocab) {
+        // single-threaded instead of multi-threaded
+        oldWordCount = 0;
+        wordCount = 0;
+        trainWords = vocab.getTrainWords();
+        System.out.println("train words: " + trainWords);
+        System.out.println("vocab size: " + vocab.getVocabSize());
+        System.out.println("hidden size: " + projectionLayerSize);
+        System.out.println("first word:" + vocab.getEntry(0).word);
+        System.out.println("last word:"
+                + vocab.getEntry(vocab.getVocabSize() - 1).word);
+        
+        
+        if (men != null) {
+            try {
+                outputSpace = new SemanticSpace(vocab_lang1, weights0, false);
+            } catch (ValueException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        int i = 0;
+        for (SentenceInputStream inputStreamSource : inputStreamsSource) {
+            //subsample only source side
+            if (subSample > 0) {
+                inputStreamSource = new SubSamplingSentenceInputStream(inputStreamSource, subSample);
+            }
+            
+            SentenceInputStream inputStreamTarget = inputStreamsTarget.get(i);
+            System.out.println(inputStreamTarget.getWordCount()+" "+inputStreamSource.getWordCount());
+            i++;
+            trainModelThread(inputStreamSource, inputStreamTarget);
+        }
+        System.out.println("total word count: " + wordCount);
+    }
 
     void trainModelThread(SentenceInputStream inputStreamSource, SentenceInputStream inputStreamTarget) {
         oldWordCount = wordCount;
         long lastWordCount = wordCount;
+        int updateEveryNWords = 100;
         int curSentence = 1;
         try {
             int iteration = 0;
@@ -116,23 +155,23 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                 
                 
                 
-                if (wordCount - lastWordCount > 10000) {
+                if (wordCount - lastWordCount > updateEveryNWords) {
                     iteration++;
                     
                     
                     // update alpha
                     alpha = starting_alpha
                             * (1 - (double) wordCount / (trainWords + 1));
-                    if (alpha < starting_alpha * 0.0001) {
-                        alpha = starting_alpha * 0.0001;
+                    if (alpha < starting_alpha * (1/updateEveryNWords)) {
+                        alpha = starting_alpha * (1/updateEveryNWords);
                     }
-                    if (men != null && outputSpace != null &&  iteration %10 == 0) {
+                    if (men != null && outputSpace != null &&  iteration %100 == 0) {
                         //System.out.println("correlation: " + men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),1)+" "+men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),2));
                         System.out.println("correlation: " + men.evaluateSpaceSpearman(outputSpace));
                         mmWordsPerRun = 0;
                         printStatistics();
                     }
-                    if (iteration % 10 == 0) {
+                    if (iteration % 100 == 0) {
                         System.out.println("Trained: " + wordCount + " words");
                         System.out.println("Training rate: " + alpha);
                         //System.out.println("Visual stuff "+imageProjectionLayer.normF());
