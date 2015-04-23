@@ -18,15 +18,15 @@ public class TestConstants {
 
         public static final String typeOfLearning = "ts";
 
-        
+        /*
         public static final String ROOT_EXP_DIR                     = "/home/angeliki/Documents/cross-situational/";
         public static final String ROOT_EVAL_DIR        = "/home/angeliki/Documents/mikolov_composition/misc/";
         public static final String ROOT_VISUAL_DIR        = "/home/angeliki/sas/visLang/cross-situational/visual_symbols/all/";
+    */
 
-
-        //public static final String ROOT_EXP_DIR                     = "/home/aggeliki/sas/visLang/cross-situational/";
-        //public static final String ROOT_EVAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/misc/";
-        //public static final String ROOT_VISUAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/visual_symbols/all/";
+        public static final String ROOT_EXP_DIR                     = "/home/aggeliki/sas/visLang/cross-situational/";
+        public static final String ROOT_EVAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/misc/";
+        public static final String ROOT_VISUAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/visual_symbols/all/";
         
         //for pc
         
