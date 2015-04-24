@@ -24,7 +24,7 @@ public class CrossSituationalLearning {
         
         //MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
         
-        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        MMSkipgramMaxMarginWeighted word2vec = new MMSkipgramMaxMarginWeighted(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         //MMSkipgramMaxMarginWeighted word2vec = new MMSkipgramMaxMarginWeighted(TestConstants.wordDimensions, 5, false, 5,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         
         
@@ -106,9 +106,9 @@ public class CrossSituationalLearning {
         
         Vocab localVocab = new Vocab(1); 
       
-
+        /*
         localVocab.learnVocabFromTrainFile(sourceFileTest);
-        TestConstants.rate_multiplier_grad = 100;
+        TestConstants.rate_multiplier_grad = 20;
         
         //Run inference
         try {
@@ -129,7 +129,7 @@ public class CrossSituationalLearning {
            } catch (IOException e) {
             System.exit(1);
         }
-        
+        */
         double [] cors = word2vec.getCors();
         System.out.println("Printing spearman "+cors[0]);
         System.out.println("Printing pearson "+cors[1]);

@@ -47,7 +47,7 @@ public class CalculateRoc {
         SemanticSpace visionSpace = im.getVisionSpace();
         
         EvalFScore eval = new EvalFScore();
-        eval.readGoldStandard("/home/angeliki/Documents/cross-situational/corpus/Frank/dictionary.txt");
+        eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/Frank/dictionary.txt");
         
         eval.words.retainAll(wordSpace.getWord2Index().keySet());
         eval.objects.retainAll(visionSpace.getWord2Index().keySet());

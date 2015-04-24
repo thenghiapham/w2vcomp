@@ -194,7 +194,7 @@ public class Vocab {
                 //it is a test word, remove the #test identifier
                 if (vocab.get(index).word.endsWith("#test")){
                     newentry = new VocabEntry(entry.word.split("#")[0], entry.frequency);
-                    System.out.println(newentry.word+" "+entry.frequency);
+                    //System.out.println(newentry.word+" "+entry.frequency);
                     
                 }
                 else{

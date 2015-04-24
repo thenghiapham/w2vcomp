@@ -3,33 +3,33 @@ package demo;
 public class TestConstants {
     
         
-        public static int wordDimensions = 200;
-        public static int imageDimensions = 200;
+        public static int wordDimensions = 100;
+        public static int imageDimensions = 100;
     
 
         public static double rate_multiplier_grad = 20; //20 for mapping, 1 for mm
         public static double rate_multiplier_sft = 20;
     
         public static double lambda = 0.0001;  // 0.0001: add to zeros for less reg
-        public static int negative_samples = 20; // 5 for mapping, 20 for mm
+        public static int negative_samples = 40; // 5 for mapping, 20 for mm
         public static double threshold = 5;
         public static double margin = 0.5;
     
         public static long SEED                       = 292626718599866L;
 
-        public static String typeOfLearning = "ts";
+        public static String typeOfLearning = "frank";
 
 
         
-        //public static String ROOT_EXP_DIR                     = "/home/angeliki/Documents/cross-situational/";
-        //public static String ROOT_EVAL_DIR        = "/home/angeliki/Documents/mikolov_composition/misc/";
-        //public static String ROOT_VISUAL_DIR        = "/home/angeliki/sas/visLang/cross-situational/visual_symbols/all/";
+        public static String ROOT_EXP_DIR                     = "/home/angeliki/Documents/cross-situational/";
+        public static String ROOT_EVAL_DIR        = "/home/angeliki/Documents/mikolov_composition/misc/";
+        public static String ROOT_VISUAL_DIR        = "/home/angeliki/sas/visLang/cross-situational/visual_symbols/all/";
 
 
 
-        public static String ROOT_EXP_DIR                     = "/home/aggeliki/sas/visLang/cross-situational/";
-        public static String ROOT_EVAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/misc/";
-        public static String ROOT_VISUAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/visual_symbols/all/";
+        ///public static String ROOT_EXP_DIR                     = "/home/aggeliki/sas/visLang/cross-situational/";
+        ///public static String ROOT_EVAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/misc/";
+        ///public static String ROOT_VISUAL_DIR        = "/home/aggeliki/sas/visLang/cross-situational/visual_symbols/all/";
         
         //for pc
         

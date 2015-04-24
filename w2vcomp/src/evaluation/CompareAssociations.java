@@ -79,7 +79,7 @@ public class CompareAssociations {
         }
         System.out.println();
         */
-        double f_all = 0;
+        double f_max = 0;
         int correct = 0;
         for(int i=0;i<corrects.length;i++) {
             if(corrects[i].object) {
@@ -88,15 +88,17 @@ public class CompareAssociations {
             double precision = correct / (double)(i + 1);
             double recall = correct / (double)corrects.length;              
             double f = 2 * (precision * recall) / (precision + recall);
-            String textOut = yAxis[i] + "," + precision + "," + recall + "," + f + "\n";
-            f_all+=f;
+            String textOut = i + "," + precision + "," + recall + "," + f + "\n";
+            if (f_max<f){
+                f_max = f;
+            }
             if(w != null) {
                 w.write(textOut);
             } else {
                 System.out.print(textOut);
             }
         }
-        System.out.println("F overall is "+(f_all/corrects.length));
+        System.out.println("F overall is "+f_max);
     }
     
 
