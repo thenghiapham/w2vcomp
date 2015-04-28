@@ -55,15 +55,17 @@ public class AntonymSynonymROC {
             filteredPair = filteredPair.replaceAll("_", "-");
             String[] elements = filteredPair.split("\\s");
             if (verb) {
-                elements[0].replaceFirst("to-", "");
-                elements[1].replaceFirst("to-", "");
+                elements[0] = elements[0].replaceFirst("to-", "");
+                elements[1] = elements[1].replaceFirst("to-", "");
             }
             
             
             result[index] = elements;
             index++;
         }
-        System.out.println(result[0][0] + " " + result[0][1]);
+        if (verb) {
+//            System.out.println(result[0][0] + " " + result[0][1]);
+        }
         return result;
     }
     
