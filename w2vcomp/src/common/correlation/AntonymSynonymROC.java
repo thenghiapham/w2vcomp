@@ -54,10 +54,10 @@ public class AntonymSynonymROC {
         for (String filteredPair: filteredInfo) {
             filteredPair = filteredPair.replaceAll("_", "-");
             String[] elements = filteredPair.split("\\s");
-            if (verb) {
+//            if (verb) {
                 elements[0] = elements[0].replaceFirst("to-", "");
                 elements[1] = elements[1].replaceFirst("to-", "");
-            }
+//            }
             
             
             result[index] = elements;
