@@ -25,6 +25,8 @@ public class LexicalEvaluation {
                 {"men", d + "MEN_dataset_lemma.txt", "sim"},
                 {"simlex", d + "simlex-999.txt", "sim"},
                 {"lenci-adj", d + "EN_ant_adj.txt", "anto"},
+                {"lenci-noun", d + "EN_ant_noun.txt", "anto"},
+                {"lenci-verb", d + "EN_ant_verb.txt", "anto"},
                 };
         return datasets;
     }

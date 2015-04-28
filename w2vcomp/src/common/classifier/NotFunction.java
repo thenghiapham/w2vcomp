@@ -101,7 +101,11 @@ public class NotFunction {
         SimpleMatrix notMatrix = function.notFunction;
         IOUtils.saveMatrix("/home/thenghiapham/matrix2.txt", SimpleMatrixUtils.to2DArray(notMatrix), false);
         f.getContentPane().add(new HeatMapPanel(notMatrix));
-        f.setSize(notMatrix.numCols() * 2, notMatrix.numRows() * 2);
+
+//        f.setSize(notMatrix.numCols() * 2, notMatrix.numRows() * 2);
+
+        f.setSize(notMatrix.numCols() * 1, notMatrix.numRows() * 1);
+
         f.setLocation(200,200);
         f.setVisible(true);
         
