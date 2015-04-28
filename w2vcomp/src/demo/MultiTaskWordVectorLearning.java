@@ -22,6 +22,7 @@ import word2vec.MultiThreadAlterSkipGram;
 import word2vec.MultiThreadSkipGram;
 import word2vec.MultiThreadWord2Vec;
 import word2vec.multitask.AntonymWord2Vec;
+import word2vec.multitask.OppositeWord2Vec;
 
 public class MultiTaskWordVectorLearning {
     public static void main(String[] args) throws IOException{
@@ -91,11 +92,47 @@ public class MultiTaskWordVectorLearning {
             }
             
             break;
+        case 3: 
+            word2vec = new OppositeWord2Vec(size, 5, softmax, negativeSamples, 5, subSampling, menFile);
+            if (!(noun || adj || verb)) {
+                throw new ValueException("should train with at least one wordnet");
+            } else {
+                
+                OppositeWord2Vec antoWord2Vec = (OppositeWord2Vec) word2vec;
+                outputFile = outputFile.replaceAll(".bin", "_oppo.bin");
+                HashSet<String> forbiddenSet = new HashSet<String>();
+                if (forbiddenWordFile != null) {
+                    ArrayList<String> forbiddenWords = IOUtils.readFile(forbiddenWordFile);
+                    forbiddenSet = new HashSet<String>(forbiddenWords);
+                    outputFile = outputFile.replaceAll(".bin", "_train.bin");
+                }
+                antoWord2Vec.setForbiddenWords(forbiddenSet);
+                
+                if (noun) {
+                    WordNetNoun wordNetNoun = new WordNetNoun(properties.getProperty("WordNetNoun"));
+                    antoWord2Vec.setWordNetNoun(wordNetNoun);
+                    outputFile = outputFile.replaceAll(".bin", "_noun.bin");
+                }
+                if (adj) {
+                    WordNetAdj wordNetAdj = new WordNetAdj(properties.getProperty("WordNetAdj"));
+                    antoWord2Vec.setWordNetAdj(wordNetAdj);
+                    outputFile = outputFile.replaceAll(".bin", "_adj.bin");
+                }
+                if (verb) {
+                    WordNetVerb wordNetVerb = new WordNetVerb(properties.getProperty("WordNetVerb"));
+                    antoWord2Vec.setWordNetVerb(wordNetVerb);
+                    outputFile = outputFile.replaceAll(".bin", "_verb.bin");  
+                }
+                
+            }
+            
+            break;
         }
         
         File trainDir = new File(trainDirPath);
         File[] trainFiles = trainDir.listFiles();
         System.out.println("Starting training using dir " + trainDirPath);
+        System.out.println("Output file: " + outputFile);
 
         boolean learnVocab = !(new File(vocabFile)).exists();
         Vocab vocab = new Vocab(Integer.parseInt(properties.getProperty("MinFrequency")));
