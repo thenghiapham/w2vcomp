@@ -59,9 +59,11 @@ public class AntonymSynonymROC {
                 elements[1].replaceFirst("to-", "");
             }
             
+            
             result[index] = elements;
             index++;
         }
+        System.out.println(result[0][0] + " " + result[0][1]);
         return result;
     }
     
