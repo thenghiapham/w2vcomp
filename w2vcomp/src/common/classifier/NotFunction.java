@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import org.ejml.simple.SimpleMatrix;
 
 import common.HeatMapPanel;
+import common.IOUtils;
+import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 import common.wordnet.WordNetAdj;
 
@@ -97,8 +99,9 @@ public class NotFunction {
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         SimpleMatrix notMatrix = function.notFunction;
+        IOUtils.saveMatrix("/home/thenghiapham/matrix2.txt", SimpleMatrixUtils.to2DArray(notMatrix), false);
         f.getContentPane().add(new HeatMapPanel(notMatrix));
-        f.setSize(notMatrix.numCols() * 4, notMatrix.numRows() * 4);
+        f.setSize(notMatrix.numCols() * 2, notMatrix.numRows() * 2);
         f.setLocation(200,200);
         f.setVisible(true);
         
