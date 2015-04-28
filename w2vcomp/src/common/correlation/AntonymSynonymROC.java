@@ -41,6 +41,8 @@ public class AntonymSynonymROC {
     protected String[][] getPairs(String inputFile) {
         ArrayList<String> xnymInfo = IOUtils.readFile(inputFile);
         HashSet<String> filteredInfo = new HashSet<>();
+        boolean verb = inputFile.contains("verb");
+        
         for (String pair: xnymInfo) {
             String[] elements = pair.split("\\s");
             if (!elements[1].equals("0")) {
@@ -52,6 +54,11 @@ public class AntonymSynonymROC {
         for (String filteredPair: filteredInfo) {
             filteredPair = filteredPair.replaceAll("_", "-");
             String[] elements = filteredPair.split("\\s");
+            if (verb) {
+                elements[0].replaceFirst("to-", "");
+                elements[1].replaceFirst("to-", "");
+            }
+            
             result[index] = elements;
             index++;
         }
