@@ -98,7 +98,7 @@ public class NotFunction {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         SimpleMatrix notMatrix = function.notFunction;
         f.getContentPane().add(new HeatMapPanel(notMatrix));
-        f.setSize(notMatrix.numCols() * 4, notMatrix.numRows() * 4);
+        f.setSize(notMatrix.numCols() * 1, notMatrix.numRows() * 1);
         f.setLocation(200,200);
         f.setVisible(true);
         
