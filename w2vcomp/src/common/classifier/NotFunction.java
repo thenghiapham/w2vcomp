@@ -1,5 +1,7 @@
 package common.classifier;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,27 +89,67 @@ public class NotFunction {
         WordNetAdj wordnetAdj = new WordNetAdj(adjFile);
         space = space.getSubSpace(wordnetAdj.getAllWords());
         NotFunction function = new NotFunction(space);
-        ArrayList<String[]> pairs = function.getAntonymPairs(wordnetAdj);
-        Collections.shuffle(pairs);
+//        ArrayList<String[]> pairs = function.getAntonymPairs(wordnetAdj);
+//        Collections.shuffle(pairs);
+//        printListPair(pairs, "/home/thenghiapham/ant_pairs.txt");
+        ArrayList<String[]> pairs = IOUtils.readTupleList("/home/thenghiapham/ant_pairs.txt");
         System.out.println(pairs.size());
+        int foldNum = 10;
+        int foldLength = pairs.size() / foldNum;
+        int mod = pairs.size() % foldNum;
+        for (int i = 0; i < foldNum; i++) {
+            int begin = 0;
+            int end = 0;
+            if (i < mod) {
+                begin = (foldLength + 1) * i;
+                end = begin + foldLength + 1;
+            } else {
+                begin = (foldLength * i) + mod;
+                end = begin + foldLength;
+            }
+            List<String[]> topPairs = new ArrayList<>();
+            if (i != 0) {
+                topPairs = pairs.subList(0, begin);
+            }
+            List<String[]> botPairs = new ArrayList<>();
+            if (i != 0) {
+                topPairs = pairs.subList(0, begin);
+            }
+        }
+        
+        
         int testSize = 500;
         List<String[]> trainPairs = pairs.subList(0, pairs.size() - testSize);
         List<String[]> testPairs = pairs.subList(pairs.size() - testSize, pairs.size());
         function.train(trainPairs);
         System.out.println("Result on train:" + function.test(trainPairs, 1));
         System.out.println("Result on test:" + function.test(testPairs, 1));
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        SimpleMatrix notMatrix = function.notFunction;
-        IOUtils.saveMatrix("/home/thenghiapham/matrix2.txt", SimpleMatrixUtils.to2DArray(notMatrix), false);
-        f.getContentPane().add(new HeatMapPanel(notMatrix));
-
-//        f.setSize(notMatrix.numCols() * 2, notMatrix.numRows() * 2);
-
-        f.setSize(notMatrix.numCols() * 1, notMatrix.numRows() * 1);
-
-        f.setLocation(200,200);
-        f.setVisible(true);
+//        JFrame f = new JFrame();
+//        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        SimpleMatrix notMatrix = function.notFunction;
+//        IOUtils.saveMatrix("/home/thenghiapham/matrix2.txt", SimpleMatrixUtils.to2DArray(notMatrix), false);
+//        f.getContentPane().add(new HeatMapPanel(notMatrix));
+//
+////        f.setSize(notMatrix.numCols() * 2, notMatrix.numRows() * 2);
+//
+//        f.setSize(notMatrix.numCols() * 1, notMatrix.numRows() * 1);
+//
+//        f.setLocation(200,200);
+//        f.setVisible(true);
         
     }
+    
+    public static void printListPair(ArrayList<String[]> pairs, String outputFile) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+        for (int i = 0; i < pairs.size(); i++) {
+            String[] pair = pairs.get(i);
+            writer.write(pair[0]);
+            for (int j = 1; j < pair.length; j++) {
+                writer.write("\t" + pair[j]);
+            }
+            writer.write("\n");
+        }
+        writer.close();
+    }
+    
 }

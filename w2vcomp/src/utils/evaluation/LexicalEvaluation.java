@@ -2,6 +2,7 @@ package utils.evaluation;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -27,12 +28,14 @@ public class LexicalEvaluation {
                 {"lenci-adj", d + "EN_ant_adj.txt", "anto"},
                 {"lenci-noun", d + "EN_ant_noun.txt", "anto"},
                 {"lenci-verb", d + "EN_ant_verb.txt", "anto"},
+                {"lenci-av", d + "EN_ant_av.txt", "anto"},
                 {"lenci-all", d + "EN_ant_all.txt", "anto"},
                 };
         return datasets;
     }
                         
     public static void main(String args[]) throws IOException{
+        System.out.println("Default Charset=" + Charset.defaultCharset());
         String spaceDir = args[0];
         String datasetDir = args[1];
         File[] files = (new File(spaceDir)).listFiles();

@@ -17,12 +17,13 @@ import common.correlation.MenCorrelation;
  *
  */
 public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
-
+    
     protected MenCorrelation men;
     protected RawSemanticSpace outputSpace;
     protected RawSemanticSpace negSpace;
     long lastWordCount = 0;
     int iteration = 0;
+    int epochNum = 2;
     
 
     public MultiThreadWord2Vec(int projectionLayerSize, int windowSize,
@@ -43,7 +44,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         // single-threaded instead of multi-threaded
         wordCount = 0;
         lastWordCount = 0;
-        trainWords = vocab.getTrainWords();
+        trainWords = vocab.getTrainWords() * epochNum;
         System.out.println("train words: " + trainWords);
         System.out.println("vocab size: " + vocab.getVocabSize());
         System.out.println("hidden size: " + projectionLayerSize);
@@ -58,23 +59,28 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
             }
         }
         
+        
         TrainingThread[] threads = new TrainingThread[inputStreams.size()];
-        for (int i = 0; i < inputStreams.size(); i++) {
-            SentenceInputStream inputStream = inputStreams.get(i);
-            if (subSample > 0) {
-                inputStream = new SubSamplingSentenceInputStream(inputStream, subSample);
+        for (int epoch = 0; epoch < epochNum; epoch++) {
+            System.out.println("epoch: " + epoch);
+            for (int i = 0; i < inputStreams.size(); i++) {
+                SentenceInputStream inputStream = inputStreams.get(i);
+                if (subSample > 0) {
+                    inputStream = new SubSamplingSentenceInputStream(inputStream, subSample);
+                }
+                threads[i] = new TrainingThread(inputStream);
+                threads[i].start();
             }
-            threads[i] = new TrainingThread(inputStream);
-            threads[i].start();
-        }
-        try {
-            for (TrainingThread thread: threads) {
-                    thread.join();
+            try {
+                for (TrainingThread thread: threads) {
+                        thread.join();
+                }
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
+        
         System.out.println("total word count: " + wordCount);
     }
 

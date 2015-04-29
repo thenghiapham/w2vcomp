@@ -90,6 +90,30 @@ public class IOUtils {
     }
     
     /**
+     * Read all the lines of a file
+     * @param inputFile: path to the input file
+     * @return a list of string
+     */
+    public static ArrayList<String[]> readTupleList(String inputFile) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            ArrayList<String[]> slResult = new ArrayList<String[]>();
+            String line = reader.readLine();
+            while (line != null && !line.equals("")) {
+                slResult.add(line.split("\\s"));
+                line = reader.readLine();
+            }
+            reader.close();
+            return slResult;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+        
+    }
+    
+    /**
      * Print a list of strings to a file
      * @param outputFile: the path to the output file
      * @param strings
