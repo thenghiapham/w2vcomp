@@ -1,10 +1,14 @@
 package common.classifier;
 
+import io.word.WordInputStream;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -16,6 +20,7 @@ import common.IOUtils;
 import common.SimpleMatrixUtils;
 import common.exception.ValueException;
 import common.wordnet.WordNetAdj;
+import common.wordnet.WordNetVerb;
 
 import space.Neighbor;
 import space.RawSemanticSpace;
@@ -82,17 +87,59 @@ public class NotFunction {
         return pairs;
     }
     
+    
     public static void main(String[] args) throws IOException{
         String adjFile = args[0];
         String spaceFile = args[1];
         RawSemanticSpace space = RawSemanticSpace.readSpace(spaceFile);
+        System.out.println("space: size" + space.getVocabSize());
         WordNetAdj wordnetAdj = new WordNetAdj(adjFile);
         space = space.getSubSpace(wordnetAdj.getAllWords());
+        
+//        HashSet<String> hasAntoWords = new HashSet<>();
+//        for (String word: space.getWords()) {
+//            
+//            String[] antos = new String[0];
+//            if (wordnetAdj.getAllAntonyms(word).length != 0) {
+//                antos = wordnetAdj.getAllSimilars(word);
+//                
+//                hasAntoWords.add(word);
+//            }
+//            for (String anto: new HashSet<String>(Arrays.asList(antos))) {
+//                if (space.contains(anto)) {
+////                    pair++;
+//                }
+//            }
+//        }
+//        System.out.println("pair num: " + pair / 2);
+        
+//        WordNetVerb wordnetVerb = new WordNetVerb("/home/thenghiapham/work/project/antonym/dict/data.verb");
+//        RawSemanticSpace verbSapce = RawSemanticSpace.readSpace(spaceFile);
+//        verbSapce = verbSapce.getSubSpace(wordnetVerb.getAllWords());
+//        int verbpair = 0;
+//        for (String word: verbSapce.getWords()) {
+//            String[] antos = new String[0];
+//            if (wordnetVerb.getAllAntonyms(word).length != 0) {
+//                antos = wordnetVerb.getAllSimilars(word);
+//                hasAntoWords.add(word);
+//            }
+//            for (String anto: new HashSet<String>(Arrays.asList(antos))) {
+//                if (verbSapce.contains(anto)) {
+////                    verbpair++;
+//                }
+//            }
+//        }
+//        IOUtils.printToFile("/home/thenghiapham/hasAntoWords.txt",  new ArrayList<String>(hasAntoWords));
+//        
+//        System.out.println("num: " + hasAntoWords.size());
+        
+        
+        System.out.println("space: size" + space.getVocabSize());
         NotFunction function = new NotFunction(space);
 //        ArrayList<String[]> pairs = function.getAntonymPairs(wordnetAdj);
 //        Collections.shuffle(pairs);
 //        printListPair(pairs, "/home/thenghiapham/ant_pairs.txt");
-        ArrayList<String[]> pairs = IOUtils.readTupleList("/home/nghia/ant_pairs.txt");
+        ArrayList<String[]> pairs = IOUtils.readTupleList("/home/thenghiapham/cross_pairs.txt");
         System.out.println(pairs.size());
         int foldNum = 10;
         int foldLength = pairs.size() / foldNum;
@@ -155,19 +202,6 @@ public class NotFunction {
 //        f.setLocation(200,200);
 //        f.setVisible(true);
         
-    }
-    
-    public static void printListPair(ArrayList<String[]> pairs, String outputFile) throws IOException{
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-        for (int i = 0; i < pairs.size(); i++) {
-            String[] pair = pairs.get(i);
-            writer.write(pair[0]);
-            for (int j = 1; j < pair.length; j++) {
-                writer.write("\t" + pair[j]);
-            }
-            writer.write("\n");
-        }
-        writer.close();
     }
     
 }

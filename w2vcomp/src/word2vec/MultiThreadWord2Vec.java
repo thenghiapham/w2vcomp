@@ -23,7 +23,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
     protected RawSemanticSpace negSpace;
     long lastWordCount = 0;
     int iteration = 0;
-    int epochNum = 2;
+    int epochNum = 1;
     
 
     public MultiThreadWord2Vec(int projectionLayerSize, int windowSize,

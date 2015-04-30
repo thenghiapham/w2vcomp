@@ -65,6 +65,19 @@ public class IOUtils {
         System.out.println(buffer.toString());
     }
     
+    public static void printListPair(ArrayList<String[]> pairs, String outputFile) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+        for (int i = 0; i < pairs.size(); i++) {
+            String[] pair = pairs.get(i);
+            writer.write(pair[0]);
+            for (int j = 1; j < pair.length; j++) {
+                writer.write("\t" + pair[j]);
+            }
+            writer.write("\n");
+        }
+        writer.close();
+    }
+    
     /**
      * Read all the lines of a file
      * @param inputFile: path to the input file

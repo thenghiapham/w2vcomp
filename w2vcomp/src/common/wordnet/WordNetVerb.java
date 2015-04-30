@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import common.IOUtils;
 
@@ -261,6 +262,78 @@ public class WordNetVerb {
         return new ArrayList<String>(tmpList.subList(0, sublistLength));
     }
     
+    public Set<String> getAllWords() {
+        return word2SynsetIds.keySet();
+    }
+    
+    public String[] getAllAntonyms(String word) {
+        ArrayList<String> synsetIds = word2SynsetIds.get(word);
+        if (synsetIds == null) return null;
+        HashSet<String> antonyms = new HashSet<String>();
+        for (String id: synsetIds) {
+            Synset synset = id2Synset.get(id);
+            if (synset.antonymSSId == null) {
+                // TODO: if it's an s type?
+                if (synset.synsetType.equals("s")) {
+                    for (String simId: synset.simSSId) {
+                        Synset simSynset = id2Synset.get(simId);
+                        if (simSynset.antonymSSId == null) continue;
+                        Synset antoSynset = id2Synset.get(simSynset.antonymSSId);
+                        for (String antonym: antoSynset.words) {
+                            antonyms.add(antonym);
+                        }
+                    }
+                }
+            }
+            else {
+                Synset antoSynset = id2Synset.get(synset.antonymSSId);
+                for (String antonym: antoSynset.words) {
+                    antonyms.add(antonym);
+                }
+            }
+        }
+        return collection2Array(antonyms);
+    }
+    
+    public String[] getAllSynonyms(String word) {
+        ArrayList<String> synsetIds = word2SynsetIds.get(word);
+        if (synsetIds == null) return null;
+        HashSet<String> synonyms = new HashSet<String>();
+        for (String id: synsetIds) {
+            Synset synset = id2Synset.get(id);
+            
+            // TODO: include type s
+//          if (synset.synsetType.equals("s")) continue;
+            
+            for (String synonym: synset.words) {
+                synonyms.add(synonym);
+            }
+        }
+        // TODO: check this
+        synonyms.remove(word);
+        return collection2Array(synonyms);
+    }
+    
+    public String[] getAllSimilars(String word) {
+        ArrayList<String> synsetIds = word2SynsetIds.get(word);
+        if (synsetIds == null) return null;
+        HashSet<String> simnyms = new HashSet<String>();
+        for (String id: synsetIds) {
+            Synset synset = id2Synset.get(id);
+//           TODO: include type s
+//          if (synset.synsetType.equals("s")) continue;
+                        
+            String[] simSSId = synset.hypoSSId;
+            for (String simId: simSSId) {
+                Synset simSynset = id2Synset.get(simId);
+                for (String simnym: simSynset.words) {
+                    simnyms.add(simnym);
+                }
+            }
+        }
+        simnyms.remove(word);
+        return collection2Array(simnyms);
+    }
     
     public static void main(String[] args) throws IOException{
         String verbFile = args[0];
