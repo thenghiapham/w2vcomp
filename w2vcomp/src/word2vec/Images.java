@@ -76,9 +76,9 @@ public class Images {
         
         this.word2Index = space.getWord2Index();
         //random_vecs();
-        /*System.out.println("Shuffling vecs");
-        shuffling_vecs();*/
-        System.out.println(this.space.getVectorSize());
+        System.out.println("Shuffling vecs");
+        //shuffling_vecs();
+        //System.out.println(this.space.getVectorSize());
 
         this.randomTablesize = this.word2Index.size();
         initImageTable();
@@ -125,8 +125,8 @@ public class Images {
         
         //For test only. Either randomly shuffle the words with the images or assign random vectors to words
         //random_vecs();
-        /*System.out.println("Shuffling vecs");
-        shuffling_vecs();*/
+        //System.out.println("Shuffling vecs");
+        //shuffling_vecs();
        
            
         System.out.println("Images vectors with size:"+this.space.getVectorSize());

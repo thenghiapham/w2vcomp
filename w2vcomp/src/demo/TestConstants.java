@@ -3,12 +3,12 @@ package demo;
 public class TestConstants {
     
         
-        public static int wordDimensions = 100;
-        public static int imageDimensions = 100;
+        public static int wordDimensions = 200;
+        public static int imageDimensions = 200;
     
 
-        public static double rate_multiplier_grad = 20; //20 for mapping, 1 for mm
-        public static double rate_multiplier_sft = 20;
+        public static double rate_multiplier_grad = 50; //20 for mapping, 1 for mm
+        public static double rate_multiplier_sft = 10;
     
         public static double lambda = 0.0001;  // 0.0001: add to zeros for less reg
         public static int negative_samples = 40; // 5 for mapping, 20 for mm
@@ -34,12 +34,12 @@ public class TestConstants {
         //for pc
         
         //parallel data
-         public static String SOURCE_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.words.txt";
-        //public static String SOURCE_FILE_TRAIN                    = ROOT_EXP_DIR+"corpus/extended_v2_version/words.txt";
-        public static String SOURCE_FILE_TEST                  = ROOT_EXP_DIR+"corpus/extended_version/words.txt";
-        public static String TARGET_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.images.txt";
-        //public static String TARGET_FILE_TRAIN                = ROOT_EXP_DIR+"corpus/extended_v2_version/objects.txt";
-        public static String TARGET_FILE_TEST                  = ROOT_EXP_DIR+"corpus/extended_version/objects.txt";
+         //public static String SOURCE_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus//uncut_version/cds.11_24.words.txt";
+        public static String SOURCE_FILE_TRAIN                    = ROOT_EXP_DIR+"corpus/extended_version/words.txt";
+        //public static String SOURCE_FILE_TEST                  = ROOT_EXP_DIR+"corpus/extended_version/words.txt";
+        //public static String TARGET_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus//uncut_version/cds.11_24.images.txt";
+        public static String TARGET_FILE_TRAIN                = ROOT_EXP_DIR+"corpus/extended_version/objects.txt";
+        //public static String TARGET_FILE_TEST                  = ROOT_EXP_DIR+"corpus/extended_version/objects.txt";
         public static String TRAIN_DIR               = "";
 
 

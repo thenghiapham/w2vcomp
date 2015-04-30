@@ -58,17 +58,17 @@ public class EvalRetrieval {
         System.out.println(this.words.size());
         String object;
         for (String word: this.words){
-            
-            Neighbor[] NNs = space.getNeighbors(word, numOfNs,  searchSpace);
-            //System.out.println(word+" ---->"+NNs[0].word+" "+NNs[0].sim);
-            
             object = this.goldStandard.get(word);
+            Neighbor[] NNs = space.getNeighbors(word, numOfNs,  searchSpace);
+            System.out.println(word+" ---->"+object+" ---->"+NNs[0].word);
+            
+            
             for (int i=0;i<numOfNs;i++){
                 
                 if (NNs[i].word.equals(object)){
                     rank+=i;
                     if (i==0){
-                        System.out.println(word+" ---->"+NNs[0].word+" "+NNs[0].sim);
+                        //System.out.println(word+" ---->"+NNs[0].word+" "+NNs[0].sim);
 
                         ranks[0]+=1; ranks[1]+=1; ranks[2]+=1; ranks[3]+=1; ranks[4]+=1;  ranks[5]+=1;
                         break;
