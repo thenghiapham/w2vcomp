@@ -92,11 +92,15 @@ public class NotFunction {
 //        ArrayList<String[]> pairs = function.getAntonymPairs(wordnetAdj);
 //        Collections.shuffle(pairs);
 //        printListPair(pairs, "/home/thenghiapham/ant_pairs.txt");
-        ArrayList<String[]> pairs = IOUtils.readTupleList("/home/thenghiapham/ant_pairs.txt");
+        ArrayList<String[]> pairs = IOUtils.readTupleList("/home/nghia/ant_pairs.txt");
         System.out.println(pairs.size());
         int foldNum = 10;
         int foldLength = pairs.size() / foldNum;
         int mod = pairs.size() % foldNum;
+        double trainCorrect = 0;
+        double testCorrect = 0;
+        System.out.println("foldLength:" + foldLength);
+        System.out.println("mod:" + mod);
         for (int i = 0; i < foldNum; i++) {
             int begin = 0;
             int end = 0;
@@ -107,23 +111,37 @@ public class NotFunction {
                 begin = (foldLength * i) + mod;
                 end = begin + foldLength;
             }
-            List<String[]> topPairs = new ArrayList<>();
-            if (i != 0) {
-                topPairs = pairs.subList(0, begin);
-            }
+            System.out.println("begin:" + begin);
+            System.out.println("end:" + end);
+            ArrayList<String[]> topPairs = new ArrayList<String[]>(pairs.subList(0, begin));
+//            List<String[]> topPairs = new ArrayList<>();
+//            if (i != 0) {
+//                topPairs = pairs.subList(0, begin);
+//            }
             List<String[]> botPairs = new ArrayList<>();
-            if (i != 0) {
-                topPairs = pairs.subList(0, begin);
+            if (i != foldNum - 1) {
+                botPairs = new ArrayList<>(pairs.subList(end, pairs.size()));
             }
+            topPairs.addAll(botPairs);
+            ArrayList<String[]> trainPairs = topPairs;//new ArrayList<String[]>(topPairs);
+            function.train(trainPairs);
+            List<String[]> testPairs = new ArrayList<String[]>(pairs.subList(begin, end));
+            System.out.println("fold: " + i);
+            System.out.println("train size: " + trainPairs.size());
+            System.out.println("test size: " + testPairs.size());
+            double trainAcc = function.test(trainPairs, 1);
+            double testAcc = function.test(testPairs, 1);
+            System.out.println("Result on train:" + trainAcc);
+            System.out.println("Result on test:" + testAcc);
+            trainCorrect += trainAcc * trainPairs.size();
+            testCorrect += testAcc * testPairs.size();
+            
         }
+        System.out.println("acc train: " + trainCorrect / ( (foldNum - 1) * pairs.size()));
+        System.out.println("acc test: " + testCorrect / pairs.size());
         
         
-        int testSize = 500;
-        List<String[]> trainPairs = pairs.subList(0, pairs.size() - testSize);
-        List<String[]> testPairs = pairs.subList(pairs.size() - testSize, pairs.size());
-        function.train(trainPairs);
-        System.out.println("Result on train:" + function.test(trainPairs, 1));
-        System.out.println("Result on test:" + function.test(testPairs, 1));
+        
 //        JFrame f = new JFrame();
 //        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        SimpleMatrix notMatrix = function.notFunction;

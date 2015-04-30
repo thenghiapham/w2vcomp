@@ -398,4 +398,8 @@ public class RawSemanticSpace implements SemanticSpace{
     public double[][] getVectors() {
         return vectors;
     }
+    
+    public int getVocabSize() {
+        return words.length;
+    }
 }

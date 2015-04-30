@@ -28,8 +28,8 @@ public class LexicalEvaluation {
                 {"lenci-adj", d + "EN_ant_adj.txt", "anto"},
                 {"lenci-noun", d + "EN_ant_noun.txt", "anto"},
                 {"lenci-verb", d + "EN_ant_verb.txt", "anto"},
-                {"lenci-av", d + "EN_ant_av.txt", "anto"},
-                {"lenci-all", d + "EN_ant_all.txt", "anto"},
+//                {"lenci-av", d + "EN_ant_av.txt", "anto"},
+//                {"lenci-all", d + "EN_ant_all.txt", "anto"},
                 };
         return datasets;
     }
