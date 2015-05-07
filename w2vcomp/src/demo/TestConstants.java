@@ -11,7 +11,7 @@ public class TestConstants {
         public static double rate_multiplier_sft = 20;
     
         public static double lambda = 0.0001;  // 0.0001: add to zeros for less reg
-        public static int negative_samples = 20; // 5 for mapping, 20 for mm
+        public static int negative_samples = 5; // 5 for mapping, 20 for mm
         public static double threshold = 5;
         public static double margin = 0.5;
     
