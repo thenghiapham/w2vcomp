@@ -9,9 +9,16 @@ public class Correlation {
         this.gold = gold;
     }
     public double[] derivative() {
+        double aveX = 0;
+        double aveY = 0;
+        double aveX2 = 0;
+        double aveY2 = 0;
+        double aveXY =0;
         for (int i = 0; i < gold.length; i++) {
-            
+            aveX += predicted[i];
+            aveX += predicted[i] * predicted[i];
         }
         return null;
     }
 }
+
