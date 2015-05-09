@@ -74,10 +74,10 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
         
     }
     
-//    public void initNetwork() {
-//        super.initNetwork();
-//        
-//    }
+    public void addTrainedCorrelation(String correlationFile, String name) {
+        addTrainedCorrelation(correlationFile);
+        trainedCorrelations.get(trainedCorrelations.size() -1).setName(name);
+    }
     
 
     protected void trainModelThread(SentenceInputStream inputStream) {

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import nu.xom.jaxen.function.NameFunction;
 import vocab.Vocab;
 import word2vec.MultiThreadSkipGram;
 import word2vec.MultiThreadWord2Vec;
@@ -36,6 +37,7 @@ public class CorrelatedWordVectorLearning {
         String outputFile = properties.getProperty("WordVectorFile");
         String vocabFile = properties.getProperty("VocabFile");
         String menFile = properties.getProperty("MenFile");
+        String simFile = properties.getProperty("SimlexFile");
         outputFile = outputFile.replaceAll(".bin", "_" + size + ".bin");
         switch (type) {
         case 0:
@@ -73,7 +75,8 @@ public class CorrelatedWordVectorLearning {
         word2vec.initNetwork();
         
         if (type==1) {
-            ((CorrelationSkipGram) word2vec).addTrainedCorrelation(menFile);
+            ((CorrelationSkipGram) word2vec).addTrainedCorrelation(menFile,"men");
+            ((CorrelationSkipGram) word2vec).addTrainedCorrelation(simFile,"simlex");
         }
 
         System.out.println("Start training");

@@ -7,6 +7,7 @@ import common.exception.ValueException;
 
 public class Correlation {
 //    double[] predicted;
+    String name = "correlation";
     double[] gold;
     int length;
     double aveY;
@@ -70,7 +71,7 @@ public class Correlation {
             result[i] *= (((gold[i] - aveY) * sCovX) - ((covXY / sCovY) * (predicted[i] - aveX))) / length;
         }
             
-        System.out.println("correlation: " + correlation);
+        System.out.println(name + ": " + correlation);
         return result;
     }
     
@@ -96,6 +97,10 @@ public class Correlation {
         }
         
         return result;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
     
     public static void testPearsonDerivative() {
