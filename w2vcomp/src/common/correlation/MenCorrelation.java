@@ -130,6 +130,10 @@ public class MenCorrelation {
 	    return this.name;
 	}
 	
+	public String[][] getWordPairs() {
+	    return this.wordPairs;
+	}
+	
 	public static void main(String[] args) {
 //	    SemanticSpace space = RawSemanticSpace.readSpace("/home/thenghiapham/svn/w2v-unmodified/vectors.bin");
 	    RawSemanticSpace space = RawSemanticSpace.readSpace(TestConstants.S_VECTOR_FILE);

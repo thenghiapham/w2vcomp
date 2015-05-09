@@ -2,6 +2,8 @@ package common;
 
 import java.util.Random;
 
+import org.ejml.simple.SimpleMatrix;
+
 /**
  * This class contains a set of utility method for simple maths
  * (maybe should be replaced with utility method for SimpleMatrix class
@@ -76,5 +78,18 @@ public class MathUtils {
         } else {
             return false;
         }
+    }
+    
+    public static double[] cosineDerivative(double[] x, double[] a) {
+        double lengthX = length(x);
+        double lengthA = length(a);
+        double dotP = dot(x, a);
+        double rToScaleA = 1 / (lengthX * lengthA);
+        double rToScaleX = dotP / (lengthA * lengthX * lengthX * lengthX);
+        double[] result = new double[x.length];
+        for (int i = 0; i < x.length; i++) {
+            result[i] = a[i] * rToScaleA - x[i] * rToScaleX;
+        }
+        return result;
     }
 }

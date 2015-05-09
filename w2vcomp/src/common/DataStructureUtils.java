@@ -69,6 +69,20 @@ public class DataStructureUtils {
         list.toArray(array);
         return array;
     }
+    
+    /**
+     * This template method turns an array into a HashMap that maps an element
+     * of the array to its index 
+     */
+    public static <T> HashMap<T, Integer> listToMap(List<T> inputArray) {
+        HashMap<T, Integer> result = new HashMap<T, Integer>();
+        if (inputArray != null) {
+            for (int i = 0; i < inputArray.size(); i++) {
+                result.put(inputArray.get(i), i);
+            }
+        }
+        return result;
+    }
 
     public static String[] stringListToArray(List<String> list) {
         String[] array = new String[list.size()];

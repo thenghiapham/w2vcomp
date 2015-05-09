@@ -21,9 +21,9 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
     protected MenCorrelation men;
     protected RawSemanticSpace outputSpace;
     protected RawSemanticSpace negSpace;
-    long lastWordCount = 0;
-    int iteration = 0;
-    int epochNum = 1;
+    protected long lastWordCount = 0;
+    protected int iteration = 0;
+    protected int epochNum = 1;
     
 
     public MultiThreadWord2Vec(int projectionLayerSize, int windowSize,
@@ -84,7 +84,7 @@ public abstract class MultiThreadWord2Vec extends AbstractWord2Vec {
         System.out.println("total word count: " + wordCount);
     }
 
-    void trainModelThread(SentenceInputStream inputStream) {
+    protected void trainModelThread(SentenceInputStream inputStream) {
         long oldWordCount = 0;
         try {
             while (true) {
