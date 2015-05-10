@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 
 import common.correlation.AntonymSynonymROC;
 import common.correlation.FeatureNorm;
@@ -25,11 +26,21 @@ public class LexicalEvaluation {
         String[][] datasets = {
                 {"men", d + "MEN_dataset_lemma.txt", "sim"},
                 {"simlex", d + "simlex-999.txt", "sim"},
-                {"lenci-adj", d + "EN_ant_adj.txt", "anto"},
-                {"lenci-noun", d + "EN_ant_noun.txt", "anto"},
-                {"lenci-verb", d + "EN_ant_verb.txt", "anto"},
-//                {"lenci-av", d + "EN_ant_av.txt", "anto"},
-//                {"lenci-all", d + "EN_ant_all.txt", "anto"},
+//                {"lenci-adj", d + "EN_ant_adj.txt", "anto"},
+//                {"lenci-noun", d + "EN_ant_noun.txt", "anto"},
+//                {"lenci-verb", d + "EN_ant_verb.txt", "anto"},
+                {"ws-rel", d + "cleaned-wordsim_relatedness_goldstandard.txt", "sim"},
+                {"ws-sim", d + "cleaned-wordsim_similarity_goldstandard.txt", "sim"},
+                {"ws-tot", d + "cleaned-wordsim_simrel_goldstandard.txt", "sim"},
+                {"rg", d + "rubenstein-goodeneough.txt", "sim"},
+//                {"sim-lex", nDir + "simlex-999.txt", "sim"},
+                {"tfl", d + "toefl-test-set.txt", "tfl"},
+//                {"mcrae", d + "mcrae-dataset.txt", "selpref"},
+//                {"up", d + "up-dataset.txt", "selpref"},
+//                {"aamp", d + "aamp-gold-standard.txt", "clst"},
+//                {"battig", d + "battig-gold-standard.txt", "clst"},
+//                {"esslli", d + "esslli-gold-standard.txt", "clst"},
+//                {"analogy", nDir + "questions-words.txt", "anal"},
                 };
         return datasets;
     }
@@ -39,6 +50,7 @@ public class LexicalEvaluation {
         String spaceDir = args[0];
         String datasetDir = args[1];
         File[] files = (new File(spaceDir)).listFiles();
+        Arrays.sort(files);
         String[][] datasets = getDatasetInfo(datasetDir);
         for (int i = 0; i < datasets.length; i++) {
             System.out.print("|l");
@@ -48,7 +60,7 @@ public class LexicalEvaluation {
             String name = datasetInfo[0];
             System.out.print(" & " + name);
         }
-        System.out.print(" & an & ansyn & ansem ");
+//        System.out.print(" & an & ansyn & ansem ");
         System.out.println("\\\\ \\hline");
         for (File file: files) {
             if (!file.getName().endsWith("bin")) continue;

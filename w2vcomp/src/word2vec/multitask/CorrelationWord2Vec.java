@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import space.RawSemanticSpace;
 import common.DataStructureUtils;
 import common.correlation.MenCorrelation;
 import common.exception.ValueException;
@@ -40,6 +41,40 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
         MenCorrelation men = new MenCorrelation(correlationFile);
         String[][] wordPairs = men.getWordPairs();
         double[] gold = men.getGolds();
+        addTrainCorrelation(wordPairs, gold);
+    }
+    
+    public void addTrainedCorrelatedSpace(String rawSpaceFile) {
+        RawSemanticSpace space = RawSemanticSpace.readSpace(rawSpaceFile);
+        String[] allWords = space.getWords();
+        int wordNum = space.getVocabSize() - 1;
+        int pairNum = wordNum * (int) Math.log(wordNum);
+        int x = 0;
+        int y = 0;
+        HashSet<Point> pointSet = new HashSet<CorrelationWord2Vec.Point>();
+        String[][] wordPairs = new String[pairNum][2];
+        double[] gold = new double[pairNum];
+        for (int i = 0; i  < pairNum; i++) {
+            while (true) {
+                x = rand.nextInt(wordNum) + 1;
+                y = rand.nextInt(wordNum) + 1;
+                Point newPoint = new Point(x, y);
+                if (pointSet.contains(newPoint) || x >= y) {
+                    continue;
+                } else {
+                    pointSet.add(newPoint);
+                    wordPairs[i][0] = allWords[x];
+                    wordPairs[i][1] = allWords[y];
+                    gold[i] = space.getSim(allWords[x], allWords[y]);
+                    break;
+                }
+            }
+        }
+        addTrainCorrelation(wordPairs, gold);
+    }
+    
+    protected void addTrainCorrelation(String[][] wordPairs, double[] gold) {
+        
         
         HashSet<String> wordSet = new HashSet<String>();
         int pairNum = 0;
@@ -71,7 +106,6 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
         trainedCorrelations.add(new Correlation(gold));
         trainedPairs.add(pairs);
         trainedCorVectors.add(corVectors);
-        
     }
     
     public void addTrainedCorrelation(String correlationFile, String name) {
@@ -79,12 +113,15 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
         trainedCorrelations.get(trainedCorrelations.size() -1).setName(name);
     }
     
-
+    public void addTrainedCorrelatedSpace(String rawSpaceFile, String name) {
+        addTrainedCorrelatedSpace(rawSpaceFile);
+        trainedCorrelations.get(trainedCorrelations.size() -1).setName(name);
+    }
+    
     protected void trainModelThread(SentenceInputStream inputStream) {
         long oldWordCount = 0;
         try {
             while (true) {
-
                 // read the whole sentence sentence,
                 // the output would be the list of the word's indices in the
                 // dictionary
@@ -177,4 +214,23 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
             }
         }
     }
+    
+    class Point{
+        int x;
+        int y;
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+        
+        @Override
+        public boolean equals(Object object) {
+            if (!(object instanceof Point)) return false;
+            else {
+                Point anotherPoint = (Point) object;
+                return (x == anotherPoint.x) && (y == anotherPoint.y); 
+            }
+        }
+    }
 }
+
