@@ -48,9 +48,10 @@ public class AddEvaluation {
         PhraseCorrelation onwn1 = new PhraseCorrelation(TestConstants.S_ONWN1_FILE);
         PhraseCorrelation onwn2 = new PhraseCorrelation(TestConstants.S_ONWN2_FILE);
         ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(TestConstants.S_SICK_FILE);
+        ParsedPhraseCorrelation sicktest = new ParsedPhraseCorrelation(TestConstants.S_SICK_TEST_FILE);
         
-        System.out.println("men: " + men.evaluateSpacePearson(space));
-        System.out.println("men test: " + menTest.evaluateSpacePearson(space));
+        System.out.println("men: " + men.evaluateSpaceSpearman(space));
+        System.out.println("men test: " + menTest.evaluateSpaceSpearman(space));
         System.out.println("lex: " + simLex.evaluateSpacePearson(space));
         System.out.println("ws: " + wordSim.evaluateSpacePearson(space));
         System.out.println("wsr: " + wordSimR.evaluateSpacePearson(space));
@@ -70,6 +71,7 @@ public class AddEvaluation {
         System.out.println("onwn1 add: " + onwn1.evaluateSpacePearson(space, add));
         System.out.println("onwn2 add: " + onwn2.evaluateSpacePearson(space, add));
         System.out.println("sick add: " + sick.evaluateSpacePearson(space, add));
+        System.out.println("sick test add: " + sicktest.evaluateSpacePearson(space, add));
         
     }
 }

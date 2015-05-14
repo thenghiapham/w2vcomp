@@ -30,10 +30,10 @@ import common.IOUtils;
 import common.exception.ValueException;
 
 public class RawSemanticSpace implements SemanticSpace{
-    String[]                 words;
-    HashMap<String, Integer> word2Index;
-    double[][]                vectors;
-    int                      vectorSize;
+    protected String[]                 words;
+    protected HashMap<String, Integer> word2Index;
+    protected double[][]                vectors;
+    protected int                      vectorSize;
 
     public RawSemanticSpace(int wordNumber, int vectorSize) {
         vectors = new double[wordNumber][vectorSize];
@@ -292,6 +292,7 @@ public class RawSemanticSpace implements SemanticSpace{
     public Neighbor[] getNeighbors(SimpleMatrix vector, int noNeighbor) {
         Neighbor[] neighbors = new Neighbor[words.length];
         double[] rawVector = vector.getMatrix().getData();
+        System.out.println("vocab size: " + words.length);
         for (int i = 0; i < words.length; i++) {
             neighbors[i] = new Neighbor(words[i], Similarity.cosine(rawVector,
                     vectors[i]));

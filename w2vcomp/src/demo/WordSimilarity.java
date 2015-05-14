@@ -11,7 +11,7 @@ import demo.TestConstants;
 
 public class WordSimilarity {
     public static void main(String[] args) {
-        String vectorFile = "/home/thenghiapham/work/project/antonym/output/hs_skip_wiki9_300_anto_train_adj_verb.bin";//TestConstants.VECTOR_FILE;
+        String vectorFile = args[0]; //"/home/thenghiapham/work/project/antonym/output/hs_skip_wiki9_300_anto_train_adj_verb.bin";//TestConstants.VECTOR_FILE;
 //        String vectorFile = TestConstants.VECTOR_FILE.replace(".bin", "_anto.bin");
         RawSemanticSpace space = RawSemanticSpace.readSpace(vectorFile);
         System.out.println("Enter a word or EXIT to exit");
