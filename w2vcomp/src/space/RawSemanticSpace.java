@@ -292,7 +292,7 @@ public class RawSemanticSpace implements SemanticSpace{
     public Neighbor[] getNeighbors(SimpleMatrix vector, int noNeighbor) {
         Neighbor[] neighbors = new Neighbor[words.length];
         double[] rawVector = vector.getMatrix().getData();
-        System.out.println("vocab size: " + words.length);
+//        System.out.println("vocab size: " + words.length);
         for (int i = 0; i < words.length; i++) {
             neighbors[i] = new Neighbor(words[i], Similarity.cosine(rawVector,
                     vectors[i]));
