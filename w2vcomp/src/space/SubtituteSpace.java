@@ -1,8 +1,5 @@
 package space;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,7 +12,7 @@ import common.IOUtils;
 import common.exception.ValueException;
 
 public class SubtituteSpace extends RawSemanticSpace {
-
+    int threadNum = 8;
     public static final double THRESHOLD = 0.6;
     public SubtituteSpace(String[] words, double[][] vectors) {
         super(words, vectors);
@@ -166,6 +163,62 @@ public class SubtituteSpace extends RawSemanticSpace {
         return findRank(a.plus(n), adj + "_" + noun);
     }
     
+    public void evaluateANs(String anFile) {
+        ArrayList<String> ans = IOUtils.readFile(anFile);
+        DescriptiveStatistics nStats = new DescriptiveStatistics();
+        DescriptiveStatistics aStats = new DescriptiveStatistics();
+        DescriptiveStatistics addStats = new DescriptiveStatistics();
+        
+        Integer[] nRank = new Integer[ans.size()];
+        Integer[] aRank = new Integer[ans.size()];
+        Integer[] addRank = new Integer[ans.size()];
+        // create threads;
+        int total = ans.size();
+        int div = total / threadNum;
+        int mod = total % threadNum;
+        EvaluateThread[] threads = new EvaluateThread[threadNum];
+        for (int index = 0; index < threadNum; index++) {
+            int beginIndex;
+            int endIndex;
+            if (index < mod) {
+                beginIndex = (div + 1) * index;
+                endIndex = (div + 1) * (index + 1);
+            } else {
+                beginIndex = div * index + mod;
+                endIndex = div * (index + 1) + mod;
+            }
+            threads[index] = new EvaluateThread(ans, nRank, aRank, addRank, beginIndex, endIndex);
+            // start threads;
+            threads[index].start();
+        }
+        
+     // join threads;
+        for (int index = 0; index < threadNum; index++) {
+            try {
+                threads[index].join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        for (int i = 0; i < nRank.length; i++) {
+            if (nRank[i] != -1) {
+                nStats.addValue(nRank[i]);
+                aStats.addValue(aRank[i]);
+                addStats.addValue(addRank[i]);
+            }
+        }
+        IOUtils.printToFile("/home/thenghiapham/nRank.txt", nRank);
+        IOUtils.printToFile("/home/thenghiapham/aRank.txt", aRank);
+        IOUtils.printToFile("/home/thenghiapham/addRank.txt", addRank);
+        System.out.println("******************************");
+        System.out.println("Summary");
+        System.out.println("rank n sub: " + nStats.getPercentile(50));
+        System.out.println("rank a sub: " + aStats.getPercentile(50));
+        System.out.println("rank add: " + addStats.getPercentile(50));
+    }
+    
     public static void main(String[] args) {
         String spaceFile = args[0];
         String vocFile = args[1];
@@ -182,61 +235,45 @@ public class SubtituteSpace extends RawSemanticSpace {
         }
         space = space.getSubSpace(Arrays.asList(words));
         SubtituteSpace sSpace = new SubtituteSpace(space.getWords(), space.getVectors());
+        sSpace.evaluateANs(testFile);
+    }
+    
+    protected class EvaluateThread extends Thread {
+        ArrayList<String> quesions; 
+        Integer[] nRank;
+        Integer[] aRank;
+        Integer[] addRank;
+        int beginIndex;
+        int endIndex;
+        NormalizedSemanticSpace space;
+        public EvaluateThread(ArrayList<String> questions, 
+                Integer[] nRank, Integer[] aRank, Integer[] addRank, int beginIndex, int endIndex) {
+            this.beginIndex = beginIndex;
+            this.endIndex = endIndex;
+            this.quesions = questions;
+            this.nRank = nRank;
+            this.aRank = aRank;
+            this.addRank = addRank;
+            this.beginIndex = beginIndex;
+            this.endIndex = endIndex;
+        }
         
-        ArrayList<String> ans = IOUtils.readFile(testFile);
-        DescriptiveStatistics nStats = new DescriptiveStatistics();
-        DescriptiveStatistics aStats = new DescriptiveStatistics();
-        DescriptiveStatistics addStats = new DescriptiveStatistics();
-        
-        for (String an: ans) {
-            String[] elements = an.split("_");
-//            sSpace.printNeighbor(elements[0], elements[1]);
-            try {
-                int nSubRank = sSpace.findRankChildSub(elements[0], elements[1]);
-                int aSubRank = sSpace.findRankHeadSub(elements[0], elements[1]);
-                int addRank = sSpace.findRankAdd(elements[0], elements[1]);
-                System.out.println("rank n sub: " + nSubRank);
-                System.out.println("rank a sub: " + aSubRank);
-                System.out.println("rank add: " + addRank);
-                nStats.addValue(nSubRank);
-                aStats.addValue(aSubRank);
-                addStats.addValue(addRank);
-                
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("something wrong boo");
+        public void run() {
+            for (int i = beginIndex; i < endIndex; i++) {
+                String question = quesions.get(i);
+                String[] elements = question.split("_");
+                try {
+                    nRank[i] = findRankChildSub(elements[0], elements[1]);
+                    aRank[i] = findRankHeadSub(elements[0], elements[1]);
+                    addRank[i] = findRankAdd(elements[0], elements[1]);
+                } catch (Exception e) {
+                    nRank[i] = -1;
+                    aRank[i] = -1;
+                    addRank[i] = -1;
+                    e.printStackTrace();
+                }
             }
         }
-        System.out.println("******************************");
-        System.out.println("Summary");
-        System.out.println("rank n sub: " + nStats.getPercentile(50));
-        System.out.println("rank a sub: " + aStats.getPercentile(50));
-        System.out.println("rank add: " + addStats.getPercentile(50));
-        
-//        System.out.println("Enter a word or EXIT to exit");
-//        try {
-//            BufferedReader br = new BufferedReader(new InputStreamReader(
-//                    System.in));
-//            String input;
-//            while ((input = br.readLine()) != null) {
-//                if (input.equals("EXIT")) {
-//                    break;
-//                } else {
-//                    String[] elements = input.split("\\s");
-////                    sSpace.printNeighbor(elements[0], elements[1]);
-//                    try {
-//                        System.out.println("rank n sub: " + sSpace.findRankChildSub(elements[0], elements[1]));
-//                        System.out.println("rank a sub: " + sSpace.findRankHeadSub(elements[0], elements[1]));
-//                        System.out.println("rank add: " + sSpace.findRankAdd(elements[0], elements[1]));
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                        System.out.println("something wrong boo");
-//                    }
-//                }
-//            }
-//        } catch (IOException io) {
-//            io.printStackTrace();
-//        }
     }
 }
 

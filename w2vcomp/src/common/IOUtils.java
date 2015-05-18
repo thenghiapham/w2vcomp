@@ -14,6 +14,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.ejml.simple.SimpleMatrix;
@@ -137,6 +138,19 @@ public class IOUtils {
             for (String line: strings) {
                 writer.write(line);
                 writer.write("\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    public static <T> void printToFile(String outputFile, T[] inputArray) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+            for (T element: inputArray) {
+                writer.write("" + element + "\n");
             }
             writer.close();
         } catch (IOException e) {
