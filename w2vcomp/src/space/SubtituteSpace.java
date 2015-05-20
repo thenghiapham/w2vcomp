@@ -216,10 +216,33 @@ public class SubtituteSpace extends RawSemanticSpace {
     }
     
     public int findRankMorphLf(String stem, String affix, String word, RawSemanticSpace affixSpace) {
-        SimpleMatrix stemV = getVector(stem);
-        SimpleMatrix affixV = affixSpace.getVector(affix);
+//        SimpleMatrix stemV = getVector(stem);
+//        SimpleMatrix affixV = affixSpace.getVector(affix);
         throw new ValueException("Not implemented yet");
 //        return findRank(affixV, word);
+    }
+    
+    public RawSemanticSpace trainMorphAdd(HashMap<String, ArrayList<String[]>> trainData) {
+        ArrayList<String> affixes = new ArrayList<String>(trainData.keySet());
+        String[] affixArray = new String[affixes.size()];
+        affixes.toArray(affixArray);
+        double[][] matrix = new double[affixes.size()][];
+        for (int i = 0; i < affixes.size(); i++) {
+            SimpleMatrix vector = new SimpleMatrix();
+            int num = 0;
+            ArrayList<String[]> data = trainData.get(affixes.get(i));
+            for (String[] trainItem: data) {
+                String word = trainItem[1];
+                if (this.contains(word)) {
+                    num++;
+                    vector = vector.plus(this.getVector(word));
+                }
+            }
+            vector = vector.scale(1.0 / num);
+            matrix[i] = vector.getMatrix().data;
+        }
+        
+        return new RawSemanticSpace(affixArray, matrix);
     }
     
     public void evaluateANs(String anFile) {
@@ -302,7 +325,7 @@ public class SubtituteSpace extends RawSemanticSpace {
     private void evaluateMorph(String testMorphFile) {
         ArrayList<String[]> testMorphData = Celex.readTestData(testMorphFile);
         HashMap<String, ArrayList<String[]>> trainData = Celex.getDict(testMorphFile);
-        RawSemanticSpace affixSpace = null;
+        RawSemanticSpace affixSpace = trainMorphAdd(trainData);
         RawSemanticSpace affixMatSpace = null;
         DescriptiveStatistics subStats = new DescriptiveStatistics();
         DescriptiveStatistics lfStats = new DescriptiveStatistics();
