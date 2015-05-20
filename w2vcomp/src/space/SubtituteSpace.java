@@ -2,12 +2,12 @@ package space;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.ejml.simple.SimpleMatrix;
 
 import vocab.Vocab;
-
 import common.IOUtils;
 import common.exception.ValueException;
 
@@ -112,6 +112,46 @@ public class SubtituteSpace extends RawSemanticSpace {
         }
     }
     
+    public SimpleMatrix getWordVector(String stem, String affix, HashMap<String, ArrayList<String[]>> trainData) {
+        String bestStem = getBestStem(stem, affix, trainData);
+        if (getSim(bestStem, stem) >= THRESHOLD) {
+            SimpleMatrix stemV = this.getVector(stem);
+            stemV = stemV.scale(1 / stemV.normF());
+          
+            SimpleMatrix bestTrainWord = this.getVector(bestStem);
+            bestTrainWord = bestTrainWord.scale(1 / bestTrainWord.normF());
+            SimpleMatrix trainWordV = this.getVector(bestStem + "_" + affix);
+            trainWordV = trainWordV.scale(1 / trainWordV.normF());
+          
+            trainWordV = trainWordV.minus(bestTrainWord).plus(trainWordV);
+            return trainWordV;
+        } else {
+            SimpleMatrix stemV = getVector(stem);
+            SimpleMatrix affixV = getVector(affix);
+            return stemV.plus(affixV);
+        }
+    }
+    
+    protected String getBestStem(String stem, String affix,
+            HashMap<String, ArrayList<String[]>> trainData) {
+        ArrayList<String[]> stemAndWords = trainData.get(affix);
+        ArrayList<String> possibleStems = new ArrayList<String>();
+        for (String[] stemAndWord: stemAndWords) {
+            String alterStem = stemAndWord[0];
+            if (this.contains(alterStem)) {
+                possibleStems.add(alterStem);
+            }
+        }
+        RawSemanticSpace nSpace = this.getSubSpace(possibleStems);
+        Neighbor[] neighborStems = nSpace.getNeighbors(this.getVector(stem), 10);
+        String bestStem = neighborStems[0].word;
+        if (stem.equals(bestStem)) {
+            bestStem  = neighborStems[1].word;
+        }
+//        System.out.println("Best fit: " + bestAdj);
+        return bestStem;
+    }
+
     public void printNeighbor(String adj, String noun) {
         SimpleMatrix predictedAnV = getChildSubVector(adj, noun);
         Neighbor[] neighbors = getNeighbors(predictedAnV, 10);

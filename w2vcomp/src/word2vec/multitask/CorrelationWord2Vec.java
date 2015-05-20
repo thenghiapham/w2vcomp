@@ -44,11 +44,19 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
         addTrainCorrelation(wordPairs, gold);
     }
     
-    public void addTrainedCorrelatedSpace(String rawSpaceFile) {
-        RawSemanticSpace space = RawSemanticSpace.readSpace(rawSpaceFile);
+    public void addTrainedCorrelatedSpace(String rawSpaceFile, boolean image) {
+        RawSemanticSpace space = null;
+        int offset = 0;
+        if (!image) {
+            space = RawSemanticSpace.readSpace(rawSpaceFile);
+            offset = 1;
+        } else {
+            space = RawSemanticSpace.importSpace(rawSpaceFile);
+        }
         String[] allWords = space.getWords();
-        int wordNum = space.getVocabSize() - 1;
-        int pairNum = wordNum * (int) Math.log(wordNum);
+        int wordNum = space.getVocabSize() - offset;
+        int pairNum = wordNum * (int) Math.log(wordNum) / 5;
+        System.out.println("Pair num:" + pairNum);
         int x = 0;
         int y = 0;
         HashSet<Point> pointSet = new HashSet<CorrelationWord2Vec.Point>();
@@ -56,8 +64,8 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
         double[] gold = new double[pairNum];
         for (int i = 0; i  < pairNum; i++) {
             while (true) {
-                x = rand.nextInt(wordNum) + 1;
-                y = rand.nextInt(wordNum) + 1;
+                x = rand.nextInt(wordNum) + offset;
+                y = rand.nextInt(wordNum) + offset;
                 Point newPoint = new Point(x, y);
                 if (pointSet.contains(newPoint) || x >= y) {
                     continue;
@@ -102,7 +110,7 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
             corVectors[i] = weights0[vocab.getWordIndex(wordList.get(i))];
         }
         
-        
+        System.out.println("real pair num: " + pairs.length);
         trainedCorrelations.add(new Correlation(gold));
         trainedPairs.add(pairs);
         trainedCorVectors.add(corVectors);
@@ -113,8 +121,8 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
         trainedCorrelations.get(trainedCorrelations.size() -1).setName(name);
     }
     
-    public void addTrainedCorrelatedSpace(String rawSpaceFile, String name) {
-        addTrainedCorrelatedSpace(rawSpaceFile);
+    public void addTrainedCorrelatedSpace(String rawSpaceFile, boolean image, String name) {
+        addTrainedCorrelatedSpace(rawSpaceFile, image);
         trainedCorrelations.get(trainedCorrelations.size() -1).setName(name);
     }
     
@@ -202,7 +210,7 @@ public abstract class CorrelationWord2Vec extends MultiThreadWord2Vec{
         int[][] pairs = trainedPairs.get(corIndex);
         int iteration = 100;
         // TODO: tune this
-        double learningRate = alpha * 3;
+        double learningRate = alpha * 20;
         int vectorNum = vectors.length;
         int vectorSize = vectors[0].length;
         for (int iter = 0; iter < iteration; iter++) {

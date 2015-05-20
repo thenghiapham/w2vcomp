@@ -38,13 +38,14 @@ public class CorrelatedWordVectorLearning {
         String vocabFile = properties.getProperty("VocabFile");
         String menFile = properties.getProperty("MenFile");
         String simFile = properties.getProperty("SimlexFile");
+        String imageFile = properties.getProperty("ImageFile");
         outputFile = outputFile.replaceAll(".bin", "_" + size + ".bin");
         switch (type) {
         case 0:
-            word2vec = new MultiThreadSkipGram(size, 5, softmax, negativeSamples, subSampling, menFile);
+            word2vec = new MultiThreadSkipGram(size, 5, softmax, negativeSamples, subSampling, simFile);
             break;
         case 1:
-            word2vec = new CorrelationSkipGram(size, 5, softmax, negativeSamples, subSampling, menFile);
+            word2vec = new CorrelationSkipGram(size, 5, softmax, negativeSamples, subSampling, simFile);
             outputFile = outputFile.replaceAll(".bin", "_cor.bin");
             break;
         }
@@ -75,8 +76,9 @@ public class CorrelatedWordVectorLearning {
         word2vec.initNetwork();
         
         if (type==1) {
-            ((CorrelationSkipGram) word2vec).addTrainedCorrelation(menFile,"men");
-            ((CorrelationSkipGram) word2vec).addTrainedCorrelation(simFile,"simlex");
+//            ((CorrelationSkipGram) word2vec).addTrainedCorrelation(menFile,"men");
+//            ((CorrelationSkipGram) word2vec).addTrainedCorrelation(simFile,"simlex");
+            ((CorrelationSkipGram) word2vec).addTrainedCorrelatedSpace(imageFile, true, "visual");
         }
 
         System.out.println("Start training");

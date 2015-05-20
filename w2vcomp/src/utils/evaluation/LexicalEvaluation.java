@@ -40,7 +40,7 @@ public class LexicalEvaluation {
 //                {"aamp", d + "aamp-gold-standard.txt", "clst"},
 //                {"battig", d + "battig-gold-standard.txt", "clst"},
 //                {"esslli", d + "esslli-gold-standard.txt", "clst"},
-//                {"analogy", nDir + "questions-words.txt", "anal"},
+                {"analogy", d + "questions-anto.txt", "anal"},
                 };
         return datasets;
     }
@@ -63,7 +63,7 @@ public class LexicalEvaluation {
 //        System.out.print(" & an & ansyn & ansem ");
         System.out.println("\\\\ \\hline");
         for (File file: files) {
-            if (!file.getName().endsWith("bin")) continue;
+            if (!file.getName().endsWith("bin") || !file.getName().startsWith("neg")) continue;
             System.out.print(file.getName() + " & ");
             process(file, datasets);
             System.out.println("  &   &   & \\\\ \\hline");
