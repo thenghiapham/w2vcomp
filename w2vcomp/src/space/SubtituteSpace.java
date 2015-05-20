@@ -2,6 +2,8 @@ package space;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -13,8 +15,8 @@ import common.IOUtils;
 import common.exception.ValueException;
 
 public class SubtituteSpace extends RawSemanticSpace {
-    int threadNum = 8;
-    public static final double THRESHOLD = 0.6;
+    int threadNum = 1;
+    public static final double THRESHOLD = 0.3;
     public SubtituteSpace(String[] words, double[][] vectors) {
         super(words, vectors);
         // TODO Auto-generated constructor stub
@@ -113,29 +115,36 @@ public class SubtituteSpace extends RawSemanticSpace {
         }
     }
     
-    public SimpleMatrix getWordVector(String stem, String affix, HashMap<String, ArrayList<String[]>> trainData) {
-        String bestStem = getBestStem(stem, affix, trainData);
-        if (getSim(bestStem, stem) >= THRESHOLD) {
+    public SimpleMatrix getWordVector(String stem, String affix, String word, HashMap<String, ArrayList<String[]>> trainData, RawSemanticSpace affixSpace) {
+        String[] bestStemAndWord = getBestStem(stem, affix, trainData);
+        double bestSim = getSim(bestStemAndWord[0], stem);
+        if (bestSim >= THRESHOLD) {
+            System.out.println("best Sim: " + bestSim);
             SimpleMatrix stemV = this.getVector(stem);
             stemV = stemV.scale(1 / stemV.normF());
           
-            SimpleMatrix bestTrainWord = this.getVector(bestStem);
-            bestTrainWord = bestTrainWord.scale(1 / bestTrainWord.normF());
-            SimpleMatrix trainWordV = this.getVector(bestStem + "_" + affix);
+            SimpleMatrix bestStemV = this.getVector(bestStemAndWord[0]);
+            bestStemV = bestStemV.scale(1 / bestStemV.normF());
+            SimpleMatrix trainWordV = this.getVector(bestStemAndWord[1]);
             trainWordV = trainWordV.scale(1 / trainWordV.normF());
           
-            trainWordV = trainWordV.minus(bestTrainWord).plus(trainWordV);
+            trainWordV = trainWordV.minus(bestStemV).plus(trainWordV);
+            System.out.println("best corpus rank: " + this.getSim(word, bestStemAndWord[1]));
+            System.out.print(bestStemAndWord[1] + " - " + bestStemAndWord[0] + " + " + stem);
             return trainWordV;
         } else {
             SimpleMatrix stemV = getVector(stem);
-            SimpleMatrix affixV = getVector(affix);
+            SimpleMatrix affixV = affixSpace.getVector(affix);
             return stemV.plus(affixV);
         }
     }
     
-    protected String getBestStem(String stem, String affix,
+    protected String[] getBestStem(String stem, String affix,
             HashMap<String, ArrayList<String[]>> trainData) {
         ArrayList<String[]> stemAndWords = trainData.get(affix);
+        System.out.println("***");
+        System.out.println("stem: " + stem);
+        System.out.println("affix: " + affix);
         ArrayList<String> possibleStems = new ArrayList<String>();
         for (String[] stemAndWord: stemAndWords) {
             String alterStem = stemAndWord[0];
@@ -149,8 +158,11 @@ public class SubtituteSpace extends RawSemanticSpace {
         if (stem.equals(bestStem)) {
             bestStem  = neighborStems[1].word;
         }
-//        System.out.println("Best fit: " + bestAdj);
-        return bestStem;
+        System.out.println("bestStem: " + bestStem);
+        for (String[] stemAndWord: stemAndWords) {
+            if (stemAndWord[0].equals(bestStem)) return stemAndWord;
+        }
+        return null;
     }
 
     public void printNeighbor(String adj, String noun) {
@@ -210,8 +222,10 @@ public class SubtituteSpace extends RawSemanticSpace {
         return findRank(stemV.plus(affixV), word);
     }
     
-    public int findRankMorphSub(String stem, String affix, String word, HashMap<String, ArrayList<String[]>> trainData) {
-        SimpleMatrix wordV = getWordVector(stem, affix, trainData);
+    public int findRankMorphSub(String stem, String affix, String word, HashMap<String, ArrayList<String[]>> trainData, RawSemanticSpace affixSpace) {
+        SimpleMatrix wordV = getWordVector(stem, affix, word, trainData, affixSpace);
+        System.out.println(" = " + word);
+        System.out.println("sim: " + Similarity.cosine(wordV, this.getVector(word)));
         return findRank(wordV, word);
     }
     
@@ -227,8 +241,32 @@ public class SubtituteSpace extends RawSemanticSpace {
         String[] affixArray = new String[affixes.size()];
         affixes.toArray(affixArray);
         double[][] matrix = new double[affixes.size()][];
+        
         for (int i = 0; i < affixes.size(); i++) {
-            SimpleMatrix vector = new SimpleMatrix();
+            SimpleMatrix vector = new SimpleMatrix(1, vectorSize);
+            int num = 0;
+            ArrayList<String[]> data = trainData.get(affixes.get(i));
+            for (String[] trainItem: data) {
+                String word = trainItem[1];
+                if (this.contains(word)) {
+                    num++;
+                    vector = vector.plus(this.getVector(word));
+                }
+            }
+            vector = vector.scale(1.0 / num);
+            matrix[i] = vector.getMatrix().data;
+        }
+        
+        return new RawSemanticSpace(affixArray, matrix);
+    }
+    
+    public RawSemanticSpace trainMorphLf(HashMap<String, ArrayList<String[]>> trainData) {
+        ArrayList<String> affixes = new ArrayList<String>(trainData.keySet());
+        String[] affixArray = new String[affixes.size()];
+        affixes.toArray(affixArray);
+        double[][] matrix = new double[affixes.size()][];
+        for (int i = 0; i < affixes.size(); i++) {
+            SimpleMatrix vector = new SimpleMatrix(1, vectorSize);
             int num = 0;
             ArrayList<String[]> data = trainData.get(affixes.get(i));
             for (String[] trainItem: data) {
@@ -324,6 +362,8 @@ public class SubtituteSpace extends RawSemanticSpace {
     
     private void evaluateMorph(String testMorphFile) {
         ArrayList<String[]> testMorphData = Celex.readTestData(testMorphFile);
+        Collections.sort(testMorphData, new StringArrayComparator());
+        System.out.println("test Size: " + testMorphData.size());
         HashMap<String, ArrayList<String[]>> trainData = Celex.getDict(testMorphFile);
         RawSemanticSpace affixSpace = trainMorphAdd(trainData);
         RawSemanticSpace affixMatSpace = null;
@@ -371,6 +411,7 @@ public class SubtituteSpace extends RawSemanticSpace {
                 addStats.addValue(addRank[i]);
             }
         }
+//        IOUtils.
         IOUtils.printToFile("/home/thenghiapham/nRank.txt", subRank);
         IOUtils.printToFile("/home/thenghiapham/aRank.txt", lfRank);
         IOUtils.printToFile("/home/thenghiapham/addRank.txt", addRank);
@@ -383,7 +424,7 @@ public class SubtituteSpace extends RawSemanticSpace {
     }
 
     protected class MorphologyEvaluateThread extends Thread {
-        ArrayList<String[]> quesions; 
+        ArrayList<String[]> quesions;
         Integer[] subRank;
         Integer[] lfRank;
         Integer[] addRank;
@@ -411,9 +452,11 @@ public class SubtituteSpace extends RawSemanticSpace {
             for (int i = beginIndex; i < endIndex; i++) {
                 String[] question = quesions.get(i);
                 try {
-                    subRank[i] = findRankMorphSub(question[1], question[0], question[2], trainData);
-                    lfRank[i] = 10;//findRankMorphLf(question[1], question[0], question[2], affixSpace);
-                    addRank[i] = 10;//findRankMorphAdd(question[1], question[0], question[2], affixMatSpace);
+                    subRank[i] = findRankMorphSub(question[1], question[0], question[2], trainData, affixSpace);
+                    lfRank[i] = 10;//findRankMorphLf(question[1], question[0], question[2], affixMatSpace);
+                    addRank[i] = findRankMorphAdd(question[1], question[0], question[2], affixSpace);
+                    System.out.println("sub rank:" + subRank[i]);
+                    System.out.println("add rank:" + addRank[i]);
                 } catch (Exception e) {
                     subRank[i] = -1;
                     lfRank[i] = -1;
@@ -459,6 +502,25 @@ public class SubtituteSpace extends RawSemanticSpace {
                 }
             }
         }
+    }
+    
+    protected class StringArrayComparator implements Comparator<String[]>{
+
+        @Override
+        public int compare(String[] o1, String[] o2) {
+            // TODO Auto-generated method stub
+            int length1 = o1.length;
+            int length2 = o2.length;
+            int length = Math.min(length1, length2);
+            for (int i = 0; i < length; i++) {
+                int result = o1[i].compareTo(o2[i]);
+                if (result != 0) return result;
+            }
+            if (length1 < length) return -1;
+            if (length2 < length) return 1;
+            return 0;
+        }
+        
     }
 }
 

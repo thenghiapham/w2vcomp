@@ -31,7 +31,7 @@ public class Celex {
         ArrayList<String> lines = IOUtils.readFile(inputFile);
         ArrayList<String[]> result = new ArrayList<String[]>();
         for (String line: lines) {
-            if (line.endsWith("NA")) {
+            if (line.endsWith("Q")) {
                 String[] elements = line.split("\\s");
                 String[] affixStemAndWord = new String[3];
                 affixStemAndWord[0] = elements[0];
