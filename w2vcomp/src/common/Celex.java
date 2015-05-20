@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Celex {
-    public HashMap<String, ArrayList<String[]>> getDict(String inputFile) {
+    public static HashMap<String, ArrayList<String[]>> getDict(String inputFile) {
         HashMap<String, ArrayList<String[]>> result = new HashMap<String, ArrayList<String[]>>();
         ArrayList<String> lines = IOUtils.readFile(inputFile);
         for (String line: lines) {
@@ -27,7 +27,7 @@ public class Celex {
         return result;
     }
     
-    public ArrayList<String[]> readTestData(String inputFile) {
+    public static ArrayList<String[]> readTestData(String inputFile) {
         ArrayList<String> lines = IOUtils.readFile(inputFile);
         ArrayList<String[]> result = new ArrayList<String[]>();
         for (String line: lines) {

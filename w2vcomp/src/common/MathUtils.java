@@ -2,8 +2,6 @@ package common;
 
 import java.util.Random;
 
-import org.ejml.simple.SimpleMatrix;
-
 /**
  * This class contains a set of utility method for simple maths
  * (maybe should be replaced with utility method for SimpleMatrix class

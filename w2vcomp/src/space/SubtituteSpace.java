@@ -8,6 +8,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.ejml.simple.SimpleMatrix;
 
 import vocab.Vocab;
+import common.Celex;
 import common.IOUtils;
 import common.exception.ValueException;
 
@@ -203,6 +204,24 @@ public class SubtituteSpace extends RawSemanticSpace {
         return findRank(a.plus(n), adj + "_" + noun);
     }
     
+    public int findRankMorphAdd(String stem, String affix, String word, RawSemanticSpace affixSpace) {
+        SimpleMatrix stemV = getVector(stem);
+        SimpleMatrix affixV = affixSpace.getVector(affix);
+        return findRank(stemV.plus(affixV), word);
+    }
+    
+    public int findRankMorphSub(String stem, String affix, String word, HashMap<String, ArrayList<String[]>> trainData) {
+        SimpleMatrix wordV = getWordVector(stem, affix, trainData);
+        return findRank(wordV, word);
+    }
+    
+    public int findRankMorphLf(String stem, String affix, String word, RawSemanticSpace affixSpace) {
+        SimpleMatrix stemV = getVector(stem);
+        SimpleMatrix affixV = affixSpace.getVector(affix);
+        throw new ValueException("Not implemented yet");
+//        return findRank(affixV, word);
+    }
+    
     public void evaluateANs(String anFile) {
         ArrayList<String> ans = IOUtils.readFile(anFile);
         DescriptiveStatistics nStats = new DescriptiveStatistics();
@@ -262,7 +281,8 @@ public class SubtituteSpace extends RawSemanticSpace {
     public static void main(String[] args) {
         String spaceFile = args[0];
         String vocFile = args[1];
-        String testFile = args[2];
+//        String testANFile = args[2];
+        String testMorphFile = args[2];
         
         int minFreq = 20;
         RawSemanticSpace space = RawSemanticSpace.readSpace(spaceFile);
@@ -275,7 +295,110 @@ public class SubtituteSpace extends RawSemanticSpace {
         }
         space = space.getSubSpace(Arrays.asList(words));
         SubtituteSpace sSpace = new SubtituteSpace(space.getWords(), space.getVectors());
-        sSpace.evaluateANs(testFile);
+//        sSpace.evaluateANs(testANFile);
+        sSpace.evaluateMorph(testMorphFile);
+    }
+    
+    private void evaluateMorph(String testMorphFile) {
+        ArrayList<String[]> testMorphData = Celex.readTestData(testMorphFile);
+        HashMap<String, ArrayList<String[]>> trainData = Celex.getDict(testMorphFile);
+        RawSemanticSpace affixSpace = null;
+        RawSemanticSpace affixMatSpace = null;
+        DescriptiveStatistics subStats = new DescriptiveStatistics();
+        DescriptiveStatistics lfStats = new DescriptiveStatistics();
+        DescriptiveStatistics addStats = new DescriptiveStatistics();
+        
+        Integer[] subRank = new Integer[testMorphData.size()];
+        Integer[] lfRank = new Integer[testMorphData.size()];
+        Integer[] addRank = new Integer[testMorphData.size()];
+        // create threads;
+        int total = testMorphData.size();
+        int div = total / threadNum;
+        int mod = total % threadNum;
+        MorphologyEvaluateThread[] threads = new MorphologyEvaluateThread[threadNum];
+        for (int index = 0; index < threadNum; index++) {
+            int beginIndex;
+            int endIndex;
+            if (index < mod) {
+                beginIndex = (div + 1) * index;
+                endIndex = (div + 1) * (index + 1);
+            } else {
+                beginIndex = div * index + mod;
+                endIndex = div * (index + 1) + mod;
+            }
+            threads[index] = new MorphologyEvaluateThread(testMorphData, subRank, lfRank, addRank, beginIndex, endIndex, trainData, affixSpace, affixMatSpace);
+            // start threads;
+            threads[index].start();
+        }
+        
+     // join threads;
+        for (int index = 0; index < threadNum; index++) {
+            try {
+                threads[index].join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        for (int i = 0; i < subRank.length; i++) {
+            if (subRank[i] != -1) {
+                subStats.addValue(subRank[i]);
+                lfStats.addValue(lfRank[i]);
+                addStats.addValue(addRank[i]);
+            }
+        }
+        IOUtils.printToFile("/home/thenghiapham/nRank.txt", subRank);
+        IOUtils.printToFile("/home/thenghiapham/aRank.txt", lfRank);
+        IOUtils.printToFile("/home/thenghiapham/addRank.txt", addRank);
+        System.out.println("******************************");
+        System.out.println("Summary");
+        System.out.println("rank n sub: " + subStats.getPercentile(50));
+        System.out.println("rank a sub: " + lfStats.getPercentile(50));
+        System.out.println("rank add: " + addStats.getPercentile(50));
+        
+    }
+
+    protected class MorphologyEvaluateThread extends Thread {
+        ArrayList<String[]> quesions; 
+        Integer[] subRank;
+        Integer[] lfRank;
+        Integer[] addRank;
+        int beginIndex;
+        int endIndex;
+        HashMap<String, ArrayList<String[]>> trainData;
+        RawSemanticSpace affixSpace;
+        RawSemanticSpace affixMatSpace;
+        public MorphologyEvaluateThread(ArrayList<String[]> questions, 
+                Integer[] subRank, Integer[] lfRank, Integer[] addRank, int beginIndex, int endIndex, HashMap<String, ArrayList<String[]>> trainData, RawSemanticSpace affixSpace, RawSemanticSpace affixMatSpace) {
+            this.beginIndex = beginIndex;
+            this.endIndex = endIndex;
+            this.quesions = questions;
+            this.subRank = subRank;
+            this.lfRank = lfRank;
+            this.addRank = addRank;
+            this.beginIndex = beginIndex;
+            this.endIndex = endIndex;
+            this.trainData = trainData;
+            this.affixSpace = affixSpace;
+            this.affixMatSpace = affixMatSpace;
+        }
+        
+        public void run() {
+            for (int i = beginIndex; i < endIndex; i++) {
+                String[] question = quesions.get(i);
+                try {
+                    subRank[i] = findRankMorphSub(question[1], question[0], question[2], trainData);
+                    lfRank[i] = 10;//findRankMorphLf(question[1], question[0], question[2], affixSpace);
+                    addRank[i] = 10;//findRankMorphAdd(question[1], question[0], question[2], affixMatSpace);
+                } catch (Exception e) {
+                    subRank[i] = -1;
+                    lfRank[i] = -1;
+                    addRank[i] = -1;
+                    e.printStackTrace();
+                }
+            }
+        }
     }
     
     protected class EvaluateThread extends Thread {
@@ -285,7 +408,6 @@ public class SubtituteSpace extends RawSemanticSpace {
         Integer[] addRank;
         int beginIndex;
         int endIndex;
-        NormalizedSemanticSpace space;
         public EvaluateThread(ArrayList<String> questions, 
                 Integer[] nRank, Integer[] aRank, Integer[] addRank, int beginIndex, int endIndex) {
             this.beginIndex = beginIndex;
