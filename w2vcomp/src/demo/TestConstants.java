@@ -45,6 +45,8 @@ public class TestConstants {
 
         //visual vectors
         public static String VISION_FILE                = ROOT_VISUAL_DIR+"fc7.txt";
+        //visual vectors
+       // public static String VISION_FILE                = ROOT_VISUAL_DIR+"fc7_rand.txt";
 
         public static String TRAIN_CONCEPTS              = "";   
         
