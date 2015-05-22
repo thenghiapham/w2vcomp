@@ -28,19 +28,23 @@ public class SentenceAveraging {
         
         
         String task = "w2v";
+        
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/home/angeliki/sas/visLang/fast-mapping/w2vPredictions.txt"));
         BufferedWriter bufferedWriter2 = new BufferedWriter(new FileWriter("/home/angeliki/sas/visLang/fast-mapping/LinguisticPredictions.txt"));
+       
         System.out.println("Reading Image Space...");
         
         
-    	//import v2w mapping	
-    	SimpleMatrix v2w = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream("/home/angeliki/sas/visLang/fast-mapping/crossmodal_general_training/training_data/cnn_svd/mapping/funtionFile/v2w.txt")), false));
+    	//import  mappings
+        SimpleMatrix v2w = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream("/home/angeliki/sas/visLang/fast-mapping/crossmodal_general_training/training_data/cnn_svd/mapping/funtionFile/v2w.txt")), false));
     	SimpleMatrix w2v = new SimpleMatrix(IOUtils.readMatrix(new BufferedInputStream(new FileInputStream("/home/angeliki/sas/visLang/fast-mapping/crossmodal_general_training/training_data/cnn_svd/mapping/funtionFile/w2v.txt")), false));
         
     	
     	//import visual space for foils and maybe map them in word space
     	SemanticSpace foilsSpace = SemanticSpace.importSpace("/home/angeliki/sas/visLang/fast-mapping/feature_extraction/cnn/foils/PER_SS.foils.cnn.cnn.features_svd300.dm");
     	SemanticSpace wordsSpace = SemanticSpace.readSpace(wordvecs);
+    	
+    	
     	
     	//map spaces
     	if (task.equals("v2w")){
@@ -63,6 +67,9 @@ public class SentenceAveraging {
         double[] sims = new double[sentences_id.size()];
         double[] simsLing = new double[sentences_id.size()];
         
+        //data for dumping composed vectors
+        double[][] passageVecs = new double[sentences_id.size()/(3*6)][300];
+        String[] passageRows = new String[sentences_id.size()/(3*6)];
         
         int i=0;
         //get some info
@@ -73,20 +80,24 @@ public class SentenceAveraging {
             ids[i++] = id;
         }
             
+        i=0;
         
         //compose sentences by averaging
         HashMap<Double, Double> sanityCheck = new HashMap<Double, Double>(); 
         
+        SimpleMatrix tttt ;
         for (int s=0;s<sentences.length;s++){
+            
+            tttt = new SimpleMatrix(1,300);
             
             String[] allSentences = sentences[s].split("@@");
             
             //what is the passage length
             passageLength[s] = Integer.valueOf(ids[s].split("_")[1].substring(1, 2));  //2,4, or 6
             
-            
             sims[s] = 0;
             simsLing[s]  = 0;
+            
             for (String sentence :allSentences){
         	    ArrayList<String> passage = new ArrayList<String>();
         	    
@@ -109,12 +120,19 @@ public class SentenceAveraging {
                 
                 if (task.equals("w2v")){
                     simsLing[s] += tmp.getSim("bla",foils[s],wordsSpace);
+                    
+                    tttt = tttt.plus(new SimpleMatrix(1,300,true,tmp.getVector("bla")));
+                    
                     tmp = new SemanticSpace(tmp.getWords(), SimpleMatrixUtils.to2DArray((new SimpleMatrix(tmp.getVectors())).mult(w2v)));
+                   
+                    
+                    
+                    
                    
                 }
                 
                 sims[s] += tmp.getSim("bla",foils[s],foilsSpace);
-                
+                          
                 
             }
             //normalize by the num of sentences
@@ -125,7 +143,14 @@ public class SentenceAveraging {
                 simsLing[s] /=allSentences.length;
                 bufferedWriter2.write(ids[s]+" "+simsLing[s]+"\n");
             }
-                       
+                   
+            //saving composed mapped vectors of passage
+            if ( passageLength[s] == 2 && ids[s].split("_")[2].equals("A")){
+                System.out.println(ids[s]);
+                passageRows[i] = ids[s];
+                passageVecs[i] = SimpleMatrixUtils.to2DArray(tttt)[0];
+                i+=1;
+            }
             
             if (!sanityCheck.containsKey(passageLength[s])){
                 sanityCheck.put(passageLength[s], 0.0);
@@ -133,6 +158,10 @@ public class SentenceAveraging {
             sanityCheck.put(passageLength[s],sanityCheck.get(passageLength[s])+sims[s]);
             
         }
+        
+        SemanticSpace ps = new SemanticSpace(passageRows,passageVecs);
+        ps.exportSpace("/home/angeliki/sas/visLang/fast-mapping/Composed_passage_2s_textual.txt");
+        
         bufferedWriter.close();
         bufferedWriter2.close();
         
