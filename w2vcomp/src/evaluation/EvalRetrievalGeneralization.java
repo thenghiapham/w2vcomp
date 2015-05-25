@@ -53,7 +53,7 @@ public class EvalRetrievalGeneralization {
        
         System.out.println("Size of search space "+searchSpace.getWords().length);
         
-        int numOfNs = 11;
+        int numOfNs = 10;
         int rank = 0;
         System.out.println(this.words.size());
         String object;
@@ -65,7 +65,7 @@ public class EvalRetrievalGeneralization {
             
             int cor = 0;
             for (int i=0;i<numOfNs;i++){
-                System.out.print(NNs[i].word+",");
+                System.out.print(NNs[i].word.split("@")[0]+",");
                 if (NNs[i].word.startsWith(object+"@")){
                     rank+=i;
                     cor+=1;
@@ -73,7 +73,7 @@ public class EvalRetrievalGeneralization {
                 }
             }
             mean_cor += cor;
-            System.out.println("   CORRECT:"+cor+"/11");
+            System.out.println(cor);
         }
         
         System.out.println("Mean:"+mean_cor/(double) this.words.size());
@@ -95,8 +95,9 @@ public class EvalRetrievalGeneralization {
         String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
 
-        Images im = new Images("/home/angeliki/sas/visLang/cross-situational/visual_symbols/extra_experiment/fc7_space.txt", true,TestConstants.imageDimensions);
+        Images im = new Images("/home/angeliki/sas/visLang/cross-situational/visual_symbols/extra_experiment/fc7_space_10imagesPerObject.txt", true,TestConstants.imageDimensions);
         SemanticSpace visionSpace = im.getVisionSpace();
+        
         
         EvalRetrievalGeneralization eval  = new EvalRetrievalGeneralization();
         eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/Frank/dictionary.txt");

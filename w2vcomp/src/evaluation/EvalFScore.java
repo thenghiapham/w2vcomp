@@ -40,6 +40,7 @@ public class EvalFScore {
     }
     
     public static void main(String[] args) throws IOException {
+        //String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
         String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);

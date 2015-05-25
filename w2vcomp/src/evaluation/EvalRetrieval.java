@@ -3,6 +3,8 @@ package evaluation;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,26 +51,28 @@ public class EvalRetrieval {
     public double[] evalRankAggr(SemanticSpace space, SemanticSpace searchSpace){
         double[] ranks= new  double[] {0,0,0,0,0,0 };
         
+        ArrayList<Integer> median = new ArrayList<Integer>();
         
        
         System.out.println("Size of search space "+searchSpace.getWords().length);
         
         int numOfNs = 100;
-        int rank = 0;
         System.out.println(this.words.size());
         String object;
+        int w = 0;
         for (String word: this.words){
             object = this.goldStandard.get(word);
             Neighbor[] NNs = space.getNeighbors(word, numOfNs,  searchSpace);
             System.out.println(word+" ---->"+object+" ---->"+NNs[0].word);
             
+            median.add(w,numOfNs);
             
             for (int i=0;i<numOfNs;i++){
-                
                 if (NNs[i].word.equals(object)){
-                    rank+=i;
+                    
+                    median.add(w,i+1);
+                    
                     if (i==0){
-                        //System.out.println(word+" ---->"+NNs[0].word+" "+NNs[0].sim);
 
                         ranks[0]+=1; ranks[1]+=1; ranks[2]+=1; ranks[3]+=1; ranks[4]+=1;  ranks[5]+=1;
                         break;
@@ -95,10 +99,21 @@ public class EvalRetrieval {
                     }
                 }
             }
+            w +=1;
             
         }
         
-        System.out.println("Mean:"+rank/(double) this.words.size());
+        Collections.sort(median);
+        double m;
+        if (median.size() % 2 == 0){
+            m = (median.get(median.size()/2) + median.get(median.size()/2 -1))/2; 
+            
+        }
+        else{
+            m = median.get(median.size()/2);
+        }
+        
+        System.out.println("Median:"+m);
         for (int i=0;i<ranks.length;i++){
             ranks[i] /= (double) this.words.size();
         }
@@ -128,7 +143,10 @@ public class EvalRetrieval {
         
         
 
-        SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
+        //SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
+        //String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
+        String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
+        SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);
         SemanticSpace visionSpace = im.getVisionSpace();
         
