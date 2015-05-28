@@ -403,4 +403,20 @@ public class RawSemanticSpace implements SemanticSpace{
     public int getVocabSize() {
         return words.length;
     }
+
+    public int findRank(SimpleMatrix vector, String word) {
+        // TODO Auto-generated method stub
+        Neighbor[] neighbors = new Neighbor[words.length];
+        double[] rawVector = vector.getMatrix().getData();
+//        System.out.println("vocab size: " + words.length);
+        for (int i = 0; i < words.length; i++) {
+            neighbors[i] = new Neighbor(words[i], Similarity.cosine(rawVector,
+                    vectors[i]));
+        }
+        Arrays.sort(neighbors, Neighbor.NeighborComparator);
+        for (int i = 0; i < words.length; i++) {
+            if (neighbors[i].word.equals(word)) return i;
+        }
+        return -1;
+    }
 }
