@@ -14,7 +14,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class TurneyEvaluation {
     protected ArrayList<String[]> questions;
-    int threadNum = 4;
+    int threadNum = 8;
     
     public TurneyEvaluation(String questionFile) {
         questions = new ArrayList<String[]>();
