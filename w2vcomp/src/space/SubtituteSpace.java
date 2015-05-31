@@ -312,7 +312,7 @@ public class SubtituteSpace extends RawSemanticSpace {
             threads[index].start();
         }
         
-     // join threads;
+        // join threads;
         for (int index = 0; index < threadNum; index++) {
             try {
                 threads[index].join();
