@@ -48,15 +48,15 @@ public class SubtituteSpace extends RawSemanticSpace {
         ArrayList<String> possibleNouns = getNfromA(adj);
         RawSemanticSpace nSpace = this.getSubSpace(possibleNouns);
         Neighbor[] neighborNouns = nSpace.getNeighbors(this.getVector(noun), 10);
-//        System.out.println("Nearest neighbors of \"" + noun + "\" are: ");
-//        for (int i = 0; i < neighborNouns.length; i++) {
-//            System.out.println(neighborNouns[i].word + " " + neighborNouns[i].sim);
-//        }
+        System.out.println("Nearest neighbors of \"" + noun + "\" are: ");
+        for (int i = 0; i < neighborNouns.length; i++) {
+            System.out.println(neighborNouns[i].word + " " + neighborNouns[i].sim);
+        }
         String bestNoun = neighborNouns[0].word;
         if (noun.equals(bestNoun)) {
             bestNoun  = neighborNouns[1].word;
         }
-//        System.out.println("Best fit: " + bestNoun);
+        System.out.println("Best fit: " + bestNoun);
         return bestNoun;
     }
     
