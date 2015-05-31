@@ -128,7 +128,11 @@ public class TurneyEvaluation {
         WeightedAdditive comp = new WeightedAdditive();
         TurneyEvaluation eval = new TurneyEvaluation(questionFile);
         RawSemanticSpace space = RawSemanticSpace.readSpace(binFile);
-        double addRank = eval.medianRank(space, comp);
-        System.out.println("add rank: " + addRank);
+//        double addRank = eval.medianRank(space, comp);
+//        System.out.println("add rank: " + addRank);
+        
+        SubtituteSpace sSpace = new SubtituteSpace(space.getWords(), space.getVectors());
+        double subRank = eval.medianRank(sSpace);
+        System.out.println("sub rank: " + subRank);
     }
 }
