@@ -14,13 +14,16 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class TurneyEvaluation {
     protected ArrayList<String[]> questions;
-    int threadNum = 4;
+    int threadNum = 8;
     
     public TurneyEvaluation(String questionFile) {
         questions = new ArrayList<String[]>();
         ArrayList<String> lines = IOUtils.readFile(questionFile);
         for (String line: lines) {
             String[] question = line.split("\\s");
+            for (int i = 0; i < question.length; i++) {
+                question[i] = question[i].substring(0, question[i].length() - 2);
+            }
             questions.add(question);
         }
     }
