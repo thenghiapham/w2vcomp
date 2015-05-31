@@ -41,8 +41,8 @@ public class TurneyEvaluation {
     
     public int findRank(SubtituteSpace space, String[] question) {
         String a = question[0];
-        String n = question[1];
-        String synonym = question[2];
+        String n = question[2];
+        String synonym = question[4];
         SimpleMatrix p = space.getChildSubVector(a, n);
         int rank = space.findRank(p, synonym);
         return rank;
