@@ -14,7 +14,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class TurneyEvaluation {
     protected ArrayList<String[]> questions;
-    int threadNum = 8;
+    int threadNum = 4;
     
     public TurneyEvaluation(String questionFile) {
         questions = new ArrayList<String[]>();
@@ -30,8 +30,8 @@ public class TurneyEvaluation {
     
     public int findRank(RawSemanticSpace space, BasicComposition comp, String[] question) {
         String a = question[0];
-        String n = question[1];
-        String synonym = question[2];
+        String n = question[2];
+        String synonym = question[4];
         SimpleMatrix u = space.getVector(a);
         SimpleMatrix v = space.getVector(n);
         SimpleMatrix p = comp.compose(u, v);
@@ -108,7 +108,6 @@ public class TurneyEvaluation {
         public void run() {
             for (int i = beginIndex; i < endIndex; i++) {
                 String[] question = questions.get(i);
-                System.out.println("question: " + i);
                 try {
                     if (!(space instanceof SubtituteSpace)) {
                         ranks[i] = findRank(space, comp, question);
@@ -116,8 +115,9 @@ public class TurneyEvaluation {
                         ranks[i] = findRank((SubtituteSpace) space, question);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ranks[i] = -1;
                 }
+                System.out.println("question " + i + ": " + ranks[i]);
             }
         }
     }
