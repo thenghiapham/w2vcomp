@@ -108,6 +108,7 @@ public class TurneyEvaluation {
         public void run() {
             for (int i = beginIndex; i < endIndex; i++) {
                 String[] question = questions.get(i);
+                System.out.println("question: " + i);
                 try {
                     if (!(space instanceof SubtituteSpace)) {
                         ranks[i] = findRank(space, comp, question);
