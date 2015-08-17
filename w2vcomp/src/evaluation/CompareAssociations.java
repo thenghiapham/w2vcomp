@@ -100,7 +100,10 @@ public void fScore(BufferedWriter w, String tag) throws IOException {
             }
         }
         System.out.println("F overall is "+f_max);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/crossSituational
     }
     
 

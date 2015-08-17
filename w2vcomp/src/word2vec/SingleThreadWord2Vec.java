@@ -193,13 +193,13 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
                     if (alpha < starting_alpha * (1/updateEveryNWords)) {
                         alpha = starting_alpha * (1/updateEveryNWords);
                     }
-                    if (men != null && outputSpace != null &&  iteration %100 == 0) {
+                    if (men != null && outputSpace != null &&  iteration %1000 == 0) {
                         //System.out.println("correlation: " + men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),1)+" "+men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),2));
                         System.out.println("correlation: " + men.evaluateSpaceSpearman(outputSpace));
                         mmWordsPerRun = 0;
                         printStatistics();
                     }
-                    if (iteration % 100 == 0) {
+                    if (iteration % 1000 == 0) {
                         System.out.println("Trained: " + wordCount + " words");
                         System.out.println("Training rate: " + alpha);
                         //System.out.println("Visual stuff "+imageProjectionLayer.normF());

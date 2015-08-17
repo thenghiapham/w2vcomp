@@ -51,7 +51,11 @@ public class CrossSituationalLearning {
 
 
         boolean learnVocab = true;
+<<<<<<< HEAD
         Vocab vocab_lang1 = new Vocab(0); 
+=======
+        Vocab vocab_lang1 = new Vocab(1); 
+>>>>>>> refs/remotes/origin/crossSituational
         if (!learnVocab)
             vocab_lang1.loadVocab(vocabFile_lang1);
         else {
@@ -109,7 +113,7 @@ public class CrossSituationalLearning {
       
         /*
         localVocab.learnVocabFromTrainFile(sourceFileTest);
-        TestConstants.rate_multiplier_grad = 100;
+        TestConstants.rate_multiplier_grad = 20;
         
         //Run inference
         try {
@@ -129,8 +133,13 @@ public class CrossSituationalLearning {
             word2vec.saveVector(outputFile, true);
            } catch (IOException e) {
             System.exit(1);
+<<<<<<< HEAD
         }*/
         
+=======
+        }
+        */
+>>>>>>> refs/remotes/origin/crossSituational
         double [] cors = word2vec.getCors();
         System.out.println("Printing spearman "+cors[0]);
         System.out.println("Printing pearson "+cors[1]);

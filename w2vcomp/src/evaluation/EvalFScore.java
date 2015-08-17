@@ -40,15 +40,21 @@ public class EvalFScore {
     }
     
     public static void main(String[] args) throws IOException {
+<<<<<<< HEAD
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
         //SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.ROOT_EXP_DIR+"experiments/vectors/"+"best_model_frank_random.bin");
         
+=======
+        //String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
+        String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
+        SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
+>>>>>>> refs/remotes/origin/crossSituational
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);
 
         SemanticSpace visionSpace = im.getVisionSpace();
         
         EvalFScore eval = new EvalFScore();
-        eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/frank/dictionary.txt");
+        eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/Frank/dictionary.txt");
         
         eval.words.retainAll(wordSpace.getWord2Index().keySet());
         eval.objects.retainAll(visionSpace.getWord2Index().keySet());
