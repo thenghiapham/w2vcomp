@@ -1,5 +1,6 @@
 package evaluation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -233,7 +234,13 @@ public class ZeroShotEval {
         SimpleMatrix mappingF = exp.trainMapping(dir);
         SimpleMatrix estimated = exp.applyMapping(mappingF,dir);
 
-        HeatMapPanel.plotHeatMap(mappingF);
+        /*try {
+            HeatMapPanel.plotHeatMap(mappingF);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+        
         System.out.println(mappingF);
         System.out.println(SimpleMatrixUtils.elementMax(mappingF));
         System.out.println(SimpleMatrixUtils.elementMin(mappingF));

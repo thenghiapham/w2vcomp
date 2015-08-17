@@ -24,15 +24,15 @@ public class CrossSituationalLearning {
         
         //MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
         
+        //MMSkipgramMaxMarginWeighted word2vec = new MMSkipgramMaxMarginWeighted(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
-        //MMSkipgramMaxMarginWeighted word2vec = new MMSkipgramMaxMarginWeighted(TestConstants.wordDimensions, 5, false, 5,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         
         
         String sourceFileTrain = TestConstants.SOURCE_FILE_TRAIN;
         String targetFileTrain = TestConstants.TARGET_FILE_TRAIN;
         
-        String sourceFileTest = TestConstants.SOURCE_FILE_TEST;
-        String targetFileTest = TestConstants.TARGET_FILE_TEST;
+        //String sourceFileTest = TestConstants.SOURCE_FILE_TEST;
+        //String targetFileTest = TestConstants.TARGET_FILE_TEST;
         
         
         String outputFile = TestConstants.VECTOR_FILE;
@@ -51,7 +51,7 @@ public class CrossSituationalLearning {
 
 
         boolean learnVocab = true;
-        Vocab vocab_lang1 = new Vocab(5); 
+        Vocab vocab_lang1 = new Vocab(0); 
         if (!learnVocab)
             vocab_lang1.loadVocab(vocabFile_lang1);
         else {
@@ -65,7 +65,7 @@ public class CrossSituationalLearning {
  
         learnVocab = !(new File(vocabFile_lang2)).exists();
 
-        Vocab vocab_lang2 = new Vocab(1); 
+        Vocab vocab_lang2 = new Vocab(0); 
         
         if (!learnVocab)
             vocab_lang2.loadVocab(vocabFile_lang2);
@@ -81,6 +81,7 @@ public class CrossSituationalLearning {
         
         word2vec.initImages(TestConstants.VISION_FILE,true);
         
+       word2vec.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/frank/dictionary.txt");
        
         
         // Run training
@@ -106,7 +107,7 @@ public class CrossSituationalLearning {
         
         Vocab localVocab = new Vocab(1); 
       
-
+        /*
         localVocab.learnVocabFromTrainFile(sourceFileTest);
         TestConstants.rate_multiplier_grad = 100;
         
@@ -128,7 +129,7 @@ public class CrossSituationalLearning {
             word2vec.saveVector(outputFile, true);
            } catch (IOException e) {
             System.exit(1);
-        }
+        }*/
         
         double [] cors = word2vec.getCors();
         System.out.println("Printing spearman "+cors[0]);

@@ -1,6 +1,12 @@
 package word2vec;
 
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import io.word.Phrase;
 
 import org.ejml.simple.SimpleMatrix;
@@ -8,12 +14,15 @@ import org.ejml.simple.SimpleMatrix;
 import space.SemanticSpace;
 import vocab.VocabEntry;
 
+import common.HeatMapPanel;
 import common.MathUtils;
 import common.exception.ValueException;
 
 import demo.TestConstants;
 
 public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
+    
+    double ATTENTION=1; //1.2
     public MMSkipgramMaxMarginWeighted(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
@@ -50,8 +59,9 @@ public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
                 a1error[i] = 0;
             }
 
-            
-            //System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word);
+            if (vocab_lang1.getEntry(wordIndex).word.equals("bunny")){
+                System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word);
+            }
             
       
             
@@ -74,6 +84,10 @@ public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
                 
                 VocabEntry context = vocab_lang1.getEntry(iWordIndex);
                 
+                //if (vocab_lang1.getEntry(wordIndex).word.equals("bunny")){
+                //    System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word+" predict "+context.word);
+                //}
+                
                 // HIERARCHICAL SOFTMAX
                 if (hierarchicalSoftmax) {
                     for (int bit = 0; bit < context.code.length(); bit++) {
@@ -88,7 +102,7 @@ public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
                         double a2 = sigmoidTable.getSigmoid(z2);
                         if (a2 == 0 || a2 == 1)
                             continue;
-                        // 'g' is the gradient multiplied by the learning rate
+                        // "g" is the gradient multiplied by the learning rate
                         double gradient = (double) ((1 - (context.code
                                 .charAt(bit) - 48) - a2) * alpha);
                         // Propagate errors output -> hidden
@@ -179,7 +193,12 @@ public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
                     
                     SimpleMatrix image = new SimpleMatrix(negativeWeights1Images[jPerceptIndex].length,1,true, negativeWeights1Images[jPerceptIndex]);
                     double cos = MathUtils.cosine(mapped_word_row, image);
-                    norm += Math.exp(cos);
+                    if (ATTENTION<0){
+                        norm += cos;
+                    }
+                    else{
+                        norm += Math.pow(ATTENTION,cos);
+                    }
                 }
                 
                 //try to come closer to all the words in the target language
@@ -224,7 +243,15 @@ public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
                         der = der.minus(MathUtils.cosineDerivative(mapped_word_row, image_neg));
                     }
                     
-                    double probability = (Math.exp(cos)/norm);
+                    
+                    double probability;
+                    if (ATTENTION<0){
+                        probability = cos/norm;
+                    }
+                    else{
+                        probability = Math.pow(ATTENTION,cos)/norm;
+                    }
+                     
                 
                     gradient = (double) (alpha*  TestConstants.rate_multiplier_grad * probability);
                     
@@ -240,10 +267,65 @@ public class MMSkipgramMaxMarginWeighted extends SingleThreadWord2Vec{
                 }
                 
                 
+                       
             }
+            /*
+            //here see how this changes incrementally!
+            List<String> OBJECTS = Arrays.asList("baby","bear","bird","book","bunny","cow","duck","hand","hat","kitty","lamb","mirror","pig","rattle","ring","sheep");
+            List<String> WORDS = Arrays.asList("baby","bear","bigbird","bigbirds","bird","book","books","bunny","bunnies","bunnyrabbit","hiphop","cow","cows","moocow","moocows","duck","duckie","birdie","bird","hand","hat","kitty","kittycat","kittycats","meow","lamb","lambie","mirror","pig","piggie","piggies","oink","rattle","ring","rings","sheep");
+           
+            //SHOW only if cur word is in WORDS
+            if (!WORDS.contains(vocab_lang1.getEntry(wordIndex).word)){
+                continue;
+            }
+            SemanticSpace Im = images.space;
+            SemanticSpace Words = new  SemanticSpace(vocab_lang1, weights0, false);
+            
+            
+
+            double [][] sims = new double[WORDS.size()][OBJECTS.size()];
+            int i=0;
+            int j;
+            //for every word
+            for (String word: WORDS){
+                j = 0;
+                //for every object
+                double s = 0;
+                for (String object: OBJECTS){
+                    //get sim and add 1 to convert to positive
+                    //sims[i][j] = Math.pow(10,Words.getSim(word, object, Im)+1);
+                    sims[i][j] = Math.pow(Words.getSim(word, object, Im)+1,10);
+                    //sims[i][j] = Words.getSim(word, object, Im)+1;
+                    
+                    System.out.println(word+" "+object+" "+sims[i][j]);
+                    //sum
+                    s += sims[i][j];
+                    j++;
+                }
+                
+                //System.out.println("SUM is"+s);
+                ////probability from similarities
+                for (int jj=0;jj<OBJECTS.size();jj++){
+                   sims[i][jj] /=s;
+                }
+                i++;
+            }
+            HeatMapPanel f = new HeatMapPanel(new SimpleMatrix(sims),WORD);
+            
+            
+            */
+            WORD++;
+            
+            
+     
         }
+
+                
+                
+            
+}
         
-        }
+       
 
     
 

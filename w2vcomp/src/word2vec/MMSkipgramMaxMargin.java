@@ -1,6 +1,9 @@
 package word2vec;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 import io.word.Phrase;
 
 import org.ejml.simple.SimpleMatrix;
@@ -9,6 +12,7 @@ import space.SemanticSpace;
 import vocab.Vocab;
 import vocab.VocabEntry;
 
+import common.HeatMapPanel;
 import common.MathUtils;
 import common.exception.ValueException;
 
@@ -227,6 +231,53 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 
                 //System.out.println("Difference is "+sum);
             }
+            
+            
+          //here see how this changes incrementally!
+            List<String> OBJECTS = Arrays.asList("baby","bear","bird","book","bunny","cow","duck","hand","hat","kitty","lamb","mirror","pig","rattle","ring","sheep");
+            List<String> WORDS = Arrays.asList("baby","bear","bigbird","bigbirds","bird","book","books","bunny","bunnies","bunnyrabbit","hiphop","cow","cows","moocow","moocows","duck","duckie","birdie","bird","hand","hat","kitty","kittycat","kittycats","meow","lamb","lambie","mirror","pig","piggie","piggies","oink","rattle","ring","rings","sheep");
+           
+            //SHOW only if cur word is in WORDS
+            if (!WORDS.contains(vocab_lang1.getEntry(wordIndex).word)){
+                continue;
+            }
+            SemanticSpace Im = images.space;
+            SemanticSpace Words = new  SemanticSpace(vocab_lang1, weights0, false);
+            
+            
+
+            double [][] sims = new double[WORDS.size()][OBJECTS.size()];
+            int i=0;
+            int j;
+            //for every word
+            for (String word: WORDS){
+                j = 0;
+                //for every object
+                double s = 0;
+                for (String object: OBJECTS){
+                    //get sim and add 1 to convert to positive
+                    //sims[i][j] = Math.pow(10,Words.getSim(word, object, Im)+1);
+                    sims[i][j] = Math.pow(Words.getSim(word, object, Im)+1,10);
+                    //sims[i][j] = Words.getSim(word, object, Im)+1;
+                    
+                    //System.out.println(word+" "+object+" "+sims[i][j]);
+                    //sum
+                    s += sims[i][j];
+                    j++;
+                }
+                
+                //System.out.println("SUM is"+s);
+                ////probability from similarities
+                //for (int jj=0;jj<OBJECTS.size();jj++){
+                //   sims[i][jj] /=s;
+                //}
+                i++;
+            }
+            HeatMapPanel f = new HeatMapPanel(new SimpleMatrix(sims),WORD);
+            
+            
+            WORD++;
+            
         }
         
         }

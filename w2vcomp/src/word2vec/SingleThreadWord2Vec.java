@@ -6,6 +6,8 @@ import io.word.Phrase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +15,8 @@ import java.util.logging.Logger;
 import space.SemanticSpace;
 import vocab.Vocab;
 
+import common.HeatMapPanel;
+import common.IOUtils;
 import common.MenCorrelation;
 import common.exception.ValueException;
 
@@ -27,7 +31,13 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     protected long oldWordCount;
     protected MenCorrelation men;
     protected SemanticSpace outputSpace;
-    private static final Logger LOGGER = Logger.getLogger(SingleThreadWord2Vec.class.getName());
+    HashMap<String, String> goldStandard;
+    HashSet<String> words;
+    HashSet<String> objects;
+    
+    int WORD ;
+    
+    static final Logger LOGGER = Logger.getLogger(SingleThreadWord2Vec.class.getName());
     
 
     public SingleThreadWord2Vec(int projectionLayerSize, int windowSize,
@@ -43,7 +53,25 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         men = new MenCorrelation(menFile);
     }
     
-    
+   
+    public void readGoldStandard(String gFile){
+        this.goldStandard = new HashMap<String, String>();
+        this.words = new HashSet<String>();
+        this.objects = new HashSet<String>();
+        
+        ArrayList<String> lines = IOUtils.readFile(gFile);
+        for (String line:lines){
+            String[] els = line.split("[\t| ]+");
+            System.out.println("Reading "+els[0]+" translated to "+els[1]);
+            
+            this.goldStandard.put(els[0], els[1]);
+            
+            this.words.add(els[0]);
+            this.objects.add(els[1]);
+        }
+        WORD = 0;
+       
+    }
  
     
 
@@ -124,7 +152,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
     void trainModelThread(SentenceInputStream inputStreamSource, SentenceInputStream inputStreamTarget) {
         oldWordCount = wordCount;
         long lastWordCount = wordCount;
-        int updateEveryNWords = 100;
+        int updateEveryNWords = 100; //100 for initial implementation were results were reported
         int curSentence = 1;
         try {
             int iteration = 0;
