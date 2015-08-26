@@ -1,15 +1,17 @@
 package word2vec;
 
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.word.Phrase;
 
 import org.ejml.simple.SimpleMatrix;
 
 import space.SemanticSpace;
-import vocab.Vocab;
 import vocab.VocabEntry;
 
 import common.HeatMapPanel;
@@ -18,14 +20,16 @@ import common.exception.ValueException;
 
 import demo.TestConstants;
 
-public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
-    public MMSkipgramMaxMargin(int projectionLayerSize, int windowSize,
+public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
+    
+    double ATTENTION=1; //1.2
+    public MMSkipgramMaxMarginAttention(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample);
     }
     
-    public MMSkipgramMaxMargin(int projectionLayerSize, int windowSize,
+    public MMSkipgramMaxMarginAttention(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages , double subSample,  String menFile) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
                 negativeSamples, negativeSamplesImages, subSample, menFile);
@@ -55,9 +59,10 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 a1error[i] = 0;
             }
 
+            if (vocab_lang1.getEntry(wordIndex).word.equals("bunny")){
+                System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word);
+            }
             
-            //System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word);
-            double sum = 0;
       
             
             //language 1
@@ -79,6 +84,10 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 
                 VocabEntry context = vocab_lang1.getEntry(iWordIndex);
                 
+                //if (vocab_lang1.getEntry(wordIndex).word.equals("bunny")){
+                //    System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word+" predict "+context.word);
+                //}
+                
                 // HIERARCHICAL SOFTMAX
                 if (hierarchicalSoftmax) {
                     for (int bit = 0; bit < context.code.length(); bit++) {
@@ -93,7 +102,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         double a2 = sigmoidTable.getSigmoid(z2);
                         if (a2 == 0 || a2 == 1)
                             continue;
-                        // 'g' is the gradient multiplied by the learning rate
+                        // "g" is the gradient multiplied by the learning rate
                         double gradient = (double) ((1 - (context.code
                                 .charAt(bit) - 48) - a2) * alpha);
                         // Propagate errors output -> hidden
@@ -146,12 +155,10 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         }
                     }
                 }
-               
                 // Learn weights input -> hidden
                 if (!updateAtTheEnd){
                     for (int j = 0; j < projectionLayerSize; j++) {
                         weights0[wordIndex][j] += a1error[j];
-                        sum+=a1error[j];
                         a1error[j] = 0;
 
                     }
@@ -172,8 +179,14 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 
                 SimpleMatrix mapped_word_row = (new SimpleMatrix(1,projectionLayerSize,false, weights0[wordIndex]));
                 
+              
+              
+                
+                
                 //try to come closer to all the words in the target language
                 for (int wordPositionTarget = 0; wordPositionTarget < sentenceTarget.length; wordPositionTarget++) {
+                    
+                    double normalization_over_words_in_sentence = 0.0;
                     
                     //set to 0 for every positive example
                     SimpleMatrix der = new SimpleMatrix(TestConstants.imageDimensions, 1);
@@ -183,14 +196,27 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                     VocabEntry curWord = vocab_lang2.getEntry(wordIndexTarget);
                     int jPerceptIndex = images.getIndex(curWord.word);
                     
-                    
-                    
                     if (jPerceptIndex==-1){
                         //System.out.println(curWord.word+" not in visual space");
                         continue;
                     }
+                    
                     //System.out.println("Visual Referent "+curWord.word);
                     SimpleMatrix image = new SimpleMatrix(negativeWeights1Images[jPerceptIndex].length,1,true, negativeWeights1Images[jPerceptIndex]);
+                  
+                    //first run to calculate normalization for score (w_t,I_i over all w_t in sentence
+                    for (int ii = 0; ii < sentenceSource.length; ii++) {
+                        
+                        //get word
+                        int ii_index = sentenceSource[ii];
+                        //get word
+                        SimpleMatrix ii_vector = (new SimpleMatrix(1,projectionLayerSize,false, weights0[ii_index]));
+                        //calculate cosine between word and current image 
+                        double cos = MathUtils.cosine(ii_vector, image);
+                        normalization_over_words_in_sentence += Math.exp(cos);
+                    }
+                    
+                    
                     SimpleMatrix err_cos_row = MathUtils.cosineDerivative(mapped_word_row, image);
                 
                 
@@ -214,26 +240,30 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         //calculate error with respect to the cosine
                         der = der.minus(MathUtils.cosineDerivative(mapped_word_row, image_neg));
                     }
-                
-                    gradient = (double) (alpha*  TestConstants.rate_multiplier_grad);
                     
+                    
+            
+                     
+                
+                    gradient = (double) (alpha*  TestConstants.rate_multiplier_grad );
+                    double score = Math.exp(cos)/normalization_over_words_in_sentence;
                     der = der.plus(err_cos_row.scale(k));
-                    a1error_temp  = a1error_temp.plus(der.scale(gradient));
+                    SimpleMatrix der_score = der.scale(Math.exp(cos)).scale((1-Math.exp(cos)));
+                    a1error_temp  = a1error_temp.plus(der.scale(gradient*score)).plus(der_score.scale(cos*gradient));
                 
                    
                 }
                 // Learn weights input -> hidden
                 for (int j = 0; j < projectionLayerSize; j++) {
                     weights0[wordIndex][j] += a1error_temp.get(j, 0);
-                    sum-=a1error_temp.get(j, 0);
                     a1error[j] = 0;
                 }
                 
-                //System.out.println("Difference is "+sum);
+                
+                       
             }
-            
             /*
-          //here see how this changes incrementally!
+            //here see how this changes incrementally!
             List<String> OBJECTS = Arrays.asList("baby","bear","bird","book","bunny","cow","duck","hand","hat","kitty","lamb","mirror","pig","rattle","ring","sheep");
             List<String> WORDS = Arrays.asList("baby","bear","bigbird","bigbirds","bird","book","books","bunny","bunnies","bunnyrabbit","hiphop","cow","cows","moocow","moocows","duck","duckie","birdie","bird","hand","hat","kitty","kittycat","kittycats","meow","lamb","lambie","mirror","pig","piggie","piggies","oink","rattle","ring","rings","sheep");
            
@@ -260,7 +290,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                     sims[i][j] = Math.pow(Words.getSim(word, object, Im)+1,10);
                     //sims[i][j] = Words.getSim(word, object, Im)+1;
                     
-                    //System.out.println(word+" "+object+" "+sims[i][j]);
+                    System.out.println(word+" "+object+" "+sims[i][j]);
                     //sum
                     s += sims[i][j];
                     j++;
@@ -268,29 +298,28 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                 
                 //System.out.println("SUM is"+s);
                 ////probability from similarities
-                //for (int jj=0;jj<OBJECTS.size();jj++){
-                //   sims[i][jj] /=s;
-                //}
+                for (int jj=0;jj<OBJECTS.size();jj++){
+                   sims[i][jj] /=s;
+                }
                 i++;
             }
             HeatMapPanel f = new HeatMapPanel(new SimpleMatrix(sims),WORD);
             
-            }*/
+            
+            */
             WORD++;
             
-        }
-        
+            
+     
         }
 
-    public Vocab getVocabSource(){
-        return vocab_lang1;
+                
+                
+            
+}
         
-    }
-    
-    public Vocab getVocabTarget(){
-        return vocab_lang2;
-        
-    }
+       
+
     
 
     public double[] getCors() throws ValueException{
