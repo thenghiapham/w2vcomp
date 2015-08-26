@@ -7,14 +7,14 @@ public class TestConstants {
         public static int imageDimensions = 200;
     
 
-        public static double rate_multiplier_grad =50; //50 for mapping, 1 for mm
+        public static double rate_multiplier_grad = 0.05; //50 for mapping, 1 for mm
         public static double rate_multiplier_sft = 10; //10
 
     
         public static double lambda = 0.0001;  // 0.0001: add to zeros for less reg
-        public static int negative_samples = 40; // 5 for mapping, 20 for mm
+        public static int negative_samples = 40; // 40
         public static double threshold = 5;
-        public static double margin = 0.5;
+        public static double margin = 0.2;  //0.5
     
         public static long SEED                       = 292626718599866L;
 
@@ -28,7 +28,7 @@ public class TestConstants {
          */
         public static String ROOT_EXP_DIR                     = "/home/aggeliki/visLang/cross-situational/";
         public static String ROOT_EVAL_DIR        = "/home/aggeliki/visLang/cross-situational/misc/";
-        public static String ROOT_VISUAL_DIR        = "/home/aggeliki/visLang/cross-situational/visual_symbols/all/";
+        public static String ROOT_VISUAL_DIR        = "/home/aggeliki/visLang/cross-situational/visual_symbols/";
 
         
         //for pc
@@ -41,14 +41,14 @@ public class TestConstants {
         //public static String TARGET_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.images.txt";
         //public static String TARGET_FILE_TRAIN                = ROOT_EXP_DIR+"corpus/extended_v2_version/objects.txt";
         public static String TARGET_FILE_TEST                  = ROOT_EXP_DIR+"corpus/frank/objects.txt.shuf";
-        public static String TARGET_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus/frank/objects_shuffle_order.txt";
+        public static String TARGET_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus/frank/objects.txt";
 
         public static String TRAIN_DIR               = "";
 
 
         //visual vectors
-        public static String VISION_FILE                = ROOT_VISUAL_DIR+"fc7.txt";
-        //public static String VISION_FILE                = ROOT_VISUAL_DIR+"fc7_rand.txt";
+        public static String VISION_FILE                = ROOT_VISUAL_DIR+"all/"+"fc7.txt";
+        //public static String VISION_FILE                = ROOT_VISUAL_DIR+"all/"+"fc7_rand.txt";
 
         public static String TRAIN_CONCEPTS              = "";   
         

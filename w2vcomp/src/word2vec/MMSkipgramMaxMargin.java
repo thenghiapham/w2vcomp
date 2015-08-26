@@ -215,7 +215,7 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
                         der = der.minus(MathUtils.cosineDerivative(mapped_word_row, image_neg));
                     }
                 
-                    gradient = (double) (alpha*  TestConstants.rate_multiplier_grad);
+                    gradient = (double) (alpha*  (1-TestConstants.rate_multiplier_grad));
                     
                     der = der.plus(err_cos_row.scale(k));
                     a1error_temp  = a1error_temp.plus(der.scale(gradient));

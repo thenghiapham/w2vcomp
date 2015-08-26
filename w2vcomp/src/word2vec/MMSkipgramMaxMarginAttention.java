@@ -22,7 +22,7 @@ import demo.TestConstants;
 
 public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
     
-    double ATTENTION=1; //1.2
+    
     public MMSkipgramMaxMarginAttention(int projectionLayerSize, int windowSize,
             boolean hierarchicalSoftmax, int negativeSamples, int negativeSamplesImages, double subSample) {
         super(projectionLayerSize, windowSize, hierarchicalSoftmax,
@@ -171,9 +171,9 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
         
  /*************    FOR TARGET LANGUAGE   ****************/
             
-            
+            SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
             if (negativeSamplesImages != -1) {
-                SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
+                
                 double gradient=0;
                 mmWordsPerRun++;
                 
@@ -185,6 +185,8 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                 
                 //try to come closer to all the words in the target language
                 for (int wordPositionTarget = 0; wordPositionTarget < sentenceTarget.length; wordPositionTarget++) {
+                    
+                    //SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
                     
                     double normalization_over_words_in_sentence = 0.0;
                     
@@ -221,6 +223,7 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                 
                 
                     double cos = MathUtils.cosine(mapped_word_row, image);
+                    double err = 0.0;
                     
                     //NEGATIVE EXAMPLES
                     int k=0;
@@ -234,9 +237,10 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                         SimpleMatrix image_neg = new SimpleMatrix(negativeWeights1Images[neg_sample].length,1,true, negativeWeights1Images[neg_sample]);
                         
                         double cos_neg = MathUtils.cosine(mapped_word_row, image_neg);
+                        err -= Math.max(0, TestConstants.margin - cos+cos_neg);
                         if (cos-cos_neg >= TestConstants.margin) continue;
                         k+=1;
-                        
+                    
                         //calculate error with respect to the cosine
                         der = der.minus(MathUtils.cosineDerivative(mapped_word_row, image_neg));
                     }
@@ -246,14 +250,21 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                      
                 
                     gradient = (double) (alpha*  TestConstants.rate_multiplier_grad );
-                    double score = Math.exp(cos)/normalization_over_words_in_sentence;
+                    
                     der = der.plus(err_cos_row.scale(k));
-                    SimpleMatrix der_score = der.scale(Math.exp(cos)).scale((1-Math.exp(cos)));
-                    a1error_temp  = a1error_temp.plus(der.scale(gradient*score)).plus(der_score.scale(cos*gradient));
-                
-                   
+                    
+                    //score
+                    double score = Math.exp(cos)/normalization_over_words_in_sentence;
+                    //derivetive from f'g = (max_margin)'*score
+                    a1error_temp  = a1error_temp.plus(der.scale((1-gradient)*score));
+                    //derivative from g'f = (max_margin_error) * score'
+                    //score' = exp(cos)*cos'*(SUM-epx(cos)) / SUM^2
+                    SimpleMatrix der_score = (err_cos_row.scale(Math.exp(cos)).scale(normalization_over_words_in_sentence-Math.exp(cos))).divide(Math.pow(normalization_over_words_in_sentence,2));
+                    a1error_temp  = a1error_temp.plus(der_score.scale(err*(1-gradient)));
+                    
+                    
                 }
-                // Learn weights input -> hidden
+             // Learn weights input -> hidden
                 for (int j = 0; j < projectionLayerSize; j++) {
                     weights0[wordIndex][j] += a1error_temp.get(j, 0);
                     a1error[j] = 0;

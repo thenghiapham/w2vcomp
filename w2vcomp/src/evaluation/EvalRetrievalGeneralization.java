@@ -91,16 +91,16 @@ public class EvalRetrievalGeneralization {
      * @throws FileNotFoundException 
      */
     public static void main(String[] args) throws FileNotFoundException {
-        
-        String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
+        //String TestFile = TestConstants.ROOT_EXP_DIR+"experiments/vectors/frank_d_200_n40_m0.5_r110.0_r250.0l1.0E-4.bin";
+        String TestFile = TestConstants.VECTOR_FILE;
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
 
-        Images im = new Images("/home/angeliki/sas/visLang/cross-situational/visual_symbols/extra_experiment/fc7_space_10imagesPerObject.txt", true,TestConstants.imageDimensions);
+        Images im = new Images(TestConstants.ROOT_VISUAL_DIR+"extra_experiments/"+"fc7_space_10imagesPerObject.txt", true,TestConstants.imageDimensions); 
         SemanticSpace visionSpace = im.getVisionSpace();
         
         
         EvalRetrievalGeneralization eval  = new EvalRetrievalGeneralization();
-        eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/Frank/dictionary.txt");
+        eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/frank/dictionary.txt");
         
         
      
