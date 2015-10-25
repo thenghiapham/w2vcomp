@@ -76,8 +76,8 @@ public class Images {
         
         this.word2Index = space.getWord2Index();
         //random_vecs();
-        //System.err.println("Shuffling vecs");
-        //shuffling_vecs();
+        System.err.println("Shuffling vecs");
+        shuffling_vecs();
         //System.err.println(this.space.getVectorSize());
 
         this.randomTablesize = this.word2Index.size();
@@ -125,8 +125,8 @@ public class Images {
         
         //For test only. Either randomly shuffle the words with the images or assign random vectors to words
         //random_vecs();
-        //System.out.println("Shuffling vecs");
-        //shuffling_vecs();
+        System.out.println("Shuffling vecs");
+        shuffling_vecs();
        
            
         //System.err.println("Images vectors with size:"+this.space.getVectorSize());
@@ -261,7 +261,7 @@ public class Images {
            pos.add(i, i);
        }
        Collections.shuffle(pos, new Random(TestConstants.SEED));
-       //System.err.println("10 is "+pos.get(9));
+       System.err.println("10 is "+pos.get(9));
        int i=0;
        for (String key : word2Index.keySet()) {
            word2Index.put(key,pos.get(i));
