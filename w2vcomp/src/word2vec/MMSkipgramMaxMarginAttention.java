@@ -250,17 +250,17 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                      
                 
                     gradient = (double) (alpha*  TestConstants.rate_multiplier_grad );
-                    
+                    gradient = (1-gradient);
                     der = der.plus(err_cos_row.scale(k));
                     
                     //score
                     double score = Math.exp(cos)/normalization_over_words_in_sentence;
                     //derivetive from f'g = (max_margin)'*score
-                    a1error_temp  = a1error_temp.plus(der.scale((1-gradient)*score));
+                    a1error_temp  = a1error_temp.plus(der.scale((gradient)*score));
                     //derivative from g'f = (max_margin_error) * score'
                     //score' = exp(cos)*cos'*(SUM-epx(cos)) / SUM^2
                     SimpleMatrix der_score = (err_cos_row.scale(Math.exp(cos)).scale(normalization_over_words_in_sentence-Math.exp(cos))).divide(Math.pow(normalization_over_words_in_sentence,2));
-                    a1error_temp  = a1error_temp.plus(der_score.scale(err*(1-gradient)));
+                    a1error_temp  = a1error_temp.plus(der_score.scale(err*(gradient)));
                     
                     
                 }

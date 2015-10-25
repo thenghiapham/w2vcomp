@@ -1,5 +1,9 @@
 package evaluation;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +33,7 @@ public class EvalFScore {
         ArrayList<String> lines = IOUtils.readFile(gFile);
         for (String line:lines){
             String[] els = line.split("[\t| ]+");
-            System.out.println("Reading "+els[0]+" translated to "+els[1]);
+            //System.out.println("Reading "+els[0]+" translated to "+els[1]);
             
             this.goldStandard.put(els[0], els[1]);
             
@@ -68,7 +72,7 @@ public class EvalFScore {
         
         
         double[][] cost = new double[eval.words.size()][eval.objects.size()];
-        System.out.println(eval.words.size());
+        //System.out.println(eval.words.size());
         for (int i = 0; i < eval.words.size(); i++)
         {
             for (int j = 0; j < eval.objects.size(); j++)
@@ -78,13 +82,19 @@ public class EvalFScore {
                 
             }
         }
-        System.out.println(cost.length+" "+cost[0].length);
-        System.out.println(words.length+" "+objects.length);
+        //System.out.println(cost.length+" "+cost[0].length);
+        //System.out.println(words.length+" "+objects.length);
         
         CompareAssociations acc = new CompareAssociations(words, objects,cost,eval.goldStandard);
-        acc.fScore(null, "bla");
+        double f_max = acc.fScore(null, "bla");
+        double score = acc.score();
         
-        System.out.println("SCORE: "+acc.score()+" out of "+words.length);
+        System.out.println("SCORE: "+score+" FMax "+f_max);
+        
+        BufferedWriter writer = new BufferedWriter(new FileWriter(TestConstants.VECTOR_FILE+"_acc_results.txt",true));
+        writer.write(score+"\t"+f_max+"\n");
+        writer.close();
+        
         acc.showBest();
     }
 

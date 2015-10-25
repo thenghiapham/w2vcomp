@@ -81,7 +81,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         oldWordCount = 0;
         wordCount = 0;
         trainWords = vocab_lang1.getTrainWords();
-        System.out.println("train words: " + trainWords);
+        System.err.println("train words: " + trainWords);
         System.out.println("vocab size: " + vocab_lang1.getVocabSize());
         System.out.println("hidden size: " + projectionLayerSize);
         System.out.println("first word:" + vocab_lang1.getEntry(0).word);

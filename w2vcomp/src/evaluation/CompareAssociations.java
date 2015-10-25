@@ -41,7 +41,7 @@ public class CompareAssociations {
     // Probability that words are related to objects.
     public double[][] values;
             
-public void fScore(BufferedWriter w, String tag) throws IOException {
+public double fScore(BufferedWriter w, String tag) throws IOException {
         
         WeightedObject<Boolean>[] corrects = new WeightedObject[yAxis.length];
                 
@@ -100,6 +100,7 @@ public void fScore(BufferedWriter w, String tag) throws IOException {
             }
         }
         System.out.println("F overall is "+f_max);
+        return f_max;
 
     }
     
@@ -150,7 +151,7 @@ public void fScore(BufferedWriter w, String tag) throws IOException {
             }
             
             if(maxIndex == xAxis_2.indexOf(goldStandard.get(yAxis[i])))  {
-                System.out.println("Correct for "+yAxis_2.get(i));
+                //System.out.println("Correct for "+yAxis_2.get(i));
                 score++;
             }
         }
@@ -301,7 +302,7 @@ public void fScore(BufferedWriter w, String tag) throws IOException {
                     maxStr = xAxis[j];
                 }
             }
-            System.out.println(yAxis[i] + " " + maxStr);
+            //System.out.println(yAxis[i] + " " + maxStr);
         }
     }
     

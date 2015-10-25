@@ -44,7 +44,7 @@ public class Images {
             //Concepts that will be used for training
             Set<String> trConcepts = new HashSet<String>(IOUtils.readFile(TestConstants.TRAIN_CONCEPTS));
             SimpleMatrix A = new SimpleMatrix(this.space.getSubSpace(trConcepts).getVectors());
-            System.out.println("Only using labels for "+A.numRows()+" words");
+            //System.err.println("Only using labels for "+A.numRows()+" words");
             
             //Concepts that will be used for testing
             Set<String> tsConcepts = new HashSet<String>(this.space.getWord2Index().keySet());
@@ -65,20 +65,20 @@ public class Images {
             
         }
         
-        System.out.println("Size of space "+this.space.getVectorSize()+" "+this.space.getWord2Index().size());
+        //System.err.println("Size of space "+this.space.getVectorSize()+" "+this.space.getWord2Index().size());
         
         //how to reduce the dimensions
         double [][] newvecs = chop_summing();
         
         this.space = new SemanticSpace(this.space.getWords(), newvecs);
-        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training with "+this.space.getVectorSize() );
-        //System.out.println(new SimpleMatrix(this.space.getVectors()));
+        //System.err.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training with "+this.space.getVectorSize() );
+        //System.err.println(new SimpleMatrix(this.space.getVectors()));
         
         this.word2Index = space.getWord2Index();
         //random_vecs();
-        //System.out.println("Shuffling vecs");
+        //System.err.println("Shuffling vecs");
         //shuffling_vecs();
-        System.out.println(this.space.getVectorSize());
+        //System.err.println(this.space.getVectorSize());
 
         this.randomTablesize = this.word2Index.size();
         initImageTable();
@@ -100,7 +100,7 @@ public class Images {
             Set<String> tsConcepts = new HashSet<String>(this.space.getWord2Index().keySet());
             tsConcepts.removeAll(trConcepts);
             SimpleMatrix B = new SimpleMatrix(this.space.getSubSpace(tsConcepts).getVectors());
-            System.out.println("Only using labels for "+A.numRows()+" words");
+            //System.err.println("Only using labels for "+A.numRows()+" words");
             
             ArrayList<String> rows = new ArrayList<String>();
             for (String w: trConcepts){
@@ -119,7 +119,7 @@ public class Images {
         double [][] newvecs = chop_summing();
         
         this.space = new SemanticSpace(this.space.getWords(), newvecs);
-        System.out.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training with "+this.space.getVectorSize() );
+        //System.err.println("Use "+space.getWord2Index().keySet().size()+" image concepts for training with "+this.space.getVectorSize() );
         
         this.word2Index = space.getWord2Index();
         
@@ -129,7 +129,7 @@ public class Images {
         //shuffling_vecs();
        
            
-        System.out.println("Images vectors with size:"+this.space.getVectorSize());
+        //System.err.println("Images vectors with size:"+this.space.getVectorSize());
 
         //create hash that maps an int to a image ID for finding negative samples.
         this.randomTablesize = this.word2Index.size();
@@ -139,7 +139,7 @@ public class Images {
     
      
    protected double[][] chop_randomly(){
-       System.out.println("Random Chopping");
+       //System.err.println("Random Chopping");
        ArrayList<Integer> indices= new ArrayList<Integer>();
        for (int i=0;i<this.space.getVectorSize();i++){
            indices.add(i);
@@ -160,7 +160,7 @@ public class Images {
    
    
    protected double[][] chop_randomly(int dim){
-       System.out.println("Random Chopping");
+       //System.err.println("Random Chopping");
        ArrayList<Integer> indices= new ArrayList<Integer>();
        for (int i=0;i<this.space.getVectorSize();i++){
            indices.add(i);
@@ -180,7 +180,7 @@ public class Images {
    }
    
    protected double[][] chop_summing(){
-       System.out.println("Summed Chopping vectors of size "+this.space.getVectorSize());
+       //System.err.println("Summed Chopping vectors of size "+this.space.getVectorSize());
       
        
        double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
@@ -191,7 +191,7 @@ public class Images {
        }
        int i = 0;
        int offset = (int) Math.floor(this.space.getVectorSize()/TestConstants.imageDimensions);
-       System.out.println(offset);
+       //System.err.println(offset);
        int cur = 0;
        int k=0;
        for (double [] vec: this.space.getVectors()){
@@ -217,7 +217,7 @@ public class Images {
     
     
    protected double[][] chop_linear(){
-       System.out.println("Linear Chopping");
+       //System.err.println("Linear Chopping");
 
        double [][] newvecs = new double[this.space.getWords().length][TestConstants.imageDimensions];
        int i = 0;
@@ -246,7 +246,7 @@ public class Images {
    
    protected void  random_vecs(){
        double [][] rand_vec = new double[this.word2Index.size()][this.space.getVectorSize()];
-       System.out.println(this.word2Index.size()+" "+this.space.getVectorSize());
+       //System.err.println(this.word2Index.size()+" "+this.space.getVectorSize());
        for (int i=0;i<this.word2Index.size();i++){
            for (int j=0;j<this.space.getVectorSize();j++){
                rand_vec[i][j] = random.nextDouble();
@@ -261,7 +261,7 @@ public class Images {
            pos.add(i, i);
        }
        Collections.shuffle(pos, new Random(TestConstants.SEED));
-       System.out.println("10 is "+pos.get(9));
+       //System.err.println("10 is "+pos.get(9));
        int i=0;
        for (String key : word2Index.keySet()) {
            word2Index.put(key,pos.get(i));
@@ -303,7 +303,7 @@ public class Images {
     SpearmansCorrelation spearman = new SpearmansCorrelation();
     
     int len = common_elements.size();
-    System.out.println("Correlating "+len+" elements");
+    //System.err.println("Correlating "+len+" elements");
     double[] sims_1 = new double[len*(len-1)/2];
     double[] sims_2 = new double[len*(len-1)/2];
     int k=0;
