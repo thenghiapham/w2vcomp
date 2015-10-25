@@ -41,7 +41,7 @@ public class EvalFScore {
     
     public static void main(String[] args) throws IOException {
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
-        //SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.ROOT_EXP_DIR+"experiments/vectors/"+"best_model_frank_random.bin");
+        //SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.ROOT_EXP_DIR+"experiments/vectors/"+"frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_best_model_attention.bin");
 
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);
 

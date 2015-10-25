@@ -7,7 +7,7 @@ public class TestConstants {
         public static int imageDimensions = 200;
     
 
-        public static double rate_multiplier_grad = 0.05; //50 for mapping, 1 for mm
+        public static double rate_multiplier_grad = 0.05; //0.05 50 for mapping, 1 for mm
         public static double rate_multiplier_sft = 10; //10
 
     

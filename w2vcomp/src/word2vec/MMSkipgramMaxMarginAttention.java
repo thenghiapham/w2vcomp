@@ -264,14 +264,12 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                     
                     
                 }
-             // Learn weights input -> hidden
+                // Learn weights input -> hidden
                 for (int j = 0; j < projectionLayerSize; j++) {
                     weights0[wordIndex][j] += a1error_temp.get(j, 0);
                     a1error[j] = 0;
                 }
                 
-                
-                       
             }
             /*
             //here see how this changes incrementally!
@@ -296,18 +294,12 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                 //for every object
                 double s = 0;
                 for (String object: OBJECTS){
-                    //get sim and add 1 to convert to positive
-                    //sims[i][j] = Math.pow(10,Words.getSim(word, object, Im)+1);
-                    sims[i][j] = Math.pow(Words.getSim(word, object, Im)+1,10);
-                    //sims[i][j] = Words.getSim(word, object, Im)+1;
-                    
-                    System.out.println(word+" "+object+" "+sims[i][j]);
-                    //sum
+                    sims[i][j] = Math.pow(Words.getSim(word, object, Im)+1,5);                    //sims[i][j] = Math.exp(Words.getSim(word, object, Im));
                     s += sims[i][j];
                     j++;
                 }
                 
-                //System.out.println("SUM is"+s);
+                
                 ////probability from similarities
                 for (int jj=0;jj<OBJECTS.size();jj++){
                    sims[i][jj] /=s;
@@ -316,18 +308,16 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
             }
             HeatMapPanel f = new HeatMapPanel(new SimpleMatrix(sims),WORD);
             
-            
             */
             WORD++;
-            
+            }
             
      
         }
 
                 
                 
-            
-}
+           
         
        
 

@@ -25,8 +25,8 @@ public class CrossSituationalLearning {
         
         //MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
         
-        //MMSkipgramMaxMarginAttention word2vec = new MMSkipgramMaxMarginAttention(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
-        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        MMSkipgramMaxMarginAttention word2vec = new MMSkipgramMaxMarginAttention(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        //MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         
         
         String sourceFileTrain = TestConstants.SOURCE_FILE_TRAIN;
@@ -51,7 +51,7 @@ public class CrossSituationalLearning {
         System.out.println("Welcome!---->"+TestConstants.VECTOR_FILE);
 
 
-        boolean learnVocab = true;
+        boolean learnVocab = !(new File(vocabFile_lang1)).exists();
         Vocab vocab_lang1 = new Vocab(0); 
 
         if (!learnVocab)
