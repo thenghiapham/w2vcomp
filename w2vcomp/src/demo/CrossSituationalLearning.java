@@ -25,8 +25,8 @@ public class CrossSituationalLearning {
         
         //MmSkipNGramWithMappingMaxMargin word2vec = new MmSkipNGramWithMappingMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, (float) 1e-3);
         
-        //MMSkipgramMaxMarginAttention word2vec = new MMSkipgramMaxMarginAttention(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
-        MMSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        MMSkipgramMaxMarginAttention word2vec = new MMSkipgramMaxMarginAttention(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
+        //MSkipgramMaxMargin word2vec = new MMSkipgramMaxMargin(TestConstants.wordDimensions, 5, true, 0,TestConstants.negative_samples, 0, TestConstants.MEN_FILE);
         
         
         String sourceFileTrain = TestConstants.SOURCE_FILE_TRAIN;

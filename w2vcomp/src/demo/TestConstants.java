@@ -7,14 +7,14 @@ public class TestConstants {
         public static int imageDimensions = 200;
     
 
-        public static double rate_multiplier_grad =40; //0.05 50 for mapping, 1 for mm
+        public static double rate_multiplier_grad =0.05; //0.05 50 for mapping, 1 for mm
         public static double rate_multiplier_sft = 10; //10
 
     
         public static double lambda = 0.0001;  // 0.0001: add to zeros for less reg
         public static int negative_samples = 40; // 40
         public static double threshold = 5;
-        public static double margin = 0.5; //0.5
+        public static double margin = 0.2; //0.5
     
         public static long SEED                       = 292626718599866L;
 
@@ -41,7 +41,7 @@ public class TestConstants {
         //public static String TARGET_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus/extended_version/cds.11_24.images.txt";
         //public static String TARGET_FILE_TRAIN                = ROOT_EXP_DIR+"corpus/extended_v2_version/objects.txt";
         public static String TARGET_FILE_TEST                  = ROOT_EXP_DIR+"corpus/frank/objects.txt.shuf";
-        public static String TARGET_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus/frank/objects.txt";
+        public static String TARGET_FILE_TRAIN                  = ROOT_EXP_DIR+"corpus/frank/objects_shuffle_order.txt";
 
         public static String TRAIN_DIR               = "";
 

@@ -75,6 +75,7 @@ public class Images {
         //System.err.println(new SimpleMatrix(this.space.getVectors()));
         
         this.word2Index = space.getWord2Index();
+        //System.err.println("Random vecs");
         //random_vecs();
         System.err.println("Shuffling vecs");
         shuffling_vecs();
@@ -124,6 +125,7 @@ public class Images {
         this.word2Index = space.getWord2Index();
         
         //For test only. Either randomly shuffle the words with the images or assign random vectors to words
+        //System.err.println("Rabdom vecs");
         //random_vecs();
         System.out.println("Shuffling vecs");
         shuffling_vecs();
@@ -245,14 +247,16 @@ public class Images {
     }
    
    protected void  random_vecs(){
+       Random r = new Random(TestConstants.SEED);
        double [][] rand_vec = new double[this.word2Index.size()][this.space.getVectorSize()];
        //System.err.println(this.word2Index.size()+" "+this.space.getVectorSize());
        for (int i=0;i<this.word2Index.size();i++){
            for (int j=0;j<this.space.getVectorSize();j++){
-               rand_vec[i][j] = random.nextDouble();
+               rand_vec[i][j] = r.nextDouble();
            }
            this.space = new SemanticSpace(this.space.getWords(),rand_vec);
        }
+       System.err.println("10 is "+rand_vec[1][10]);
    }
    
    public void shuffling_vecs(){

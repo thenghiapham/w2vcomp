@@ -104,7 +104,7 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                             continue;
                         // "g" is the gradient multiplied by the learning rate
                         double gradient = (double) ((1 - (context.code
-                                .charAt(bit) - 48) - a2) * alpha);
+                                .charAt(bit) - 48) - a2) * alpha) ;
                         // Propagate errors output -> hidden
                         for (int j = 0; j < projectionLayerSize; j++) {
                             a1error[j] += gradient
@@ -146,7 +146,7 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                         
                         gradient = (double) ((label - a2) * alpha);
                         for (int j = 0; j < projectionLayerSize; j++) {
-                            a1error[j] += gradient
+                            a1error[j] += gradient 
                                     * negativeWeights1[target][j];
                         }
                         for (int j = 0; j < projectionLayerSize; j++) {
