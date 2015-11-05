@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import common.IOUtils;
+import common.MenCorrelation;
 
 import space.SemanticSpace;
 import word2vec.Images;
@@ -44,11 +45,15 @@ public class EvalFScore {
     }
     
     public static void main(String[] args) throws IOException {
-        SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
         //SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.ROOT_EXP_DIR+"experiments/vectors/"+"frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_best_model_attention.bin");
+        String TestFile = TestConstants.VECTOR_FILE;
+        //String TestFile = "/home/aggeliki/visLang/cross-situational/experiments/vectors/simulations/frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_attention.bin";
+        SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
 
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);
 
+        MenCorrelation men = new MenCorrelation(TestConstants.MEN_FILE);
+        System.out.println("Men is "+men.evaluateSpaceSpearman(wordSpace));
         SemanticSpace visionSpace = im.getVisionSpace();
         
         EvalFScore eval = new EvalFScore();

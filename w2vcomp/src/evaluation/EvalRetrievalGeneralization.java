@@ -3,8 +3,10 @@ package evaluation;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import common.IOUtils;
@@ -49,8 +51,18 @@ public class EvalRetrievalGeneralization {
     public void evalRankAggr(SemanticSpace space, SemanticSpace searchSpace){
         double[] ranks= new  double[] {0,0,0,0,0,0 };
         
+        HashMap<String, List<String>> toEval = new HashMap<String, List<String>>();
+        toEval.put("bear", Arrays.asList(new String[] {"bear","bison","skunk","strawberry"}));
+        toEval.put("book", Arrays.asList(new String[] {"book","brick","clock","tuna"}));
+        toEval.put("cow", Arrays.asList(new String[] {"cow","bull","goose","garage"}));
+        toEval.put("duck", Arrays.asList(new String[] {"duck","chicken","finch","bear"}));
+        toEval.put("lamb", Arrays.asList(new String[] {"lamb","sheep","rabbit","broccoli"}));
+        toEval.put("mirror", Arrays.asList(new String[] {"mirror","axe","shelves","squid"}));
+        toEval.put("pig", Arrays.asList(new String[] {"pig","hamster","penguin","elevator"}));
+        toEval.put("duck", Arrays.asList(new String[] {"cat","lamb","cat","carpet"}));
+
         
-       
+      
         System.out.println("Size of search space "+searchSpace.getWords().length);
         
         int numOfNs = 10;
@@ -60,7 +72,21 @@ public class EvalRetrievalGeneralization {
         int mean_cor = 0;
         for (String word: this.words){
             object = this.goldStandard.get(word);
-            Neighbor[] NNs = space.getNeighbors(word, numOfNs,  searchSpace);
+            if (!toEval.containsKey(object)){
+                continue;
+            }
+            
+            //reduce search space to relevant items
+            Set<String> to_keep = new HashSet<String>();
+            for (String o: searchSpace.getWords()){
+                if (toEval.get(object).contains(o.split("@")[0])){
+                    to_keep.add(o);
+                }
+            }
+            SemanticSpace searchSpace2 = searchSpace.getSubSpace(to_keep);
+            
+            
+            Neighbor[] NNs = space.getNeighbors(word, numOfNs,  searchSpace2);
             System.out.print(word+"("+object+"): ");
             
             int cor = 0;
@@ -91,11 +117,11 @@ public class EvalRetrievalGeneralization {
      * @throws FileNotFoundException 
      */
     public static void main(String[] args) throws FileNotFoundException {
-        //String TestFile = TestConstants.ROOT_EXP_DIR+"experiments/vectors/frank_d_200_n40_m0.5_r110.0_r250.0l1.0E-4.bin";
-        String TestFile = TestConstants.VECTOR_FILE;
+        String TestFile = TestConstants.ROOT_EXP_DIR+"experiments/vectors/simulations/frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_attention.bin";
+        //String TestFile = TestConstants.VECTOR_FILE;
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
 
-        Images im = new Images(TestConstants.ROOT_VISUAL_DIR+"extra_experiments/"+"fc7_space_10imagesPerObject.txt", true,TestConstants.imageDimensions); 
+        Images im = new Images(TestConstants.ROOT_VISUAL_DIR+"extra_generalization_experiment/"+"fc7_space_10imagesPerObject_more.txt", true,TestConstants.imageDimensions); 
         SemanticSpace visionSpace = im.getVisionSpace();
         
         

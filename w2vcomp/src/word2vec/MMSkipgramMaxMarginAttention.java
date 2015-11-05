@@ -46,6 +46,8 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
 
         boolean updateAtTheEnd=false;
         
+
+        
         for (int wordPosition = 0; wordPosition < sentenceSource.length; wordPosition++) {
 
             int wordIndex = sentenceSource[wordPosition];
@@ -59,13 +61,8 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                 a1error[i] = 0;
             }
 
-            if (vocab_lang1.getEntry(wordIndex).word.equals("bunny")){
-                System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word);
-            }
             
-      
-            
-            //language 1
+            /*************    FOR MODALITY 1   ****************/
             //try to predict all words in the utterance
             for (int i = 0; i < sentenceSource.length; i++) {
                 
@@ -83,11 +80,7 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
 
                 
                 VocabEntry context = vocab_lang1.getEntry(iWordIndex);
-                
-                //if (vocab_lang1.getEntry(wordIndex).word.equals("bunny")){
-                //    System.out.println("For Word "+vocab_lang1.getEntry(wordIndex).word+" predict "+context.word);
-                //}
-                
+               
                 // HIERARCHICAL SOFTMAX
                 if (hierarchicalSoftmax) {
                     for (int bit = 0; bit < context.code.length(); bit++) {
@@ -107,7 +100,7 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                                 .charAt(bit) - 48) - a2) * alpha) ;
                         // Propagate errors output -> hidden
                         for (int j = 0; j < projectionLayerSize; j++) {
-                            a1error[j] += gradient
+                            a1error[j] += gradient 
                                     * weights1[iParentIndex][j];
                         }
                         // Learn weights hidden -> output
@@ -169,26 +162,22 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
             
            
         
- /*************    FOR TARGET LANGUAGE   ****************/
-            
+            /*************    FOR MODALITY 2   ****************/
+            //reset error
             SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
             if (negativeSamplesImages != -1) {
                 
                 double gradient=0;
                 mmWordsPerRun++;
                 
+                //get current word
                 SimpleMatrix mapped_word_row = (new SimpleMatrix(1,projectionLayerSize,false, weights0[wordIndex]));
+
                 
-              
-              
-                
-                
-                //try to come closer to all the words in the target language
+                //try to come closer to all the objects in the target language
                 for (int wordPositionTarget = 0; wordPositionTarget < sentenceTarget.length; wordPositionTarget++) {
                     
-                    //SimpleMatrix a1error_temp = new SimpleMatrix(a1error.length, 1);
                     
-                    double normalization_over_words_in_sentence = 0.0;
                     
                     //set to 0 for every positive example
                     SimpleMatrix der = new SimpleMatrix(TestConstants.imageDimensions, 1);
@@ -199,28 +188,29 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                     int jPerceptIndex = images.getIndex(curWord.word);
                     
                     if (jPerceptIndex==-1){
-                        //System.out.println(curWord.word+" not in visual space");
                         continue;
                     }
-                    
-                    //System.out.println("Visual Referent "+curWord.word);
                     SimpleMatrix image = new SimpleMatrix(negativeWeights1Images[jPerceptIndex].length,1,true, negativeWeights1Images[jPerceptIndex]);
                   
-                    //first run to calculate normalization for score (w_t,I_i over all w_t in sentence
+                    double normalization_over_words_in_sentence = 0.0;
+
+                    //first run to calculate normalization for score w_t',I_i over all w_t in sentence
                     for (int ii = 0; ii < sentenceSource.length; ii++) {
                         
-                        //get word
+                        //get word w_t
                         int ii_index = sentenceSource[ii];
-                        //get word
+                        //get vector of word w_t'
                         SimpleMatrix ii_vector = (new SimpleMatrix(1,projectionLayerSize,false, weights0[ii_index]));
-                        //calculate cosine between word and current image 
+                        //calculate cosine between w_t' and I_i
                         double cos = MathUtils.cosine(ii_vector, image);
                         normalization_over_words_in_sentence += Math.exp(cos);
+                        
+                        //System.out.println(vocab_lang1.getEntry(ii_index).word+" "+vocab_lang2.getEntry(wordIndexTarget).word+" "+cos);
+
                     }
                     
-                    
+                    //derivative of cosine (w_t,I_i)
                     SimpleMatrix err_cos_row = MathUtils.cosineDerivative(mapped_word_row, image);
-                
                 
                     double cos = MathUtils.cosine(mapped_word_row, image);
                     double err = 0.0;
@@ -237,33 +227,33 @@ public class MMSkipgramMaxMarginAttention extends SingleThreadWord2Vec{
                         SimpleMatrix image_neg = new SimpleMatrix(negativeWeights1Images[neg_sample].length,1,true, negativeWeights1Images[neg_sample]);
                         
                         double cos_neg = MathUtils.cosine(mapped_word_row, image_neg);
-                        err -= Math.max(0, TestConstants.margin - cos+cos_neg);
+                        err += Math.max(0, TestConstants.margin - cos+cos_neg);
                         if (cos-cos_neg >= TestConstants.margin) continue;
                         k+=1;
                     
                         //calculate error with respect to the cosine
                         der = der.minus(MathUtils.cosineDerivative(mapped_word_row, image_neg));
                     }
-                    
-                    
-            
-                     
-                
+             
                     gradient = (double) (alpha*  TestConstants.rate_multiplier_grad );
                     gradient = (1-gradient);
                     der = der.plus(err_cos_row.scale(k));
                     
                     //score
                     double score = Math.exp(cos)/normalization_over_words_in_sentence;
+                    
+
+                    
                     //derivetive from f'g = (max_margin)'*score
                     a1error_temp  = a1error_temp.plus(der.scale((gradient)*score));
                     //derivative from g'f = (max_margin_error) * score'
-                    //score' = exp(cos)*cos'*(SUM-epx(cos)) / SUM^2
+                    //score' = exp(cos)*cos'*(SUM-expo(cos)) / SUM^2
                     SimpleMatrix der_score = (err_cos_row.scale(Math.exp(cos)).scale(normalization_over_words_in_sentence-Math.exp(cos))).divide(Math.pow(normalization_over_words_in_sentence,2));
                     a1error_temp  = a1error_temp.plus(der_score.scale(err*(gradient)));
                     
                     
                 }
+
                 // Learn weights input -> hidden
                 for (int j = 0; j < projectionLayerSize; j++) {
                     weights0[wordIndex][j] += a1error_temp.get(j, 0);

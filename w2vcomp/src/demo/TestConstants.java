@@ -14,7 +14,7 @@ public class TestConstants {
         public static double lambda = 0.0001;  // 0.0001: add to zeros for less reg
         public static int negative_samples = 40; // 40
         public static double threshold = 5;
-        public static double margin = 0.2; //0.5
+        public static double margin = 0.2;//0.5
     
         public static long SEED                       = 292626718599866L;
 

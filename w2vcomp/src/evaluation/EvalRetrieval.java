@@ -54,9 +54,13 @@ public class EvalRetrieval {
         ArrayList<Integer> median = new ArrayList<Integer>();
         
        
+        
+        
+        searchSpace = searchSpace.getSubSpace(this.objects);
+        
         System.out.println("Size of search space "+searchSpace.getWords().length);
         
-        int numOfNs = 100;
+        int numOfNs =searchSpace.getWord2Index().size();
         System.out.println(this.words.size());
         String object;
         int w = 0;
@@ -69,7 +73,7 @@ public class EvalRetrieval {
             
             for (int i=0;i<numOfNs;i++){
                 if (NNs[i].word.equals(object)){
-                    
+                    System.out.println(word+"with r"+i+1);
                     median.add(w,i+1);
                     
                     if (i==0){
@@ -145,13 +149,13 @@ public class EvalRetrieval {
 
         //SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
         //String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
-        String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
+        String TestFile = "/home/aggeliki/visLang/cross-situational/experiments/vectors/simulations/frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_attention.bin";
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);
         SemanticSpace visionSpace = im.getVisionSpace();
         
         EvalRetrieval eval  = new EvalRetrieval();
-        eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/Frank/dictionary.txt");
+        eval.readGoldStandard(TestConstants.ROOT_EXP_DIR+"/corpus/frank/dictionary.txt");
         
         
      

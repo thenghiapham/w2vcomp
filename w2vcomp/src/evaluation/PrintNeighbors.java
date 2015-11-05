@@ -30,8 +30,9 @@ public class PrintNeighbors {
     public static void main(String[] args) throws FileNotFoundException {
         
         
+        String TestFile = "/home/aggeliki/visLang/cross-situational/experiments/vectors/simulations/frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_attention.bin";
 
-        SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
+        SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);
 
         SemanticSpace visionSpace = im.getVisionSpace();
@@ -45,16 +46,12 @@ public class PrintNeighbors {
         ArrayList<String> common_elements_list = new ArrayList<String>(common_elements);
         ArrayList<String> list_of_els = new ArrayList<String>();
         
-        list_of_els.add("kitty");
-        list_of_els.add("piggie");
-        list_of_els.add("rings");
-        list_of_els.add("eyes");
-        list_of_els.add("mirror");
-        list_of_els.add("hat");
-        list_of_els.add("book");
-        list_of_els.add("books");
-        list_of_els.add("dog");
-        list_of_els.add("bunny");
+        list_of_els.add("music");
+        list_of_els.add("baby");
+        list_of_els.add("chair");
+        list_of_els.add("balls");
+        list_of_els.add("drummer");
+        
 
         visionSpace = visionSpace.getSubSpace(common_elements_list);    
         for (String word: list_of_els){

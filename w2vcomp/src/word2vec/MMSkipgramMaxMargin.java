@@ -14,6 +14,7 @@ import vocab.VocabEntry;
 
 import common.HeatMapPanel;
 import common.MathUtils;
+import common.MenCorrelation;
 import common.exception.ValueException;
 
 import demo.TestConstants;
@@ -296,6 +297,13 @@ public class MMSkipgramMaxMargin extends SingleThreadWord2Vec{
 
     public double[] getCors() throws ValueException{
         return images.pairwise_cor(new SemanticSpace(vocab_lang1, weights0,false));
+    }
+    
+    public double getMenCors() {
+        SemanticSpace outputSpace = new SemanticSpace(vocab_lang1, weights0, false);
+        return men.evaluateSpaceSpearman(outputSpace);
+        
+         
     }
 
     @Override

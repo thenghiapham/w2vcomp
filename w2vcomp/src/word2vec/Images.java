@@ -77,8 +77,8 @@ public class Images {
         this.word2Index = space.getWord2Index();
         //System.err.println("Random vecs");
         //random_vecs();
-        System.err.println("Shuffling vecs");
-        shuffling_vecs();
+        //System.err.println("Shuffling vecs");
+        //shuffling_vecs();
         //System.err.println(this.space.getVectorSize());
 
         this.randomTablesize = this.word2Index.size();
@@ -116,6 +116,7 @@ public class Images {
             
         }
         //for mapping debugging
+        System.out.println(this.space.getVectorSize());
         
         double [][] newvecs = chop_summing();
         
@@ -127,8 +128,8 @@ public class Images {
         //For test only. Either randomly shuffle the words with the images or assign random vectors to words
         //System.err.println("Rabdom vecs");
         //random_vecs();
-        System.out.println("Shuffling vecs");
-        shuffling_vecs();
+        //System.out.println("Shuffling vecs");
+        //shuffling_vecs();
        
            
         //System.err.println("Images vectors with size:"+this.space.getVectorSize());
@@ -197,9 +198,11 @@ public class Images {
        int cur = 0;
        int k=0;
        for (double [] vec: this.space.getVectors()){
+          
           k = 0;
           cur =0;
           for (int j=0; j<this.space.getVectorSize(); j++){
+              
               if (cur==offset && k!= TestConstants.imageDimensions-1){
                   newvecs[i][k]/= (double) cur;
                   k +=1;

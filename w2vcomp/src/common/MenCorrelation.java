@@ -223,7 +223,7 @@ public class MenCorrelation {
             predicts[i] = space.getSim(wordPairs[i][0], wordPairs[i][1]);
         }
         
-        System.out.println(exists/ (double)golds.length+" are 0");
+        System.out.println(exists+"out of "+(double)golds.length);
         return spearman.correlation(golds, predicts);
     }
 	
