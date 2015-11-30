@@ -246,6 +246,12 @@ public class MmSkipNGramWithMappingMaxMargin extends SingleThreadWord2Vec {
         
     }
     
+    @Override
+    public void trainSentence(int[] sentenceSource, int[] sentenceTarget, int[] sentenceSocial) {
+        // TODO Auto-generated method stub
+        
+    }
+    
     
 }
 

@@ -58,8 +58,9 @@ public abstract class AbstractWord2Vec {
 
     protected int              windowSize;
 
-    protected Vocab            vocab_lang1;
-    protected Vocab            vocab_lang2;
+    protected Vocab            vocab_lang1;   //for words
+    protected Vocab            vocab_lang2;   //for objects
+    protected Vocab            vocab_lang3;   // for social
 
     // parameters to keep track of the training progress
     protected long             wordCount;
@@ -369,6 +370,12 @@ public abstract class AbstractWord2Vec {
     public void setVocabs(Vocab vocab1, Vocab vocab2) {
         this.vocab_lang1 = vocab1;
         this.vocab_lang2 = vocab2;
+    }
+    
+    public void setVocabs(Vocab vocab1, Vocab vocab2, Vocab vocab3) {
+        this.vocab_lang1 = vocab1;
+        this.vocab_lang2 = vocab2;
+        this.vocab_lang3 = vocab3;
     }
 
     public void setVocab(Vocab vocab1) {

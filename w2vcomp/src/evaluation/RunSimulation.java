@@ -6,6 +6,7 @@ import java.util.Random;
 import common.exception.ValueException;
 
 import demo.CrossSituationalLearning;
+import demo.CrossSituationalLearningSocial;
 import demo.TestConstants;
 
 public class RunSimulation {
@@ -23,8 +24,8 @@ public class RunSimulation {
         System.out.println(TestConstants.SEED);
         
         //new directory with shuffled corpus
-        String main_words = TestConstants.ROOT_EXP_DIR+"corpus/perm_frank/words.txt";
-        String main_objects = TestConstants.ROOT_EXP_DIR+"corpus/perm_frank/objects.txt";
+        //String main_words = TestConstants.ROOT_EXP_DIR+"corpus/perm_frank/words.txt";
+        //String main_objects = TestConstants.ROOT_EXP_DIR+"corpus/perm_frank/objects.txt";
         
         for (int i=1;i<repeat;i++){
             
@@ -38,7 +39,7 @@ public class RunSimulation {
             System.out.println("Running "+i+" simulation!");
             
             //first Learning
-            CrossSituationalLearning.main(args);
+            CrossSituationalLearningSocial.main(args);
 
              
             //The evaluation

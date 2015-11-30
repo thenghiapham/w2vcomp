@@ -59,7 +59,7 @@ public class EvalRetrievalGeneralization {
         toEval.put("lamb", Arrays.asList(new String[] {"lamb","sheep","rabbit","broccoli"}));
         toEval.put("mirror", Arrays.asList(new String[] {"mirror","axe","shelves","squid"}));
         toEval.put("pig", Arrays.asList(new String[] {"pig","hamster","penguin","elevator"}));
-        toEval.put("duck", Arrays.asList(new String[] {"cat","lamb","cat","carpet"}));
+        toEval.put("sheep", Arrays.asList(new String[] {"sheep","lamb","cat","carpet"}));
 
         
       
@@ -117,8 +117,8 @@ public class EvalRetrievalGeneralization {
      * @throws FileNotFoundException 
      */
     public static void main(String[] args) throws FileNotFoundException {
-        String TestFile = TestConstants.ROOT_EXP_DIR+"experiments/vectors/simulations/frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_attention.bin";
-        //String TestFile = TestConstants.VECTOR_FILE;
+        //String TestFile = TestConstants.ROOT_EXP_DIR+"experiments/vectors/simulations/frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_attention.bin";
+        String TestFile = TestConstants.VECTOR_FILE;
         SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
 
         Images im = new Images(TestConstants.ROOT_VISUAL_DIR+"extra_generalization_experiment/"+"fc7_space_10imagesPerObject_more.txt", true,TestConstants.imageDimensions); 

@@ -282,7 +282,9 @@ public class One2OneAlignment
  
     public static void main(String[] args)
     {
-        SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
+        //String TestFile = "//home/aggeliki/visLang/cross-situational/experiments/vectors/tuning/tune_d_200_n40_m0.2_r110.0_r20.05l1.0E-4.bin_normal";
+        String TestFile = TestConstants.VECTOR_FILE;
+        SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);
 
         SemanticSpace visionSpace = im.getVisionSpace();

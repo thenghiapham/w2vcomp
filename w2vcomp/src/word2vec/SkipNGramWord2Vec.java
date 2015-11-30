@@ -147,4 +147,10 @@ public class SkipNGramWord2Vec extends SingleThreadWord2Vec {
         // TODO Auto-generated method stub
         
     }
+    
+    @Override
+    public void trainSentence(int[] sentenceSource, int[] sentenceTarget, int[] sentenceSocial) {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -112,6 +112,45 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         System.out.println("total word count: " + wordCount);
     }
     
+    
+    public void trainModel(ArrayList<SentenceInputStream> inputStreamsSource, ArrayList<SentenceInputStream> inputStreamsTarget, 
+            ArrayList<SentenceInputStream> inputStreamsSocial) {
+        // single-threaded instead of multi-threaded
+        oldWordCount = 0;
+        wordCount = 0;
+        trainWords = vocab_lang1.getTrainWords();
+        System.err.println("train words: " + trainWords);
+        System.out.println("vocab size: " + vocab_lang1.getVocabSize());
+        System.out.println("hidden size: " + projectionLayerSize);
+        System.out.println("first word:" + vocab_lang1.getEntry(0).word);
+        System.out.println("last word:"
+                + vocab_lang1.getEntry(vocab_lang1.getVocabSize() - 1).word);
+        
+        
+        if (men != null) {
+            try {
+                outputSpace = new SemanticSpace(vocab_lang1, weights0, false);
+            } catch (ValueException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        int i = 0;
+        for (SentenceInputStream inputStreamSource : inputStreamsSource) {
+            //subsample only source side
+            if (subSample > 0) {
+                inputStreamSource = new SubSamplingSentenceInputStream(inputStreamSource, subSample);
+            }
+            
+            SentenceInputStream inputStreamTarget = inputStreamsTarget.get(i);
+            SentenceInputStream inputStreamSocial = inputStreamsSocial.get(i);
+            System.out.println(inputStreamTarget.getWordCount()+" "+inputStreamSource.getWordCount());
+            i++;
+            trainModelThread(inputStreamSource, inputStreamTarget, inputStreamSocial);
+        }
+        System.out.println("total word count: " + wordCount);
+    }
+    
     @Override
     public void trainModel(ArrayList<SentenceInputStream> inputStreamsSource, ArrayList<SentenceInputStream> inputStreamsTarget, Vocab vocab) {
         // single-threaded instead of multi-threaded
@@ -219,6 +258,79 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
         }
     }
 
+    void trainModelThread(SentenceInputStream inputStreamSource, SentenceInputStream inputStreamTarget, 
+            SentenceInputStream inputStreamSocial) {
+        oldWordCount = wordCount;
+        long lastWordCount = wordCount;
+        int updateEveryNWords = 100; //100 for initial implementation were results were reported
+        int curSentence = 1;
+        try {
+            int iteration = 0;
+            while (true) {
+
+                // read the whole sentence sentence,
+                // the output would be the list of the word's indices in the
+                // dictionary
+                boolean hasNextSentenceSource = inputStreamSource.readNextSentence(vocab_lang1);
+                boolean hasNextSentenceTarget = inputStreamTarget.readNextSentence(vocab_lang2);
+                boolean hasNextSentenceSocial = inputStreamSocial.readNextSentence(vocab_lang3);
+                
+                //System.out.println("Current sentence is "+curSentence);
+                curSentence++;
+                if (!hasNextSentenceSource) break;
+
+                int[] sentenceSource = inputStreamSource.getCurrentSentence();
+                int[] sentenceTarget = inputStreamTarget.getCurrentSentence();
+                int[] sentenceSocial = inputStreamSocial.getCurrentSentence();
+                
+                // if end of file, finish
+                if (sentenceSource.length == 0) {
+                    continue;
+                }
+
+                // check word count
+                // update alpha
+                wordCount = oldWordCount + inputStreamSource.getWordCount();
+              
+                
+                
+                
+                if (wordCount - lastWordCount > updateEveryNWords) {
+                    iteration++;
+                    
+                    
+                    // update alpha
+                    alpha = starting_alpha
+                            * (1 - (double) wordCount / (trainWords + 1));
+                    if (alpha < starting_alpha * (1/updateEveryNWords)) {
+                        alpha = starting_alpha * (1/updateEveryNWords);
+                    }
+                    if (men != null && outputSpace != null &&  iteration %1000 == 0) {
+                        //System.out.println("correlation: " + men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),1)+" "+men.evaluateSpaceSpearman2(outputSpace, images.getVisionSpace(),2));
+                        System.out.println("correlation: " + men.evaluateSpaceSpearman(outputSpace));
+                        mmWordsPerRun = 0;
+                        printStatistics();
+                    }
+                    if (iteration % 1000 == 0) {
+                        System.out.println("Trained: " + wordCount + " words");
+                        System.out.println("Training rate: " + alpha);
+                        //System.out.println("Visual stuff "+imageProjectionLayer.normF());
+                        
+                    }
+                    lastWordCount = wordCount;
+                }
+                
+                        
+                
+                trainSentence(sentenceSource, sentenceTarget, sentenceSocial);
+                
+            }
+        } catch (IOException | ValueException  e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
     public void trainPhrases(Phrase[] phrases, int[] sentence) {
         /*for (Phrase phrase : phrases) {
             trainSinglePhrase(phrase, sentence);
@@ -237,5 +349,7 @@ public abstract class SingleThreadWord2Vec extends AbstractWord2Vec {
             int[] sentence);
 
     public abstract void trainSentence(int[] sentenceSource, int[] sentenceTarget);
+    
+    public abstract void trainSentence(int[] sentenceSource, int[] sentenceTarget, int[] sentenceSocial);
     
 }

@@ -56,7 +56,7 @@ public class EvalRetrieval {
        
         
         
-        searchSpace = searchSpace.getSubSpace(this.objects);
+        //searchSpace = searchSpace.getSubSpace(this.objects);
         
         System.out.println("Size of search space "+searchSpace.getWords().length);
         
@@ -73,7 +73,7 @@ public class EvalRetrieval {
             
             for (int i=0;i<numOfNs;i++){
                 if (NNs[i].word.equals(object)){
-                    System.out.println(word+"with r"+i+1);
+                    System.out.println(word+"with r"+(i+1));
                     median.add(w,i+1);
                     
                     if (i==0){
@@ -147,10 +147,10 @@ public class EvalRetrieval {
         
         
 
-        //SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
-        //String TestFile = "/home/angeliki/Documents/cross-situational/experiments/vectors/best_model_frank.bin";
-        String TestFile = "/home/aggeliki/visLang/cross-situational/experiments/vectors/simulations/frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_attention.bin";
-        SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
+        SemanticSpace wordSpace = SemanticSpace.readSpace(TestConstants.VECTOR_FILE);
+       // String TestFile = "//home/aggeliki/visLang/cross-situational/experiments/vectors/tuning/tune_d_200_n40_m0.2_r110.0_r20.05l1.0E-4.bin_normal";
+        //String TestFile = "/home/aggeliki/visLang/cross-situational/experiments/vectors/simulations/frank_d_200_n40_m0.2_r110.0_r20.05l1.0E-4_attention.bin";
+        //SemanticSpace wordSpace = SemanticSpace.readSpace(TestFile);
         Images im = new Images(TestConstants.VISION_FILE, true,TestConstants.imageDimensions);
         SemanticSpace visionSpace = im.getVisionSpace();
         
