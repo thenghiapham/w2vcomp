@@ -14,6 +14,9 @@ import word2vec.SkipNGramWord2Vec;
 
 import demo.TestConstants;
 
+/*
+ * Training normal skipgram and cbow
+ */
 public class WordVectorLearning {
     public static void main(String[] args) {
 //        CBowWord2Vec word2vec = new CBowWord2Vec(200, 5, true, 0, (float) 0);

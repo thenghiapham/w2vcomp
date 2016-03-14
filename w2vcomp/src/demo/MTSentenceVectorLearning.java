@@ -28,6 +28,24 @@ import word2vec.MTIncrementalSentence2Vec;
 import word2vec.MTIncrementalWeightedSentence2Vec;
 import word2vec.Sentence2Vec;
 
+/**
+ * Main class for running C-Phrase model
+ * The program takes 6 arguments:
+ *   - the config file:
+ *     where the paths to data files are stored
+ *   - window size
+ *   - window size increment (each level of the phrase will have a window size equal to
+ *     the original window size + level * increment)
+ *   - type of model:
+ *     a: C-Phrase model
+ *     ar: C-Phrase model (this is exactly like a, but the computation is carried out using raw array
+ *         instead of SimpleMatrix)
+ *     w: weighted sum (instead of simple add)
+ *     d,f: vector: some composition model, does not work as well as C-phrase
+ *   - activation function:
+ *     activation function applied after each summation (default: i)
+ *   
+ */
 public class MTSentenceVectorLearning {
     public static void main(String[] args) throws IOException{
         String configFile = args[0];
@@ -135,18 +153,18 @@ public class MTSentenceVectorLearning {
         men.setName("MEN");
         
         
-        ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(properties.getProperty("SickFile"));
-        sick.setName("SICK");
+//        ParsedPhraseCorrelation sick = new ParsedPhraseCorrelation(properties.getProperty("SickFile"));
+//        sick.setName("SICK");
         
         if (type.equals("a")) {
             ((MTIncrementalAddSentence2Vec) sentence2vec).addMenCorrelation(men);
-            ((MTIncrementalAddSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
+//            ((MTIncrementalAddSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
         } else if (type.equals("ar")) {
             ((MTIncrementalRawAddSentence2Vec) sentence2vec).addMenCorrelation(men);
-            ((MTIncrementalRawAddSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
+//            ((MTIncrementalRawAddSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
         } else {
             ((MTIncrementalSentence2Vec) sentence2vec).addMenCorrelation(men);
-            ((MTIncrementalSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
+//            ((MTIncrementalSentence2Vec) sentence2vec).addSentenceCorrelation(sick);
         }
         
         

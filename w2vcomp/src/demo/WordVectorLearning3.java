@@ -16,6 +16,14 @@ import vocab.Vocab;
 import word2vec.MultiThreadContextSkipgram;
 import demo.TestConstants;
 
+
+/*
+ * Learning normal skipgram and Cbow but the input is the parsed corpus
+ * Need to preprocess the input into plain text
+ * 
+ * This class is similar to WordVectorLearning2
+ * The different is that most of the parameters are in the config file
+ */
 public class WordVectorLearning3 {
     public static void main(String[] args) throws IOException{
         int hiddenSize = Integer.parseInt(args[0]);

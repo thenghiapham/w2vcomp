@@ -18,6 +18,10 @@ import word2vec.MultiThreadSkipGram;
 
 import word2vec.MultiThreadWord2Vec;
 
+/*
+ * Learning normal skipgram and Cbow but the input is the parsed corpus
+ * Need to preprocess the input into plain text
+ */
 public class WordVectorLearning2 {
     public static void main(String[] args) throws IOException{
         String configFile = args[0];
