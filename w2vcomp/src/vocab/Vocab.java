@@ -305,6 +305,42 @@ public class Vocab {
         }
     }
 
+    public int resize(int topN) {
+        if (vocab.size() <= topN) return vocab.size();
+        
+        long newLineFrequency = vocab.get(0).frequency;
+        vocab.get(0).frequency = Integer.MAX_VALUE;
+
+        // sort the vocabulary based on frequency
+        Collections.sort(vocab, Collections
+                .reverseOrder(VocabEntry.VocabEntryFrequencyComparator));
+        // creating a new HashMap
+        // loop through the vocabulary and keep only topN words
+        vocabHash = new HashMap<String, Integer>();
+        ArrayList<VocabEntry> newVocab = new ArrayList<VocabEntry>(
+                vocabSize);
+        trainWords = 0;
+        for (int index = 0; index < topN; index++) {
+                VocabEntry entry = vocab.get(index);
+                newVocab.add(entry);
+                vocabHash.put(entry.word, index);
+                trainWords += vocab.get(index).frequency;
+        }
+        vocab = newVocab;
+        // throw away the rest
+        vocabSize = topN;
+
+        // restore the frequency of "new line"
+        vocab.get(0).frequency = newLineFrequency;
+
+        // train words do not include new line      
+        trainWords = trainWords - Integer.MAX_VALUE;
+        
+        System.out.println("read train words: " + trainWords);
+        
+        return vocab.size();
+    }
+    
     /*
      * Load the vocabulary from a file Sort and move words with frequency
      * smaller than minFrequency
